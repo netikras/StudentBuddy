@@ -1,0 +1,5 @@
+apply from: "$rootProject.rootDir/conf/global.gradle"
+
+dependencies {
+
+}

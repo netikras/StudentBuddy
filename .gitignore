@@ -23,16 +23,10 @@ rebel.xml
 /bin$
 bin/
 .springBeans
-database.local.properties
-jetty-env.local.xml
-*.pyc
 jmeter.log
 /deploy/*
-/tomcat-7.0.23/*
 test-output/
-drop-off/
 .pydevproject
-conf/local.properties
 .java-version
 config.codekit
 _sprite.properties
