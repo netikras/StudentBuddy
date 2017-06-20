@@ -30,7 +30,8 @@ public abstract class GenericServiceConsumer {
         return RestService.sendRequest(request, responseBodyType);
     }
 
-    protected <CollectT extends Collection<RespT>, RespT> HttpResponse sendRequest(HttpRequest request, Class<CollectT> collectionType, Class<RespT> responseBodyType) {
+    protected <CollectT extends Collection<RespT>, RespT> HttpResponse sendRequest(HttpRequest request, Class<CollectT> collectionType,
+                                                                                   Class<RespT> responseBodyType) {
         return RestService.sendRequest(request, collectionType, responseBodyType);
     }
 

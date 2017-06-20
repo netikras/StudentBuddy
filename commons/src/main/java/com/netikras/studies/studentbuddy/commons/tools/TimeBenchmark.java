@@ -10,8 +10,8 @@ public class TimeBenchmark {
 
     private int defaultTakesCount = 100;
 
-    private double totalDuration_ns = 0;
-    private double avgDuration_ns = 0;
+    private double totalDurationNs = 0;
+    private double avgDurationNs = 0;
 
     public void estimateTakesCount(int count) {
         this.takes = new double[count+2];
@@ -33,8 +33,8 @@ public class TimeBenchmark {
     public void stop() {
         take();
 
-        totalDuration_ns = takes[takeId-1] - takes[0];
-        avgDuration_ns = totalDuration_ns/takeId;
+        totalDurationNs = takes[takeId-1] - takes[0];
+        avgDurationNs = totalDurationNs /takeId;
 
     }
 
@@ -51,20 +51,22 @@ public class TimeBenchmark {
         return defaultTakesCount;
     }
 
-    public double getTotalDuration_ns() {
-        return totalDuration_ns;
+    public double getTotalDurationNs() {
+        return totalDurationNs;
     }
 
-    public double getAvgDuration_ns() {
-        return avgDuration_ns;
+    public double getAvgDurationNs() {
+        return avgDurationNs;
     }
 
     public String getResultsSummaryString() {
         StringBuilder builder = new StringBuilder("Time Benchmarks Results: ");
 
         builder.append("Total takes: ").append(takeId-2).append("; ");
-        builder.append(String.format("Total duration: %.0f ns (= %.4f ms; %.4f s ) ", totalDuration_ns, totalDuration_ns/1000/1000, totalDuration_ns/1000/1000/1000));
-        builder.append(String.format("Average duration: %.0f ns (= %.4f ms; %.4f s ) ", avgDuration_ns, avgDuration_ns/1000/1000, avgDuration_ns/1000/1000/1000));
+        builder.append(String.format("Total duration: %.0f ns (= %.4f ms; %.4f s ) ",
+                totalDurationNs, totalDurationNs /1000/1000, totalDurationNs /1000/1000/1000));
+        builder.append(String.format("Average duration: %.0f ns (= %.4f ms; %.4f s ) ",
+                avgDurationNs, avgDurationNs /1000/1000, avgDurationNs /1000/1000/1000));
 
         return builder.toString();
     }
@@ -80,7 +82,12 @@ public class TimeBenchmark {
 
             double diff = timestamp-previous;
 
-            builder.append(String.format("Take %d: timestamp_start: %.0f, timestamp_finish: %.0f, duration: %.0f ns (= %.4f ms; %.4f s ) ", i, previous, timestamp, diff, diff/1000/1000, diff/1000/1000/1000)).append("\n");
+            builder.append(String.format(
+                    "Take %d: " +
+                            "timestamp_start: %.0f, " +
+                            "timestamp_finish: %.0f, " +
+                            "duration: %.0f ns (= %.4f ms; %.4f s ) ",
+                    i, previous, timestamp, diff, diff/1000/1000, diff/1000/1000/1000)).append("\n");
         }
 
         return builder.toString();

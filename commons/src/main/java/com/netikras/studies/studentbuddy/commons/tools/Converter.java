@@ -6,7 +6,9 @@ import java.io.StringWriter;
 /**
  * Created by netikras on 16.10.10.
  */
-public class Converter {
+public final class Converter {
+
+    private Converter() {}
 
     public static String throwableToString(Throwable throwable) {
         String result = "";

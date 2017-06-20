@@ -49,7 +49,8 @@ public class StudBudUncheckedException extends RuntimeException implements StudB
         setProbableCause(probableCause);
     }
 
-    public StudBudUncheckedException(String message1, String message2, int statusCode, String probableCause, String url, String developerMessage, int errorCode){
+    public StudBudUncheckedException(String message1, String message2, int statusCode, String probableCause,
+                                     String url, String developerMessage, int errorCode){
         setMessage1(message1);
         setMessage2(message2);
         setStatusCode(statusCode);

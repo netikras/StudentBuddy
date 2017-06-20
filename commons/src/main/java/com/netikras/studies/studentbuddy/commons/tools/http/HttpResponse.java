@@ -55,6 +55,11 @@ public class HttpResponse {
         return headers;
     }
 
+    public List<String> getHeaders(String name) {
+        return getHeaders().get(name);
+    }
+
+
     public void setHeaders(Map<String, List<String>> headers) {
         this.headers = headers;
     }
@@ -68,8 +73,5 @@ public class HttpResponse {
         headersList.add(value);
     }
 
-    public List<String> getHeaders(String name) {
-        return getHeaders().get(name);
-    }
 
 }

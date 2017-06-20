@@ -2,23 +2,22 @@ package com.netikras.studies.studentbuddy.commons.utils.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.List;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * Created by netikras on 17.5.15.
  * <p>
  */
-public class ModelMapper {
+public final class ModelMapper {
 
-
-    private class TransformationMapping<Dto, Model> {
-
-        private Dto dto;
-        private Model model;
-
-
+    private ModelMapper() {
     }
-
 
     /**
      * Transforms Model to DTO object. Both parameters should be non-null.<br/>
@@ -133,7 +132,8 @@ public class ModelMapper {
                     if (dtoField.getType().isAssignableFrom(value.getClass())) {
                         dtoField.set(dto, value);
                     } else {
-//                            throw new IllegalStateException("Cannot assign model " + model.getClass().getSimpleName() + " field " + field.getName() + " type " + field.getType() + " to DTO type " + dtoField.getType());
+                        //throw new IllegalStateException("Cannot assign model " + model.getClass().getSimpleName() + " field " + field.getName()
+                        // + " type " + field.getType() + " to DTO type " + dtoField.getType());
                         try {
                             Object newDtoEntry = dtoField.getType().newInstance();
 
@@ -161,7 +161,8 @@ public class ModelMapper {
     }
 
 
-    public static <ModelT, DtoT> void transformEnum(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException {
+    public static <ModelT, DtoT> void transformEnum(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException {
         Object value;
         value = modelField.get(model);
 
@@ -175,7 +176,8 @@ public class ModelMapper {
     }
 
 
-    public static <ModelT, DtoT> void applyEnum(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException {
+    public static <ModelT, DtoT> void applyEnum(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException {
         Object value = null;
         Object modelValue = null;
         value = dtoField.get(dto);
@@ -185,7 +187,8 @@ public class ModelMapper {
                 modelField.set(model, value);
                 return;
             } else {
-                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model + "; field: " + modelField.getName());
+                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model
+                        + "; field: " + modelField.getName());
             }
         }
 
@@ -198,13 +201,15 @@ public class ModelMapper {
         } else if (modelField.getType().isAssignableFrom(dtoField.getType())) {
             modelField.set(model, value);
         } else {
-            throw new IllegalStateException("Cannot convert type " + dtoField.getType().getTypeName() + " to ENUM " + modelField.getType().getTypeName());
+            throw new IllegalStateException("Cannot convert type " + dtoField.getType().getTypeName()
+                    + " to ENUM " + modelField.getType().getTypeName());
         }
 
     }
 
 
-    public static <ModelT, DtoT> void transformCollection(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
+    public static <ModelT, DtoT> void transformCollection(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException, InstantiationException, NoSuchFieldException {
 
         Object value = modelField.get(model);
 
@@ -246,10 +251,10 @@ public class ModelMapper {
 
         Collection modelValues = (Collection) modelField.get(model);
         if (modelValues != null) {
-            for (Iterator iterator = modelValues.iterator(); iterator.hasNext(); ) {
+            for (Iterator iterator = modelValues.iterator(); iterator.hasNext();) {
                 Object modelCollectionValue = iterator.next();
                 Object dtoCollectionValue = null;
-//                dtoCollection.add(transform(collectionValue, dtoFieldTypeClass.newInstance()));
+                //dtoCollection.add(transform(collectionValue, dtoFieldTypeClass.newInstance()));
 
                 if (fieldAddress != null) {
                     dtoCollectionValue = extractDeeperValue(fieldAddress, modelCollectionValue);
@@ -266,7 +271,8 @@ public class ModelMapper {
 
 
     @SuppressWarnings("Duplicates")
-    public static <ModelT, DtoT> void applyCollection(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
+    public static <ModelT, DtoT> void applyCollection(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException, InstantiationException, NoSuchFieldException {
         Object value = null;
         value = dtoField.get(dto);
 
@@ -275,7 +281,8 @@ public class ModelMapper {
                 modelField.set(model, value);
                 return;
             } else {
-                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model + "; field: " + modelField.getName());
+                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model
+                        + "; field: " + modelField.getName());
             }
         }
 
@@ -317,7 +324,7 @@ public class ModelMapper {
 
         Collection dtoValues = (Collection) dtoField.get(dto);
         if (dtoValues != null) {
-            for (Iterator iterator = dtoValues.iterator(); iterator.hasNext(); ) {
+            for (Iterator iterator = dtoValues.iterator(); iterator.hasNext();) {
                 Object dtoCollectionValue = iterator.next();
                 Object modelCollectionValue = null;
 
@@ -335,7 +342,8 @@ public class ModelMapper {
     }
 
 
-    public static <ModelT, DtoT> void transformMap(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
+    public static <ModelT, DtoT> void transformMap(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException, InstantiationException, NoSuchFieldException {
         Map value = (Map) modelField.get(model);
         Map dtoValue = null;
 
@@ -367,11 +375,13 @@ public class ModelMapper {
         if (dtoKeyFieldName == null && dtoValueFieldName == null) { // Deeper field extraction is not required
             // assigning model's value as-is
             if (!dtoKeyTypeClass.isAssignableFrom(modelKeyTypeClass)) {
-                throw new IllegalStateException("Cannot assign Map keys from Model's type " + modelKeyTypeClass + " to DTO's type " + dtoKeyTypeClass);
+                throw new IllegalStateException("Cannot assign Map keys from Model's type " + modelKeyTypeClass
+                        + " to DTO's type " + dtoKeyTypeClass);
             }
 
             if (!dtoValueTypeClass.isAssignableFrom(modelValueTypeClass)) {
-                throw new IllegalStateException("Cannot assign Map values from Model's type " + modelValueTypeClass + " to DTO's type " + dtoValueTypeClass);
+                throw new IllegalStateException("Cannot assign Map values from Model's type " + modelValueTypeClass
+                        + " to DTO's type " + dtoValueTypeClass);
             }
             dtoField.set(dto, value);
             return;
@@ -389,7 +399,7 @@ public class ModelMapper {
             valueFieldAddress = dtoValueFieldName.split("\\.");
         }
 
-        for (Iterator entryIter = value.entrySet().iterator(); entryIter.hasNext(); ) {
+        for (Iterator entryIter = value.entrySet().iterator(); entryIter.hasNext();) {
             Map.Entry entry = (Map.Entry) entryIter.next();
 
             Object modelKey = entry.getKey();
@@ -413,14 +423,16 @@ public class ModelMapper {
             if (!dtoKeyTypeClass.isAssignableFrom(dtoMapKey.getClass())) {
                 dtoMapKey = transform(dtoMapKey, dtoKeyTypeClass.newInstance());
                 if (!dtoKeyTypeClass.isAssignableFrom(dtoMapKey.getClass())) {
-                    throw new IllegalStateException("Cannot assign Map keys: incompatible types " + dtoMapKey.getClass() + " and " + dtoKeyTypeClass);
+                    throw new IllegalStateException("Cannot assign Map keys: incompatible types " + dtoMapKey.getClass()
+                            + " and " + dtoKeyTypeClass);
                 }
             }
 
             if (!dtoValueTypeClass.isAssignableFrom(dtoMapValue.getClass())) {
                 dtoMapValue = transform(dtoMapValue, dtoValueTypeClass.newInstance());
                 if (!dtoValueTypeClass.isAssignableFrom(dtoMapValue.getClass())) {
-                    throw new IllegalStateException("Cannot assign Map values: incompatible types " + dtoMapValue.getClass() + " and " + dtoValueTypeClass);
+                    throw new IllegalStateException("Cannot assign Map values: incompatible types " + dtoMapValue.getClass()
+                            + " and " + dtoValueTypeClass);
                 }
             }
 
@@ -431,7 +443,8 @@ public class ModelMapper {
 
 
     @SuppressWarnings("Duplicates")
-    public static <ModelT, DtoT> void applyMap(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation) throws IllegalAccessException, InstantiationException, NoSuchFieldException {
+    public static <ModelT, DtoT> void applyMap(ModelT model, DtoT dto, Field modelField, Field dtoField, ModelTransform annotation)
+            throws IllegalAccessException, InstantiationException, NoSuchFieldException {
         Map value = null;
         value = (Map) dtoField.get(dto);
 
@@ -440,7 +453,8 @@ public class ModelMapper {
                 modelField.set(model, value);
                 return;
             } else {
-                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model + "; field: " + modelField.getName());
+                throw new NullPointerException("NULL value is not allowed by Model Mapping rule. Object: " + model + "; field: "
+                        + modelField.getName());
             }
         }
 
@@ -474,11 +488,13 @@ public class ModelMapper {
             // fixme transform map key/value before attempting to assign rather than throwing immediatelly
             // assigning model's value as-is
             if (!modelKeyTypeClass.isAssignableFrom(dtoKeyTypeClass)) {
-                throw new IllegalStateException("Cannot assign Map keys from DTO's type " + dtoKeyTypeClass + " to Model's type " + modelKeyTypeClass);
+                throw new IllegalStateException("Cannot assign Map keys from DTO's type " + dtoKeyTypeClass
+                        + " to Model's type " + modelKeyTypeClass);
             }
 
             if (!modelValueTypeClass.isAssignableFrom(dtoKeyTypeClass)) {
-                throw new IllegalStateException("Cannot assign Map values from DTO's type " + dtoKeyTypeClass + " to Model's type " + modelValueTypeClass);
+                throw new IllegalStateException("Cannot assign Map values from DTO's type " + dtoKeyTypeClass
+                        + " to Model's type " + modelValueTypeClass);
             }
             modelField.set(model, value);
             return;
@@ -497,7 +513,7 @@ public class ModelMapper {
             valueFieldAddress = dtoValueFieldName.split("\\.");
         }
 
-        for (Iterator entryIter = value.entrySet().iterator(); entryIter.hasNext(); ) {
+        for (Iterator entryIter = value.entrySet().iterator(); entryIter.hasNext();) {
             Map.Entry entry = (Map.Entry) entryIter.next();
 
             Object dtoMapKey = entry.getKey();
@@ -521,14 +537,16 @@ public class ModelMapper {
             if (!modelKeyTypeClass.isAssignableFrom(modelMapKey.getClass())) {
                 modelMapKey = apply(modelMapKey, modelKeyTypeClass.newInstance());
                 if (!modelKeyTypeClass.isAssignableFrom(modelMapKey.getClass())) {
-                    throw new IllegalStateException("Cannot assign Map keys: incompatible types " + modelMapKey.getClass() + " and " + modelKeyTypeClass);
+                    throw new IllegalStateException("Cannot assign Map keys: incompatible types "
+                            + modelMapKey.getClass() + " and " + modelKeyTypeClass);
                 }
             }
 
             if (!modelValueTypeClass.isAssignableFrom(modelMapValue.getClass())) {
                 modelMapValue = apply(modelMapValue, modelValueTypeClass.newInstance());
                 if (!modelValueTypeClass.isAssignableFrom(modelMapValue.getClass())) {
-                    throw new IllegalStateException("Cannot assign Map values: incompatible types " + modelMapValue.getClass() + " and " + modelValueTypeClass);
+                    throw new IllegalStateException("Cannot assign Map values: incompatible types "
+                            + modelMapValue.getClass() + " and " + modelValueTypeClass);
                 }
             }
 
@@ -549,7 +567,7 @@ public class ModelMapper {
         if (fieldAddress.length > 0) { // [player.]address.street.name
             deeperField = object.getClass().getDeclaredField(fieldAddress[0]); // Map<Player, Score>; Player.address.class
             deeperField.setAccessible(true);
-            deeperValue = deeperField.get(object);// Player.address (value)
+            deeperValue = deeperField.get(object); // Player.address (value)
 
             for (int i = 1; i < fieldAddress.length; i++) { // e.g. "street.name"
                 String fieldName = fieldAddress[i]; // "street"
@@ -569,7 +587,8 @@ public class ModelMapper {
     }
 
 
-    public static Object createDeeperValue(String[] fieldAddress, Class modelType, Object value) throws NoSuchFieldException, IllegalAccessException, InstantiationException {
+    public static Object createDeeperValue(String[] fieldAddress, Class modelType, Object value)
+            throws NoSuchFieldException, IllegalAccessException, InstantiationException {
         Object deeperValueRoot = null;
         Object deeperValueLast = null;
 
@@ -582,10 +601,10 @@ public class ModelMapper {
 
         lastPathField = modelType.getDeclaredField(fieldAddress[0]); // e.g. Player.id
         lastPathField.setAccessible(true);
-//        deeperValueRoot = lastPathField.getType().newInstance();
+        //deeperValueRoot = lastPathField.getType().newInstance();
         deeperValueLast = deeperValueRoot;
 
-        for (int i=1; i<fieldAddress.length; i++) {
+        for (int i = 1; i < fieldAddress.length; i++) {
             lastPathField = lastPathField.getType().getDeclaredField(fieldAddress[i]);
             lastPathField.setAccessible(true);
             if (i < fieldAddress.length) {
@@ -685,7 +704,7 @@ public class ModelMapper {
 
 
             } catch (NullPointerException npe) {
-
+                // expected
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 continue; // return;//?

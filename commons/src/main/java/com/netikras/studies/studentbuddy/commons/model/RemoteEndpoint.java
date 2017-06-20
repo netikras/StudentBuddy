@@ -5,7 +5,11 @@ import com.netikras.studies.studentbuddy.commons.tools.AuthenticationDetail;
 import com.netikras.studies.studentbuddy.commons.tools.http.HttpRequest;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class RemoteEndpoint implements Identifiable, Serializable, Cloneable {
 
@@ -250,8 +254,9 @@ public class RemoteEndpoint implements Identifiable, Serializable, Cloneable {
 
         urlStringBuilder.append(getProtocol()).append("://");
         urlStringBuilder.append(getAddress());
-        if (getPort() > 0)
+        if (getPort() > 0) {
             urlStringBuilder.append(":").append(getPort());
+        }
         urlStringBuilder.append(getRootUrl());
         urlStringBuilder.append(getBaseUrl());
 

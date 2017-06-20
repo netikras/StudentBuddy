@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.commons.tools.http;
 
 
+import com.netikras.studies.studentbuddy.commons.model.RemoteEndpoint;
 import com.netikras.studies.studentbuddy.commons.tools.AuthenticationDetail;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.Map;
  */
 public class HttpRequest<T> {
 
-    public static enum HttpMethods {
+    public enum HttpMethods {
         GET,
         POST,
         PUT,
@@ -24,20 +25,25 @@ public class HttpRequest<T> {
         TRACE
     }
 
-    public static enum Protocol {
-        HTTP("http"),
-        HTTPS("https");
+    public enum Protocol {
+        HTTP("http", 80),
+        HTTPS("https", 443);
 
         private String value;
+        private int port;
 
-        Protocol(String value) {
+        Protocol(String value, int port) {
             this.value = value;
+            this.port = port;
         }
 
         public String getvalue() {
             return this.value;
         }
 
+        public int getPort() {
+            return this.port;
+        }
     }
 
 
@@ -115,11 +121,16 @@ public class HttpRequest<T> {
         return getHeaders().get(name);
     }
 
+    public Map<String, List<String>> getHeaders() {
+        return this.headers;
+    }
+
+
     public HttpRequest addParam(String name, String value) {
         String allowedParamRegex = "^[a-zA-Z0-9_-]*$";
         String disallowedParamRegex = "^.*(&|=).*$";
 
-//        if (name.matches(allowedParamRegex) && value.matches(allowedParamRegex)) {
+        //if (name.matches(allowedParamRegex) && value.matches(allowedParamRegex)) {
         if (name.matches(disallowedParamRegex) || value.matches(disallowedParamRegex)) {
             throw new IllegalArgumentException(String.format("Illegal parameters: name[%s], value[%s]", name, value));
         } else {
@@ -129,9 +140,6 @@ public class HttpRequest<T> {
         return this;
     }
 
-    public Map<String, List<String>> getHeaders() {
-        return this.headers;
-    }
 
     public Map<String, String> getParams() {
         return this.params;
@@ -321,16 +329,17 @@ public class HttpRequest<T> {
 
     public String applyUrlProperties(String target) {
         Map<String, String> variables = getVariables();
+        String targetValue = target;
 
         for (Map.Entry<String, String> entry : variables.entrySet()) {
             if (entry == null) continue;
             if (entry.getKey() == null || entry.getKey().isEmpty()) continue;
             if (entry.getValue() == null || entry.getValue().isEmpty()) continue;
 
-            target = applyUrlProperty(target, entry.getKey(), entry.getValue());
+            targetValue = applyUrlProperty(target, entry.getKey(), entry.getValue());
         }
 
-        return target;
+        return targetValue;
     }
 
     public List<String> getMissingVariables() {
@@ -438,7 +447,8 @@ public class HttpRequest<T> {
                 substr = substr.substring(pos1 + 1);
                 pos2 = substr.indexOf("}");
                 if (pos2 < 1) {
-                    throw new IndexOutOfBoundsException(String.format("Missing closing bracket for PathVariable as pos: %d. Substring: %s", pos2, substr));
+                    throw new IndexOutOfBoundsException(
+                            String.format("Missing closing bracket for PathVariable as pos: %d. Substring: %s", pos2, substr));
                 }
 
                 value = substr.substring(0, pos2);

@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.commons.exception.handler;
 
 import com.netikras.studies.studentbuddy.commons.exception.ErrorBody;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudException;
+import com.netikras.studies.studentbuddy.commons.tools.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.HandlerMapping;
 
@@ -27,7 +28,7 @@ public abstract class AbstractStudBudExceptionHandler {
 
         int defaultStatusCode = getDefaultStatusCode();
 
-        if (defaultStatusCode < 100) defaultStatusCode = 500;
+        if (defaultStatusCode < 100) defaultStatusCode = HttpStatus.INTERNAL_SERVER_ERROR.getCode();
 
         response.setStatus(errorBody.getStatus() < 100 ? defaultStatusCode : errorBody.getStatus());
         System.out.println("Returning errorBody: " + errorBody);

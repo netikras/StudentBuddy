@@ -14,13 +14,16 @@ import java.util.Properties;
 /**
  * Created by netikras on 17.3.16.
  */
-public class PropertiesAssistant {
+public final class PropertiesAssistant {
 
-    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     public static final String DEFAULT_INIT_PROPERTIES_CLASSPATH_FILENAME = "init.properties";
     public static final String DEFAULT_INIT_FILE_PROPERTY_NAME = "inittab";
 
+
+    private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    private PropertiesAssistant() { }
 
     /**
      * If prefix is non-null value, method will make sure its last symbol is '.' (a dot).<br/>
@@ -28,14 +31,16 @@ public class PropertiesAssistant {
      * <b>Load Order</b><br/>
      * <pre>
      *     1. If initialSource is not given, System properties will be used.
-     *     2. Will look up for a property called '{@value #DEFAULT_INIT_FILE_PROPERTY_NAME}' (possibly prefixed if prefix is non-null)
+     *     2. Will look up for a property called '{@value #DEFAULT_INIT_FILE_PROPERTY_NAME}' (possibly prefixed
+     *          if prefix is non-null)
      *     3. If (2) property value is not null, the following places will be scouted for that properties file:
      *       a) if value is preceded by 'file://' -- will only try to find the file in filesystem under given path
      *       b) if value is preceded by 'classpath://' -- will only try to find the file in classpath under given path
      *       c) if none of the above is the case -- will try to find that file automatically (whichever succeeds first):
      *         a.1. in classpath
      *         a.2. in filesystem
-     *     4. if (2) property is not set or value is null, will try to load a file called '{@value #DEFAULT_INIT_PROPERTIES_CLASSPATH_FILENAME}' from classpath
+     *     4. if (2) property is not set or value is null, will try to load a file called
+     *          '{@value #DEFAULT_INIT_PROPERTIES_CLASSPATH_FILENAME}' from classpath
      * </pre>
      *
      * @param initialSource
@@ -50,8 +55,9 @@ public class PropertiesAssistant {
         String inittabPropertyName = DEFAULT_INIT_FILE_PROPERTY_NAME;
 
         if (prefix != null) {
-            if (!prefix.endsWith(".")) prefix += ".";
-            inittabPropertyName = prefix + inittabPropertyName;
+            String prefixValue = prefix;
+            if (!prefix.endsWith(".")) prefixValue += ".";
+            inittabPropertyName = prefixValue + inittabPropertyName;
         }
 
         value = sysProps.getProperty(inittabPropertyName); // the file all the configurations are stored in
@@ -61,9 +67,7 @@ public class PropertiesAssistant {
                 result = loadPropertiesFromFile(value);
             } else if (value.startsWith("classpath://")) {
                 result = loadPropertiesFromClasspath(value);
-            }
-            // Source type not specified. Trying to load from classpath first and then from filesystem.
-            else {
+            } else { // Source type not specified. Trying to load from classpath first and then from filesystem.
                 result = loadPropertiesFromClasspath(value);
 
                 if (result == null) {
@@ -93,9 +97,10 @@ public class PropertiesAssistant {
         Properties result = new Properties();
         String key;
         String value;
+        String prefixValue = prefix;
 
-        if (prefix != null && ! prefix.endsWith(".")) {
-            prefix += ".";
+        if (prefixValue != null && !prefixValue.endsWith(".")) {
+            prefixValue += ".";
         }
 
         if (properties != null) {
@@ -103,10 +108,10 @@ public class PropertiesAssistant {
                 if (property != null) {
                     key = (String) property.getKey();
                     if (key != null && !key.isEmpty()) {
-                        if (key.startsWith(prefix)) {
+                        if (key.startsWith(prefixValue)) {
                             value = (String) property.getValue();
                             if (removePrefix) {
-                                result.setProperty(key.substring(prefix.length()), value);
+                                result.setProperty(key.substring(prefixValue.length()), value);
                             } else {
                                 result.setProperty(key, value);
                             }

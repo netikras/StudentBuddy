@@ -20,10 +20,11 @@ import java.util.Collection;
 /**
  * Created by netikras on 16.11.21.
  */
-public class RestService {
+public final class RestService {
 
     private static JSONService jsonService = new JSONServiceImpl();
 
+    private RestService() { }
 
     @SuppressWarnings("unchecked")
     public static HttpResponse sendRequest(HttpRequest requestData) {
@@ -98,8 +99,8 @@ public class RestService {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ((SimpleClientHttpRequestFactory)restTemplate.getRequestFactory()).setConnectTimeout(requestData.getConnectTimeout());
-        ((SimpleClientHttpRequestFactory)restTemplate.getRequestFactory()).setReadTimeout(requestData.getReadTimeout());
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(requestData.getConnectTimeout());
+        ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(requestData.getReadTimeout());
 
 
         return restTemplate;

@@ -5,13 +5,13 @@ package com.netikras.studies.studentbuddy.commons.exception;
  */
 public class ErrorBody {
 
-    int status = 500;
-    int code = 0;
-    String message1 = "";
-    String message2 = "";
-    String developerMessage = "";
-    String causedBy = "";
-    String url = "";
+    private int status = 500;
+    private int code = 0;
+    private String message1 = "";
+    private String message2 = "";
+    private String developerMessage = "";
+    private String causedBy = "";
+    private String url = "";
 
 
     public int getStatus() {

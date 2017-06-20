@@ -5,17 +5,18 @@ import java.util.List;
 /**
  * Created by netikras on 17.3.14.
  */
-public class HttpCtlFlags {
+public final class HttpCtlFlags {
 
     public static final String RAW_VALUE = "HTTPCTL_raw_value";
 
+    private HttpCtlFlags() {}
 
     @SuppressWarnings("Duplicates")
     public static String getCtlValue(HttpResponse response, String ctlFlag) {
         List<String> headersList;
         String value = null;
 
-        if (ctlFlag != null && ! ctlFlag.isEmpty()) {
+        if (ctlFlag != null && !ctlFlag.isEmpty()) {
             if (response != null) {
                 headersList = response.getHeaders(ctlFlag);
                 if (headersList != null) {
@@ -36,7 +37,7 @@ public class HttpCtlFlags {
         List<String> headersList;
         String value = null;
 
-        if (ctlFlag != null && ! ctlFlag.isEmpty()) {
+        if (ctlFlag != null && !ctlFlag.isEmpty()) {
             if (request != null) {
                 headersList = request.getHeaders(ctlFlag);
                 if (headersList != null) {

@@ -42,7 +42,8 @@ public class StudBudException extends Exception implements StudBudExceptionBase 
         setProbableCause(probableCause);
     }
 
-    public StudBudException(String message1, String message2, int statusCode, String probableCause, String url, String developerMessage, int errorCode) {
+    public StudBudException(String message1, String message2, int statusCode, String probableCause, String url,
+                            String developerMessage, int errorCode) {
         setMessage1(message1);
         setMessage2(message2);
         setStatusCode(statusCode);
