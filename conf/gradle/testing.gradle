@@ -1,0 +1,18 @@
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    testCompile group: 'junit', name: 'junit', version: "${junitVersion}"
+
+    // https://mvnrepository.com/artifact/org.mockito/mockito-core
+    compile group: 'org.mockito', name: 'mockito-core', version: "${mockitoVersion}"
+
+    // https://mvnrepository.com/artifact/org.springframework/spring-test
+    compile group: 'org.springframework', name: 'spring-test', version: "${springVersion}"
+
+
+}

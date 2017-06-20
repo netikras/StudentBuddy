@@ -1,0 +1,5 @@
+apply from: "$rootProject.rootDir/conf/global.gradle"
+
+loadDep "h2"
+loadDep "jackson"
+loadDep "spring-aop"

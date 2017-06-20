@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "${databindVersion}"
+    // https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl
+//    compile group: 'org.codehaus.jackson', name: 'jackson-mapper-asl', version: "${mapperVersion}"
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jaFckson-core
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "${databindVersion}"
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: "${databindVersion}"
+
+
+}

@@ -1,0 +1,19 @@
+ext.h2Version = '1.4.193'
+
+ext.mapperVersion = '1.9.13'
+ext.databindVersion = '2.8.7'
+
+ext.hibernateVersion = '5.2.5.Final'
+
+ext.slf4jVersion = '1.7.21'
+ext.log4jVersion = '1.2.17.redhat-1'
+
+ext.servletVersion = '3.0.1'
+
+ext.springVersion = '4.3.7.RELEASE'
+ext.aspectjVersion = '1.8.10'
+
+ext.mockitoVersion = '2.2.11'
+ext.junitVersion = '4.12'
+
+

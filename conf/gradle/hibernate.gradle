@@ -1,0 +1,15 @@
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-core
+    compile group: 'org.hibernate', name: 'hibernate-core', version: "${hibernateVersion}"
+
+    // https://mvnrepository.com/artifact/org.hibernate/hibernate-gradle-plugin
+    compile group: 'org.hibernate', name: 'hibernate-gradle-plugin', version: "${hibernateVersion}"
+
+}
+

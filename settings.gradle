@@ -1,0 +1,10 @@
+rootProject.name = 'student-buddy'
+include 'core'
+include 'core:datamodel'
+findProject(':core:datamodel')?.name = 'datamodel'
+include 'core:datamodel:data-private'
+findProject(':core:datamodel:data-private')?.name = 'data-private'
+include 'core:datamodel:data-public'
+findProject(':core:datamodel:data-public')?.name = 'data-public'
+include 'commons'
+

@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply from: "$rootProject.rootDir/conf/gradle/versions.gradle"
+
+group 'studies'
+version '1.0'
+
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':commons')
+}
+
+ext.loadDep = { String name ->
+    apply from: "$rootProject.rootDir/conf/gradle/" + name + ".gradle"
+}
