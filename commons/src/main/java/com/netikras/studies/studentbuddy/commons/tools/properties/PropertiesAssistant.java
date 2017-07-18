@@ -43,9 +43,13 @@ public final class PropertiesAssistant {
      *          '{@value #DEFAULT_INIT_PROPERTIES_CLASSPATH_FILENAME}' from classpath
      * </pre>
      *
-     * @param initialSource
-     * @param prefix
-     * @return
+     * @param initialSource main source of init properties. The following entry might be listed there: {@value #DEFAULT_INIT_FILE_PROPERTY_NAME}.
+     *                      <br>It tells where to find a file containing this app properties
+     *                      (e.g. 'java -D {@value #DEFAULT_INIT_FILE_PROPERTY_NAME}=file:///tmp/init.properties -jar myApp.jar ').
+     *                      <br/>Possible prefixed for {@value #DEFAULT_INIT_FILE_PROPERTY_NAME}: 'file://', 'classpath://'.
+     *                      <br/>If property {@value #DEFAULT_INIT_FILE_PROPERTY_NAME} is not defined {@code initialSource} will be used as origin.
+     * @param prefix        ignored if null. If non-null only properties having that prefix will be extracted.
+     * @return extracted properties
      */
     public static Properties loadInitProperties(Properties initialSource, String prefix) throws StudBudException {
         Properties result;

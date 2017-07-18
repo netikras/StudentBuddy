@@ -25,7 +25,7 @@
 
         <module name="MagicNumber">
             <property name="tokens" value="NUM_DOUBLE, NUM_FLOAT, NUM_INT, NUM_LONG"/>
-            <property name="ignoreNumbers" value="0, 0.5, 1, 2, 100, 1000, -1, 80"/>
+            <property name="ignoreNumbers" value="0, 0.5, 1, 2, 100, 1000, -1, 80, 32, 64, 128, 256, 512, 1024, 2048, 4096"/>
             <property name="ignoreFieldDeclaration" value="true"/>
             <property name="ignoreAnnotation" value="true"/>
         </module>

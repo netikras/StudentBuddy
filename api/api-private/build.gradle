@@ -1,5 +1,6 @@
 apply from: "$rootProject.rootDir/conf/global.gradle"
 
-dependencies {
+loadDep "servlet"
 
-}
+loadProj ':api:api-public'
+loadProj ':core:datamodel:data-private'

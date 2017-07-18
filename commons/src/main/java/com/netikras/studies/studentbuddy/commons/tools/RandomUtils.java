@@ -22,8 +22,7 @@ public final class RandomUtils {
 
     private static Random rand = new Random();
 
-    private RandomUtils() {
-    }
+    private RandomUtils() {}
 
     public static int nextInt() {
         return rand.nextInt();

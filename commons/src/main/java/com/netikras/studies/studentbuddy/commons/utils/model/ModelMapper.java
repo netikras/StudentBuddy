@@ -1,3 +1,19 @@
+/**
+ * Copyright (c) 2017 Darius Juodokas
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.netikras.studies.studentbuddy.commons.utils.model;
 
 import java.lang.reflect.Field;
@@ -11,13 +27,93 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 /**
- * Created by netikras on 17.5.15.
+ * Maps object fields to fields of other object. Originally this util has been developed for converting datamodel to DTO without having to
+ * <br/> write all the transformers (to save a lot of code).
+ * <br/>Model can be transformed to target (DTO) using {@link #transform(Object, Object)} method.
+ * <br/>Mapping DTO back to Model can be done with {@link #apply(Object, Object)}. Worth mentioning that the latter is designed for
+ * updating the model with data received via DTO. That being said certain Model fields can be excluded from being updated.
+ * <br/>Use {@link ModelTransform} annotation over Model fields to configure them. This util is Model-oriented so no matter how many different
+ * DTOs are there, all of them will have to follow rules configured in Model.
+ * <p>Example:
+ * <pre>
+ * {@code
+ *  / ** User model class * /
+ * public class User {
+ *
+ *    @literal @ModelTransform(
+ *      dtoFieldName = "id",
+ *      dtoUpdatable = false, // we don't want users to be able their account' IDs
+ *      dtoAllowNull = false
+ *     )
+ *     private long id;
+ *
+ *    @literal @ModelTransform(
+ *      dtoFieldName = "username", // UserInfoDto.username :String
+ *      dtoUpdatable = true, // a UserCreationDto might have this field hence the model would inherit its value.
+ *      dtoAllowNull = false // username is mandatory
+ *     )
+ *     private String name;
+ *
+ *     // not exposing password in any DTO
+ *     private String password;
+ *
+ *    @literal @ModelTransform(
+ *      dtoFieldName = "roles", // UserInfoDto.roles :List<String>
+ *      dtoValueExtractField = "name", // extract only role names
+ *      dtoUpdatable = false, // UserUpdateDto (user via "Account settings" section) will not be able to change its role
+ *      dtoAllowNull = true // user might have no roles (guest?)
+ *     )
+ *     private List<Role> roles;
+ *
+ *    @literal @ModelTransform(
+ *      dtoFieldName = "fullAddress", // UserInfoDto.address :AddressEntry
+ *      dtoValueExtractField = "ownAddress.fullAddress", // extract only this user's address from the book
+ *                                                       // and take only fullAddress :AddressEntry value
+ *      dtoUpdatable = true,
+ *      dtoAllowNull = false
+ *     )
+ *     private AddressBook addresses;
+ *
+ *     // getters and setters etc.
+ * }
+ *
+ *
+ *
+ * ////////////////////////////////////////
+ * // DTOs
+ * protected class UserInfoDto {
+ *     private Long id;
+ *     private String username;
+ *     private List<String> roles = new ArrayList();
+ *     private AddressEntry fullAddress;
+ *     // getters, setters, etc.
+ * }
+ *
+ * protected class UserUpdateDto {
+ *     private Long id;
+ *     private String username;
+ *     private AddressEntry fullAddress;
+ *     // getters, setters, etc.
+ * }
+ *
+ *
+ *
+ * //////////////////////////////////////////
+ * // Mapping
+ * public void work() {
+ *     User user = dao.getUser(id);
+ *     UserUpdateDto updateDto = webService.getUpdatedUser(id);
+ *     UserInfoDto infoDto = ModelMapper.transform(user, new UserInfoDto());
+ *     User updatedUser = ModelMapper.apply(new User(), updateDto);
+ * }
+ * }
+ * </pre>
+ * <p>Created by netikras on 17.5.15.
  * <p>
  */
 public final class ModelMapper {
 
-    private ModelMapper() {
-    }
+    private ModelMapper() {}
 
     /**
      * Transforms Model to DTO object. Both parameters should be non-null.<br/>
@@ -718,21 +814,5 @@ public final class ModelMapper {
 
         return model;
     }
-
-
-    /**
-     * Applies all the values back from DTO to Model respecting UPDATABLE value set
-     *
-     * @param model Model object instructing the mapping. Values will be applied to it
-     * @param dto   DTO object containing values that should be set to Model's fields
-     * @return Model object with applied values from DTO
-     * @throws IllegalStateException - various possible reasons. Basically all of them mean that @ModelTransform <br/>
-     *                               has some errors or its values do not reflect actual Model/DTO fields. <br/>
-     *                               See exception message to figure out the cause for particular cases
-     */
-    public static <Dto, Model> Model applyUpdate(Model model, Dto dto) {
-        return null;
-    }
-
 
 }

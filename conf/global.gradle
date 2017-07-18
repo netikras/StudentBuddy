@@ -11,11 +11,19 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
-dependencies {
-    compile project(':commons')
+if (project.name != "commons") {
+    dependencies {
+        compile project(':commons')
+    }
 }
 
 ext.loadDep = { String name ->
     apply from: "$rootProject.rootDir/conf/gradle/" + name + ".gradle"
+}
+
+
+ext.loadProj = { String name ->
+    dependencies {
+        compile project(name)
+    }
 }

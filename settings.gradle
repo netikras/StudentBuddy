@@ -12,4 +12,6 @@ include 'api:api-private'
 findProject(':api:api-private')?.name = 'api-private'
 include 'api:api-public'
 findProject(':api:api-public')?.name = 'api-public'
+include 'core:datamodel:data-private:data-api'
+findProject(':core:datamodel:data-private:data-api')?.name = 'data-api'
 
