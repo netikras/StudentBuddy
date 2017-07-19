@@ -1,154 +1,154 @@
 <!DOCTYPE module PUBLIC
         "-//Puppy Crawl//DTD Check Configuration 1.3//EN"
         "http://checkstyle.sourceforge.net/dtds/configuration_1_3.dtd">
-<module name="Checker">
-    <module name="TreeWalker">
+<module title="Checker">
+    <module title="TreeWalker">
 
-        <module name="AvoidStarImport"/>
+        <module title="AvoidStarImport"/>
 
-        <module name="EmptyBlock"/>
+        <module title="EmptyBlock"/>
 
-        <module name="DefaultComesLast">
-            <property name="skipIfLastAndSharedWithCase" value="true"/>
+        <module title="DefaultComesLast">
+            <property title="skipIfLastAndSharedWithCase" value="true"/>
         </module>
 
-        <module name="EmptyStatement"/>
+        <module title="EmptyStatement"/>
 
-        <module name="EqualsAvoidNull"/>
+        <module title="EqualsAvoidNull"/>
 
-        <module name="InnerAssignment"/>
+        <module title="InnerAssignment"/>
 
-        <module name="DeclarationOrder">
-            <property name="ignoreConstructors" value="false"/>
-            <property name="ignoreModifiers" value="false"/>
+        <module title="DeclarationOrder">
+            <property title="ignoreConstructors" value="false"/>
+            <property title="ignoreModifiers" value="false"/>
         </module>
 
-        <module name="MagicNumber">
-            <property name="tokens" value="NUM_DOUBLE, NUM_FLOAT, NUM_INT, NUM_LONG"/>
-            <property name="ignoreNumbers" value="0, 0.5, 1, 2, 100, 1000, -1, 80, 32, 64, 128, 256, 512, 1024, 2048, 4096"/>
-            <property name="ignoreFieldDeclaration" value="true"/>
-            <property name="ignoreAnnotation" value="true"/>
+        <module title="MagicNumber">
+            <property title="tokens" value="NUM_DOUBLE, NUM_FLOAT, NUM_INT, NUM_LONG"/>
+            <property title="ignoreNumbers" value="0, 0.5, 1, 2, 100, 1000, -1, 80, 32, 64, 128, 256, 512, 1024, 2048, 4096"/>
+            <property title="ignoreFieldDeclaration" value="true"/>
+            <property title="ignoreAnnotation" value="true"/>
         </module>
 
-        <module name="OneStatementPerLine"/>
+        <module title="OneStatementPerLine"/>
 
-        <module name="OverloadMethodsDeclarationOrder"/>
+        <module title="OverloadMethodsDeclarationOrder"/>
 
-        <module name="PackageDeclaration">
-            <property name="matchDirectoryStructure" value="true"/>
+        <module title="PackageDeclaration">
+            <property title="matchDirectoryStructure" value="true"/>
         </module>
 
-        <module name="ParameterAssignment"/>
+        <module title="ParameterAssignment"/>
 
-        <module name="SimplifyBooleanExpression"/>
+        <module title="SimplifyBooleanExpression"/>
 
-        <module name="StringLiteralEquality"/>
+        <module title="StringLiteralEquality"/>
 
-        <module name="SuperClone"/>
+        <module title="SuperClone"/>
 
-        <module name="SuperFinalize"/>
+        <module title="SuperFinalize"/>
 
-        <module name="UnnecessaryParentheses"/>
+        <module title="UnnecessaryParentheses"/>
 
 
-        <module name="AnnotationLocation">
-            <property name="allowSamelineMultipleAnnotations" value="false"/>
-            <property name="allowSamelineSingleParameterlessAnnotation" value="false"/>
-            <property name="allowSamelineParameterizedAnnotation" value="false"/>
+        <module title="AnnotationLocation">
+            <property title="allowSamelineMultipleAnnotations" value="false"/>
+            <property title="allowSamelineSingleParameterlessAnnotation" value="false"/>
+            <property title="allowSamelineParameterizedAnnotation" value="false"/>
         </module>
 
-        <module name="MissingDeprecated">
-            <property name="skipNoJavadoc" value="false"/>
+        <module title="MissingDeprecated">
+            <property title="skipNoJavadoc" value="false"/>
         </module>
 
-        <module name="AvoidNestedBlocks">
-            <property name="allowInSwitchCase" value="false"/>
+        <module title="AvoidNestedBlocks">
+            <property title="allowInSwitchCase" value="false"/>
         </module>
 
-        <module name="EmptyBlock">
-            <property name="option" value="text"/>
+        <module title="EmptyBlock">
+            <property title="option" value="text"/>
         </module>
 
-        <module name="EmptyCatchBlock">
-            <property name="commentFormat" value="expected|Expected"/>
+        <module title="EmptyCatchBlock">
+            <property title="commentFormat" value="expected|Expected"/>
         </module>
 
-        <module name="LeftCurly">
-            <property name="option" value="eol"/>
-            <property name="ignoreEnums" value="false"/>
+        <module title="LeftCurly">
+            <property title="option" value="eol"/>
+            <property title="ignoreEnums" value="false"/>
         </module>
 
-        <module name="NeedBraces">
-            <property name="allowSingleLineStatement" value="true"/>
-            <property name="allowEmptyLoopBody" value="true"/>
+        <module title="NeedBraces">
+            <property title="allowSingleLineStatement" value="true"/>
+            <property title="allowEmptyLoopBody" value="true"/>
         </module>
 
-        <module name="RightCurly">
-            <property name="option" value="same"/>
+        <module title="RightCurly">
+            <property title="option" value="same"/>
         </module>
 
 
-        <module name="HideUtilityClassConstructor"/>
+        <module title="HideUtilityClassConstructor"/>
 
-        <module name="InnerTypeLast"/>
+        <module title="InnerTypeLast"/>
 
-        <module name="InterfaceIsType">
-            <property name="allowMarkerInterfaces" value="true"/>
+        <module title="InterfaceIsType">
+            <property title="allowMarkerInterfaces" value="true"/>
         </module>
 
-        <module name="OneTopLevelClass"/>
+        <module title="OneTopLevelClass"/>
 
-        <module name="VisibilityModifier">
-            <property name="allowPublicImmutableFields" value="true"/>
-            <property name="protectedAllowed" value="true"/>
+        <module title="VisibilityModifier">
+            <property title="allowPublicImmutableFields" value="true"/>
+            <property title="protectedAllowed" value="true"/>
         </module>
 
-        <!--<module name="MultipleStringLiterals">-->
-        <!--<property name="allowedDuplicates" value="1"/>-->
+        <!--<module title="MultipleStringLiterals">-->
+        <!--<property title="allowedDuplicates" value="1"/>-->
         <!--</module>-->
 
-        <module name="MultipleVariableDeclarations"/>
+        <module title="MultipleVariableDeclarations"/>
 
 
-        <module name="IllegalImport">
-            <property name="illegalPkgs" value="sun.*, dummy.*"/>
-            <property name="regexp" value="true"/>
+        <module title="IllegalImport">
+            <property title="illegalPkgs" value="sun.*, dummy.*"/>
+            <property title="regexp" value="true"/>
         </module>
 
-        <module name="RedundantImport"/>
+        <module title="RedundantImport"/>
 
-        <module name="UnusedImports"/>
-
-
-        <module name="NonEmptyAtclauseDescription"/>
+        <module title="UnusedImports"/>
 
 
-        <module name="BooleanExpressionComplexity">
-            <property name="max" value="3"/>
+        <module title="NonEmptyAtclauseDescription"/>
+
+
+        <module title="BooleanExpressionComplexity">
+            <property title="max" value="3"/>
         </module>
 
-        <module name="JavaNCSS">
-            <property name="methodMaximum" value="120"/>
+        <module title="JavaNCSS">
+            <property title="methodMaximum" value="120"/>
         </module>
 
-        <module name="ArrayTypeStyle">
-            <property name="javaStyle" value="true"/>
+        <module title="ArrayTypeStyle">
+            <property title="javaStyle" value="true"/>
         </module>
 
-        <module name="AvoidEscapedUnicodeCharacters">
-            <property name="allowEscapesForControlCharacters" value="true"/>
-            <property name="allowNonPrintableEscapes" value="true"/>
-            <property name="allowByTailComment" value="true"/>
+        <module title="AvoidEscapedUnicodeCharacters">
+            <property title="allowEscapesForControlCharacters" value="true"/>
+            <property title="allowNonPrintableEscapes" value="true"/>
+            <property title="allowByTailComment" value="true"/>
         </module>
 
-        <module name="CommentsIndentation"/>
+        <module title="CommentsIndentation"/>
 
-        <module name="TodoComment">
-            <property name="format" value="(TODO)|(FIXME)|(ALERT)"/>
+        <module title="TodoComment">
+            <property title="format" value="(TODO)|(FIXME)|(ALERT)"/>
         </module>
 
 
-        <module name="UpperEll"/>
+        <module title="UpperEll"/>
 
         <!--
 public
@@ -163,126 +163,126 @@ volatile
 synchronized
 native
 strictfp -->
-        <module name="ModifierOrder"/>
+        <module title="ModifierOrder"/>
 
-        <module name="RedundantModifier"/>
+        <module title="RedundantModifier"/>
 
 
-        <module name="AnonInnerLength">
-            <property name="max" value="60"/>
+        <module title="AnonInnerLength">
+            <property title="max" value="60"/>
         </module>
 
-        <module name="LineLength">
-            <property name="max" value="150"/>
+        <module title="LineLength">
+            <property title="max" value="150"/>
         </module>
 
-        <!--<module name="MethodCount">-->
-        <!--<property name="maxTotal" value="40"/>-->
-        <!--<property name="maxPublic" value="20"/>-->
+        <!--<module title="MethodCount">-->
+        <!--<property title="maxTotal" value="40"/>-->
+        <!--<property title="maxPublic" value="20"/>-->
         <!--</module>-->
 
-        <module name="MethodLength">
-            <property name="max" value="150"/>
+        <module title="MethodLength">
+            <property title="max" value="150"/>
         </module>
 
-        <module name="OuterTypeNumber">
-            <property name="max" value="1"/>
+        <module title="OuterTypeNumber">
+            <property title="max" value="1"/>
         </module>
 
-        <module name="ParameterNumber">
-            <property name="max" value="7"/>
-        </module>
-
-
-        <module name="EmptyForInitializerPad">
-            <property name="option" value="nospace"/>
-        </module>
-
-        <module name="EmptyForIteratorPad">
-            <property name="option" value="nospace"/>
+        <module title="ParameterNumber">
+            <property title="max" value="7"/>
         </module>
 
 
-        <module name="EmptyLineSeparator">
-            <property name="allowNoEmptyLineBetweenFields" value="true"/>
-            <property name="allowMultipleEmptyLines" value="true"/>
-            <property name="allowMultipleEmptyLinesInsideClassMembers" value="true"/>
+        <module title="EmptyForInitializerPad">
+            <property title="option" value="nospace"/>
         </module>
 
-        <module name="GenericWhitespace"/>
-
-        <module name="MethodParamPad">
-            <property name="option" value="nospace"/>
-            <property name="allowLineBreaks" value="true"/>
+        <module title="EmptyForIteratorPad">
+            <property title="option" value="nospace"/>
         </module>
 
-        <module name="NoWhitespaceAfter">
-            <property name="allowLineBreaks" value="true"/>
+
+        <module title="EmptyLineSeparator">
+            <property title="allowNoEmptyLineBetweenFields" value="true"/>
+            <property title="allowMultipleEmptyLines" value="true"/>
+            <property title="allowMultipleEmptyLinesInsideClassMembers" value="true"/>
         </module>
 
-        <module name="NoWhitespaceBefore">
-            <property name="allowLineBreaks" value="true"/>
+        <module title="GenericWhitespace"/>
+
+        <module title="MethodParamPad">
+            <property title="option" value="nospace"/>
+            <property title="allowLineBreaks" value="true"/>
         </module>
 
-        <module name="ParenPad">
-            <property name="option" value="nospace"/>
+        <module title="NoWhitespaceAfter">
+            <property title="allowLineBreaks" value="true"/>
         </module>
 
-        <module name="SeparatorWrap">
-            <property name="tokens" value="DOT, ELLIPSIS, AT, ARRAY_DECLARATOR, RBRACK, METHOD_REF"/>
-            <property name="option" value="nl"/>
+        <module title="NoWhitespaceBefore">
+            <property title="allowLineBreaks" value="true"/>
         </module>
 
-        <module name="TypecastParenPad">
-            <property name="option" value="nospace"/>
+        <module title="ParenPad">
+            <property title="option" value="nospace"/>
         </module>
 
-        <module name="WhitespaceAfter"/>
-
-        <module name="ConstantName">
-            <property name="severity" value="info"/>
-            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|log|properties|services|i18n"/>
+        <module title="SeparatorWrap">
+            <property title="tokens" value="DOT, ELLIPSIS, AT, ARRAY_DECLARATOR, RBRACK, METHOD_REF"/>
+            <property title="option" value="nl"/>
         </module>
 
-        <module name="LocalFinalVariableName"/>
-
-        <module name="LocalVariableName">
-            <property name="allowOneCharVarInForLoop" value="true"/>
+        <module title="TypecastParenPad">
+            <property title="option" value="nospace"/>
         </module>
 
-        <module name="MemberName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        <module title="WhitespaceAfter"/>
+
+        <module title="ConstantName">
+            <property title="severity" value="info"/>
+            <property title="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|log|properties|services|i18n"/>
         </module>
 
-        <module name="MethodName">
-            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
-            <property name="allowClassName" value="false"/>
+        <module title="LocalFinalVariableName"/>
+
+        <module title="LocalVariableName">
+            <property title="allowOneCharVarInForLoop" value="true"/>
         </module>
 
-        <module name="PackageName">
-            <property name="format" value="^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$"/>
+        <module title="MemberName">
+            <property title="format" value="^[a-z][a-zA-Z0-9]*$"/>
         </module>
 
-        <!--<module name="ParameterName">-->
-            <!--<property name="format" value="^[a-z][a-zA-Z0-9]*$"/>-->
-            <!--<property name="ignoreOverridden" value="false"/>-->
-            <!--<property name="accessModifiers" value="public, protected, package, private"/>-->
+        <module title="MethodName">
+            <property title="format" value="^[a-z][a-zA-Z0-9]*$"/>
+            <property title="allowClassName" value="false"/>
+        </module>
+
+        <module title="PackageName">
+            <property title="format" value="^[a-z]+(\.[a-zA-Z_][a-zA-Z0-9_]*)*$"/>
+        </module>
+
+        <!--<module title="ParameterName">-->
+            <!--<property title="format" value="^[a-z][a-zA-Z0-9]*$"/>-->
+            <!--<property title="ignoreOverridden" value="false"/>-->
+            <!--<property title="accessModifiers" value="public, protected, package, private"/>-->
         <!--</module>-->
 
-        <module name="TypeName">
-            <property name="format" value="^[A-Z][a-zA-Z0-9]*$"/>
-            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF"/>
+        <module title="TypeName">
+            <property title="format" value="^[A-Z][a-zA-Z0-9]*$"/>
+            <property title="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF"/>
         </module>
 
     </module>
 
 
-    <module name="UniqueProperties">
-        <property name="fileExtensions" value="properties"/>
+    <module title="UniqueProperties">
+        <property title="fileExtensions" value="properties"/>
     </module>
 
-    <module name="FileTabCharacter">
-        <property name="eachLine" value="false"/>
+    <module title="FileTabCharacter">
+        <property title="eachLine" value="false"/>
     </module>
 
 </module>

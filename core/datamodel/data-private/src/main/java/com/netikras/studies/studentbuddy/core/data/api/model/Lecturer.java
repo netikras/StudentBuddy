@@ -1,7 +1,14 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
  * Created by netikras on 17.6.21.
@@ -9,11 +16,58 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "lecturer")
 public class Lecturer {
+
     private String id;
 
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
     private Person person;
 
+    @Column(name = "degree")
     private String degree;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecturer")
+    private List<DisciplineLecturer> disciplineLecturers;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    public String getDegree() {
+        return degree;
+    }
+
+    public void setDegree(String degree) {
+        this.degree = degree;
+    }
+
+    public List<DisciplineLecturer> getDisciplineLecturers() {
+        return disciplineLecturers;
+    }
+
+    public void setDisciplineLecturers(List<DisciplineLecturer> disciplineLecturers) {
+        this.disciplineLecturers = disciplineLecturers;
+    }
+
+    @Override
+    public String toString() {
+        return "Lecturer{" +
+                "id='" + id + '\'' +
+                ", person=" + person +
+                ", degree='" + degree + '\'' +
+                ", disciplineLecturers=" + disciplineLecturers +
+                '}';
+    }
 }

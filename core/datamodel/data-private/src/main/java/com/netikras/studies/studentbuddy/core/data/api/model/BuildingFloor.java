@@ -1,9 +1,15 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.commons.utils.model.ModelTransform;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,23 +22,32 @@ import java.util.List;
 @Table(name = "floor")
 public class BuildingFloor {
 
-
+    @Id
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
     @Column(name = "number", nullable = false)
     private int number;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "title")
+    private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "building_sec_id")
     private BuildingSection section;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "building_id")
     private Building building;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "floor", orphanRemoval = true)
     private List<FloorLayout> layouts;
+
+    @OneToMany(mappedBy = "floor", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<LectureRoom> rooms;
 
     public String getId() {
         return id;
@@ -50,12 +65,12 @@ public class BuildingFloor {
         this.number = number;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public BuildingSection getSection() {
@@ -82,15 +97,24 @@ public class BuildingFloor {
         this.layouts = layouts;
     }
 
+    public List<LectureRoom> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<LectureRoom> rooms) {
+        this.rooms = rooms;
+    }
+
     @Override
     public String toString() {
         return "BuildingFloor{" +
                 "id='" + id + '\'' +
                 ", number=" + number +
-                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
                 ", section=" + section +
                 ", building=" + building +
                 ", layouts=" + layouts +
+                ", rooms=" + rooms +
                 '}';
     }
 }

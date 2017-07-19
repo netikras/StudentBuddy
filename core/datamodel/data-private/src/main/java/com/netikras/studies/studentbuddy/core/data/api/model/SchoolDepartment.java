@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -15,11 +16,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by netikras on 17.6.21.
+ * aka faculty, but could also be museum, library, etc.
  */
 @Entity
-@Table(name = "school")
-public class School {
+@Table(name = "department")
+public class SchoolDepartment {
 
     private String id;
 
@@ -33,12 +34,16 @@ public class School {
     @UpdateTimestamp
     private Date updatedOn;
 
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    private School school;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SchoolDepartment> departments;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "department")
+    private List<Building> buildings;
+
+
 
     public String getId() {
         return id;
@@ -48,20 +53,12 @@ public class School {
         this.id = id;
     }
 
-    public Date getCreatedOn() {
-        return createdOn;
+    public School getSchool() {
+        return school;
     }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
-
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
+    public void setSchool(School school) {
+        this.school = school;
     }
 
     public String getTitle() {
@@ -72,22 +69,22 @@ public class School {
         this.title = title;
     }
 
-    public List<SchoolDepartment> getDepartments() {
-        return departments;
+    public List<Building> getBuildings() {
+        return buildings;
     }
 
-    public void setDepartments(List<SchoolDepartment> departments) {
-        this.departments = departments;
+    public void setBuildings(List<Building> buildings) {
+        this.buildings = buildings;
     }
+
 
     @Override
     public String toString() {
-        return "School{" +
+        return "SchoolDepartment{" +
                 "id='" + id + '\'' +
-                ", createdOn=" + createdOn +
-                ", updatedOn=" + updatedOn +
+                ", school=" + school +
                 ", title='" + title + '\'' +
-                ", departments=" + departments +
+                ", buildings=" + buildings +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,12 +15,9 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by netikras on 17.6.21.
- */
 @Entity
-@Table(name = "school")
-public class School {
+@Table(name = "students_group")
+public class StudentsGroup {
 
     private String id;
 
@@ -33,12 +31,13 @@ public class School {
     @UpdateTimestamp
     private Date updatedOn;
 
-
-    @Column(name = "title", nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SchoolDepartment> departments;
+    private String email;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
+    private List<Student> members;
+
 
     public String getId() {
         return id;
@@ -72,22 +71,31 @@ public class School {
         this.title = title;
     }
 
-    public List<SchoolDepartment> getDepartments() {
-        return departments;
+    public String getEmail() {
+        return email;
     }
 
-    public void setDepartments(List<SchoolDepartment> departments) {
-        this.departments = departments;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Student> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Student> members) {
+        this.members = members;
     }
 
     @Override
     public String toString() {
-        return "School{" +
+        return "StudentsGroup{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", title='" + title + '\'' +
-                ", departments=" + departments +
+                ", email='" + email + '\'' +
+                ", members=" + members +
                 '}';
     }
 }

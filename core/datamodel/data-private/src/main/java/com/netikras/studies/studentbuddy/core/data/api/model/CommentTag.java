@@ -5,25 +5,22 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.sql.Blob;
 import java.util.Date;
 
 @Entity
-@Table(name = "floor_layout")
-public class FloorLayout {
+@Table(name = "comment_tag")
+public class CommentTag {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -42,17 +39,14 @@ public class FloorLayout {
     @UpdateTimestamp
     private Date updatedOn;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "floor_id")
-    private BuildingFloor floor;
 
-    @Column(name = "active")
-    private boolean active = true;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
+    @JoinTable(name = "comment_id")
+    private Comment comment;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private Blob floorMap;
-
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @JoinTable(name = "tag_id")
+    private Tag tag;
 
     public String getId() {
         return id;
@@ -62,37 +56,28 @@ public class FloorLayout {
         this.id = id;
     }
 
-    public BuildingFloor getFloor() {
-        return floor;
+    public Comment getComment() {
+        return comment;
     }
 
-    public void setFloor(BuildingFloor floor) {
-        this.floor = floor;
+    public void setComment(Comment comment) {
+        this.comment = comment;
     }
 
-    public boolean isActive() {
-        return active;
+    public Tag getTag() {
+        return tag;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Blob getFloorMap() {
-        return floorMap;
-    }
-
-    public void setFloorMap(Blob floorMap) {
-        this.floorMap = floorMap;
+    public void setTag(Tag tag) {
+        this.tag = tag;
     }
 
     @Override
     public String toString() {
-        return "FloorLayout{" +
+        return "CommentTag{" +
                 "id='" + id + '\'' +
-                ", floor=" + floor +
-                ", active=" + active +
-                ", floorMap=" + floorMap +
+                ", comment=" + comment +
+                ", tag=" + tag +
                 '}';
     }
 }

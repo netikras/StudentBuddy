@@ -1,25 +1,22 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
-import java.util.List;
 
-/**
- * Created by netikras on 17.6.21.
- */
 @Entity
-@Table(name = "school")
-public class School {
+@Table(name = "student")
+public class Student {
 
     private String id;
 
@@ -34,11 +31,12 @@ public class School {
     private Date updatedOn;
 
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
-    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<SchoolDepartment> departments;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    private StudentsGroup group;
 
     public String getId() {
         return id;
@@ -64,30 +62,30 @@ public class School {
         this.updatedOn = updatedOn;
     }
 
-    public String getTitle() {
-        return title;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public List<SchoolDepartment> getDepartments() {
-        return departments;
+    public StudentsGroup getGroup() {
+        return group;
     }
 
-    public void setDepartments(List<SchoolDepartment> departments) {
-        this.departments = departments;
+    public void setGroup(StudentsGroup group) {
+        this.group = group;
     }
 
     @Override
     public String toString() {
-        return "School{" +
+        return "Student{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
-                ", title='" + title + '\'' +
-                ", departments=" + departments +
+                ", person=" + person +
+                ", group=" + group +
                 '}';
     }
 }

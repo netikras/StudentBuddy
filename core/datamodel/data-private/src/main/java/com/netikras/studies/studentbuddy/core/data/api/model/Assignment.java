@@ -1,11 +1,15 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.commons.utils.model.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -20,6 +24,11 @@ import java.util.Date;
 @Table(name = "assignment")
 public class Assignment {
 
+    @Id
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,8 +39,8 @@ public class Assignment {
     @JoinColumn(name = "discipline_id")
     private Discipline discipline;
 
-    @Column(name = "description", nullable = false)
-    private String descriotion;
+    @Column(name = "description", nullable = false, length = 512)
+    private String description;
 
     @Column(name = "created_on", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -71,12 +80,12 @@ public class Assignment {
         this.discipline = discipline;
     }
 
-    public String getDescriotion() {
-        return descriotion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescriotion(String descriotion) {
-        this.descriotion = descriotion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreatedOn() {
@@ -109,7 +118,7 @@ public class Assignment {
                 "id='" + id + '\'' +
                 ", lecture=" + lecture +
                 ", discipline=" + discipline +
-                ", descriotion='" + descriotion + '\'' +
+                ", description='" + description + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", dueDate=" + dueDate +

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+
 import com.netikras.studies.studentbuddy.commons.utils.model.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -10,19 +11,16 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
-/**
- * Created by netikras on 17.6.21.
- */
 @Entity
-@Table(name = "tests")
-public class DisciplineTest {
+@Table(name = "personel_member")
+public class PersonelMember {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -41,18 +39,12 @@ public class DisciplineTest {
     @UpdateTimestamp
     private Date updatedOn;
 
-    @Column(name = "starts_on")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startsOn;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "person_id")
+    private Person person;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinTable(name = "lecture_id")
-    private Lecture lecture;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinTable(name = "discipline_id")
-    private Discipline discipline;
-
+    @Column(name = "title")
+    private String title;
 
     public String getId() {
         return id;
@@ -78,39 +70,30 @@ public class DisciplineTest {
         this.updatedOn = updatedOn;
     }
 
-    public Date getStartsOn() {
-        return startsOn;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setStartsOn(Date startsOn) {
-        this.startsOn = startsOn;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
-    public Lecture getLecture() {
-        return lecture;
+    public String getTitle() {
+        return title;
     }
 
-    public void setLecture(Lecture lecture) {
-        this.lecture = lecture;
-    }
-
-    public Discipline getDiscipline() {
-        return discipline;
-    }
-
-    public void setDiscipline(Discipline discipline) {
-        this.discipline = discipline;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
     public String toString() {
-        return "DisciplineTest{" +
+        return "PersonelMember{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
-                ", startsOn=" + startsOn +
-                ", lecture=" + lecture +
-                ", discipline=" + discipline +
+                ", person=" + person +
+                ", title='" + title + '\'' +
                 '}';
     }
 }
