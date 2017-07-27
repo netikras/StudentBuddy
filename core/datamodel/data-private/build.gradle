@@ -2,3 +2,6 @@ apply from: "$rootProject.rootDir/conf/global.gradle"
 
 loadDep "log4j"
 loadDep "hibernate"
+loadDep "spring-jpa"
+loadDep "commons"
+loadProj ':core:datamodel:data-public'

@@ -9,12 +9,10 @@ version '1.0'
 sourceCompatibility = 1.8
 
 repositories {
-    mavenCentral()
-}
-if (project.name != "commons") {
-    dependencies {
-        compile project(':commons')
+    maven {
+        url "http://nx.netikras.com/repository/generic/snapshots"
     }
+    mavenCentral()
 }
 
 ext.loadDep = { String name ->
@@ -27,3 +25,10 @@ ext.loadProj = { String name ->
         compile project(name)
     }
 }
+
+
+//if (project.name != "commons") {
+//    dependencies {
+//        compile project(':commons')
+//    }
+//}

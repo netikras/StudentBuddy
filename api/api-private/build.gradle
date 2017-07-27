@@ -1,6 +1,8 @@
 apply from: "$rootProject.rootDir/conf/global.gradle"
 
 loadDep "servlet"
+loadDep "spring-web"
+loadDep "commons"
 
 loadProj ':api:api-public'
 loadProj ':core:datamodel:data-private'

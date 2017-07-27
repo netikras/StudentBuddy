@@ -1,10 +1,11 @@
 package com.netikras.studies.studentbuddy.commons.exception;
 
 
-import com.netikras.studies.studentbuddy.commons.tools.Converter;
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpStatus;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.FriendlyException;
+import com.netikras.tools.common.remote.http.HttpStatus;
 
-public class StudBudException extends Exception implements StudBudExceptionBase {
+public class StudBudException extends FriendlyException {
 
     private static final long serialVersionUID = -7777687824412011184L;
 
@@ -142,41 +143,6 @@ public class StudBudException extends Exception implements StudBudExceptionBase 
         return errorCode;
     }
 
-
-    public static final ErrorBody digestToErrorBody(Exception exception) {
-        ErrorBody errorBody = new ErrorBody();
-        StudBudException customException;
-
-
-        if (exception == null) return null;
-
-        try {
-            customException = (StudBudException) exception;
-
-            errorBody.setCausedBy(customException.getProbableCause());
-
-            errorBody.setStatus(customException.getStatusCode());
-            errorBody.setMessage1(customException.getMessage1());
-            errorBody.setMessage2(customException.getMessage2());
-            errorBody.setDeveloperMessage(customException.getDeveloperMessage());
-            errorBody.setCode(customException.getErrorCode());
-            errorBody.setUrl(customException.getUrl());
-
-
-        } catch (ClassCastException e) {
-            System.out.println(e.getLocalizedMessage());
-
-            errorBody.setMessage1(exception.getLocalizedMessage());
-            errorBody.setDeveloperMessage(Converter.throwableToString(exception));
-
-        } catch (Exception e) {
-            System.out.println("Cannot digest exception to ErrorBody: " + e.getLocalizedMessage());
-            errorBody.setMessage1(exception.getLocalizedMessage());
-        }
-
-
-        return errorBody;
-    }
 
     @Override
     public String toString() {

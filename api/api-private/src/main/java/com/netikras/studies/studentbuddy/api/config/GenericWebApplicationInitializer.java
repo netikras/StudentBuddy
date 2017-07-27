@@ -1,8 +1,8 @@
 package com.netikras.studies.studentbuddy.api.config;
 
-import com.netikras.studies.studentbuddy.commons.exception.StudBudException;
-import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
-import com.netikras.studies.studentbuddy.commons.tools.properties.PropertiesAssistant;
+import com.netikras.tools.common.exception.FriendlyException;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
+import com.netikras.tools.common.properties.PropertiesAssistant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -54,20 +54,20 @@ public abstract class GenericWebApplicationInitializer {
 
     /**
      * Loads properties prefixed with application name ({@link #getApplicationName()}), e.g. myCoolApp.server.port
-     * @throws StudBudException in case of any uncopable error
+     * @throws FriendlyException in case of any uncopable error
      */
-    protected void loadInitialProperties() throws StudBudException {
+    protected void loadInitialProperties() throws FriendlyException {
         if (initialProperties != null) {
-            throw new StudBudUncheckedException("Initial properties can be loaded only once!");
+            throw new FriendlyUncheckedException("Initial properties can be loaded only once!");
         }
 
         initialProperties = PropertiesAssistant.loadInitProperties(System.getProperties(), getApplicationName());
 
     }
 
-    protected void loadInitialProperties(String prefix) throws StudBudException {
+    protected void loadInitialProperties(String prefix) throws FriendlyException {
         if (initialProperties != null) {
-            throw new StudBudUncheckedException("Initial properties can be loaded only once!");
+            throw new FriendlyUncheckedException("Initial properties can be loaded only once!");
         }
 
         initialProperties = PropertiesAssistant.loadInitProperties(System.getProperties(), prefix);

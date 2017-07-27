@@ -1,8 +1,8 @@
 package com.netikras.studies.studentbuddy.commons.exception.handler;
 
-import com.netikras.studies.studentbuddy.commons.exception.ErrorBody;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudException;
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpStatus;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.HandlerMapping;
 

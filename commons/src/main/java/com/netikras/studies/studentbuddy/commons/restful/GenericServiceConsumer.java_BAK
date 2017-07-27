@@ -2,12 +2,11 @@ package com.netikras.studies.studentbuddy.commons.restful;
 
 
 
-import com.netikras.studies.studentbuddy.commons.model.RemoteEndpoint;
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpCtlFlags;
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpRequest;
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpResponse;
 import com.netikras.studies.studentbuddy.commons.tools.json.JSONService;
 import com.netikras.studies.studentbuddy.commons.tools.json.JSONServiceImpl;
+import com.netikras.tools.common.remote.RemoteEndpoint;
+import com.netikras.tools.common.remote.http.HttpRequest;
+import com.netikras.tools.common.remote.http.HttpResponse;
 
 import java.util.Collection;
 

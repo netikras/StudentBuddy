@@ -1,7 +1,10 @@
 package com.netikras.studies.studentbuddy.api.maps.controller;
 
-import com.netikras.studies.studentbuddy.commons.tools.io.IoUtils;
+import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingSectionDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
+import com.netikras.tools.common.io.IoUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -89,22 +91,25 @@ public class MapsController {
     }
 
     @RequestMapping(
-            value = "/school/{schoolId}/building/{buildingId}",
+            value = "/school/{schoolId}" +
+                    "/building/{buildingId}",
             method = RequestMethod.GET
     )
     @ResponseBody
-    public List<BuildingSectDto> getSchoolBuildingSections(
+    public List<BuildingSectionDto> getSchoolBuildingSections(
             @PathVariable(name = "schoolId") String schoolId,
             @PathVariable(name = "buildingId") String buildingId
     ) {
         // e.g. east-wing, blue-garden, etc.
-        List<BuildingSectDto> sections = null;
+        List<BuildingSectionDto> sections = null;
 
         return sections;
     }
 
     @RequestMapping(
-            value = "/school/{schoolId}/building/{buildingId}/section/{sectionId}",
+            value = "/school/{schoolId}" +
+                    "/building/{buildingId}" +
+                    "/section/{sectionId}",
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -125,11 +130,13 @@ public class MapsController {
 
     private void writeOutBuildingFloorMap(BuildingFloor floor, HttpServletResponse response) {
         try {
-            InputStream mapInputStream = floor.getMap().getInputStream();
+            InputStream mapInputStream = floor.getLayouts().get(0).getFloorMap().getBinaryStream();
             IoUtils.copy(mapInputStream, response.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
             // todo throw custom exc
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 

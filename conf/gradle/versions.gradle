@@ -13,7 +13,11 @@ ext.servletVersion = '3.0.1'
 ext.springVersion = '4.3.7.RELEASE'
 ext.aspectjVersion = '1.8.10'
 
+ext.springJpaVersion = '1.11.4.RELEASE'
+
 ext.mockitoVersion = '2.2.11'
 ext.junitVersion = '4.12'
 
+
+ext.commonsVersion = '1.0-SNAPSHOT+'
 

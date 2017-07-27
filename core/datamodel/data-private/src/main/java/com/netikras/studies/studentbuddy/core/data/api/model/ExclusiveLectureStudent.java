@@ -1,9 +1,6 @@
-package com.netikras.studies.studentbuddy.core.data.api;
+package com.netikras.studies.studentbuddy.core.data.api.model;
 
-import com.netikras.studies.studentbuddy.commons.utils.model.ModelTransform;
-import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
-import com.netikras.studies.studentbuddy.core.data.api.model.Student;
+import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;

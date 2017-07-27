@@ -1,8 +1,10 @@
 package com.netikras.studies.studentbuddy.core.data.api.dao;
 
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import org.springframework.stereotype.Repository;
 
-public interface LectureDao extends GenericDao<Lecture, String> {
+@Repository
+public interface LectureDao extends JpaRepo<Lecture> {
 
 
 }

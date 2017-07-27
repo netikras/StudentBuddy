@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.timetable.controller;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.LectureDto;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,7 +22,7 @@ public class TimetableController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public Schedule getLecturesByGroup(
+    public List<LectureDto> getLecturesByGroup(
             @PathVariable(name = "groupId") String groupId
     ) {
         return null;
@@ -32,7 +33,7 @@ public class TimetableController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public Schedule getLecturesByStudent(
+    public List<LectureDto> getLecturesByStudent(
             @PathVariable(name = "studentId") String studentId
     ) {
         return null;

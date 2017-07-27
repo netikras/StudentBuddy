@@ -1,0 +1,10 @@
+
+repositories {
+//    maven {
+//        url "http://bot.netikras.com:8081/repository/generic/snapshots"
+//    }
+}
+
+dependencies {
+    compile group: 'com.netikras', name: 'commons', version: "${commonsVersion}"
+}

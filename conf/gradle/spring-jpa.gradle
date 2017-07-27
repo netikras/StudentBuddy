@@ -1,0 +1,9 @@
+repositories {
+    mavenCentral();
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa
+    compile group: 'org.springframework.data', name: 'spring-data-jpa', version: "${springJpaVersion}"
+
+}

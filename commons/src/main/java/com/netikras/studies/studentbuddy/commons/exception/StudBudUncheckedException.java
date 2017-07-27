@@ -1,16 +1,15 @@
 package com.netikras.studies.studentbuddy.commons.exception;
 
 
-/**
- * Created by netikras on 17.3.7.
- */
-
-import com.netikras.studies.studentbuddy.commons.tools.http.HttpStatus;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
+import com.netikras.tools.common.remote.http.HttpStatus;
 
 /**
  * Normally should not get out to userspace...
+ *
+ * Created by netikras on 17.3.7.
  */
-public class StudBudUncheckedException extends RuntimeException implements StudBudExceptionBase {
+public class StudBudUncheckedException extends FriendlyUncheckedException {
 
     private static final long serialVersionUID = -7777687824412011184L;
 

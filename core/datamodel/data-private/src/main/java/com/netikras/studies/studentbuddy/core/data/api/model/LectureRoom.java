@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
@@ -8,6 +10,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -24,6 +28,11 @@ import java.util.List;
 @Table(name = "lecture_room")
 public class LectureRoom {
 
+    @Id
+    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @GeneratedValue(generator = "uuid2")
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
     @Column(name = "created_on")
