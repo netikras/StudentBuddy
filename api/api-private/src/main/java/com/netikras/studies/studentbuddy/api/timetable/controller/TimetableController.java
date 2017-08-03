@@ -1,12 +1,22 @@
 package com.netikras.studies.studentbuddy.api.timetable.controller;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.tools.common.model.mapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,29 +26,7 @@ import java.util.List;
 @RequestMapping(value = "/schedule")
 public class TimetableController {
 
-
-    @RequestMapping(
-            value = "/lectures/group/{groupId}",
-            method = RequestMethod.GET
-    )
-    @ResponseBody
-    public List<LectureDto> getLecturesByGroup(
-            @PathVariable(name = "groupId") String groupId
-    ) {
-        return null;
-    }
-
-    @RequestMapping(
-            value = "/lectures/student/{studentId}",
-            method = RequestMethod.GET
-    )
-    @ResponseBody
-    public List<LectureDto> getLecturesByStudent(
-            @PathVariable(name = "studentId") String studentId
-    ) {
-        return null;
-    }
-
+    private SchoolService schoolService;
 
     /**
      * @param groupId   Students' group ID, e.g. PIN13
@@ -53,9 +41,9 @@ public class TimetableController {
     public List<LectureDto> getLecturesByGroupStartingIn(
             @PathVariable(name = "groupId") String groupId,
             @PathVariable(name = "timeUnits") String timeUnits,
-            @PathVariable(name = "value") Double value
+            @PathVariable(name = "value") long value
     ) {
-        return null;
+        return getLecturesByGroupStartingBetween(groupId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
     }
 
     @RequestMapping(
@@ -66,10 +54,150 @@ public class TimetableController {
     public List<LectureDto> getLecturesByStudentStartingIn(
             @PathVariable(name = "studentId") String studentId,
             @PathVariable(name = "timeUnits") String timeUnits,
-            @PathVariable(name = "value") Double value
+            @PathVariable(name = "value") long value
     ) {
-        return null;
+        return getLecturesByStudentStartingBetween(studentId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
     }
 
+    @RequestMapping(
+            value = "/lectures/lecturer/{lecturerId}/in/t/{timeUnits}/{value}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByLecturerStartingIn(
+            @PathVariable(name = "lecturerId") String lecturerId,
+            @PathVariable(name = "timeUnits") String timeUnits,
+            @PathVariable(name = "value") long value
+    ) {
+        return getLecturesByLecturerStartingBetween(lecturerId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @RequestMapping(
+            value = "/lectures/room/{roomId}/in/t/{timeUnits}/{value}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByRoomStartingIn(
+            @PathVariable(name = "roomId") String roomId,
+            @PathVariable(name = "timeUnits") String timeUnits,
+            @PathVariable(name = "value") long value
+    ) {
+        return getLecturesByRoomStartingBetween(roomId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+
+    @RequestMapping(
+            value = "/lectures/group/{groupId}/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByGroupStartingBetween(
+            @PathVariable(name = "groupId") String groupId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        List<Lecture> lectures = schoolService.getLecturesForGroup(groupId, afterTimestamp, beforeTimestamp);
+        return toLectureDtos(lectures);
+    }
+
+    @RequestMapping(
+            value = "/lectures/student/{studentId}/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByStudentStartingBetween(
+            @PathVariable(name = "studentId") String studentId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        List<Lecture> lectures = schoolService.getLecturesForStudent(studentId, afterTimestamp, beforeTimestamp);
+        return toLectureDtos(lectures);
+    }
+
+    @RequestMapping(
+            value = "/lectures/lecturer/{lecturerId}/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByLecturerStartingBetween(
+            @PathVariable(name = "lecturerId") String lecturerId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        List<Lecture> lectures = schoolService.getLecturesForLecturer(lecturerId, afterTimestamp, beforeTimestamp);
+        return toLectureDtos(lectures);
+    }
+
+    @RequestMapping(
+            value = "/lectures/room/{roomId}/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<LectureDto> getLecturesByRoomStartingBetween(
+            @PathVariable(name = "roomId") String roomId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        List<Lecture> lectures = schoolService.getLecturesForRoom(roomId, afterTimestamp, beforeTimestamp);
+        return toLectureDtos(lectures);
+    }
+
+
+    @RequestMapping(
+            value = "/lecture/{lectureId}/comment",
+            method = RequestMethod.POST
+    )
+    @ResponseBody
+    public void comment(
+            @PathVariable(name = "lectureId") String lectureId,
+            @RequestBody(required = true) CommentDto commentDto
+    ) {
+
+        Comment comment = ModelMapper.apply(new Comment(), commentDto);
+
+        schoolService.commentLecture(lectureId, comment);
+    }
+
+    private List<LectureDto> toLectureDtos(Collection<Lecture> lectures) {
+        if (lectures == null) return null;
+
+        List<LectureDto> lectureDtos = new ArrayList<>();
+        for (Lecture lecture : lectures) {
+            lectureDtos.add(ModelMapper.transform(lecture, new LectureDto()));
+        }
+
+        return lectureDtos;
+    }
+
+    private long timeUnitsToMs(String units, long value) {
+
+        if (units == null) {
+            return 0;
+        }
+
+        long result = 0;
+
+        switch (units) {
+            case "M":
+                result = value * 1000 * 60 * 60 * 24 * 30;
+                break;
+            case "d":
+                result = value * 1000 * 60 * 60 * 24;
+                break;
+            case "H":
+                result = value * 1000 * 60 * 60;
+                break;
+            case "m":
+                result = value * 1000 * 60;
+                break;
+            case "s":
+                result = value * 1000;
+                break;
+            default:
+                throw new NumberFormatException("Incorrect time unit: " + units);
+        }
+
+        return result;
+    }
 
 }

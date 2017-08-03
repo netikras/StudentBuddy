@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -127,6 +128,15 @@ public class Comment {
 
     public void setTags(List<CommentTag> tags) {
         this.tags = tags;
+    }
+
+    public void addTag(CommentTag tag) {
+        List<CommentTag> currentTags = getTags();
+        if (currentTags == null) {
+            currentTags = new ArrayList<>();
+            setTags(currentTags);
+        }
+        currentTags.add(tag);
     }
 
     public String getEntityId() {

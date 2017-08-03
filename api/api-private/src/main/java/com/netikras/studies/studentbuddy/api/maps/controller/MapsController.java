@@ -1,8 +1,8 @@
 package com.netikras.studies.studentbuddy.api.maps.controller;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingFloorDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.BuildingSectionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.tools.common.io.IoUtils;
 import org.springframework.web.bind.annotation.PathVariable;

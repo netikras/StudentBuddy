@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,11 +68,15 @@ public class Lecture {
     @JoinColumn(name = "room_id")
     private LectureRoom room;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "lecturer_id")
+    private Lecturer lecturer;
+
     @ManyToOne(fetch = FetchType.EAGER)
     private StudentsGroup studentsGroup;
 
 
-    private List<Student> exclusiveStugents;
+    private List<Student> exclusiveStudents;
 
     public String getId() {
         return id;
@@ -137,6 +142,39 @@ public class Lecture {
         this.room = room;
     }
 
+    public Lecturer getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(Lecturer lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public StudentsGroup getStudentsGroup() {
+        return studentsGroup;
+    }
+
+    public void setStudentsGroup(StudentsGroup studentsGroup) {
+        this.studentsGroup = studentsGroup;
+    }
+
+    public List<Student> getExclusiveStudents() {
+        return exclusiveStudents;
+    }
+
+    public void setExclusiveStudents(List<Student> exclusiveStudents) {
+        this.exclusiveStudents = exclusiveStudents;
+    }
+
+    public void addComment(Comment comment) {
+        List<Comment> comments = getComments();
+        if (comments == null) {
+            comments = new ArrayList<>();
+            setComments(comments);
+        }
+        comments.add(comment);
+    }
+
     @Override
     public String toString() {
         return "Lecture{" +
@@ -148,6 +186,9 @@ public class Lecture {
                 ", endsOn=" + endsOn +
                 ", comments=" + comments +
                 ", room=" + room +
+                ", lecturer=" + lecturer +
+                ", studentsGroup=" + studentsGroup +
+                ", exclusiveStudents=" + exclusiveStudents +
                 '}';
     }
 }

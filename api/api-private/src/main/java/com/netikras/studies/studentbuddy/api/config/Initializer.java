@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.config;
 
+import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import org.springframework.web.WebApplicationInitializer;
 
 
@@ -25,5 +26,10 @@ public class Initializer extends GenericWebApplicationInitializer implements Web
     @Override
     public String getApplicationName() {
         return "studbud.api";
+    }
+
+    @Override
+    protected void afterStartup() {
+        getServletContext().addFilter("authFilter", AuthorizationFilter.class);
     }
 }
