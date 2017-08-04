@@ -28,22 +28,26 @@ public class Tag {
     @Column(name = "id", nullable = false, unique = true, updatable = false)
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "id")
     private String id;
 
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "creator_id")
+    @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
     private Person createdBy;
 
-    @Column(name = "value")
+    @Column(name = "value", nullable = false, unique = true)
+    @ModelTransform(dtoFieldName = "value", dtoUpdatable = false)
     private String value;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tag")
+    @ModelTransform(dtoFieldName = "comments", dtoUpdatable = false, dtoValueExtractField = "comments")
     private List<CommentTag> commentTags;
 
     public String getId() {

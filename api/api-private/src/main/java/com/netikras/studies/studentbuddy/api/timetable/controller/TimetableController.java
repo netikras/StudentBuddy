@@ -6,7 +6,6 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -96,7 +94,7 @@ public class TimetableController {
             @PathVariable(name = "after") long afterTimestamp,
             @PathVariable(name = "before") long beforeTimestamp
     ) {
-        List<Lecture> lectures = schoolService.getLecturesForGroup(groupId, afterTimestamp, beforeTimestamp);
+        List<Lecture> lectures = schoolService.findLecturesForGroup(groupId, afterTimestamp, beforeTimestamp);
         return toLectureDtos(lectures);
     }
 
@@ -110,7 +108,7 @@ public class TimetableController {
             @PathVariable(name = "after") long afterTimestamp,
             @PathVariable(name = "before") long beforeTimestamp
     ) {
-        List<Lecture> lectures = schoolService.getLecturesForStudent(studentId, afterTimestamp, beforeTimestamp);
+        List<Lecture> lectures = schoolService.findLecturesForStudent(studentId, afterTimestamp, beforeTimestamp);
         return toLectureDtos(lectures);
     }
 
@@ -124,7 +122,7 @@ public class TimetableController {
             @PathVariable(name = "after") long afterTimestamp,
             @PathVariable(name = "before") long beforeTimestamp
     ) {
-        List<Lecture> lectures = schoolService.getLecturesForLecturer(lecturerId, afterTimestamp, beforeTimestamp);
+        List<Lecture> lectures = schoolService.findLecturesForLecturer(lecturerId, afterTimestamp, beforeTimestamp);
         return toLectureDtos(lectures);
     }
 

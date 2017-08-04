@@ -13,11 +13,11 @@ import java.util.List;
 @Repository
 public interface LectureDao extends JpaRepo<Lecture> {
 
-    List<Lecture> getByLecturerAndStartsOnBetween(Lecturer lecturer, Date startsAfter, Date startsBefore);
+    List<Lecture> findByLecturerAndStartsOnBetween(Lecturer lecturer, Date startsAfter, Date startsBefore);
 
-    List<Lecture> getByStudentsGroupAndStartsOnBetween(StudentsGroup group, Date startsAfter, Date startsBefore);
+    List<Lecture> findByStudentsGroupAndStartsOnBetween(StudentsGroup group, Date startsAfter, Date startsBefore);
 
-    List<Lecture> getByExclusiveStudentsContainingAndStartsOnBetween(Student exclusiveStudent, Date startsAfter, Date startsBefore);
+    List<Lecture> findByExclusiveStudentsContainingAndStartsOnBetween(Student exclusiveStudent, Date startsAfter, Date startsBefore);
 
-    List<Lecture> getByRoomAndStartsOnBetween(LectureRoom room, Date startsAfter, Date startsBefore);
+    List<Lecture> findByRoomAndStartsOnBetween(LectureRoom room, Date startsAfter, Date startsBefore);
 }

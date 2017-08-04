@@ -13,11 +13,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,10 +61,7 @@ public class Lecture {
     @Temporal(TemporalType.TIMESTAMP)
     private Date endsOn;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Where(clause = "entity_type = 'LECTURE'")
-    @JoinColumn(referencedColumnName = "entity_id")
-    @Fetch(FetchMode.SUBSELECT)
+    @Transient
     private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -75,8 +75,8 @@ public class Lecture {
     @ManyToOne(fetch = FetchType.EAGER)
     private StudentsGroup studentsGroup;
 
-
-    private List<Student> exclusiveStudents;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ExclusiveLectureStudent> exclusiveStudents;
 
     public String getId() {
         return id;
@@ -158,11 +158,11 @@ public class Lecture {
         this.studentsGroup = studentsGroup;
     }
 
-    public List<Student> getExclusiveStudents() {
+    public List<ExclusiveLectureStudent> getExclusiveStudents() {
         return exclusiveStudents;
     }
 
-    public void setExclusiveStudents(List<Student> exclusiveStudents) {
+    public void setExclusiveStudents(List<ExclusiveLectureStudent> exclusiveStudents) {
         this.exclusiveStudents = exclusiveStudents;
     }
 

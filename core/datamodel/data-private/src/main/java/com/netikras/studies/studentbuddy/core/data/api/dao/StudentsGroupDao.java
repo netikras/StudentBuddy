@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface StudentsGroupDao extends JpaRepo<StudentsGroup> {
 
-    List<StudentsGroup> getByMembersContaining(Student member);
+    List<StudentsGroup> findByMembersContaining(Student member);
 
 }

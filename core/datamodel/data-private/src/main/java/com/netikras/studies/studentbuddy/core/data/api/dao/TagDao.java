@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TagDao extends JpaRepo<Tag> {
 
+    Tag findByValue(String value);
+
 }

@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -56,8 +57,7 @@ public class LectureRoom {
     @JoinColumn(name = "school_id")
     private School school;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "entityId")
-    @Where(clause = "entity_type = 'LECTURE_ROOM'")
+    @Transient
     private List<Comment> comments;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)

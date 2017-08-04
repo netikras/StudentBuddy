@@ -7,21 +7,21 @@ import java.util.List;
 
 public interface CommentsService {
 
-    Comment getComment(String id);
+    Comment findComment(String id);
 
-    List<Comment> getComments(String entityName, String entityId);
+    List<Comment> findComments(String entityName, String entityId);
 
     void deleteComment(String id);
 
-    void createComment(Comment comment);
+    Comment createComment(Comment comment);
 
-    void updateComment(Comment comment);
+    Comment updateComment(Comment comment);
 
     void assignTag(String commentId, Tag tag);
 
     void removeTag(String commentId, String tagId);
 
-    List<Comment> getCommentsByType(String typeName);
+    List<Comment> findCommentsByType(String typeName);
 
     void deleteCommentsByType(String typeName);
 

@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -37,33 +38,42 @@ public class Comment {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "author_id", nullable = false)
+    @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
     private Person author;
 
     @Column(name = "title")
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
     @Column(name = "text")
+    @ModelTransform(dtoFieldName = "text")
     private String text;
 
     @Column(name = "category")
+    @ModelTransform(dtoFieldName = "category")
     private String category;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "comment")
+    @ModelTransform(dtoFieldName = "tags", dtoValueExtractField = "tag.value")
     private List<CommentTag> tags;
 
     @Column(name = "entity_id", nullable = false)
+    @ModelTransform(dtoFieldName = "entityId", dtoUpdatable = false)
     private String entityId;
 
-    @Column(name = "entity_type")
+    @Column(name = "entity_type", nullable = false)
+    @ModelTransform(dtoFieldName = "entityType", dtoUpdatable = false)
     private String entityType;
 
     public String getId() {

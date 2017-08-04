@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.comments;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,12 +28,22 @@ public class CommentsController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public List<Comment> getForType(
+    public List<CommentDto> getForType(
             @PathVariable(name = "typeName") String typeName,
             @PathVariable(name = "typeId") String typeId
     ) {
 
-        return commentsService.getComments(typeName, typeId);
+        List<CommentDto> commentDtos = new ArrayList<>();
+
+        List<Comment> comments = commentsService.findComments(typeName, typeId);
+        if (comments != null) {
+            for (Comment comment : comments) {
+                CommentDto dto = ModelMapper.transform(comment, new CommentDto());
+                commentDtos.add(dto);
+            }
+        }
+
+        return commentDtos;
     }
 
     @RequestMapping(
@@ -39,11 +51,20 @@ public class CommentsController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public List<Comment> getAllForType(
+    public List<CommentDto> getAllForType(
             @PathVariable(name = "typeName") String typeName
     ) {
+        List<CommentDto> commentDtos = new ArrayList<>();
 
-        return commentsService.getCommentsByType(typeName);
+        List<Comment> comments = commentsService.findCommentsByType(typeName);
+        if (comments != null) {
+            for (Comment comment : comments) {
+                CommentDto dto = ModelMapper.transform(comment, new CommentDto());
+                commentDtos.add(dto);
+            }
+        }
+
+        return commentDtos;
     }
 
 
@@ -88,11 +109,12 @@ public class CommentsController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public Comment getById(
+    public CommentDto getById(
             @PathVariable(name = "id") String id
     ) {
-
-        return commentsService.getComment(id);
+        Comment comment = commentsService.findComment(id);
+        CommentDto commentDto = ModelMapper.transform(comment, new CommentDto());
+        return commentDto;
     }
 
     @RequestMapping(
@@ -105,8 +127,15 @@ public class CommentsController {
     ) {
         Comment comment = ModelMapper.apply(new Comment(), commentDto);
 
-        commentsService.createComment(comment);
-        commentDto.setId(comment.getId());
+        Person author = ModelMapper.apply(new Person(), commentDto.getAuthor());
+        author.setId(commentDto.getAuthor().getId()); // throw NPE if author is not supplied!
+
+        comment.setAuthor(author);
+        comment.setEntityType(commentDto.getEntityType());
+        comment.setEntityId(commentDto.getEntityId());
+
+        comment = commentsService.createComment(comment);
+        ModelMapper.transform(comment, commentDto);
 
         return commentDto;
     }
@@ -125,8 +154,8 @@ public class CommentsController {
         comment.setEntityType(typeName);
         comment.setEntityId(typeId);
 
-        commentsService.createComment(comment);
-        commentDto.setId(comment.getId());
+        comment = commentsService.createComment(comment);
+        ModelMapper.transform(comment, commentDto);
 
         return commentDto;
     }
@@ -140,7 +169,7 @@ public class CommentsController {
             @PathVariable(name = "id") String id,
             @RequestBody(required = true) CommentDto commentDto
     ) {
-        Comment comment = ModelMapper.apply(commentsService.getComment(id), commentDto);
+        Comment comment = ModelMapper.apply(commentsService.findComment(id), commentDto);
 
         commentsService.updateComment(comment);
 

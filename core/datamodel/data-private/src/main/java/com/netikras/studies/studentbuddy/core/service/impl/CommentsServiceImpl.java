@@ -1,12 +1,15 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.core.data.api.dao.CommentDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.TagDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.CommentTag;
+import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -20,14 +23,17 @@ public class CommentsServiceImpl implements CommentsService {
     @Resource
     private TagDao tagDao;
 
+    @Resource
+    private PersonDao personDao;
+
 
     @Override
-    public Comment getComment(String id) {
+    public Comment findComment(String id) {
         return commentDao.findOne(id);
     }
 
     @Override
-    public List<Comment> getComments(String entityName, String entityId) {
+    public List<Comment> findComments(String entityName, String entityId) {
         return commentDao.findByEntityTypeAndEntityId(entityName, entityId);
     }
 
@@ -37,18 +43,44 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
-    public void createComment(Comment comment) {
-        commentDao.saveAndFlush(comment);
+    @Transactional
+    public Comment createComment(Comment comment) {
+        if (comment != null) {
+            Person author = personDao.findOne(comment.getAuthor().getId());
+
+            if (author == null) {
+                // either throw or create... up to implementation :)
+                // FIXME throw as Person shall not be created automatically
+                author = comment.getAuthor();
+                author.setId(null);
+                author = personDao.saveAndFlush(author);
+            }
+
+            List<CommentTag> commentTags = comment.getTags();
+            if (commentTags != null) {
+                for (CommentTag commentTag : commentTags) {
+                    commentTag.setComment(comment);
+                    Tag tag = tagDao.findByValue(commentTag.getTag().getValue());
+                    if (tag == null) {
+                        tag = commentTag.getTag();
+                        tag.setId(null);
+                        tag.setCreatedBy(author);
+                    }
+                    commentTag.setTag(tag);
+                }
+            }
+        }
+        return commentDao.saveAndFlush(comment);
     }
 
     @Override
-    public void updateComment(Comment comment) {
-        commentDao.saveAndFlush(comment);
+    public Comment updateComment(Comment comment) {
+        return commentDao.saveAndFlush(comment);
     }
 
     @Override
     public void assignTag(String commentId, Tag tag) {
-        Comment comment = getComment(commentId);
+        Comment comment = findComment(commentId);
         if (comment == null) return;
 
         CommentTag commentTag = new CommentTag();
@@ -64,7 +96,7 @@ public class CommentsServiceImpl implements CommentsService {
     public void removeTag(String commentId, String tagId) {
         boolean pristine = true;
 
-        Comment comment = getComment(commentId);
+        Comment comment = findComment(commentId);
         if (comment == null) return;
 
         if (tagId == null || tagId.isEmpty()) return;
@@ -86,19 +118,19 @@ public class CommentsServiceImpl implements CommentsService {
         }
     }
 
-    public List<Comment> getCommentsByType(String typeName) {
-        return commentDao.getAllByEntityType(typeName);
+    public List<Comment> findCommentsByType(String typeName) {
+        return commentDao.findAllByEntityType(typeName);
     }
 
     @Override
     public void deleteCommentsByType(String typeName) {
-        List<Comment> comments = getCommentsByType(typeName);
+        List<Comment> comments = findCommentsByType(typeName);
         commentDao.delete(comments);
     }
 
     @Override
     public void deleteCommentByType(String typeName, String typeId) {
-        List<Comment> comments = getComments(typeName, typeId);
+        List<Comment> comments = findComments(typeName, typeId);
         commentDao.delete(comments);
     }
 }

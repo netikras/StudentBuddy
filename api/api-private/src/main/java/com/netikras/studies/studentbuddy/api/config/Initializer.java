@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.config;
 
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
+import com.netikras.studies.studentbuddy.commons.P;
 import org.springframework.web.WebApplicationInitializer;
 
 
@@ -10,13 +11,19 @@ import org.springframework.web.WebApplicationInitializer;
 public class Initializer extends GenericWebApplicationInitializer implements WebApplicationInitializer {
 
 
+    public Initializer() {
+        System.out.println("INITIALIZING!!!");
+    }
+
     @Override
     public String getContextConfigLocation() {
-        return "com.netikras.studies.studentbuddy.api.config";
+
+        return P.BASE_PACKAGE + ".api.config";
     }
 
     @Override
     public String[] getMappingUrls() {
+        System.out.println("Providing mapping URLs");
         return new String[] {
                 "/studbud/api/*",
 

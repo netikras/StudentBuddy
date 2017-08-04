@@ -10,6 +10,6 @@ public interface CommentDao extends JpaRepo<Comment> {
 
     List<Comment> findByEntityTypeAndEntityId(String entityType, String entityId);
 
-    List<Comment> getAllByEntityType(String typeName);
+    List<Comment> findAllByEntityType(String typeName);
 
 }

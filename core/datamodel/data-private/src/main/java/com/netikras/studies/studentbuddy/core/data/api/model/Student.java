@@ -39,12 +39,12 @@ public class Student {
     @UpdateTimestamp
     private Date updatedOn;
 
-
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     private Person person;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "group_id")
     private StudentsGroup group;
 
     public String getId() {

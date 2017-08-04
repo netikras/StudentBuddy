@@ -13,11 +13,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -47,11 +49,10 @@ public class ExclusiveLectureStudent {
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "student_id")
     private Student student;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(referencedColumnName = "entity_id")
-    @Where(clause = "entity_type = 'EXCL_LECT_STUDENT'")
+    @Transient
     private List<Comment> comments;
 
     public String getId() {

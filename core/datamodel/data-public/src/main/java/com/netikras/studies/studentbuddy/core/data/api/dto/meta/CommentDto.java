@@ -14,7 +14,9 @@ public class CommentDto {
     private String title;
     private String text;
     private String category;
-    private List<TagDto> tags;
+    private String entityType;
+    private String entityId;
+    private List<String> tags;
 
     public String getId() {
         return id;
@@ -72,11 +74,27 @@ public class CommentDto {
         this.category = category;
     }
 
-    public List<TagDto> getTags() {
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public List<String> getTags() {
         return tags;
     }
 
-    public void setTags(List<TagDto> tags) {
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 
@@ -90,6 +108,8 @@ public class CommentDto {
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", category='" + category + '\'' +
+                ", entityType='" + entityType + '\'' +
+                ", entityId='" + entityId + '\'' +
                 ", tags=" + tags +
                 '}';
     }

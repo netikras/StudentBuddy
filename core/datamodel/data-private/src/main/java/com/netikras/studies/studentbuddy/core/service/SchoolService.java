@@ -7,11 +7,11 @@ import java.util.List;
 
 public interface SchoolService {
 
-    List<Lecture> getLecturesForGroup(String groupId, long afterTimestamp, long beforeTimestamp);
+    List<Lecture> findLecturesForGroup(String groupId, long afterTimestamp, long beforeTimestamp);
 
-    List<Lecture> getLecturesForStudent(String groupId, long afterTimestamp, long beforeTimestamp);
+    List<Lecture> findLecturesForStudent(String groupId, long afterTimestamp, long beforeTimestamp);
 
-    List<Lecture> getLecturesForLecturer(String groupId, long afterTimestamp, long beforeTimestamp);
+    List<Lecture> findLecturesForLecturer(String groupId, long afterTimestamp, long beforeTimestamp);
 
     List<Lecture> getLecturesForRoom(String groupId, long afterTimestamp, long beforeTimestamp);
 
