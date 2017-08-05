@@ -26,4 +26,8 @@ public interface CommentsService {
     void deleteCommentsByType(String typeName);
 
     void deleteCommentByType(String typeName, String typeId);
+
+    List<Comment> findCommentsByTagId(String tagId);
+
+    List<Comment> findCommentsByTagValue(String tagValue);
 }

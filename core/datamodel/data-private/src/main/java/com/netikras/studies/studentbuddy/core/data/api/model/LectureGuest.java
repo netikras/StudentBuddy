@@ -4,18 +4,14 @@ import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "exclusive_lecture_student")
-public class ExclusiveLectureStudent {
+@Table(name = "lecture_guest")
+public class LectureGuest {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -49,8 +45,8 @@ public class ExclusiveLectureStudent {
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "student_id")
-    private Student student;
+    @JoinColumn(name = "person_id")
+    private Person person;
 
     @Transient
     private List<Comment> comments;
@@ -71,12 +67,12 @@ public class ExclusiveLectureStudent {
         this.lecture = lecture;
     }
 
-    public Student getStudent() {
-        return student;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public List<Comment> getComments() {
@@ -89,10 +85,10 @@ public class ExclusiveLectureStudent {
 
     @Override
     public String toString() {
-        return "ExclusiveLectureStudent{" +
+        return "LectureGuest{" +
                 "id='" + id + '\'' +
                 ", lecture=" + lecture +
-                ", student=" + student +
+                ", person=" + person +
                 ", comments=" + comments +
                 '}';
     }

@@ -26,7 +26,6 @@ public class CommentsServiceImpl implements CommentsService {
     @Resource
     private PersonDao personDao;
 
-
     @Override
     public Comment findComment(String id) {
         return commentDao.findOne(id);
@@ -40,6 +39,11 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public void deleteComment(String id) {
         commentDao.delete(id);
+    }
+
+    @Transactional
+    public Comment saveComment(Comment comment) {
+        return commentDao.saveAndFlush(comment);
     }
 
     @Override
@@ -70,18 +74,46 @@ public class CommentsServiceImpl implements CommentsService {
                 }
             }
         }
-        return commentDao.saveAndFlush(comment);
+        return saveComment(comment);
     }
 
     @Override
     public Comment updateComment(Comment comment) {
-        return commentDao.saveAndFlush(comment);
+        return saveComment(comment);
     }
 
     @Override
+    @Transactional
     public void assignTag(String commentId, Tag tag) {
         Comment comment = findComment(commentId);
         if (comment == null) return;
+
+        Person author = comment.getAuthor();
+        Tag existingTag;
+
+        tag.setCreatedBy(null);
+        if (tag.getId() != null) {
+            existingTag = tagDao.findOne(tag.getId());
+            if (existingTag != null ) {
+                if (tag.getValue() == null // if only value has been supplied
+                        || tag.getValue().equals(existingTag.getValue())) { // OR a value matching existing tag's value
+                    tag = existingTag;
+                } else {
+                    tag.setId(null);
+                }
+            }
+        } else if (tag.getValue() != null) {
+            existingTag = tagDao.findByValue(tag.getValue());
+            if (existingTag != null) {
+                tag = existingTag;
+            } else {
+                tag.setId(null);
+            }
+        }
+
+        if (tag.getCreatedBy() == null) {
+            tag.setCreatedBy(author);
+        }
 
         CommentTag commentTag = new CommentTag();
         commentTag.setComment(comment);
@@ -89,7 +121,7 @@ public class CommentsServiceImpl implements CommentsService {
 
         comment.addTag(commentTag);
 
-        updateComment(comment);
+        saveComment(comment);
     }
 
     @Override
@@ -132,5 +164,17 @@ public class CommentsServiceImpl implements CommentsService {
     public void deleteCommentByType(String typeName, String typeId) {
         List<Comment> comments = findComments(typeName, typeId);
         commentDao.delete(comments);
+    }
+
+    @Override
+    public List<Comment> findCommentsByTagId(String tagId) {
+        List<Comment> comments = commentDao.findAllByTags_Tag_Id(tagId);
+        return comments;
+    }
+
+    @Override
+    public List<Comment> findCommentsByTagValue(String tagValue) {
+        List<Comment> comments = commentDao.findAllByTags_Tag_Value(tagValue);
+        return comments;
     }
 }

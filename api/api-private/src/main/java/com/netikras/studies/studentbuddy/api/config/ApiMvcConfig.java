@@ -24,6 +24,7 @@ public class ApiMvcConfig extends WebMvcConfigurerAdapter {
         //Registering Hibernate4Module to support lazy objects
 //        mapper.registerModule(new Hibernate4Module());
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
 
         messageConverter.setObjectMapper(mapper);
         return messageConverter;

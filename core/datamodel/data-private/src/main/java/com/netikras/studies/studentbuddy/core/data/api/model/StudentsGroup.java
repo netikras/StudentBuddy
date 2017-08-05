@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -94,6 +95,24 @@ public class StudentsGroup {
 
     public void setMembers(List<Student> members) {
         this.members = members;
+    }
+
+    public boolean addMember(Student student) {
+        List<Student> members = getMembers();
+        if (members == null) {
+            members = new ArrayList<>();
+            setMembers(members);
+        }
+        return members.add(student);
+    }
+
+    public boolean removeMember(Student student) {
+        List<Student> members = getMembers();
+        if (members == null || members.isEmpty()) {
+            return false;
+        }
+
+        return members.remove(student);
     }
 
     @Override

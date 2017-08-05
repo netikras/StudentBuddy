@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.comments;
 
+import com.netikras.studies.studentbuddy.commons.model.PagedResults;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,19 +34,11 @@ public class CommentsController {
             @PathVariable(name = "typeName") String typeName,
             @PathVariable(name = "typeId") String typeId
     ) {
-
-        List<CommentDto> commentDtos = new ArrayList<>();
-
         List<Comment> comments = commentsService.findComments(typeName, typeId);
-        if (comments != null) {
-            for (Comment comment : comments) {
-                CommentDto dto = ModelMapper.transform(comment, new CommentDto());
-                commentDtos.add(dto);
-            }
-        }
-
+        List<CommentDto> commentDtos = convertToCommentDtos(comments);
         return commentDtos;
     }
+
 
     @RequestMapping(
             value = "/type/{typeName}",
@@ -54,16 +48,8 @@ public class CommentsController {
     public List<CommentDto> getAllForType(
             @PathVariable(name = "typeName") String typeName
     ) {
-        List<CommentDto> commentDtos = new ArrayList<>();
-
         List<Comment> comments = commentsService.findCommentsByType(typeName);
-        if (comments != null) {
-            for (Comment comment : comments) {
-                CommentDto dto = ModelMapper.transform(comment, new CommentDto());
-                commentDtos.add(dto);
-            }
-        }
-
+        List<CommentDto> commentDtos = convertToCommentDtos(comments);
         return commentDtos;
     }
 
@@ -176,5 +162,60 @@ public class CommentsController {
         return commentDto;
     }
 
+
+    @RequestMapping(
+            value = "/tag/value/{value}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<CommentDto> getByTagValue(
+            @PathVariable(name = "value") String value,
+            @RequestParam(name = "pageno", required = false) Long pageNumber,
+            @RequestParam(name = "pagesz", required = false) Long pageSize
+    ) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+
+        List<Comment> comments = commentsService.findCommentsByTagValue(value);
+        commentDtos = convertToCommentDtos(comments);
+
+        return commentDtos;
+    }
+
+
+    @RequestMapping(
+            value = "/tag/id/{id}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<CommentDto> getByTagId(
+            @PathVariable(name = "id") String id,
+            @RequestParam(name = "pageno", required = false) Long pageNumber,
+            @RequestParam(name = "pagesz", required = false) Long pageSize
+    ) {
+
+        PagedResults<Comment> results = new PagedResults<>(pageNumber, pageSize);
+
+        List<CommentDto> commentDtos = null;
+
+        List<Comment> comments = commentsService.findCommentsByTagId(id);
+        commentDtos = convertToCommentDtos(comments);
+
+        return commentDtos;
+    }
+
+
+
+
+
+    private List<CommentDto> convertToCommentDtos(List<Comment> comments) {
+        List<CommentDto> commentDtos = new ArrayList<>();
+        if (comments != null) {
+            for (Comment comment : comments) {
+                CommentDto dto = ModelMapper.transform(comment, new CommentDto());
+                commentDtos.add(dto);
+            }
+        }
+        return commentDtos;
+    }
 
 }

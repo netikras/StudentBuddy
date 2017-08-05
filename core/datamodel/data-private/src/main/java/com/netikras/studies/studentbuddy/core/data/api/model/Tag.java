@@ -46,10 +46,6 @@ public class Tag {
     @ModelTransform(dtoFieldName = "value", dtoUpdatable = false)
     private String value;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "tag")
-    @ModelTransform(dtoFieldName = "comments", dtoUpdatable = false, dtoValueExtractField = "comments")
-    private List<CommentTag> commentTags;
-
     public String getId() {
         return id;
     }
@@ -82,13 +78,6 @@ public class Tag {
         this.value = value;
     }
 
-    public List<CommentTag> getCommentTags() {
-        return commentTags;
-    }
-
-    public void setCommentTags(List<CommentTag> commentTags) {
-        this.commentTags = commentTags;
-    }
 
     @Override
     public String toString() {
@@ -97,7 +86,6 @@ public class Tag {
                 ", createdOn=" + createdOn +
                 ", createdBy=" + createdBy +
                 ", value='" + value + '\'' +
-                ", commentTags=" + commentTags +
                 '}';
     }
 }

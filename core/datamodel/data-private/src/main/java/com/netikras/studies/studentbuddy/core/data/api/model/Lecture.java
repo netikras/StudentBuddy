@@ -4,7 +4,6 @@ import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,8 +12,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -76,7 +73,7 @@ public class Lecture {
     private StudentsGroup studentsGroup;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ExclusiveLectureStudent> exclusiveStudents;
+    private List<LectureGuest> exclusiveStudents;
 
     public String getId() {
         return id;
@@ -158,11 +155,11 @@ public class Lecture {
         this.studentsGroup = studentsGroup;
     }
 
-    public List<ExclusiveLectureStudent> getExclusiveStudents() {
+    public List<LectureGuest> getExclusiveStudents() {
         return exclusiveStudents;
     }
 
-    public void setExclusiveStudents(List<ExclusiveLectureStudent> exclusiveStudents) {
+    public void setExclusiveStudents(List<LectureGuest> exclusiveStudents) {
         this.exclusiveStudents = exclusiveStudents;
     }
 
