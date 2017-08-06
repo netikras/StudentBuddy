@@ -1,10 +1,8 @@
-package com.netikras.studies.studentbuddy.core.data.api.model;
-
+package com.netikras.studies.studentbuddy.core.data.sys.model;
 
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,15 +10,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "personel_member")
-public class PersonelMember {
+@Table(name = "role")
+public class Role {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -29,22 +29,20 @@ public class PersonelMember {
     @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
-    @Column(name = "created_on")
+    @Column(name = "username", unique = true, nullable = false)
+    @ModelTransform(dtoFieldName = "name", dtoUpdatable = false)
+    private String name;
+
+    @Column(name = "created_on", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
-    @Column(name = "updated_on")
-    @Temporal(TemporalType.TIMESTAMP)
-    @UpdateTimestamp
-    private Date updatedOn;
-
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "person_id")
-    private Person person;
-
-    @Column(name = "title")
-    private String title;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
+    private User createdBy;
 
     public String getId() {
         return id;
@@ -52,6 +50,14 @@ public class PersonelMember {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getCreatedOn() {
@@ -62,38 +68,21 @@ public class PersonelMember {
         this.createdOn = createdOn;
     }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override
     public String toString() {
-        return "PersonelMember{" +
+        return "Role{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", createdOn=" + createdOn +
-                ", updatedOn=" + updatedOn +
-                ", person=" + person +
-                ", title='" + title + '\'' +
+                ", createdBy=" + createdBy +
                 '}';
     }
 }

@@ -26,6 +26,7 @@ public class Initializer extends GenericWebApplicationInitializer implements Web
         System.out.println("Providing mapping URLs");
         return new String[] {
                 "/studbud/api/*",
+//                "/user/login"
 
         };
     }

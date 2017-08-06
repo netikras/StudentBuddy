@@ -27,14 +27,19 @@ import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages = {
         P.BASE_PACKAGE + ".api",
-        P.BASE_PACKAGE + ".core.service"
+        P.BASE_PACKAGE + ".core"
 })
 @EnableJpaRepositories(basePackages = {
-        P.BASE_PACKAGE + ".core.data.api.dao"
+        P.BASE_PACKAGE + ".core.data.api.dao",
+        P.BASE_PACKAGE + ".core.data.sys.dao"
 })
 @EnableTransactionManagement
 public class ApiConfig {
 
+    String[] datamodelPackages = {
+            P.BASE_PACKAGE + ".core.data.api.model",
+            P.BASE_PACKAGE + ".core.data.sys.model"
+    };
 
     @Bean
     public DataSource dataSource() {
@@ -46,7 +51,8 @@ public class ApiConfig {
         LocalContainerEntityManagerFactoryBean lef = new LocalContainerEntityManagerFactoryBean();
         lef.setDataSource(dataSource);
         lef.setJpaVendorAdapter(jpaVendorAdapter);
-        lef.setPackagesToScan(P.BASE_PACKAGE + ".core.data.api.model");
+        lef.setPackagesToScan(datamodelPackages);
+
         return lef;
     }
 

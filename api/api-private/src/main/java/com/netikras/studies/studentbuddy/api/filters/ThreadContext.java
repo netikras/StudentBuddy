@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.filters;
 
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -18,6 +20,8 @@ public class ThreadContext {
     private HttpServletResponse response;
 
     private HttpSession session;
+
+    private User user;
 
     private Map<Object, Object> extras;
 
@@ -54,6 +58,26 @@ public class ThreadContext {
     }
 
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setNewUser(User user) {
+        setUser(user);
+        setSession(getRequest().getSession(true));
+        getSession().setAttribute("user", user);
+    }
+
+    public void removeUser() {
+        if (getSession() != null) {
+            getSession().removeAttribute("user");
+        }
+    }
+
     public HttpServletRequest getRequest() {
         return request;
     }
@@ -61,7 +85,12 @@ public class ThreadContext {
     public void setRequest(HttpServletRequest request) {
         this.request = request;
         if (request != null) {
-            setSession(request.getSession(false));
+            HttpSession httpSession = request.getSession(false);
+            if (httpSession != null) {
+                setSession(session);
+                setUser((User) session.getAttribute("user"));
+            }
+
         }
     }
 
@@ -95,6 +124,7 @@ public class ThreadContext {
                 "request=" + request +
                 ", response=" + response +
                 ", session=" + session +
+                ", user=" + user +
                 ", extras=" + extras +
                 '}';
     }

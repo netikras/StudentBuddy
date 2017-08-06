@@ -52,7 +52,7 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     @Transactional
-    public List<Lecture> findLecturesForStudent(String studentId, long afterTimestamp, long beforeTimestamp) {
+    public List<Lecture> findLecturesForGuest(String studentId, long afterTimestamp, long beforeTimestamp) {
 
         List<Lecture> lectures = new ArrayList<>();
         Student student = studentDao.findOne(studentId);
@@ -67,7 +67,7 @@ public class SchoolServiceImpl implements SchoolService {
             }
         }
 
-        lectures.addAll(lectureDao.findByExclusiveStudentsContainingAndStartsOnBetween(student, new Date(afterTimestamp), new Date(beforeTimestamp)));
+        lectures.addAll(lectureDao.findByLectureGuestsContainingAndStartsOnBetween(student, new Date(afterTimestamp), new Date(beforeTimestamp)));
 
         return lectures;
     }

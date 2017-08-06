@@ -9,7 +9,7 @@ public interface SchoolService {
 
     List<Lecture> findLecturesForGroup(String groupId, long afterTimestamp, long beforeTimestamp);
 
-    List<Lecture> findLecturesForStudent(String groupId, long afterTimestamp, long beforeTimestamp);
+    List<Lecture> findLecturesForGuest(String groupId, long afterTimestamp, long beforeTimestamp);
 
     List<Lecture> findLecturesForLecturer(String groupId, long afterTimestamp, long beforeTimestamp);
 

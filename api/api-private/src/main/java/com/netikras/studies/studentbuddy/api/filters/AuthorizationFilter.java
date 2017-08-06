@@ -33,7 +33,8 @@ public class AuthorizationFilter implements Filter {
         requestContext.setRequest((HttpServletRequest) request);
         requestContext.setResponse((HttpServletResponse) response);
 
-        isLoggedIn = requestContext.isSessionValid();
+        isLoggedIn = requestContext.isSessionValid()
+                && requestContext.getUser() != null;
 
         if (isLoggedIn || isAimingToLogin((HttpServletRequest) request)) {
             chain.doFilter(request, response);

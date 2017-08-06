@@ -68,10 +68,10 @@ public interface LectureService {
 
     void deleteTest(String id);
 
-    void deleteTestsByDiscipline(String testId, String disciplineId);
+    void deleteTestsByDiscipline(String disciplineId);
 
-    void deleteTestsByGroup(String testId, String groupId);
+    void deleteTestsByGroup(String groupId);
 
-    void deleteTestsByGroupAndDiscipline(String testId, String groupId, String disciplineId);
+    void deleteTestsByGroupAndDiscipline(String groupId, String disciplineId);
 
 }

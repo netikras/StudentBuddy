@@ -18,13 +18,6 @@ public class PersonServiceImpl implements PersonService {
     @Resource
     private PersonDao personDao;
 
-    @Resource
-    private StudentDao studentDao;
-
-    @Resource
-    private LecturerDao lecturerDao;
-
-
     @Override
     public Person findPerson(String id) {
         return personDao.findOne(id);
@@ -70,33 +63,4 @@ public class PersonServiceImpl implements PersonService {
         return personDao.save(person);
     }
 
-    @Override
-    public List<Lecturer> getLecturersByPerson(String personId) {
-        return lecturerDao.findByPerson_Id(personId);
-    }
-
-    @Override
-    public Lecturer getLecturer(String id) {
-        return lecturerDao.findOne(id);
-    }
-
-    @Override
-    public Lecturer createLecturer(Lecturer lecturer) {
-        return lecturerDao.save(lecturer);
-    }
-
-    @Override
-    public Lecturer updateLecturer(Lecturer lecturer) {
-        return lecturerDao.save(lecturer);
-    }
-
-    @Override
-    public void deleteLecturer(String id) {
-        lecturerDao.delete(id);
-    }
-
-    @Override
-    public void deleteLecturerByPerson(String personId) {
-        lecturerDao.deleteAllByPerson_Id(personId);
-    }
 }

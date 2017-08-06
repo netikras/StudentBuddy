@@ -4,6 +4,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.meta.Action;
+import com.netikras.studies.studentbuddy.core.meta.Resource;
+import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/schedule")
+@Authorizable(resource = Resource.LECTURE, action = Action.GET)
 public class TimetableController {
 
     private SchoolService schoolService;
@@ -108,7 +112,7 @@ public class TimetableController {
             @PathVariable(name = "after") long afterTimestamp,
             @PathVariable(name = "before") long beforeTimestamp
     ) {
-        List<Lecture> lectures = schoolService.findLecturesForStudent(studentId, afterTimestamp, beforeTimestamp);
+        List<Lecture> lectures = schoolService.findLecturesForGuest(studentId, afterTimestamp, beforeTimestamp);
         return toLectureDtos(lectures);
     }
 
@@ -146,6 +150,7 @@ public class TimetableController {
             method = RequestMethod.POST
     )
     @ResponseBody
+    @Authorizable(resource = Resource.LECTURE, action = Action.COMMENT_CREATE)
     public void comment(
             @PathVariable(name = "lectureId") String lectureId,
             @RequestBody(required = true) CommentDto commentDto

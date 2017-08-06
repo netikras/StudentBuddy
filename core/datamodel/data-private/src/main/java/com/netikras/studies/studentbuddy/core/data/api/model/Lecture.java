@@ -73,7 +73,7 @@ public class Lecture {
     private StudentsGroup studentsGroup;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LectureGuest> exclusiveStudents;
+    private List<LectureGuest> lectureGuests;
 
     public String getId() {
         return id;
@@ -155,12 +155,12 @@ public class Lecture {
         this.studentsGroup = studentsGroup;
     }
 
-    public List<LectureGuest> getExclusiveStudents() {
-        return exclusiveStudents;
+    public List<LectureGuest> getLectureGuests() {
+        return lectureGuests;
     }
 
-    public void setExclusiveStudents(List<LectureGuest> exclusiveStudents) {
-        this.exclusiveStudents = exclusiveStudents;
+    public void setLectureGuests(List<LectureGuest> lectureGuests) {
+        this.lectureGuests = lectureGuests;
     }
 
     public void addComment(Comment comment) {
@@ -185,7 +185,7 @@ public class Lecture {
                 ", room=" + room +
                 ", lecturer=" + lecturer +
                 ", studentsGroup=" + studentsGroup +
-                ", exclusiveStudents=" + exclusiveStudents +
+                ", lectureGuests=" + lectureGuests +
                 '}';
     }
 }
