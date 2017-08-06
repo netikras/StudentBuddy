@@ -40,24 +40,31 @@ public class PasswordRequirement {
 
 
     @Column(name = "title", nullable = false)
+    @ModelTransform(dtoFieldName = "name")
     private String title;
 
     @Column(name = "enabled", nullable = false)
+    @ModelTransform(dtoFieldName = "enabled")
     private boolean enabled;
 
     @Column(name = "whitelist")
+    @ModelTransform(dtoFieldName = "whitelist")
     private String allowedValues; // Whitelist and blacklist
 
     @Column(name = "blacklist")
+    @ModelTransform(dtoFieldName = "blacklist")
     private String deniedValues;
 
     @Column(name = "count_max", nullable = false)
+    @ModelTransform(dtoFieldName = "countMax")
     private int countMax;
 
     @Column(name = "count_min", nullable = false)
+    @ModelTransform(dtoFieldName = "countMin")
     private int countMin;
 
     @Column(name = "message", nullable = false)
+    @ModelTransform(dtoFieldName = "message")
     private String warningMessage;
 
 

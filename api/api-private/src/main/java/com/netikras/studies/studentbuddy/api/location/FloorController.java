@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.service.FloorService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP;
@@ -24,6 +27,9 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.ROOM;
 @RequestMapping(value = "/floor")
 public class FloorController {
 
+    
+    @Resource
+    private FloorService floorService;
 
 
     @RequestMapping(
@@ -33,7 +39,7 @@ public class FloorController {
     @ResponseBody
     @Authorizable(resource = FLOOR, action = Action.GET)
     public BuildingFloorDto getBuildingFloor(@PathVariable(name = "id") String id) {
-        BuildingFloor buildingFloor = locationService.getFloor(id);
+        BuildingFloor buildingFloor = floorService.getFloor(id);
         BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
@@ -48,7 +54,7 @@ public class FloorController {
             @RequestBody BuildingFloorDto buildingFloorDto
     ) {
         BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto);
-        buildingFloor = locationService.updateFloor(buildingFloor);
+        buildingFloor = floorService.updateFloor(buildingFloor);
         BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
@@ -63,7 +69,7 @@ public class FloorController {
             @RequestBody BuildingFloorDto buildingFloorDto
     ) {
         BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto);
-        buildingFloor = locationService.createFloor(buildingFloor);
+        buildingFloor = floorService.createFloor(buildingFloor);
         BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
@@ -74,7 +80,7 @@ public class FloorController {
     )
     @Authorizable(resource = FLOOR, action = Action.DELETE)
     public void deleteBuildingFloor(@PathVariable(name = "id") String id) {
-        locationService.deleteFloor(id);
+        floorService.deleteFloor(id);
     }
 
     @RequestMapping(
@@ -84,7 +90,7 @@ public class FloorController {
     @ResponseBody
     @Authorizable(resource = ROOM, action = Action.GET)
     public LectureRoomDto getLectureRoom(@PathVariable(name = "id") String id) {
-        LectureRoom lectureRoom = locationService.getRoom(id);
+        LectureRoom lectureRoom = floorService.getRoom(id);
         LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
@@ -99,7 +105,7 @@ public class FloorController {
             @RequestBody LectureRoomDto lectureRoomDto
     ) {
         LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto);
-        lectureRoom = locationService.updateRoom(lectureRoom);
+        lectureRoom = floorService.updateRoom(lectureRoom);
         LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
@@ -114,7 +120,7 @@ public class FloorController {
             @RequestBody LectureRoomDto lectureRoomDto
     ) {
         LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto);
-        lectureRoom = locationService.createRoom(lectureRoom);
+        lectureRoom = floorService.createRoom(lectureRoom);
         LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
@@ -125,7 +131,7 @@ public class FloorController {
     )
     @Authorizable(resource = ROOM, action = Action.DELETE)
     public void deleteLectureRoom(@PathVariable(name = "id") String id) {
-        locationService.deleteRoom(id);
+        floorService.deleteRoom(id);
     }
 
 
@@ -140,7 +146,7 @@ public class FloorController {
     @ResponseBody
     @Authorizable(resource = FLOOR_MAP, action = Action.GET)
     public FloorLayoutDto getFloorLayout(@PathVariable(name = "id") String id) {
-        FloorLayout floorLayout = locationService.getFloorLayout(id);
+        FloorLayout floorLayout = floorService.getFloorLayout(id);
         FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
@@ -155,7 +161,7 @@ public class FloorController {
             @RequestBody FloorLayoutDto floorLayoutDto
     ) {
         FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto);
-        floorLayout = locationService.updateFloorLayout(floorLayout);
+        floorLayout = floorService.updateFloorLayout(floorLayout);
         FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
@@ -170,7 +176,7 @@ public class FloorController {
             @RequestBody FloorLayoutDto floorLayoutDto
     ) {
         FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto);
-        floorLayout = locationService.createFloorLayout(floorLayout);
+        floorLayout = floorService.createFloorLayout(floorLayout);
         FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
@@ -181,7 +187,7 @@ public class FloorController {
     )
     @Authorizable(resource = FLOOR_MAP, action = Action.DELETE)
     public void deleteFloorLayout(@PathVariable(name = "id") String id) {
-        locationService.deleteFloorLayout(id);
+        floorService.deleteFloorLayout(id);
     }
 
 }

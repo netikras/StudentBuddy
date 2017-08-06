@@ -44,6 +44,37 @@ public class ThreadContext {
             getExtras().clear();
     }
 
+    public int persistExtrasToSession(boolean overwrite) {
+        if (getExtras() == null) return 0;
+        if (getSession() == null) return 0;
+        int total = 0;
+
+        for (Map.Entry<Object, Object> entry : getExtras().entrySet()) {
+            Object key = entry.getKey();
+            if (!String.class.isAssignableFrom(key.getClass())) continue;
+            if (getSession().getAttribute((String) key) != null && !overwrite) continue;
+
+            getSession().setAttribute((String) key, entry.getValue());
+            total++;
+        }
+
+        return total;
+    }
+
+    public int persistExtraToSession(Object key, boolean overwrite) {
+        if (key == null) return 0;
+        if (getExtras() == null) return 0;
+        if (getSession() == null) return 0;
+        if (!String.class.isAssignableFrom(key.getClass())) return 0;
+
+        Object value = getExtras().get(key);
+
+        if (getSession().getAttribute((String) key) != null && ! overwrite) return 0;
+        getSession().setAttribute((String) key, value);
+
+        return 1;
+    }
+
     public boolean isSessionValid() {
         return getSession() != null
                 && (getInactiveInterval() / 1000) < getSession().getMaxInactiveInterval()

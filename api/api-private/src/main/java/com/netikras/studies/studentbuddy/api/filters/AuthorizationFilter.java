@@ -5,27 +5,31 @@ import com.netikras.tools.common.remote.http.HttpStatus;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.IOException;
 
-@WebFilter
+//@WebFilter
 public class AuthorizationFilter implements Filter {
 
 
+    private ServletContext servletContext;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("STARTING FILTER");
+        servletContext = filterConfig.getServletContext();
 
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
+        System.out.println("INCOMING REQUEST");
         boolean isLoggedIn;
 
         ThreadContext requestContext = ThreadContext.current();
@@ -39,7 +43,8 @@ public class AuthorizationFilter implements Filter {
         if (isLoggedIn || isAimingToLogin((HttpServletRequest) request)) {
             chain.doFilter(request, response);
         } else {
-            redirectToLogin(requestContext);
+//            redirectToLogin(requestContext);
+            ((HttpServletResponse) response).sendError(HttpStatus.UNAUTHORIZED.getCode(), "Not logged in");
         }
 
         requestContext.clear(true);
@@ -52,15 +57,14 @@ public class AuthorizationFilter implements Filter {
     }
 
 
-
     private boolean isAimingToLogin(HttpServletRequest request) {
-        return request.getRequestURI().contains("/login.html");
+        return request.getRequestURI().endsWith("/login");
     }
 
     public void redirectToLogin(ThreadContext context) {
         HttpServletResponse response = context.getResponse();
         try {
-            response.sendRedirect("/login.html");
+            response.sendRedirect(servletContext.getContextPath() + "/api/user/login");
         } catch (IOException e) {
             e.printStackTrace();
             try {

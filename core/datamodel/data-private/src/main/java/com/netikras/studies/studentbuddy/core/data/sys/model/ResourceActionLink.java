@@ -1,28 +1,30 @@
 package com.netikras.studies.studentbuddy.core.data.sys.model;
 
+import com.netikras.studies.studentbuddy.core.meta.Action;
+import com.netikras.studies.studentbuddy.core.meta.Resource;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "role")
-public class Role {
+@Table(name = "resource_action")
+public class ResourceActionLink {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -31,20 +33,30 @@ public class Role {
     @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
-    @Column(name = "username", unique = true, nullable = false)
-    @ModelTransform(dtoFieldName = "name", dtoUpdatable = false)
-    private String name;
-
     @Column(name = "created_on", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
     @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
-    private User createdBy;
+    @Column(name = "resource")
+    @Enumerated(EnumType.STRING)
+    private Resource resource;
+
+    @Column(name = "action")
+    @Enumerated(EnumType.STRING)
+    private Action action;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "role_permission_id")
+    private RolePermissions rolePermission;
+
+
+    public boolean isLike(ResourceActionLink otherLnk) {
+        return otherLnk != null
+                && getResource().equals(otherLnk.getResource())
+                && getAction().equals(otherLnk.getAction());
+    }
 
     public String getId() {
         return id;
@@ -52,14 +64,6 @@ public class Role {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Date getCreatedOn() {
@@ -70,21 +74,38 @@ public class Role {
         this.createdOn = createdOn;
     }
 
-    public User getCreatedBy() {
-        return createdBy;
+    public Resource getResource() {
+        return resource;
     }
 
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    public RolePermissions getRolePermission() {
+        return rolePermission;
+    }
+
+    public void setRolePermission(RolePermissions rolePermission) {
+        this.rolePermission = rolePermission;
     }
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "ResourceActionLink{" +
                 "id='" + id + '\'' +
-                ", name='" + name + '\'' +
                 ", createdOn=" + createdOn +
-                ", createdBy=" + createdBy +
+                ", resource=" + resource +
+                ", action=" + action +
+                ", rolePermission=" + rolePermission +
                 '}';
     }
 }
