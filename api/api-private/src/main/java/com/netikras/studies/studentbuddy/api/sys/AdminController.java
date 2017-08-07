@@ -44,7 +44,7 @@ public class AdminController {
     @ResponseBody
     public List<SystemSettingDto> getSettings() {
         List<SystemSetting> settings = systemService.fetchSystemSettings();
-        ModelMapper.transformAll(settings, SystemSetting.class);
+        ModelMapper.transformAll(settings, SystemSettingDto.class);
         List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) ModelMapper.transformAll(settings, SystemSettingDto.class);
         return settingDtos;
     }

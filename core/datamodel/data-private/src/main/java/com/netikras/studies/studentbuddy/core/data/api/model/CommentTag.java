@@ -11,7 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -41,11 +41,11 @@ public class CommentTag {
 
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false, cascade = CascadeType.ALL)
-    @JoinTable(name = "comment_id")
+    @JoinColumn(name = "comment_id")
     private Comment comment;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
-    @JoinTable(name = "tag_id")
+    @JoinColumn(name = "tag_id")
     private Tag tag;
 
     public String getId() {

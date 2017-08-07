@@ -5,20 +5,17 @@ import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "tags")
@@ -38,7 +35,7 @@ public class Tag {
     private Date createdOn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "creator_id")
+    @JoinColumn(name = "creator_id")
     @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
     private Person createdBy;
 

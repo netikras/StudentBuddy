@@ -25,15 +25,25 @@ public class ThreadContext {
 
     private Map<Object, Object> extras;
 
+    private static Map<Thread, ThreadContext> contexts = new HashMap<>();
+
+    private static ThreadLocal<ThreadContext> context = null;
 
     public static ThreadContext current() {
-        ThreadLocal<ThreadContext> context = new ThreadLocal<>();
-        ThreadContext threadContext = context.get();
-        if (threadContext == null) {
-            threadContext = new ThreadContext();
-            context.set(threadContext);
+//        ThreadLocal<ThreadContext> context = new ThreadLocal<>();
+//        ThreadContext threadContext = context.get();
+//        if (threadContext == null) {
+//            threadContext = new ThreadContext();
+//            context.set(threadContext);
+//        }
+//        return threadContext;
+        if (context == null) {
+            context = new ThreadLocal<>();
         }
-        return threadContext;
+        if (context.get() == null) {
+            context.set(new ThreadContext());
+        }
+        return context.get();
     }
 
     public void clear(boolean withExtras) {
@@ -118,7 +128,7 @@ public class ThreadContext {
         if (request != null) {
             HttpSession httpSession = request.getSession(false);
             if (httpSession != null) {
-                setSession(session);
+                setSession(httpSession);
                 setUser((User) session.getAttribute("user"));
             }
 

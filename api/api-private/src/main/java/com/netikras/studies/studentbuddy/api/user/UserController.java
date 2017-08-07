@@ -41,7 +41,7 @@ public class UserController {
             @RequestBody AuthenticationDetail auth
     ) {
 
-        if (auth == null) {
+        if (auth == null || auth.getUsername() == null || auth.getUsername().isEmpty()) {
             auth = new AuthenticationDetail();
             auth.setUsername(username);
             auth.setPassword(password);
@@ -124,6 +124,20 @@ public class UserController {
             @RequestParam(name = "password") String password
     ) {
         userService.changePassword(userId, password);
+    }
+
+    @RequestMapping(
+            value = "/id/{id}",
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.GET)
+    public UserDto getUser(
+            @PathVariable(name = "id") String userId
+    ) {
+        UserDto dto;
+        User user = userService.findUser(userId);
+        dto = ModelMapper.transform(user, new UserDto());
+        return dto;
     }
 
 }

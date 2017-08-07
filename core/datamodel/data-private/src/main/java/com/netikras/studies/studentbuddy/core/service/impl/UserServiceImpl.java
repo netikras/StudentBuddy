@@ -44,6 +44,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        if (user == null) return null;
+        if (user.getPasswordHash() != null) {
+            user.setPasswordHash(user.getPasswordHash().toLowerCase());
+        }
         return userDao.save(user);
     }
 
@@ -95,8 +99,8 @@ public class UserServiceImpl implements UserService {
 
     public String hashPassword(String password) {
         byte[] raw = IntegrityUtils.sha256sum(password.getBytes());
-        password = IntegrityUtils.bytesToHexString(raw);
-
+        password = IntegrityUtils.bytesToHexString(raw).toLowerCase();
+        System.out.println("pwhash=" + password);
         return password;
     }
 

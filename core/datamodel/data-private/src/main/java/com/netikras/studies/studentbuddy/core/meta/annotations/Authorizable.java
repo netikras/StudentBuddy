@@ -18,9 +18,9 @@ public @interface Authorizable {
      * Annotated resource refers to some action. This is the action name.
      * @return
      */
-    Action[] action();
+    Action action();
 
-    Resource[] resource();
+    Resource resource();
 
     /**
      * Hardcoded required roles for this particular action action.<br/>

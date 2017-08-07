@@ -10,7 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -46,11 +46,11 @@ public class DisciplineTest {
     private Date startsOn;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinTable(name = "lecture_id")
+    @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinTable(name = "discipline_id")
+    @JoinColumn(name = "discipline_id")
     private Discipline discipline;
 
 

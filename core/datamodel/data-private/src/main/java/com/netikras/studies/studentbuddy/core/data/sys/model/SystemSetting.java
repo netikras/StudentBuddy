@@ -43,7 +43,7 @@ public class SystemSetting {
     private Date updatedOn;
 
     // TODO must NOT be optional. Revert after testing
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "modified_by")
     @ModelTransform(dtoFieldName = "updatedBy", dtoValueExtractField = "name")
     private User modifiedBy;
