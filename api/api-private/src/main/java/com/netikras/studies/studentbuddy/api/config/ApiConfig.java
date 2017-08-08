@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.config;
 
+import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -21,8 +21,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.util.Properties;
-
-import static org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType.H2;
 
 /**
  * Created by netikras on 17.6.21.
@@ -101,6 +99,13 @@ public class ApiConfig {
         transactionManager.setEntityManagerFactory(entityManagerFactoryBean.getObject());
         return transactionManager;
     }
+
+
+    @Bean
+    public AuthorizationFilter authorizationFilter() {
+        return new AuthorizationFilter();
+    }
+
 
 
     class PropertiesWrapper {

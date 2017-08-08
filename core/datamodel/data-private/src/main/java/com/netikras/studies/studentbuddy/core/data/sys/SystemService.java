@@ -103,10 +103,59 @@ public class SystemService {
         return null;
     }
 
-    public String getSettingValue(String name) {
+    public String getSettingValue(String name, String defaultValue) {
         SystemSetting setting = getSetting(name);
-        if (setting == null) return null;
+        if (setting == null) return defaultValue;
+        if (setting.getValue() == null && defaultValue != null) {
+            return defaultValue;
+        }
         return setting.getValue();
+    }
+
+    public boolean getSettingValue(String name, boolean defaultValue) {
+        String settingValue = getSettingValue(name, ""+defaultValue);
+        boolean result = defaultValue;
+        try {
+            result = Boolean.valueOf(settingValue);
+        } catch (Throwable ignored) {}
+
+        return result;
+    }
+
+    public int getSettingValue(String name, int defaultValue) {
+        String settingValue = getSettingValue(name, ""+defaultValue);
+        int result = defaultValue;
+        try {
+            result = Integer.valueOf(settingValue);
+        } catch (Throwable ignored) {}
+
+        return result;
+    }
+
+    public long getSettingValue(String name, long defaultValue) {
+        String settingValue = getSettingValue(name, ""+defaultValue);
+        long result = defaultValue;
+        try {
+            result = Long.valueOf(settingValue);
+        } catch (Throwable ignored) {}
+
+        return result;
+    }
+
+    public int getSettingValue(SysProp.IntProperty property) {
+        return getSettingValue(property.getName(), property.getDefaultValue());
+    }
+
+    public long getSettingValue(SysProp.LongProperty property) {
+        return getSettingValue(property.getName(), property.getDefaultValue());
+    }
+
+    public boolean getSettingValue(SysProp.BooleanProperty property) {
+        return getSettingValue(property.getName(), property.getDefaultValue());
+    }
+
+    public String getSettingValue(SysProp.StringProperty property) {
+        return getSettingValue(property.getName(), property.getDefaultValue());
     }
 
 

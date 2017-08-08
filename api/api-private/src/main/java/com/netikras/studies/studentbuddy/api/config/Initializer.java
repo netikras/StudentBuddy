@@ -3,8 +3,10 @@ package com.netikras.studies.studentbuddy.api.config;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
 import java.util.EnumSet;
 
 
@@ -46,7 +48,10 @@ public class Initializer extends GenericWebApplicationInitializer implements Web
         EnumSet<DispatcherType> disps = EnumSet.of(
                 DispatcherType.REQUEST, DispatcherType.FORWARD);
 
-        getServletContext().addFilter("authFilter", AuthorizationFilter.class)
+        DelegatingFilterProxy authFilter = new DelegatingFilterProxy("authFilterImpl");
+        authFilter.setTargetFilterLifecycle(true);
+
+        getServletContext().addFilter("authFilter", authFilter)
                 .addMappingForUrlPatterns(disps, true, getMappingUrls());
         System.out.println("Filter added");
     }

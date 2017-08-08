@@ -1,13 +1,15 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
-import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
 import com.netikras.studies.studentbuddy.core.meta.PasswordValidationResult;
 import com.netikras.studies.studentbuddy.core.meta.PasswordValidator;
 import com.netikras.studies.studentbuddy.core.service.UserService;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.remote.AuthenticationDetail;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import com.netikras.tools.common.security.IntegrityUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,16 @@ public class UserServiceImpl implements UserService {
 
         String username = auth.getUsername();
         String password = auth.getPassword();
+
+        if (!systemService.getSettingValue(SysProp.SESSION_ENABLE)) {
+            if (!"system".equals(username)) {
+                throw new FriendlyUncheckedException()
+                        .setMessage1("Cannot log in")
+                        .setMessage2("New logins have been disabled by administrator")
+                        .setStatusCode(HttpStatus.SERVICE_UNAVAILABLE)
+                        ;
+            }
+        }
 
         if (username != null && !username.isEmpty()) {
             if (password != null && !password.isEmpty()) {
