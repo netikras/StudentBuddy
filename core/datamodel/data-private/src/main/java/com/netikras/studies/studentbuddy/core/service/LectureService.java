@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.service;
 
+import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 
@@ -73,5 +74,24 @@ public interface LectureService {
     void deleteTestsByGroup(String groupId);
 
     void deleteTestsByGroupAndDiscipline(String groupId, String disciplineId);
+
+
+    // Assignments
+
+    Assignment createAssignment(Assignment assignment);
+
+    Assignment getAssignment(String id);
+
+    Assignment updateAssignment(Assignment assignment);
+
+    void deleteAssignment(String id);
+
+    List<Assignment> getAllAssignmentsForLecture(String id, Date startsAfter, Date startsBefore);
+
+    List<Assignment> getAllAssignmentsForDiscipline(String id, Date startsAfter, Date startsBefore);
+
+    List<Assignment> getAllAssignmentsForGroup(String id, Date startsAfter, Date startsBefore);
+
+    List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore);
 
 }

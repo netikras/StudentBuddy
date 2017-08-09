@@ -49,4 +49,5 @@ public interface StudentService {
     void deleteLectureGuest(String id);
 
 
+    LectureGuest getLectureGuest(String id);
 }

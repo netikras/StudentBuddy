@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -83,6 +84,16 @@ public class School {
 
     public List<SchoolDepartment> getDepartments() {
         return departments;
+    }
+
+    public List<SchoolDepartment> addDepartment(SchoolDepartment department) {
+        List<SchoolDepartment> departmentList = getDepartments();
+        if (departmentList == null) {
+            departmentList = new ArrayList<>();
+            setDepartments(departmentList);
+        }
+        departmentList.add(department);
+        return departmentList;
     }
 
     public void setDepartments(List<SchoolDepartment> departments) {

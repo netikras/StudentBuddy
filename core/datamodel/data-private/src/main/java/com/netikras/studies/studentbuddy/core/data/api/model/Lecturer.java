@@ -31,6 +31,7 @@ public class Lecturer {
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
+    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private Person person;
 
     @Column(name = "degree")

@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * A student or any other person not belonging to an assigned student-group and not a teacher
  */
-public class LectureVisitorDto {
+public class LectureGuestDto {
 
     private String id;
     private Date createdOn;
@@ -68,7 +68,7 @@ public class LectureVisitorDto {
 
     @Override
     public String toString() {
-        return "LectureVisitorDto{" +
+        return "LectureGuestDto{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +

@@ -5,6 +5,7 @@ public enum Resource {
     LECTURE,
     LECTURER,
     TEST,
+    ASSIGNMENT,
     BUILDING,
     BUILDING_SECTION,
     ADDRESS,

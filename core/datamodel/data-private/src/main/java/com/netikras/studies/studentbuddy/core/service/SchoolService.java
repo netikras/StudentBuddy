@@ -1,19 +1,45 @@
 package com.netikras.studies.studentbuddy.core.service;
 
-import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
-
-import java.util.List;
+import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
+import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
+import com.netikras.studies.studentbuddy.core.data.api.model.School;
+import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 
 public interface SchoolService {
 
-    List<Lecture> findLecturesForGroup(String groupId, long afterTimestamp, long beforeTimestamp);
+    School createSchool(School school);
 
-    List<Lecture> findLecturesForGuest(String groupId, long afterTimestamp, long beforeTimestamp);
+    School getSchool(String id);
 
-    List<Lecture> findLecturesForLecturer(String groupId, long afterTimestamp, long beforeTimestamp);
+    School updateSchool(School school);
 
-    List<Lecture> getLecturesForRoom(String groupId, long afterTimestamp, long beforeTimestamp);
+    void deleteSchool(String id);
 
-    void commentLecture(String lectureId, Comment comment);
+
+    SchoolDepartment createSchoolDepartment(SchoolDepartment department);
+
+    SchoolDepartment getSchoolDepartment(String id);
+
+    SchoolDepartment updateSchoolDepartment(SchoolDepartment department);
+
+    void deleteSchoolDepartment(String id);
+
+
+    PersonnelMember createPersonnelMember(PersonnelMember member);
+
+    PersonnelMember getPersonnelMember(String id);
+
+    PersonnelMember updatePersonnelMember(PersonnelMember member);
+
+    void deletePersonnelMember(String id);
+
+
+    Discipline createDiscipline(Discipline discipline);
+
+    Discipline getDiscipline(String id);
+
+    Discipline updateDiscipline(Discipline discipline);
+
+    void removeDiscipline(String id);
+
 }

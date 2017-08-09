@@ -1,111 +1,109 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
-import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.LectureRoomDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.StudentsGroupDao;
-import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
-import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
-import com.netikras.studies.studentbuddy.core.data.api.model.Student;
-import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
-import com.netikras.studies.studentbuddy.core.service.CommentsService;
+import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
+import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
+import com.netikras.studies.studentbuddy.core.data.api.model.School;
+import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class SchoolServiceImpl implements SchoolService {
-
-    @Resource
-    private CommentsService commentsService;
 
     @Resource
     private SchoolDao schoolDao;
 
     @Resource
-    private LectureDao lectureDao;
+    private DisciplineDao disciplineDao;
 
     @Resource
-    private LecturerDao lecturerDao;
+    private SchoolDepartmentDao departmentDao;
 
     @Resource
-    private StudentsGroupDao groupDao;
+    private PersonnelDao personnelDao;
 
-    @Resource
-    private StudentDao studentDao;
-
-    @Resource
-    private LectureRoomDao lectureRoomDao;
 
     @Override
-    @Transactional
-    public List<Lecture> findLecturesForGroup(String groupId, long afterTimestamp, long beforeTimestamp) {
-        return lectureDao.findByStudentsGroupAndStartsOnBetween(groupDao.findOne(groupId), new Date(afterTimestamp), new Date(beforeTimestamp));
+    public School createSchool(School school) {
+        return schoolDao.save(school);
     }
 
     @Override
-    @Transactional
-    public List<Lecture> findLecturesForGuest(String studentId, long afterTimestamp, long beforeTimestamp) {
-
-        List<Lecture> lectures = new ArrayList<>();
-        Student student = studentDao.findOne(studentId);
-
-        if (student == null) return new ArrayList<>();
-
-        List<StudentsGroup> groups = groupDao.findByMembersContaining(student);
-
-        if (groups != null && !groups.isEmpty()) {
-            for (StudentsGroup group : groups) {
-                lectures.addAll(findLecturesForGroup(group.getId(), afterTimestamp, beforeTimestamp));
-            }
-        }
-
-        lectures.addAll(lectureDao.findByLectureGuestsContainingAndStartsOnBetween(student, new Date(afterTimestamp), new Date(beforeTimestamp)));
-
-        return lectures;
+    public School getSchool(String id) {
+        return schoolDao.findOne(id);
     }
 
     @Override
-    @Transactional
-    public List<Lecture> findLecturesForLecturer(String lecturerId, long afterTimestamp, long beforeTimestamp) {
-        Lecturer lecturer = lecturerDao.findOne(lecturerId);
-
-        if (lecturer == null) return new ArrayList<>();
-
-        return lectureDao.findByLecturerAndStartsOnBetween(lecturer, new Date(afterTimestamp), new Date(beforeTimestamp));
+    public School updateSchool(School school) {
+        return schoolDao.save(school);
     }
 
     @Override
-    @Transactional
-    public List<Lecture> getLecturesForRoom(String roomId, long afterTimestamp, long beforeTimestamp) {
-
-        LectureRoom room = lectureRoomDao.findOne(roomId);
-
-        if (room == null) return new ArrayList<>();
-
-        return lectureDao.findByRoomAndStartsOnBetween(room, new Date(afterTimestamp), new Date(beforeTimestamp));
+    public void deleteSchool(String id) {
+        schoolDao.delete(id);
     }
 
     @Override
-    @Transactional
-    public void commentLecture(String lectureId, Comment comment) {
-        if (comment == null) return;
+    public SchoolDepartment createSchoolDepartment(SchoolDepartment department) {
+        return departmentDao.save(department);
+    }
 
-        Lecture lecture = lectureDao.findOne(lectureId);
-        if (lecture == null) return;
+    @Override
+    public SchoolDepartment getSchoolDepartment(String id) {
+        return departmentDao.findOne(id);
+    }
 
-        comment.setEntityId(lectureId);
-        comment.setEntityType("LECTURE");
+    @Override
+    public SchoolDepartment updateSchoolDepartment(SchoolDepartment department) {
+        return departmentDao.save(department);
+    }
 
-        lecture.addComment(comment);
-//        lectureDao.save(lecture);
-        commentsService.createComment(comment);
+    @Override
+    public void deleteSchoolDepartment(String id) {
+        departmentDao.delete(id);
+    }
+
+    @Override
+    public PersonnelMember createPersonnelMember(PersonnelMember member) {
+        return personnelDao.save(member);
+    }
+
+    @Override
+    public PersonnelMember getPersonnelMember(String id) {
+        return personnelDao.findOne(id);
+    }
+
+    @Override
+    public PersonnelMember updatePersonnelMember(PersonnelMember member) {
+        return personnelDao.save(member);
+    }
+
+    @Override
+    public void deletePersonnelMember(String id) {
+        personnelDao.delete(id);
+    }
+
+    @Override
+    public Discipline createDiscipline(Discipline discipline) {
+        return disciplineDao.save(discipline);
+    }
+
+    @Override
+    public Discipline getDiscipline(String id) {
+        return disciplineDao.findOne(id);
+    }
+
+    @Override
+    public Discipline updateDiscipline(Discipline discipline) {
+        return disciplineDao.save(discipline);
+    }
+
+    @Override
+    public void removeDiscipline(String id) {
+        disciplineDao.delete(id);
     }
 }

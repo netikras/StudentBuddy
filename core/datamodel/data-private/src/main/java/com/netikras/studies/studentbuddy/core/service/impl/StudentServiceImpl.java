@@ -158,6 +158,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public LectureGuest getLectureGuest(String id) {
+        return lectureGuestDao.findOne(id);
+    }
+
+    @Override
     public void deleteLectureGuest(String id) {
         lectureGuestDao.delete(id);
     }

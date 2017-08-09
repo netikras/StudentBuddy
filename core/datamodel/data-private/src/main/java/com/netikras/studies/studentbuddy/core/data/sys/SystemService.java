@@ -276,7 +276,6 @@ public class SystemService {
 
         List<RolePermissions> actionPermissions = getPermissionsForResource(resourceName, actionName);
         if (actionPermissions == null || actionPermissions.isEmpty()) return false;
-        // TODO log a warning for above -- there is an action noone is allowed to perform.. that's not right :/
 
         for (RolePermissions permissions : actionPermissions) {
             for (UserRole userRole : user.getRoles()) {

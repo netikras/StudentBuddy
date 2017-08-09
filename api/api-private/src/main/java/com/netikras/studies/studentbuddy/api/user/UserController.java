@@ -68,32 +68,6 @@ public class UserController {
         ThreadContext.current().removeUser();
     }
 
-    @RequestMapping(
-            value = "/new",
-            method = RequestMethod.POST
-    )
-    @ResponseBody
-    @Authorizable(resource = USER, action = Action.CREATE)
-    public UserDto createUser(
-            @RequestBody UserDto userDto
-    ) {
-        User user = ModelMapper.apply(new User(), userDto);
-        user = userService.createUser(user);
-        userDto = ModelMapper.transform(user, new UserDto());
-
-        return userDto;
-    }
-
-    @RequestMapping(
-            value = "/id/{id}",
-            method = RequestMethod.DELETE
-    )
-    @Authorizable(resource = USER, action = Action.DELETE)
-    public void deleteUser(
-            @PathVariable(name = "id") String userId
-    ) {
-        userService.deleteUser(userId);
-    }
 
     @RequestMapping(
             value = "/id/{id}",
@@ -136,6 +110,35 @@ public class UserController {
     ) {
         UserDto dto;
         User user = userService.findUser(userId);
+        dto = ModelMapper.transform(user, new UserDto());
+        return dto;
+    }
+
+    @RequestMapping(
+            value = "/name/{name}",
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.GET)
+    public UserDto getUserByName(
+            @PathVariable(name = "name") String name
+    ) {
+        UserDto dto;
+        User user = userService.findUserByName(name);
+        dto = ModelMapper.transform(user, new UserDto());
+        return dto;
+    }
+
+
+    @RequestMapping(
+            value = "/person/id/{id}",
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.GET)
+    public UserDto getUserByPerson(
+            @PathVariable(name = "id") String userId
+    ) {
+        UserDto dto;
+        User user = userService.findUserByPerson(userId);
         dto = ModelMapper.transform(user, new UserDto());
         return dto;
     }
