@@ -6,3 +6,4 @@ loadDep "spring-jpa"
 loadDep "spring-aop"
 loadDep "commons"
 loadProj ':core:datamodel:data-public'
+loadProj ':commons'

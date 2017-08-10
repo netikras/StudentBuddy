@@ -30,4 +30,6 @@ public interface CommentsService {
     List<Comment> findCommentsByTagId(String tagId);
 
     List<Comment> findCommentsByTagValue(String tagValue);
+
+    List<Comment> findCommentsByPerson(String id);
 }

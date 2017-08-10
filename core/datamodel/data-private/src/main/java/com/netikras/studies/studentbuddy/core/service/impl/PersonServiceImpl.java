@@ -1,12 +1,9 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
-import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,7 +36,7 @@ public class PersonServiceImpl implements PersonService {
                 .findAllByIdOrIdentificationOrPersonalCode(person.getId(), person.getIdentification(), person.getPersonalCode());
 
         if (existing != null && !existing.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Unable to create a new person")
                     .setMessage2("Such person already exists")
                     .setProbableCause(

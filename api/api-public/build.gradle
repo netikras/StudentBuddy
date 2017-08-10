@@ -1,5 +1,6 @@
 apply from: "$rootProject.rootDir/conf/global.gradle"
 
-dependencies {
+loadDep "commons"
 
-}
+loadDep "testing"
+loadProj ":core:datamodel:data-public"

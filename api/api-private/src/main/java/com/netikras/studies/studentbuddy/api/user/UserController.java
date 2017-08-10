@@ -1,12 +1,12 @@
 package com.netikras.studies.studentbuddy.api.user;
 
 import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
-import com.netikras.studies.studentbuddy.core.meta.dto.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.service.UserService;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,14 +31,14 @@ public class UserController {
 
 
     @RequestMapping(
-            value = "/login",
+            value = UserConstants.USER_URL_LOGIN,
             method = RequestMethod.POST
     )
     @ResponseBody
     public UserDto login(
-            @RequestParam(name = "username") String username,
-            @RequestParam(name = "password") String password,
-            @RequestBody AuthenticationDetail auth
+            @RequestParam(name = "username", required = false) String username,
+            @RequestParam(name = "password", required = false) String password,
+            @RequestBody(required = false) AuthenticationDetail auth
     ) {
 
         if (auth == null || auth.getUsername() == null || auth.getUsername().isEmpty()) {
@@ -51,8 +51,10 @@ public class UserController {
         UserDto dto = ModelMapper.transform(user, new UserDto());
 
         if (user == null) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Login failure")
+                    .setMessage2("Incorrect login information")
+                    .setProbableCause(username)
                     ;
         }
 
@@ -61,7 +63,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            value = "/logout",
+            value = UserConstants.USER_URL_LOGOUT,
             method = RequestMethod.POST
     )
     public void logout() {
@@ -70,7 +72,7 @@ public class UserController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = UserConstants.USER_URL_UPDATE_BY_ID,
             method = RequestMethod.PUT
     )
     @Authorizable(resource = USER, action = Action.MODIFY)
@@ -89,7 +91,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = UserConstants.USER_URL_CHANGE_PASSWORD,
             method = RequestMethod.PATCH
     )
     @Authorizable(resource = USER, action = Action.MODIFY)

@@ -28,61 +28,61 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Building getBuilding(String id) {
-        return null;
+        return buildingDao.findOne(id);
     }
 
     @Override
     public Building updateBuilding(Building building) {
-        return null;
+        return buildingDao.save(building);
     }
 
     @Override
     public Building createBuilding(Building building) {
-        return null;
+        return buildingDao.save(building);
     }
 
     @Override
     public void deleteBuilding(String id) {
-
+        buildingDao.delete(id);
     }
 
     @Override
     public BuildingSection getBuildingSection(String id) {
-        return null;
+        return buildingSectionDao.findOne(id);
     }
 
     @Override
     public BuildingSection updateBuildingSection(BuildingSection buildingSection) {
-        return null;
+        return buildingSectionDao.save(buildingSection);
     }
 
     @Override
     public BuildingSection createBuildingSection(BuildingSection buildingSection) {
-        return null;
+        return buildingSectionDao.save(buildingSection);
     }
 
     @Override
     public void deleteBuildingSection(String id) {
-
+        buildingSectionDao.delete(id);
     }
 
     @Override
     public Address getAddress(String id) {
-        return null;
+        return addressDao.findOne(id);
     }
 
     @Override
     public Address updateAddress(Address address) {
-        return null;
+        return addressDao.save(address);
     }
 
     @Override
     public Address createAddress(Address address) {
-        return null;
+        return addressDao.save(address);
     }
 
     @Override
     public void deleteAddress(String id) {
-
+        addressDao.delete(id);
     }
 }

@@ -3,7 +3,7 @@ package com.netikras.studies.studentbuddy.api.user.mgmt;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
-import com.netikras.studies.studentbuddy.core.meta.dto.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;

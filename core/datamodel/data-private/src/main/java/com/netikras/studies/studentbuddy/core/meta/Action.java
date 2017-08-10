@@ -13,6 +13,7 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.ActionRequirement;
  */
 public enum Action {
 
+    _PARAM,
 
     GET,
     CREATE,

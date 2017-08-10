@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.config;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.tools.common.exception.FriendlyException;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.properties.PropertiesAssistant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public abstract class GenericWebApplicationInitializer {
      */
     protected void loadInitialProperties() throws FriendlyException {
         if (initialProperties != null) {
-            throw new FriendlyUncheckedException("Initial properties can be loaded only once!");
+            throw new StudBudUncheckedException("Initial properties can be loaded only once!");
         }
 
         initialProperties = PropertiesAssistant.loadInitProperties(System.getProperties(), getApplicationName());
@@ -67,7 +67,7 @@ public abstract class GenericWebApplicationInitializer {
 
     protected void loadInitialProperties(String prefix) throws FriendlyException {
         if (initialProperties != null) {
-            throw new FriendlyUncheckedException("Initial properties can be loaded only once!");
+            throw new StudBudUncheckedException("Initial properties can be loaded only once!");
         }
 
         initialProperties = PropertiesAssistant.loadInitProperties(System.getProperties(), prefix);

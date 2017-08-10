@@ -26,61 +26,61 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     public BuildingFloor getFloor(String id) {
-        return null;
+        return floorDao.findOne(id);
     }
 
     @Override
     public BuildingFloor updateFloor(BuildingFloor buildingFloor) {
-        return null;
+        return floorDao.save(buildingFloor);
     }
 
     @Override
     public BuildingFloor createFloor(BuildingFloor buildingFloor) {
-        return null;
+        return floorDao.save(buildingFloor);
     }
 
     @Override
     public void deleteFloor(String id) {
-
+        floorDao.delete(id);
     }
 
     @Override
     public LectureRoom getRoom(String id) {
-        return null;
+        return roomDao.findOne(id);
     }
 
     @Override
     public LectureRoom updateRoom(LectureRoom lectureRoom) {
-        return null;
+        return roomDao.save(lectureRoom);
     }
 
     @Override
     public LectureRoom createRoom(LectureRoom lectureRoom) {
-        return null;
+        return roomDao.save(lectureRoom);
     }
 
     @Override
     public void deleteRoom(String id) {
-
+        roomDao.delete(id);
     }
 
     @Override
     public FloorLayout getFloorLayout(String id) {
-        return null;
+        return floorLayoutDao.findOne(id);
     }
 
     @Override
     public FloorLayout updateFloorLayout(FloorLayout floorLayout) {
-        return null;
+        return floorLayoutDao.save(floorLayout);
     }
 
     @Override
     public FloorLayout createFloorLayout(FloorLayout floorLayout) {
-        return null;
+        return floorLayoutDao.save(floorLayout);
     }
 
     @Override
     public void deleteFloorLayout(String id) {
-
+        floorLayoutDao.delete(id);
     }
 }

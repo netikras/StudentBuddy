@@ -1,8 +1,8 @@
 package com.netikras.studies.studentbuddy.api.filters;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class AuthorizationFilter implements Filter {
         boolean isLoggedIn;
 
         if (systemService.getSettingValue(SysProp.SESSION_SUSPEND)) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot proceed")
                     .setMessage2("All requests have been suspended by administrator")
                     .setStatusCode(HttpStatus.SERVICE_UNAVAILABLE)

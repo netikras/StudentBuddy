@@ -25,18 +25,9 @@ public class ThreadContext {
 
     private Map<Object, Object> extras;
 
-    private static Map<Thread, ThreadContext> contexts = new HashMap<>();
-
     private static ThreadLocal<ThreadContext> context = null;
 
     public static ThreadContext current() {
-//        ThreadLocal<ThreadContext> context = new ThreadLocal<>();
-//        ThreadContext threadContext = context.get();
-//        if (threadContext == null) {
-//            threadContext = new ThreadContext();
-//            context.set(threadContext);
-//        }
-//        return threadContext;
         if (context == null) {
             context = new ThreadLocal<>();
         }

@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.core.meta.dto;
+package com.netikras.studies.studentbuddy.core.data.api.dto.meta;
 
 import java.util.Date;
 

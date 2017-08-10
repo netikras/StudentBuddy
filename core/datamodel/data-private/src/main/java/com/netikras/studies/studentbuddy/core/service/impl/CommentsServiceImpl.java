@@ -177,4 +177,10 @@ public class CommentsServiceImpl implements CommentsService {
         List<Comment> comments = commentDao.findAllByTags_Tag_Value(tagValue);
         return comments;
     }
+
+    @Override
+    public List<Comment> findCommentsByPerson(String id) {
+        List<Comment> comments = commentDao.findAllByAuthor_Id(id);
+        return comments;
+    }
 }

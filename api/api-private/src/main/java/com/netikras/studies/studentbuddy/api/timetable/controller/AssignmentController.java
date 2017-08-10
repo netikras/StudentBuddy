@@ -81,7 +81,7 @@ public class AssignmentController {
             throw new StudBudUncheckedException()
                     .setMessage1("Cannot create assignment for lecture")
                     .setMessage2("Lecture with given ID does not exist")
-                    .setProbableCause("ID: " + dueLectureId)
+                    .setProbableCause(dueLectureId)
                     .setErrorCode(HttpStatus.NOT_FOUND.getCode())
                     ;
         }

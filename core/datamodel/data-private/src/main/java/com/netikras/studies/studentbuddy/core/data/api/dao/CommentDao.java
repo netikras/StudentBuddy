@@ -20,4 +20,6 @@ public interface CommentDao extends JpaRepo<Comment> {
 
     List<Comment> findAllByTags_Tag_Id(String tagId);
 
+    List<Comment> findAllByAuthor_Id(String author_id);
+
 }

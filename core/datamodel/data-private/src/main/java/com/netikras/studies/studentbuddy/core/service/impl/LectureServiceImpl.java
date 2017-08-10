@@ -1,15 +1,19 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.core.data.api.dao.AssignmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineTestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class LectureServiceImpl implements LectureService {
 
     @Resource
@@ -17,6 +21,9 @@ public class LectureServiceImpl implements LectureService {
 
     @Resource
     private DisciplineTestDao disciplineTestDao;
+
+    @Resource
+    private AssignmentDao assignmentDao;
 
 
     @Override
@@ -180,5 +187,45 @@ public class LectureServiceImpl implements LectureService {
     @Override
     public void deleteTestsByGroupAndDiscipline(String groupId, String disciplineId) {
         disciplineTestDao.deleteAllByLecture_StudentsGroup_IdAndDiscipline_Id(groupId, disciplineId);
+    }
+
+    @Override
+    public Assignment createAssignment(Assignment assignment) {
+        return assignmentDao.save(assignment);
+    }
+
+    @Override
+    public Assignment getAssignment(String id) {
+        return assignmentDao.findOne(id);
+    }
+
+    @Override
+    public Assignment updateAssignment(Assignment assignment) {
+        return assignmentDao.save(assignment);
+    }
+
+    @Override
+    public void deleteAssignment(String id) {
+        assignmentDao.delete(id);
+    }
+
+    @Override
+    public List<Assignment> getAllAssignmentsForLecture(String id, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByLecture_IdAndDueDateBetween(id, startsAfter, startsBefore);
+    }
+
+    @Override
+    public List<Assignment> getAllAssignmentsForDiscipline(String id, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByDiscipline_IdAndDueDateBetween(id, startsAfter, startsBefore);
+    }
+
+    @Override
+    public List<Assignment> getAllAssignmentsForGroup(String id, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByLecture_StudentsGroup_IdAndDueDateBetween(id, startsAfter, startsBefore);
+    }
+
+    @Override
+    public List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndDueDateBetween(disciplineId, groupId, startsAfter, startsBefore);
     }
 }

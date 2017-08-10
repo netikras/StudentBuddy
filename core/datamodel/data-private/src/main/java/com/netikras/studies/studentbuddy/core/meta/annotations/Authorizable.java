@@ -23,11 +23,25 @@ public @interface Authorizable {
     Resource resource();
 
     /**
-     * Hardcoded required roles for this particular action action.<br/>
+     * Hardcoded required roles for this particular action.<br/>
      * More requirements can be fetched from DB, cache, etc
      * @return
      */
     String[] requiredRoles() default {};
+
+    /**
+     * Should be the {@link #resource()} set to {@link Resource#_PARAM} this field<br/>
+     * specifies the name of a param containing resource name
+     * @return
+     */
+    String resourceParam() default "";
+
+    /**
+     * Should be the {@link #action()} set to {@link Action#_PARAM} this field<br/>
+     * specifies the name of a param containing action name
+     * @return
+     */
+    String actionParam() default "";
 
 
 

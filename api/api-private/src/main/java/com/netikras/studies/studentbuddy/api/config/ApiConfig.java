@@ -2,7 +2,7 @@ package com.netikras.studies.studentbuddy.api.config;
 
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -131,7 +131,7 @@ public class ApiConfig {
             } else if (props != null) {
                 value = props.getProperty(name, defaultValue);
             } else {
-                throw new FriendlyUncheckedException("Properties source is not available.");
+                throw new StudBudUncheckedException("Properties source is not available.");
             }
 
             return value;

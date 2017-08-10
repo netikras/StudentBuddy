@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.timetable.controller;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;

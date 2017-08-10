@@ -1,9 +1,14 @@
 package com.netikras.studies.studentbuddy.api.comments;
 
+import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.commons.model.PagedResults;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -19,25 +24,37 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_CREATE;
+import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_DELETE;
+import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_GET;
+import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.meta.Resource._PARAM;
+import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
+
 @RestController
-@RequestMapping("/comments")
+@RequestMapping(CommentConstants.BASE_URL)
 public class CommentsController {
 
     @Resource
     private CommentsService commentsService;
 
+    @Resource
+    private SystemService systemService;
+
     @RequestMapping(
-            value = "/type/{typeName}/{typeId}",
+            value = CommentConstants.COMMENT_URL_GET_FOR_TYPE,
             method = RequestMethod.GET
     )
     @ResponseBody
+    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_GET)
     public List<CommentDto> getForType(
             @PathVariable(name = "typeName") String typeName,
             @PathVariable(name = "typeId") String typeId
     ) {
+
         List<Comment> comments = commentsService.findComments(typeName, typeId);
         List<CommentDto> commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
@@ -46,10 +63,11 @@ public class CommentsController {
 
 
     @RequestMapping(
-            value = "/type/{typeName}",
+            value = CommentConstants.COMMENT_URL_GET_ALL_FOR_TYPE,
             method = RequestMethod.GET
     )
     @ResponseBody
+    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_GET)
     public List<CommentDto> getAllForType(
             @PathVariable(name = "typeName") String typeName
     ) {
@@ -61,10 +79,11 @@ public class CommentsController {
 
 
     @RequestMapping(
-            value = "/type/{typeName}/{typeId}",
+            value = CommentConstants.COMMENT_URL_DELETE_FOR_TYPE,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Comment has been deleted")
+    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_DELETE)
     public void deleteForType(
             @PathVariable(name = "typeName") String typeName,
             @PathVariable(name = "typeId") String typeId
@@ -74,10 +93,11 @@ public class CommentsController {
 
 
     @RequestMapping(
-            value = "/type/{typeName}",
+            value = CommentConstants.COMMENT_URL_DELETE_ALL_FOR_TYPE,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Comments have been deleted")
+    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_DELETE)
     public void deleteAllForType(
             @PathVariable(name = "typeName") String typeName
     ) {
@@ -85,18 +105,19 @@ public class CommentsController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = CommentConstants.COMMENT_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Comment has been deleted")
     public void deleteById(
             @PathVariable(name = "id") String id
     ) {
+        throwIfActionNotAllowedForCommentId(id, COMMENT_DELETE);
         commentsService.deleteComment(id);
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = CommentConstants.COMMENT_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -104,13 +125,16 @@ public class CommentsController {
             @PathVariable(name = "id") String id
     ) {
         Comment comment = commentsService.findComment(id);
+
+        throwIfActionNotAllowedForComment(comment, COMMENT_GET);
+
         CommentDto commentDto = ModelMapper.transform(comment, new CommentDto());
 
         return commentDto;
     }
 
     @RequestMapping(
-            value = "/",
+            value = CommentConstants.COMMENT_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -118,6 +142,8 @@ public class CommentsController {
             @RequestBody(required = true) CommentDto commentDto
     ) {
         Comment comment = ModelMapper.apply(new Comment(), commentDto);
+
+        throwIfActionNotAllowedForComment(comment, COMMENT_CREATE);
 
         Person author = ModelMapper.apply(new Person(), commentDto.getAuthor());
         author.setId(commentDto.getAuthor().getId()); // throw NPE if author is not supplied!
@@ -133,10 +159,11 @@ public class CommentsController {
     }
 
     @RequestMapping(
-            value = "/type/{typeName}/{typeId}",
+            value = CommentConstants.COMMENT_URL_CREATE_FOR_TYPE,
             method = RequestMethod.POST
     )
     @ResponseBody
+    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_CREATE)
     public CommentDto createNewForType(
             @PathVariable(name = "typeName") String typeName,
             @PathVariable(name = "typeId") String typeId,
@@ -153,7 +180,7 @@ public class CommentsController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = CommentConstants.COMMENT_URL_UPDATE_BY_ID,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -162,7 +189,11 @@ public class CommentsController {
             @PathVariable(name = "id") String id,
             @RequestBody(required = true) CommentDto commentDto
     ) {
-        Comment comment = ModelMapper.apply(commentsService.findComment(id), commentDto);
+        Comment comment = commentsService.findComment(id);
+
+        throwIfActionNotAllowedForComment(comment, COMMENT_MODIFY);
+
+        comment = ModelMapper.apply(comment, commentDto);
         comment = commentsService.updateComment(comment);
         commentDto = ModelMapper.transform(comment, new CommentDto());
 
@@ -171,7 +202,7 @@ public class CommentsController {
 
 
     @RequestMapping(
-            value = "/tag/value/{value}",
+            value = CommentConstants.COMMENT_URL_GET_BY_TAG_VALUE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -183,6 +214,7 @@ public class CommentsController {
         List<CommentDto> commentDtos;
 
         List<Comment> comments = commentsService.findCommentsByTagValue(value);
+        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
         commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
@@ -190,7 +222,7 @@ public class CommentsController {
 
 
     @RequestMapping(
-            value = "/tag/id/{id}",
+            value = CommentConstants.COMMENT_URL_GET_BY_TAG_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -205,9 +237,84 @@ public class CommentsController {
         List<CommentDto> commentDtos = null;
 
         List<Comment> comments = commentsService.findCommentsByTagId(id);
+        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
         commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
+    }
+
+    @RequestMapping(
+            value = CommentConstants.COMMENT_URL_GET_BY_PERSON_ID,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public List<CommentDto> getAllByPerson(
+            @PathVariable(name = "id") String id
+    ) {
+        List<Comment> comments = commentsService.findCommentsByPerson(id);
+        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
+        List<CommentDto> commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
+
+        return commentDtos;
+    }
+
+    @RequestMapping(
+            value = CommentConstants.COMMENT_URL_DELETE_BY_PERSON_ID,
+            method = RequestMethod.DELETE
+    )
+    @ResponseBody
+    @Transactional
+    public void deleteAllByPerson(
+            @PathVariable(name = "id") String id
+    ) {
+        List<Comment> comments = commentsService.findCommentsByPerson(id);
+        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_DELETE));
+
+        for (Comment comment : comments) {
+            commentsService.deleteComment(comment.getId());
+        }
+    }
+
+
+
+
+
+
+
+
+
+    public boolean isUserAllowedTo(String entity, Action action) {
+        boolean allowed = false;
+
+        if (entity != null && !entity.isEmpty()) {
+            try {
+                com.netikras.studies.studentbuddy.core.meta.Resource resource =
+                        com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(entity);
+                User user = ThreadContext.current().getUser();
+                allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
+            } catch (Exception ignore) {
+            }
+        }
+
+        return allowed;
+    }
+
+    private void throwIfActionNotAllowedForComment(Comment comment, Action action) {
+        String entity = comment.getEntityType();
+
+        if (!isUserAllowedTo(entity, action)) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot " + action.name().toLowerCase() + " a comment")
+                    .setMessage2("User is not allowed to perform this action")
+                    .setProbableCause(comment.getId())
+                    .setStatusCode(UNAUTHORIZED)
+                    ;
+        }
+    }
+
+    private void throwIfActionNotAllowedForCommentId(String commentId, Action action) {
+        Comment comment = commentsService.findComment(commentId);
+        throwIfActionNotAllowedForComment(comment, action);
     }
 
 

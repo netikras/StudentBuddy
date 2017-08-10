@@ -2,6 +2,9 @@ package com.netikras.studies.studentbuddy.core.meta;
 
 public enum Resource {
 
+
+    _PARAM,
+
     LECTURE,
     LECTURER,
     TEST,

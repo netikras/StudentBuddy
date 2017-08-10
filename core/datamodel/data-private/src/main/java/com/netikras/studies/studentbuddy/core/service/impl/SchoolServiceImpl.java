@@ -9,9 +9,11 @@ import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+@Service
 public class SchoolServiceImpl implements SchoolService {
 
     @Resource

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import java.util.Date;
+import java.util.List;
+
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
@@ -129,7 +132,79 @@ public class TestsController {
     }
 
 
-    // TODO implement findBy.... methods
+    // findBy
+
+
+    @RequestMapping(
+            value = "/discipline/id/{id}/starts/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = TEST, action = GET)
+    public List<DisciplineTestDto> getTestsForDiscipline(
+            @PathVariable(name = "id") String disciplineId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        Date after = new Date(afterTimestamp);
+        Date before = new Date(beforeTimestamp);
+        List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId, after, before);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+
+        return dtos;
+    }
+
+
+    @RequestMapping(
+            value = "/discipline/id/{id}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = TEST, action = GET)
+    public List<DisciplineTestDto> getTestsForDiscipline(
+            @PathVariable(name = "id") String disciplineId
+    ) {
+        List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = "/discipline/id/{disciplineId}/group/id/{groupId}/starts/between/{after}/{before}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = TEST, action = GET)
+    public List<DisciplineTestDto> getTestsForGroup(
+            @PathVariable(name = "disciplineId") String disciplineId,
+            @PathVariable(name = "groupId") String groupId,
+            @PathVariable(name = "after") long afterTimestamp,
+            @PathVariable(name = "before") long beforeTimestamp
+    ) {
+        Date after = new Date(afterTimestamp);
+        Date before = new Date(beforeTimestamp);
+        List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId, after, before);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = "/discipline/id/{disciplineId}/group/id/{groupId}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = TEST, action = GET)
+    public List<DisciplineTestDto> getTestsForGroup(
+            @PathVariable(name = "disciplineId") String disciplineId,
+            @PathVariable(name = "groupId") String groupId
+    ) {
+        List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+
+        return dtos;
+    }
 
 
 }
