@@ -15,11 +15,16 @@ public class UserConstants {
 
     public static final String USER_URL_CHANGE_PASSWORD = "/id/{id}";
 
+    public static final String USER_URL_GET_BY_ID = "/id/{id}";
+
+    public static final String USER_URL_GET_BY_NAME = "/name/{name}";
+
+    public static final String USER_URL_GET_USER_BY_PERSON_ID = "/person/id/{id}";
 
 
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
-                .setBaseUrl(BASE_URL)
+                .setBaseUrl("/api" + BASE_URL)
                 .addHeader("content-type", "application/json")
                 ;
     }
@@ -49,6 +54,27 @@ public class UserConstants {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_CHANGE_PASSWORD)
                 .setMethod(HttpRequest.HttpMethod.PATCH)
+                ;
+    }
+
+    public static RemoteEndpoint endpointGetById() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_GET_BY_ID)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    public static RemoteEndpoint endpointGetByName() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_GET_BY_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    public static RemoteEndpoint endpointGetByPersonId() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_GET_USER_BY_PERSON_ID)
+                .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }
 

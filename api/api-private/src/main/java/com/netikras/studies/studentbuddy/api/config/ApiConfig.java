@@ -53,7 +53,7 @@ public class ApiConfig {
         return new PropertiesWrapper(environment);
     }
 
-    @Bean
+    @Bean(destroyMethod = "")
     public DataSource dataSource(PropertiesWrapper propsw) {
         JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
         dsLookup.setResourceRef(true);

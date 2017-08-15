@@ -103,7 +103,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = UserConstants.USER_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @Authorizable(resource = USER, action = Action.GET)
@@ -117,7 +117,7 @@ public class UserController {
     }
 
     @RequestMapping(
-            value = "/name/{name}",
+            value = UserConstants.USER_URL_GET_BY_NAME,
             method = RequestMethod.GET
     )
     @Authorizable(resource = USER, action = Action.GET)
@@ -132,7 +132,7 @@ public class UserController {
 
 
     @RequestMapping(
-            value = "/person/id/{id}",
+            value = UserConstants.USER_URL_GET_USER_BY_PERSON_ID,
             method = RequestMethod.GET
     )
     @Authorizable(resource = USER, action = Action.GET)

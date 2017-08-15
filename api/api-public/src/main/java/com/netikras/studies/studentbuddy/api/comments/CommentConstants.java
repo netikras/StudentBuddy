@@ -36,7 +36,7 @@ public class CommentConstants {
 
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
-                .setBaseUrl(BASE_URL)
+                .setBaseUrl("/api" + BASE_URL)
                 .addHeader("content-type", "application/json")
                 ;
     }

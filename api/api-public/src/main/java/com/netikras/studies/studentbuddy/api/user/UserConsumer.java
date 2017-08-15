@@ -1,53 +1,64 @@
 package com.netikras.studies.studentbuddy.api.user;
 
-import com.netikras.studies.studentbuddy.api.comments.CommentConstants;
-import com.netikras.studies.studentbuddy.api.comments.CommentsConsumer;
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.tools.common.exception.HttpException;
 import com.netikras.tools.common.remote.AuthenticationDetail;
-import com.netikras.tools.common.remote.RemoteEndpoint;
-import com.netikras.tools.common.remote.RemoteEndpointServer;
+import com.netikras.tools.common.remote.http.GenericRestConsumer;
 import com.netikras.tools.common.remote.http.HttpRequest;
-import com.netikras.tools.common.remote.http.HttpResponse;
-import com.netikras.tools.common.remote.http.RestClient;
-import com.netikras.tools.common.remote.http.impl.json.HttpRequestJsonImpl;
-import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserConsumer {
+import static com.netikras.studies.studentbuddy.api.user.UserConstants.endpointGetById;
+import static com.netikras.studies.studentbuddy.api.user.UserConstants.endpointGetByName;
+import static com.netikras.studies.studentbuddy.api.user.UserConstants.endpointGetByPersonId;
+import static com.netikras.studies.studentbuddy.api.user.UserConstants.endpointLogin;
+
+/**
+ * Consumes /api/user endpoint.
+ */
+public class UserConsumer extends GenericRestConsumer {
+
+
+    public UserConsumer() {
+
+    }
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    protected RemoteEndpointServer getServer() {
-        return new RemoteEndpointServer()
-                .setProtocol(HttpRequest.Protocol.HTTP)
-                .setAddress("localhost")
-                .setPort(8080)
-                .setRootUrl("/stubu/api")
-                .setAuth(new AuthenticationDetail()
-                        .setUsername("system")
-                        .setPassword("system")
-                )
-                ;
+    public UserDto login(AuthenticationDetail authenticationDetail) {
+        HttpRequest<AuthenticationDetail> request =
+                createRequest(endpointLogin())
+                        .withExpectedType(UserDto.class)
+                        .setObject(authenticationDetail);
+        UserDto dto = (UserDto) sendRequest(request);
+        return dto;
     }
 
-    public UserDto login(AuthenticationDetail authenticationDetail) {
-        RemoteEndpoint preparedEndpoint = UserConstants.endpointLogin().applyServer(getServer());
-        HttpRequest<AuthenticationDetail> request = new HttpRequestJsonImpl<>()
-                .digestEndpointConfiguration(preparedEndpoint)
-                .setObject(authenticationDetail)
-                ;
+    public UserDto getUser(String id) {
+        HttpRequest<UserDto> request =
+                createRequest(endpointGetById())
+                        .withExpectedType(UserDto.class)
+                        .setUrlProperty("id", id);
+        UserDto dto = (UserDto) sendRequest(request);
+        return dto;
+    }
 
-        HttpResponse response = RestClient.sendRequest(request, new HttpResponseJsonImpl(UserDto.class));
+    public UserDto getUserByName(String name) {
+        HttpRequest<UserDto> request =
+                createRequest(endpointGetByName())
+                        .withExpectedType(UserDto.class)
+                        .setUrlProperty("name", name);
+        UserDto dto = (UserDto) sendRequest(request);
+        return dto;
+    }
 
-        if (response.isResponseSuccess()) {
-            return response.getObject(UserDto.class);
-        }
-
-        throw new HttpException(request, response);
+    public UserDto getUserByPerson(String personId) {
+        HttpRequest<UserDto> request =
+                createRequest(endpointGetByPersonId())
+                        .withExpectedType(UserDto.class)
+                        .setUrlProperty("id", personId);
+        UserDto dto = (UserDto) sendRequest(request);
+        return dto;
     }
 
 
