@@ -57,7 +57,7 @@ public class AuthorizationFilter implements Filter {
             throw new StudBudUncheckedException()
                     .setMessage1("Cannot proceed")
                     .setMessage2("All requests have been suspended by administrator")
-                    .setStatusCode(HttpStatus.SERVICE_UNAVAILABLE)
+                    .setStatusCode(HttpStatus.NO_RESPONSE)
                     ;
         }
 

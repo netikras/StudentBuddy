@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.comments;
+package com.netikras.studies.studentbuddy.api.constants;
 
 import com.netikras.tools.common.remote.RemoteEndpoint;
 import com.netikras.tools.common.remote.http.HttpRequest;
@@ -41,6 +41,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_FOR_TYPE}
+     */
     public static RemoteEndpoint endpointGetForType() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_FOR_TYPE)
@@ -48,6 +51,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_ALL_FOR_TYPE}
+     */
     public static RemoteEndpoint endpointGetAllForType() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_ALL_FOR_TYPE)
@@ -55,6 +61,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_DELETE_FOR_TYPE}
+     */
     public static RemoteEndpoint endpointDeleteForType() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_DELETE_FOR_TYPE)
@@ -62,6 +71,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_DELETE_ALL_FOR_TYPE}
+     */
     public static RemoteEndpoint endpointDeleteAllForType() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_DELETE_ALL_FOR_TYPE)
@@ -69,7 +81,9 @@ public class CommentConstants {
                 ;
     }
 
-
+    /**
+     * {@value #COMMENT_URL_DELETE_BY_ID}
+     */
     public static RemoteEndpoint endpointDeleteForId() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_DELETE_BY_ID)
@@ -77,6 +91,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_BY_ID}
+     */
     public static RemoteEndpoint endpointGetForId() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_BY_ID)
@@ -84,6 +101,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_CREATE}
+     */
     public static RemoteEndpoint endpointCreateNew() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_CREATE)
@@ -91,6 +111,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_CREATE_FOR_TYPE}
+     */
     public static RemoteEndpoint endpointCreateNewForType() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_CREATE_FOR_TYPE)
@@ -98,6 +121,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_UPDATE_BY_ID}
+     */
     public static RemoteEndpoint endpointUpdateById() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_UPDATE_BY_ID)
@@ -105,6 +131,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_BY_TAG_VALUE}
+     */
     public static RemoteEndpoint endpointGetByTagValue() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_BY_TAG_VALUE)
@@ -112,6 +141,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_BY_TAG_ID}
+     */
     public static RemoteEndpoint endpointGetByTagId() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_BY_TAG_ID)
@@ -119,6 +151,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_GET_BY_PERSON_ID}
+     */
     public static RemoteEndpoint endpointGetAllByPersonId() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_GET_BY_PERSON_ID)
@@ -126,6 +161,9 @@ public class CommentConstants {
                 ;
     }
 
+    /**
+     * {@value #COMMENT_URL_DELETE_BY_PERSON_ID}
+     */
     public static RemoteEndpoint endpointDeleteAllByPersonId() {
         return getBaseEndpoint()
                 .setMethodUrl(COMMENT_URL_DELETE_BY_PERSON_ID)

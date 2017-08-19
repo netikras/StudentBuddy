@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt;
 
+import com.netikras.studies.studentbuddy.api.constants.AdminUserConstants;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
@@ -18,17 +19,14 @@ import javax.annotation.Resource;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
 
 @RestController
-@RequestMapping(value = "/mgmt/user")
+@RequestMapping(value = AdminUserConstants.BASE_URL)
 public class AdminUserController {
-
 
     @Resource
     private UserService userService;
 
-
-
     @RequestMapping(
-            value = "/new",
+            value = AdminUserConstants.ADM_USR_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -44,7 +42,7 @@ public class AdminUserController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = AdminUserConstants.ADM_USR_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = USER, action = Action.DELETE)

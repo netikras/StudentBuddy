@@ -70,7 +70,7 @@ public class TestsController {
                     .setMessage1("Cannot create test for lecture")
                     .setMessage2("Lecture with given ID does not exist")
                     .setProbableCause("ID: " + dueLectureId)
-                    .setErrorCode(NOT_FOUND.getCode())
+                    .setStatusCode(NOT_FOUND)
                     ;
         }
 

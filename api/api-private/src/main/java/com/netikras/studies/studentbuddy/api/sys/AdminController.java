@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.sys;
 
+import com.netikras.studies.studentbuddy.api.constants.AdminConstants;
 import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
@@ -18,15 +19,29 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_CREATE_PASSWORD_REQ;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_CREATE_SETTING;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_DELETE_PASSWORD_REQ_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_DELETE_SETTING_BY_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_PASSWORD_REQS;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_PASSWORD_REQS_LIVE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTINGS;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTINGS_LIVE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTING_LIVE_BY_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_REFRESH_PASSWORD_REQS;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_REFRESH_SETTINGS;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_UPDATE_PASSWORD_REQ;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_UPDATE_SETTING;
+
 @RestController
-@RequestMapping(value = "/admin")
+@RequestMapping(value = AdminConstants.BASE_URL)
 public class AdminController {
 
     @Resource
     private SystemService systemService;
 
     @RequestMapping(
-            value = "/settings/live",
+            value = ADM_URL_GET_SETTINGS_LIVE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -38,7 +53,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings",
+            value = ADM_URL_GET_SETTINGS,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -50,7 +65,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings/name/{name}",
+            value = ADM_URL_GET_SETTING_LIVE_BY_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -63,7 +78,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings",
+            value = ADM_URL_CREATE_SETTING,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -79,7 +94,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings",
+            value = ADM_URL_UPDATE_SETTING,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -96,7 +111,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings/name/{name}",
+            value = ADM_URL_DELETE_SETTING_BY_NAME,
             method = RequestMethod.DELETE
     )
     @ResponseBody
@@ -108,7 +123,7 @@ public class AdminController {
 
 
     @RequestMapping(
-            value = "/pwrq/live",
+            value = ADM_URL_GET_PASSWORD_REQS_LIVE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -120,7 +135,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/pwrq",
+            value = ADM_URL_GET_PASSWORD_REQS,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -136,7 +151,7 @@ public class AdminController {
 
 
     @RequestMapping(
-            value = "/pwrq",
+            value = ADM_URL_CREATE_PASSWORD_REQ,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -150,7 +165,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/pwrq",
+            value = ADM_URL_UPDATE_PASSWORD_REQ,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -164,7 +179,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/pwrq/id/{id}",
+            value = ADM_URL_DELETE_PASSWORD_REQ_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseBody
@@ -176,7 +191,7 @@ public class AdminController {
 
 
     @RequestMapping(
-            value = "/pwrq/refresh",
+            value = ADM_URL_REFRESH_PASSWORD_REQS,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -185,7 +200,7 @@ public class AdminController {
     }
 
     @RequestMapping(
-            value = "/settings/refresh",
+            value = ADM_URL_REFRESH_SETTINGS,
             method = RequestMethod.POST
     )
     @ResponseBody

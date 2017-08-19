@@ -8,3 +8,51 @@ loadDep "commons"
 loadProj ':api:api-public'
 loadProj ':core:datamodel:data-private'
 loadProj ':commons'
+
+
+def tomcatHomeLocal = '/opt/tomcat/apache-tomcat-8.5.11'
+
+
+task buildWar(type: War, dependsOn: []) {
+    evaluationDependsOn(":core:datamodel:data-public")
+    evaluationDependsOn(":core:datamodel:data-private")
+}
+
+
+task deployLocal(type: Copy, dependsOn: ['buildWar']) {
+    description = "Deploys the module to local web-container"
+    mustRunAfter "undeployLocal"
+
+
+//    from war.archivePath
+    from "${buildDir}/libs/"
+    into "${tomcatHomeLocal}/webapps"
+    include "*.war"
+
+    doLast {
+        println "Deploying application locally"
+    }
+}
+
+task undeployLocal(type: Delete) {
+    description = "Undeploys module from the local web-container"
+
+//    def warname = "${project.name}"
+    def warname = "stubu"
+
+    doLast {
+        println "Undeploying application locally"
+        file("${tomcatHomeLocal}/webapps/${warname}.war").delete();
+        file("${tomcatHomeLocal}/webapps/${warname}").deleteDir();
+        println "Undeployed!"
+    }
+
+}
+
+task redeployLocal(dependsOn: ["undeployLocal", "deployLocal"]) {
+    description = "Redeploys the module to local web-container"
+
+    doLast {
+        println "Redeploying application locally"
+    }
+}

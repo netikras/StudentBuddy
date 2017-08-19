@@ -96,8 +96,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(String userId, String password) {
-        User user = userDao.findByName(userId);
+        User user = userDao.findOne(userId);
         user.setPasswordHash(hashPassword(password));
+        userDao.save(user);
     }
 
     public PasswordValidationResult validatePassword(String password) {

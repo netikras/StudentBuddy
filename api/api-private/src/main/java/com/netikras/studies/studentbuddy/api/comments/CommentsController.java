@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.comments;
 
+import com.netikras.studies.studentbuddy.api.constants.CommentConstants;
 import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.commons.model.PagedResults;
@@ -24,13 +25,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource._PARAM;
 import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
 
@@ -214,7 +216,8 @@ public class CommentsController {
         List<CommentDto> commentDtos;
 
         List<Comment> comments = commentsService.findCommentsByTagValue(value);
-        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
+        ErrorsCollection errors = new ErrorsCollection();
+        comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
         commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
@@ -237,7 +240,8 @@ public class CommentsController {
         List<CommentDto> commentDtos = null;
 
         List<Comment> comments = commentsService.findCommentsByTagId(id);
-        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
+        ErrorsCollection errors = new ErrorsCollection();
+        comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
         commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
@@ -252,7 +256,8 @@ public class CommentsController {
             @PathVariable(name = "id") String id
     ) {
         List<Comment> comments = commentsService.findCommentsByPerson(id);
-        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_GET));
+        ErrorsCollection errors = new ErrorsCollection();
+        comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
         List<CommentDto> commentDtos = (List<CommentDto>) ModelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
@@ -268,7 +273,8 @@ public class CommentsController {
             @PathVariable(name = "id") String id
     ) {
         List<Comment> comments = commentsService.findCommentsByPerson(id);
-        comments.removeIf(comment -> isUserAllowedTo(comment.getEntityType(), COMMENT_DELETE));
+        ErrorsCollection errors = new ErrorsCollection();
+        comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_DELETE, errors));
 
         for (Comment comment : comments) {
             commentsService.deleteComment(comment.getId());
@@ -276,23 +282,27 @@ public class CommentsController {
     }
 
 
-
-
-
-
-
-
-
-    public boolean isUserAllowedTo(String entity, Action action) {
+    public boolean isUserAllowedTo(String entity, Action action, ErrorsCollection errors) {
         boolean allowed = false;
 
-        if (entity != null && !entity.isEmpty()) {
+        User user = null;
+
+        if (entity == null || entity.isEmpty()) {
+            errors.add(new ValidationError().setMessage("Entity type is mandatory"));
+        }
+
+        if (errors.isEmpty()) {
             try {
                 com.netikras.studies.studentbuddy.core.meta.Resource resource =
-                        com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(entity);
-                User user = ThreadContext.current().getUser();
+                        com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(entity.toUpperCase());
+                user = ThreadContext.current().getUser();
                 allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
-            } catch (Exception ignore) {
+            } catch (IllegalArgumentException ilae) {
+                errors.add(new ValidationError().setMessage("Cannot determine entity type for value " + entity));
+            }
+
+            if (!allowed) {
+                errors.add(new ValidationError().setMessage("User is unauthorized to perform action " + action + " on entity " + entity));
             }
         }
 
@@ -300,16 +310,39 @@ public class CommentsController {
     }
 
     private void throwIfActionNotAllowedForComment(Comment comment, Action action) {
-        String entity = comment.getEntityType();
+        ErrorsCollection errors = new ErrorsCollection();
+        String entity = null;
+        boolean allowed = false;
 
-        if (!isUserAllowedTo(entity, action)) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot " + action.name().toLowerCase() + " a comment")
-                    .setMessage2("User is not allowed to perform this action")
-                    .setProbableCause(comment.getId())
-                    .setStatusCode(UNAUTHORIZED)
-                    ;
+        if (comment == null) {
+            errors.add(new ValidationError().setMessage("Comment is not provided"));
         }
+
+        if (errors.isEmpty()) {
+            entity = comment.getEntityType();
+            allowed = isUserAllowedTo(entity, action, errors);
+        }
+
+        if (allowed) {
+            User currentUser = ThreadContext.current().getUser();
+            if (currentUser != null && currentUser.getPerson() != null) {
+                Person currentPerson = currentUser.getPerson();
+                Person authorPerson = comment.getAuthor();
+                if (!currentPerson.equals(authorPerson)) {
+                    if (!systemService.isUserAllowedToPerformAction(currentUser, entity, MODERATE.name()))
+                        errors.add(new ValidationError().setMessage("User is not allowed to manipulate records as another person"));
+                }
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            StudBudUncheckedException exception = new StudBudUncheckedException();
+            exception.setMessage1("Unable to perform action " + action + " on comment");
+            exception.setMessage2(errors.buildSingleMessage());
+            exception.setStatusCode(UNAUTHORIZED);
+            throw exception;
+        }
+
     }
 
     private void throwIfActionNotAllowedForCommentId(String commentId, Action action) {
@@ -317,5 +350,63 @@ public class CommentsController {
         throwIfActionNotAllowedForComment(comment, action);
     }
 
+    class ErrorsCollection extends ArrayList<ValidationError> {
+
+
+        public String buildSingleMessage() {
+            if (isEmpty()) return null;
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (ValidationError error : this) {
+                stringBuilder.append(error);
+            }
+
+            return stringBuilder.toString();
+        }
+
+    }
+
+    class ValidationError {
+        private String message;
+        private String code;
+        private String suggestion;
+
+        public String getMessage() {
+            return message;
+        }
+
+        public ValidationError setMessage(String message) {
+            this.message = message;
+            return this;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public ValidationError setCode(String code) {
+            this.code = code;
+            return this;
+        }
+
+        public String getSuggestion() {
+            return suggestion;
+        }
+
+        public ValidationError setSuggestion(String suggestion) {
+            this.suggestion = suggestion;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "ValidationError{" +
+                    "message='" + message + '\'' +
+                    ", code='" + code + '\'' +
+                    ", suggestion='" + suggestion + '\'' +
+                    '}';
+        }
+    }
 
 }

@@ -13,22 +13,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_ALL_BY_DISCIPLINE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_BY_PERSON_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURER;
 
 @RestController
-@RequestMapping(value = "/lecturer")
+@RequestMapping(value = BASE_URL)
 public class LecturerController {
 
     @Resource
     private LecturerService lecturerService;
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = LECTURER_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -44,7 +48,7 @@ public class LecturerController {
 
 
     @RequestMapping(
-            value = "/discipline/id/{id}",
+            value = LECTURER_URL_GET_ALL_BY_DISCIPLINE_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -59,7 +63,7 @@ public class LecturerController {
     }
 
     @RequestMapping(
-            value = "/person/id/{id}",
+            value = LECTURER_URL_GET_BY_PERSON_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -75,7 +79,7 @@ public class LecturerController {
 
 
     @RequestMapping(
-            value = "/",
+            value = LECTURER_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody

@@ -69,11 +69,11 @@ public class Comment {
     private List<CommentTag> tags;
 
     @Column(name = "entity_id", nullable = false)
-    @ModelTransform(dtoFieldName = "entityId", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "entityId")
     private String entityId;
 
     @Column(name = "entity_type", nullable = false)
-    @ModelTransform(dtoFieldName = "entityType", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "entityType")
     private String entityType;
 
     public String getId() {

@@ -82,7 +82,7 @@ public class AssignmentController {
                     .setMessage1("Cannot create assignment for lecture")
                     .setMessage2("Lecture with given ID does not exist")
                     .setProbableCause(dueLectureId)
-                    .setErrorCode(HttpStatus.NOT_FOUND.getCode())
+                    .setStatusCode(HttpStatus.NOT_FOUND)
                     ;
         }
         Assignment assignment = new Assignment();

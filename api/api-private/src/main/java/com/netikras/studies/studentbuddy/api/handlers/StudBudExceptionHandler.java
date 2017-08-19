@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.handlers;
 
-import com.netikras.studies.studentbuddy.commons.exception.StudBudException;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.remote.http.HttpStatus;
@@ -19,7 +18,7 @@ public class StudBudExceptionHandler {
     ErrorBody limitationException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
         ErrorBody errorBody;
 
-        errorBody = StudBudException.digestToErrorBody(exception);
+        errorBody = StudBudUncheckedException.digestToErrorBody(exception);
         request.removeAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
 
         response.setContentType("application/json");

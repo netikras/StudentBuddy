@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.user;
+package com.netikras.studies.studentbuddy.api.constants;
 
 import com.netikras.tools.common.remote.RemoteEndpoint;
 import com.netikras.tools.common.remote.http.HttpRequest;
@@ -13,7 +13,7 @@ public class UserConstants {
 
     public static final String USER_URL_UPDATE_BY_ID = "/id/{id}";
 
-    public static final String USER_URL_CHANGE_PASSWORD = "/id/{id}";
+    public static final String USER_URL_CHANGE_PASSWORD = "/id/{id}/password";
 
     public static final String USER_URL_GET_BY_ID = "/id/{id}";
 
@@ -53,7 +53,7 @@ public class UserConstants {
     public static RemoteEndpoint endpointChangePassword() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_CHANGE_PASSWORD)
-                .setMethod(HttpRequest.HttpMethod.PATCH)
+                .setMethod(HttpRequest.HttpMethod.PUT)
                 ;
     }
 

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user;
 
+import com.netikras.studies.studentbuddy.api.constants.UserConstants;
 import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
@@ -9,6 +10,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +57,7 @@ public class UserController {
                     .setMessage1("Login failure")
                     .setMessage2("Incorrect login information")
                     .setProbableCause(username)
+                    .setStatusCode(HttpStatus.UNAUTHORIZED)
                     ;
         }
 
@@ -92,7 +95,7 @@ public class UserController {
 
     @RequestMapping(
             value = UserConstants.USER_URL_CHANGE_PASSWORD,
-            method = RequestMethod.PATCH
+            method = RequestMethod.PUT
     )
     @Authorizable(resource = USER, action = Action.MODIFY)
     public void changePassword(

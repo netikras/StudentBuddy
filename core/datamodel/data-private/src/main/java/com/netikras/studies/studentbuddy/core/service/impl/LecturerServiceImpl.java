@@ -8,11 +8,14 @@ import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineLecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 
 @Service
 public class LecturerServiceImpl implements LecturerService {
@@ -49,6 +52,7 @@ public class LecturerServiceImpl implements LecturerService {
                     .setMessage2("This person is already a lecturer")
                     .setProbableCause(person.getIdentification())
                     .setDeveloperMessage("existing.id = " + existing.getId())
+                    .setStatusCode(CONFLICT)
                     ;
         }
 
@@ -88,6 +92,7 @@ public class LecturerServiceImpl implements LecturerService {
                             .setMessage1("Cannot assign lecturer to new discipline")
                             .setMessage2("Lecturer is already assigned to that discipline")
                             .setProbableCause("lecturer.id="+lecturer.getId() + ", discipline.id=" + discipline.getId())
+                            .setStatusCode(CONFLICT)
                             ;
                 }
             }

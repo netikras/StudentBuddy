@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_CODE;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_IDENTIFIER;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.PERSON;
 
 @RestController
-@RequestMapping("/person")
+@RequestMapping(BASE_URL)
 public class PersonController {
 
 
@@ -26,7 +30,7 @@ public class PersonController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = PERSON_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -41,7 +45,7 @@ public class PersonController {
     }
 
     @RequestMapping(
-            value = "/code/{code}",
+            value = PERSON_URL_GET_BY_CODE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -57,7 +61,7 @@ public class PersonController {
 
 
     @RequestMapping(
-            value = "/id2/{id}",
+            value = PERSON_URL_GET_BY_IDENTIFIER,
             method = RequestMethod.GET
     )
     @ResponseBody

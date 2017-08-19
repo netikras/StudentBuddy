@@ -60,7 +60,7 @@ public class AdminPersonController {
 
 
     @RequestMapping(
-            value = "/id2/{id}",
+            value = "/",
             method = RequestMethod.PUT
     )
     @ResponseBody

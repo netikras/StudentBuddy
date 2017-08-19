@@ -4,10 +4,13 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -44,6 +47,7 @@ public class PersonServiceImpl implements PersonService {
                                     + ", identification=" + person.getIdentification()
                                     + ", code=" + person.getPersonalCode())
                     .setDeveloperMessage("ids[0]: " + existing.get(0).getId())
+                    .setStatusCode(CONFLICT)
                     ;
         }
 

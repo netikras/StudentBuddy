@@ -3,6 +3,8 @@ package com.netikras.studies.studentbuddy.core.data.api.model;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
@@ -44,7 +46,7 @@ public class CommentTag {
     @JoinColumn(name = "comment_id")
     private Comment comment;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.PERSIST, CascadeType.REFRESH}, optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "tag_id")
     private Tag tag;
 
