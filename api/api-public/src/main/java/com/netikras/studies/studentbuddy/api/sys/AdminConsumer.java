@@ -16,6 +16,7 @@ import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.end
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetPwReqs;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetPwReqsLive;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetSettingLiveByName;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetSettingStoredByName;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetSettings;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointGetSettingsLive;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.endpointRefreshPasswordRequirements;
@@ -41,8 +42,17 @@ public class AdminConsumer extends GenericRestConsumer {
         return settings;
     }
 
-    public SystemSettingDto getSetting(String name) {
+    public SystemSettingDto getLiveSetting(String name) {
         HttpRequest<SystemSettingDto> request = createRequest(endpointGetSettingLiveByName())
+                .withExpectedType(SystemSettingDto.class)
+                .setUrlProperty("name", name);
+
+        SystemSettingDto setting = (SystemSettingDto) sendRequest(request);
+        return setting;
+    }
+
+    public SystemSettingDto getStoredSetting(String name) {
+        HttpRequest<SystemSettingDto> request = createRequest(endpointGetSettingStoredByName())
                 .withExpectedType(SystemSettingDto.class)
                 .setUrlProperty("name", name);
 
@@ -97,7 +107,7 @@ public class AdminConsumer extends GenericRestConsumer {
         return settings;
     }
 
-    public List<PasswordRequirementDto> getPwReqs() {
+    public List<PasswordRequirementDto> getStoredPwReqs() {
         HttpRequest<PasswordRequirementDto> request = createRequest(endpointGetPwReqs());
 
         List<PasswordRequirementDto> settings =
@@ -107,7 +117,7 @@ public class AdminConsumer extends GenericRestConsumer {
 
     public PasswordRequirementDto createPwReq(PasswordRequirementDto requirementDto) {
         HttpRequest<PasswordRequirementDto> request = createRequest(endpointCreatePwReq())
-                .withExpectedType(SystemSettingDto.class)
+                .withExpectedType(PasswordRequirementDto.class)
                 .setObject(requirementDto);
 
         PasswordRequirementDto dto = (PasswordRequirementDto) sendRequest(request);
@@ -116,7 +126,7 @@ public class AdminConsumer extends GenericRestConsumer {
 
     public PasswordRequirementDto updatePwReq(PasswordRequirementDto requirementDto) {
         HttpRequest<PasswordRequirementDto> request = createRequest(endpointUpdatePwReq())
-                .withExpectedType(SystemSettingDto.class)
+                .withExpectedType(PasswordRequirementDto.class)
                 .setObject(requirementDto);
 
         PasswordRequirementDto dto = (PasswordRequirementDto) sendRequest(request);

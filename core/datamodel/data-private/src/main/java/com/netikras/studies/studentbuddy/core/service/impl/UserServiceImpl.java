@@ -64,8 +64,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User updateUser(User user) {
-        return userDao.save(user);
+        User oldUser = userDao.findOne(user.getId());
+        if (oldUser == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Unable to update user")
+                    .setMessage2("User with given ID does not exist")
+                    .setProbableCause(user.getName())
+                    .setStatusCode(HttpStatus.NOT_FOUND);
+        }
+        oldUser.setName(user.getName());
+        return userDao.save(oldUser);
     }
 
     @Override

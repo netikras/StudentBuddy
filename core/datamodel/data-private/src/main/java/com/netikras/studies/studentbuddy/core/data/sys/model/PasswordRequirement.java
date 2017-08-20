@@ -40,7 +40,7 @@ public class PasswordRequirement {
 
 
     @Column(name = "title", nullable = false)
-    @ModelTransform(dtoFieldName = "name")
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
     @Column(name = "enabled", nullable = false)

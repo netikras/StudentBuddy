@@ -9,7 +9,8 @@ public class AdminConstants {
 
     public static final String ADM_URL_GET_SETTINGS_LIVE = "/settings/live";
     public static final String ADM_URL_GET_SETTINGS = "/settings";
-    public static final String ADM_URL_GET_SETTING_LIVE_BY_NAME = "/settings/name/{name}";
+    public static final String ADM_URL_GET_SETTING_LIVE_BY_NAME = "/settings/live/name/{name}";
+    public static final String ADM_URL_GET_SETTING_STORED_BY_NAME = "/settings/name/{name}";
     public static final String ADM_URL_CREATE_SETTING = "/settings";
     public static final String ADM_URL_UPDATE_SETTING = "/settings";
     public static final String ADM_URL_DELETE_SETTING_BY_NAME = "/settings/name/{name}";
@@ -56,6 +57,16 @@ public class AdminConstants {
     public static RemoteEndpoint endpointGetSettingLiveByName() {
         return getBaseEndpoint()
                 .setMethodUrl(ADM_URL_GET_SETTING_LIVE_BY_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #ADM_URL_GET_SETTING_STORED_BY_NAME}
+     */
+    public static RemoteEndpoint endpointGetSettingStoredByName() {
+        return getBaseEndpoint()
+                .setMethodUrl(ADM_URL_GET_SETTING_STORED_BY_NAME)
                 .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }

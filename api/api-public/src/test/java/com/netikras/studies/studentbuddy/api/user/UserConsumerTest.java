@@ -109,5 +109,40 @@ public class UserConsumerTest {
         assertNotNull("After password is restored user must be able to login using its old password", changedUser);
     }
 
+    @Test
+    public void logoutTest() {
+        loginSystem();
+
+        UserDto userDto = userConsumer.getUserByName(SYSTEM_USER.getName());
+
+        logger.info("{}", userDto);
+        assertEquals("Returned user must be the system used", SYSTEM_USER.getId(), userDto.getId());
+
+        userConsumer.logout();
+        userDto = userConsumer.getUserByName(SYSTEM_USER.getName());
+
+        logger.info("{}", userDto);
+        assertNull("After logout user must be unable to successfully fetch data from server", userDto);
+    }
+
+    @Test
+    public void updateTest() {
+        String newValue = "sys";
+        UserDto userDto = loginSystem();
+
+        userDto.setName(newValue);
+        userDto = userConsumer.update(userDto, userDto.getId());
+
+        logger.info("Updated user: {}", userDto);
+        assertEquals("User detail must have been updated", newValue, userDto.getName());
+
+        userDto.setName(SYSTEM_USER.getName());
+        userDto = userConsumer.update(userDto, userDto.getId());
+
+        logger.info("Restored user: {}", userDto);
+        assertEquals("User detail must have been restored", SYSTEM_USER.getName(), userDto.getName());
+
+    }
+
 
 }

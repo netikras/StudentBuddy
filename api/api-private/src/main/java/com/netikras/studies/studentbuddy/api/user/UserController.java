@@ -85,6 +85,7 @@ public class UserController {
     ) {
         userDto.setId(userId);
         User user = ModelMapper.apply(new User(), userDto);
+        user.setId(userId);
 
         user = userService.updateUser(user);
 

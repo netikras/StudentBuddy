@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.sys;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.RolePermissionsDao;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.PasswordRequirementsDao;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.SettingsDao;
@@ -9,7 +10,9 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -42,11 +45,12 @@ public class SystemService {
         return passwordRequirements;
     }
 
+    @Transactional
     public List<PasswordRequirement> fetchPasswordRequirements() {
         return passwordRequirementsDao.findAll();
     }
 
-
+    @Transactional
     public PasswordRequirement createPasswordRequirement(PasswordRequirement requirement) {
         return passwordRequirementsDao.save(requirement);
     }
@@ -56,10 +60,13 @@ public class SystemService {
         return getPasswordRequirements();
     }
 
+    @Transactional
     public void deletePasswordRequirement(String id) {
         passwordRequirementsDao.delete(id);
     }
 
+
+    @Transactional
     public PasswordRequirement updatePasswordRequirement(PasswordRequirement requirement) {
         return passwordRequirementsDao.save(requirement);
     }
@@ -69,6 +76,7 @@ public class SystemService {
         return systemSettings;
     }
 
+    @Transactional
     public List<SystemSetting> fetchSystemSettings() {
         return settingsDao.findAll();
     }
@@ -78,16 +86,33 @@ public class SystemService {
         return getSystemSettings();
     }
 
+    @Transactional
     public SystemSetting updateSystemSetting(SystemSetting setting) {
+        SystemSetting oldSetting = settingsDao.findByName(setting.getName());
+        if (oldSetting == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Unable to update setting")
+                    .setMessage2("Original setting not found")
+                    .setProbableCause(setting.getName())
+                    .setStatusCode(HttpStatus.NOT_FOUND);
+        }
+        setting.setId(oldSetting.getId());
         return settingsDao.save(setting);
     }
 
+    @Transactional
     public void deleteSystemSetting(String name) {
         settingsDao.deleteByName(name);
     }
 
+    @Transactional
     public SystemSetting createSetting(SystemSetting setting) {
         return settingsDao.save(setting);
+    }
+
+    @Transactional
+    public SystemSetting getStoredSetting(String name) {
+        return settingsDao.findByName(name);
     }
 
 
@@ -113,31 +138,34 @@ public class SystemService {
     }
 
     public boolean getSettingValue(String name, boolean defaultValue) {
-        String settingValue = getSettingValue(name, ""+defaultValue);
+        String settingValue = getSettingValue(name, "" + defaultValue);
         boolean result = defaultValue;
         try {
             result = Boolean.valueOf(settingValue);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
 
         return result;
     }
 
     public int getSettingValue(String name, int defaultValue) {
-        String settingValue = getSettingValue(name, ""+defaultValue);
+        String settingValue = getSettingValue(name, "" + defaultValue);
         int result = defaultValue;
         try {
             result = Integer.valueOf(settingValue);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
 
         return result;
     }
 
     public long getSettingValue(String name, long defaultValue) {
-        String settingValue = getSettingValue(name, ""+defaultValue);
+        String settingValue = getSettingValue(name, "" + defaultValue);
         long result = defaultValue;
         try {
             result = Long.valueOf(settingValue);
-        } catch (Throwable ignored) {}
+        } catch (Throwable ignored) {
+        }
 
         return result;
     }
@@ -159,10 +187,12 @@ public class SystemService {
     }
 
 
+    @Transactional
     public RolePermissions createRolePermissions(RolePermissions permissions) {
         return rolePermissionsDao.save(permissions);
     }
 
+    @Transactional
     public RolePermissions addRolePermission(String roleName, ResourceActionLink resourceActionLink) {
         RolePermissions permissions = rolePermissionsDao.findByRole_Name(roleName);
         if (permissions == null) return null;
@@ -182,6 +212,7 @@ public class SystemService {
         return permissions;
     }
 
+    @Transactional
     public void removeRolePermission(String roleName, ResourceActionLink resourceActionLink) {
         RolePermissions permissions = rolePermissionsDao.findByRole_Name(roleName);
         if (permissions == null) return;
@@ -196,6 +227,7 @@ public class SystemService {
     }
 
 
+    @Transactional
     public List<RolePermissions> fetchRolePermissions() {
         return rolePermissionsDao.findAll();
     }

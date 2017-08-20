@@ -28,6 +28,7 @@ import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTINGS;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTINGS_LIVE;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTING_LIVE_BY_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_GET_SETTING_STORED_BY_NAME;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_REFRESH_PASSWORD_REQS;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_REFRESH_SETTINGS;
 import static com.netikras.studies.studentbuddy.api.constants.AdminConstants.ADM_URL_UPDATE_PASSWORD_REQ;
@@ -69,10 +70,23 @@ public class AdminController {
             method = RequestMethod.GET
     )
     @ResponseBody
-    public SystemSettingDto getSettingByName(
+    public SystemSettingDto getLiveSettingByName(
             @PathVariable(name = "name") String name
     ) {
         SystemSetting setting = systemService.getSetting(name);
+        SystemSettingDto settingDto = ModelMapper.transform(setting, new SystemSettingDto());
+        return settingDto;
+    }
+
+    @RequestMapping(
+            value = ADM_URL_GET_SETTING_STORED_BY_NAME,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    public SystemSettingDto getStoredSettingByName(
+            @PathVariable(name = "name") String name
+    ) {
+        SystemSetting setting = systemService.getStoredSetting(name);
         SystemSettingDto settingDto = ModelMapper.transform(setting, new SystemSettingDto());
         return settingDto;
     }

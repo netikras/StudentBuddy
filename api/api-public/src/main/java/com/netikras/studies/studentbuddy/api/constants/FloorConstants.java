@@ -17,18 +17,18 @@ public class FloorConstants {
 
     // room
 
-    public static final String FLOOR_URL_ROOM_CREATE = "/";
-    public static final String FLOOR_URL_ROOM_UPDATE = "/";
-    public static final String FLOOR_URL_ROOM_GET_BY_ID = "/id/{id}";
-    public static final String FLOOR_URL_ROOM_DELETE_BY_ID = "/id/{id}";
+    public static final String FLOOR_URL_ROOM_CREATE = "/room";
+    public static final String FLOOR_URL_ROOM_UPDATE = "/room";
+    public static final String FLOOR_URL_ROOM_GET_BY_ID = "/room/id/{id}";
+    public static final String FLOOR_URL_ROOM_DELETE_BY_ID = "/room/id/{id}";
 
 
     // layout
 
-    public static final String FLOOR_URL_LAYOUT_CREATE = "/";
-    public static final String FLOOR_URL_LAYOUT_UPDATE = "/";
-    public static final String FLOOR_URL_LAYOUT_GET_BY_ID = "/id/{id}";
-    public static final String FLOOR_URL_LAYOUT_DELETE_BY_ID = "/id/{id}";
+    public static final String FLOOR_URL_LAYOUT_CREATE = "/layout";
+    public static final String FLOOR_URL_LAYOUT_UPDATE = "/layout";
+    public static final String FLOOR_URL_LAYOUT_GET_BY_ID = "/layout/id/{id}";
+    public static final String FLOOR_URL_LAYOUT_DELETE_BY_ID = "/layout/id/{id}";
 
 
 
