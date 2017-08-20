@@ -20,6 +20,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import java.util.Date;
+import java.util.List;
+
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_CREATE_BY_LECTURE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_AND_STUDENT_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_GROUP_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_LECTURE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_ALL_BY_STUDENT_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.ASSIGN_URL_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.AssignmentConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
@@ -28,14 +43,14 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.ASSIGNMENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "/assignment")
+@RequestMapping(value = BASE_URL)
 public class AssignmentController {
 
     @Resource
     private LectureService lectureService;
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = ASSIGN_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -48,9 +63,107 @@ public class AssignmentController {
         return dto;
     }
 
+    @RequestMapping(
+            value = ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_BETWEEN,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForDisciplineId(
+            @PathVariable(name = "disciplineId") String disciplineId,
+            @PathVariable(name = "after") long after,
+            @PathVariable(name = "before") long before
+    ) {
+        List<Assignment> assignments = lectureService.getAllAssignmentsForDiscipline(disciplineId, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
 
     @RequestMapping(
-            value = "/",
+            value = ASSIGN_URL_GET_ALL_BY_GROUP_ID_BETWEEN,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForGroupId(
+            @PathVariable(name = "groupId") String groupId,
+            @PathVariable(name = "after") long after,
+            @PathVariable(name = "before") long before
+    ) {
+        List<Assignment> assignments = lectureService.getAllAssignmentsForGroup(groupId, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = ASSIGN_URL_GET_ALL_BY_STUDENT_ID_BETWEEN,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForStudentId(
+            @PathVariable(name = "studentId") String studentId,
+            @PathVariable(name = "after") long after,
+            @PathVariable(name = "before") long before
+    ) {
+        List<Assignment> assignments = lectureService.getAllAssignmentsForStudent(studentId, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForDisciplineIdAndGroupId(
+            @PathVariable(name = "disciplineId") String disciplineId,
+            @PathVariable(name = "groupId") String groupId,
+            @PathVariable(name = "after") long after,
+            @PathVariable(name = "before") long before
+    ) {
+        List<Assignment> assignments =
+                lectureService.getAllAssignmentsForDisciplineAndGroup(disciplineId, groupId, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = ASSIGN_URL_GET_ALL_BY_DISCIPLINE_ID_AND_STUDENT_ID_BETWEEN,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForDisciplineIdAndStudentId(
+            @PathVariable(name = "disciplineId") String disciplineId,
+            @PathVariable(name = "studentId") String studentId,
+            @PathVariable(name = "after") long after,
+            @PathVariable(name = "before") long before
+    ) {
+        List<Assignment> assignments =
+                lectureService.getAllAssignmentsForDisciplineAndStudent(disciplineId, studentId, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = ASSIGN_URL_GET_ALL_BY_LECTURE_ID,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAllForLectureId(
+            @PathVariable(name = "lectureId") String lectureId
+    ) {
+        List<Assignment> assignments = lectureService.getAllAssignmentsForLecture(lectureId);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) ModelMapper.transformAll(assignments, AssignmentDto.class);
+        return dtos;
+    }
+
+
+    @RequestMapping(
+            value = ASSIGN_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -65,7 +178,7 @@ public class AssignmentController {
     }
 
     @RequestMapping(
-            value = "/due/lecture/id/{id}",
+            value = ASSIGN_URL_CREATE_BY_LECTURE_ID,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -98,7 +211,7 @@ public class AssignmentController {
 
 
     @RequestMapping(
-            value = "/",
+            value = ASSIGN_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @Authorizable(resource = ASSIGNMENT, action = MODIFY)
@@ -113,7 +226,7 @@ public class AssignmentController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = ASSIGN_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = OK, reason = "Assignment has been deleted")

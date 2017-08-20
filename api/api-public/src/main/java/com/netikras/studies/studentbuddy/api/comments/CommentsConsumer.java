@@ -95,10 +95,11 @@ public class CommentsConsumer extends GenericRestConsumer {
 
     public List<CommentDto> getAllCommentsByType(String entityType, String typeId) {
         HttpRequest<CommentDto> request = createRequest(endpointGetForType())
+                .withTypeReference(new TypeReference<List<CommentDto>>() {})
                 .setUrlProperty("typeName", entityType)
                 .setUrlProperty("typeId", typeId);
 
-        List<CommentDto> comments = (List<CommentDto>) sendRequest(request, new HttpResponseJsonImpl(new TypeReference<List<CommentDto>>() {}));
+        List<CommentDto> comments = (List<CommentDto>) sendRequest(request);
 
         return comments;
     }

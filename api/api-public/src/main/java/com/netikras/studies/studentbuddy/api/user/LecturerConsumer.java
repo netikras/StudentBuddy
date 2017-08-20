@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.tools.common.remote.http.GenericRestConsumer;
 import com.netikras.tools.common.remote.http.HttpRequest;
-import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.endpointGetByPersonId;
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.endpointUpdate;
 
+@SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class LecturerConsumer extends GenericRestConsumer {
 
     public LecturerDto getById(String id) {
@@ -26,10 +26,10 @@ public class LecturerConsumer extends GenericRestConsumer {
 
     public List<LecturerDto> getAllByDisciplineId(String id) {
         HttpRequest<LecturerDto> request = createRequest(endpointGetAllByDisciplineId())
+                .withTypeReference(new TypeReference<List<LecturerDto>>() {})
                 .setUrlProperty("id", id);
 
-        List<LecturerDto> lectures = (List<LecturerDto>) sendRequest(request, new HttpResponseJsonImpl(new TypeReference<List<LecturerDto>>() {
-        }));
+        List<LecturerDto> lectures = (List<LecturerDto>) sendRequest(request);
         return lectures;
     }
 

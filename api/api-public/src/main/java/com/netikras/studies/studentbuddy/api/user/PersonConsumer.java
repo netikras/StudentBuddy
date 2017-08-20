@@ -8,6 +8,7 @@ import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.en
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointGetById;
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointGetByIdetifier;
 
+@SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class PersonConsumer extends GenericRestConsumer {
 
     public PersonDto getById(String id) {

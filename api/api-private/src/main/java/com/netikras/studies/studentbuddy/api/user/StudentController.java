@@ -20,6 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_ALL_GROUPS;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_ALL_STUDENTS_BY_GROUP_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GROUP_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GUEST_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE_GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
@@ -27,14 +35,14 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
 
 @RestController
-@RequestMapping("/student")
+@RequestMapping(value = BASE_URL)
 public class StudentController {
 
     @Resource
     private StudentService studentService;
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = STUD_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -50,7 +58,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/",
+            value = STUD_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -70,7 +78,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/group/id/{id}",
+            value = STUD_URL_GET_GROUP_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -84,7 +92,7 @@ public class StudentController {
     }
 
     @RequestMapping(
-            value = "/group",
+            value = STUD_URL_GET_ALL_GROUPS,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -98,7 +106,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/all/group/id/{id}",
+            value = STUD_URL_GET_ALL_STUDENTS_BY_GROUP_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -118,7 +126,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/guest/id/{id}",
+            value = STUD_URL_GET_GUEST_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -134,7 +142,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/guest",
+            value = STUD_URL_UPDATE_GUEST,
             method = RequestMethod.POST
     )
     @Authorizable(resource = GUEST, action = MODIFY)

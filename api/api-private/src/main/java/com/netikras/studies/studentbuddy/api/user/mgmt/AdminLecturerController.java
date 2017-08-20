@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt;
 
+import com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
@@ -20,6 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants.ADM_LECTURER_URL_ASSIGN_TO_DISCIPLINE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants.ADM_LECTURER_URL_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants.ADM_LECTURER_URL_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants.ADM_LECTURER_URL_UNASSIGN_FROM_DISCIPLINE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
@@ -27,7 +33,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.DISCIPLINE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURER;
 
 @RestController
-@RequestMapping("/mgmt/lecturer")
+@RequestMapping(BASE_URL)
 public class AdminLecturerController {
 
     @Resource
@@ -37,7 +43,7 @@ public class AdminLecturerController {
     private SchoolService schoolService;
 
     @RequestMapping(
-            value = "/",
+            value = ADM_LECTURER_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -53,7 +59,7 @@ public class AdminLecturerController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = ADM_LECTURER_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Lecturer has been deleted")
@@ -65,7 +71,7 @@ public class AdminLecturerController {
     }
 
     @RequestMapping(
-            value = "/id/{lecturerId}/discipline/{disciplineId}",
+            value = ADM_LECTURER_URL_ASSIGN_TO_DISCIPLINE,
             method = RequestMethod.PUT
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Lecturer has been assigned to a discipline")
@@ -80,10 +86,10 @@ public class AdminLecturerController {
     }
 
     @RequestMapping(
-            value = "/id/{lecturerId}/discipline/{disciplineId}",
+            value = ADM_LECTURER_URL_UNASSIGN_FROM_DISCIPLINE,
             method = RequestMethod.DELETE
     )
-    @ResponseStatus(code = HttpStatus.OK, reason = "Lecturer has been unassigned to a discipline")
+    @ResponseStatus(code = HttpStatus.OK, reason = "Lecturer has been unassigned from a discipline")
     @Authorizable(resource = DISCIPLINE, action = MODIFY)
     public void unassignLecturerFromDiscipline(
             @PathVariable(name = "lecturerId") String lecturerId,

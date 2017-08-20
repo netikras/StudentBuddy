@@ -86,12 +86,15 @@ public interface LectureService {
 
     void deleteAssignment(String id);
 
-    List<Assignment> getAllAssignmentsForLecture(String id, Date startsAfter, Date startsBefore);
+    List<Assignment> getAllAssignmentsForLecture(String id);
 
     List<Assignment> getAllAssignmentsForDiscipline(String id, Date startsAfter, Date startsBefore);
 
     List<Assignment> getAllAssignmentsForGroup(String id, Date startsAfter, Date startsBefore);
 
+    List<Assignment> getAllAssignmentsForStudent(String id, Date startsAfter, Date startsBefore);
+
     List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore);
 
+    List<Assignment> getAllAssignmentsForDisciplineAndStudent(String disciplineId, String studentId, Date startsAfter, Date startsBefore);
 }

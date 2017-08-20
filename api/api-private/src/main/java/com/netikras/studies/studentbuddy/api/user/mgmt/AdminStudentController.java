@@ -26,16 +26,28 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_ADD_ALL_STUDENTS_TO_GROUP;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_ADD_STUDENT_TO_GROUP;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_CREATE_GROUP;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_CREATE_GUEST;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_CREATE_GUEST_BY_PERSON_IDENT_AND_LECTURE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_CREATE_GUEST_BY_PERSON_ID_AND_LECTURE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_DELETE_GROUP_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_DELETE_GUEST_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_REMOVE_ALL_STUDENTS_FROM_GROUP;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.ADM_STUD_REMOVE_STUDENT_FROM_GROUP;
+import static com.netikras.studies.studentbuddy.api.constants.AdminStudentConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
 
 @RestController
-@RequestMapping(value = "/mgmt/student")
+@RequestMapping(value = BASE_URL)
 public class AdminStudentController {
 
 
@@ -50,7 +62,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/",
+            value = ADM_STUD_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -67,7 +79,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = ADM_STUD_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Student has been deleted")
@@ -81,11 +93,11 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/group",
+            value = ADM_STUD_CREATE_GROUP,
             method = RequestMethod.POST
     )
     @ResponseBody
-    @Authorizable(resource = STUDENT_GROUP, action = GET)
+    @Authorizable(resource = STUDENT_GROUP, action = CREATE)
     public StudentsGroupDto createGroup(
             @RequestBody StudentsGroupDto groupDto
     ) {
@@ -99,7 +111,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/group/id/{id}",
+            value = ADM_STUD_DELETE_GROUP_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Group has been deleted")
@@ -114,7 +126,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/group/add/all/{groupId}/{studentIds}",
+            value = ADM_STUD_ADD_ALL_STUDENTS_TO_GROUP,
             method = RequestMethod.PUT
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Students have been added the group")
@@ -127,7 +139,7 @@ public class AdminStudentController {
     }
 
     @RequestMapping(
-            value = "/group/add/single/{groupId}/{studentId}",
+            value = ADM_STUD_ADD_STUDENT_TO_GROUP,
             method = RequestMethod.PUT
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Student has been added the group")
@@ -143,8 +155,8 @@ public class AdminStudentController {
     }
 
     @RequestMapping(
-            value = "/group/remove/single/{groupId}/{studentId}",
-            method = RequestMethod.PUT
+            value = ADM_STUD_REMOVE_STUDENT_FROM_GROUP,
+            method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Student has been removed from the group")
     @Authorizable(resource = STUDENT_GROUP, action = MODIFY)
@@ -159,8 +171,8 @@ public class AdminStudentController {
     }
 
     @RequestMapping(
-            value = "/group/remove/all/{groupId}/{studentIds}",
-            method = RequestMethod.PUT
+            value = ADM_STUD_REMOVE_ALL_STUDENTS_FROM_GROUP,
+            method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Student has been removed from the group")
     @Authorizable(resource = STUDENT_GROUP, action = MODIFY)
@@ -176,7 +188,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/guest",
+            value = ADM_STUD_CREATE_GUEST,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -193,7 +205,7 @@ public class AdminStudentController {
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(
-            value = "/guest/person/id/{personId}/lecture/id/{lectureId}",
+            value = ADM_STUD_CREATE_GUEST_BY_PERSON_ID_AND_LECTURE_ID,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -213,7 +225,7 @@ public class AdminStudentController {
 
     @SuppressWarnings("Duplicates")
     @RequestMapping(
-            value = "/guest/person/identifier/{personId}/lecture/id/{lectureId}",
+            value = ADM_STUD_CREATE_GUEST_BY_PERSON_IDENT_AND_LECTURE_ID,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -233,7 +245,7 @@ public class AdminStudentController {
 
 
     @RequestMapping(
-            value = "/guest/id/{id}",
+            value = ADM_STUD_DELETE_GUEST_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = HttpStatus.OK, reason = "Lecture guest has been deleted")

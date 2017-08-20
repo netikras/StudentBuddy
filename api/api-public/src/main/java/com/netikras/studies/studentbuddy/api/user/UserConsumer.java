@@ -17,6 +17,7 @@ import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endp
 /**
  * Consumes /api/user endpoint.
  */
+@SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class UserConsumer extends GenericRestConsumer {
 
 

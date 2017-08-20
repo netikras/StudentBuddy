@@ -120,7 +120,6 @@ public class MapsController {
             @PathVariable(name = "buildingId") String buildingId,
             @PathVariable(name = "sectionId") String sectionId
     ) {
-        // e.g. east-wing, blue-garden, etc.
         List<BuildingFloorDto> floors = null;
 
         return floors;

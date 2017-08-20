@@ -19,12 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_LAYOUT_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_LAYOUT_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_LAYOUT_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_LAYOUT_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ROOM;
 
 @RestController
-@RequestMapping(value = "/floor")
+@RequestMapping(value = BASE_URL)
 public class FloorController {
 
     
@@ -32,20 +45,24 @@ public class FloorController {
     private FloorService floorService;
 
 
+    // floor
+
     @RequestMapping(
-            value = "/id/{id}",
+            value = FLOOR_URL_FLOOR_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = FLOOR, action = Action.GET)
-    public BuildingFloorDto getBuildingFloor(@PathVariable(name = "id") String id) {
+    public BuildingFloorDto getBuildingFloor(
+            @PathVariable(name = "id") String id
+    ) {
         BuildingFloor buildingFloor = floorService.getFloor(id);
         BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
 
     @RequestMapping(
-            value = "/",
+            value = FLOOR_URL_FLOOR_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -60,7 +77,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/",
+            value = FLOOR_URL_FLOOR_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -75,7 +92,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = FLOOR_URL_FLOOR_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = FLOOR, action = Action.DELETE)
@@ -83,8 +100,12 @@ public class FloorController {
         floorService.deleteFloor(id);
     }
 
+
+
+    // room
+
     @RequestMapping(
-            value = "/room/id/{id}",
+            value = FLOOR_URL_ROOM_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -96,7 +117,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/room",
+            value = FLOOR_URL_ROOM_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -111,7 +132,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/room",
+            value = FLOOR_URL_ROOM_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -126,7 +147,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/room/id/{id}",
+            value = FLOOR_URL_ROOM_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = ROOM, action = Action.DELETE)
@@ -137,22 +158,24 @@ public class FloorController {
 
 
 
-
+    // layout
 
     @RequestMapping(
-            value = "/layout/id/{id}",
+            value = FLOOR_URL_LAYOUT_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = FLOOR_MAP, action = Action.GET)
-    public FloorLayoutDto getFloorLayout(@PathVariable(name = "id") String id) {
+    public FloorLayoutDto getFloorLayout(
+            @PathVariable(name = "id") String id
+    ) {
         FloorLayout floorLayout = floorService.getFloorLayout(id);
         FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
 
     @RequestMapping(
-            value = "/layout",
+            value = FLOOR_URL_LAYOUT_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -167,7 +190,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/layout",
+            value = FLOOR_URL_LAYOUT_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -182,7 +205,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/layout/id/{id}",
+            value = FLOOR_URL_LAYOUT_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = FLOOR_MAP, action = Action.DELETE)

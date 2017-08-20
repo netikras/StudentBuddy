@@ -19,19 +19,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_CREATE_ADDRESS;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_CREATE_BUILDING;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_CREATE_BUILDING_SECTION;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_DELETE_ADDRESS_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_DELETE_BUILDING_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_DELETE_BUILDING_SECTION_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_ADDRESS_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_BUILDING_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_BUILDING_SECTION_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_ADDRESS;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_BUILDING;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_BUILDING_SECTION;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ADDRESS;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.BUILDING;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.BUILDING_SECTION;
 
 @RestController
-@RequestMapping(value = "/location")
+@RequestMapping(value = BASE_URL)
 public class LocationController {
 
     @Resource
     private LocationService locationService;
 
+
+    // building
+
     @RequestMapping(
-            value = "/building/id/{id}",
+            value = LOC_URL_GET_BUILDING_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -43,7 +59,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building",
+            value = LOC_URL_UPDATE_BUILDING,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -58,7 +74,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building",
+            value = LOC_URL_CREATE_BUILDING,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -73,7 +89,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building/id/{id}",
+            value = LOC_URL_DELETE_BUILDING_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = BUILDING, action = Action.DELETE)
@@ -82,8 +98,11 @@ public class LocationController {
     }
 
 
+
+    // building section
+
     @RequestMapping(
-            value = "/building/section/id/{id}",
+            value = LOC_URL_GET_BUILDING_SECTION_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -95,7 +114,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building/section",
+            value = LOC_URL_UPDATE_BUILDING_SECTION,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -110,7 +129,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building/section",
+            value = LOC_URL_CREATE_BUILDING_SECTION,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -125,7 +144,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/building/section/id/{id}",
+            value = LOC_URL_DELETE_BUILDING_SECTION_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = BUILDING_SECTION, action = Action.DELETE)
@@ -134,8 +153,11 @@ public class LocationController {
     }
 
 
+
+    // address
+
     @RequestMapping(
-            value = "/address/id/{id}",
+            value = LOC_URL_GET_ADDRESS_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -147,7 +169,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/address",
+            value = LOC_URL_UPDATE_ADDRESS,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -162,7 +184,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/address",
+            value = LOC_URL_CREATE_ADDRESS,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -177,7 +199,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/address/id/{id}",
+            value = LOC_URL_DELETE_ADDRESS_BY_ID,
             method = RequestMethod.DELETE
     )
     @Authorizable(resource = ADDRESS, action = Action.DELETE)

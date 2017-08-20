@@ -16,6 +16,21 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_GROUP_ID_STARTING_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_GROUP_ID_STARTING_IN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_LECTURER_ID_STARTING_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_LECTURER_ID_STARTING_IN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_ROOM_ID_STARTING_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_ROOM_ID_STARTING_IN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_STUDENT_ID_STARTING_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_ALL_BY_STUDENT_ID_STARTING_IN;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturesConstants.LECTURE_URL_UPDATE;
+import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURE;
@@ -24,7 +39,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURE;
  * Created by netikras on 17.6.21.
  */
 @RestController
-@RequestMapping(value = "/lecture")
+@RequestMapping(value = BASE_URL)
 public class LecturesController {
 
     @Resource
@@ -36,7 +51,7 @@ public class LecturesController {
      * @param value     Time value
      */
     @RequestMapping(
-            value = "/group/id/{groupId}/in/t/{timeUnits}/{value}",
+            value = LECTURE_URL_GET_ALL_BY_GROUP_ID_STARTING_IN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -50,7 +65,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/student/id/{studentId}/in/t/{timeUnits}/{value}",
+            value = LECTURE_URL_GET_ALL_BY_STUDENT_ID_STARTING_IN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -64,7 +79,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/lecturer/id/{lecturerId}/in/t/{timeUnits}/{value}",
+            value = LECTURE_URL_GET_ALL_BY_LECTURER_ID_STARTING_IN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -78,7 +93,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/room/id/{roomId}/in/t/{timeUnits}/{value}",
+            value = LECTURE_URL_GET_ALL_BY_ROOM_ID_STARTING_IN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -93,7 +108,7 @@ public class LecturesController {
 
 
     @RequestMapping(
-            value = "/group/id/{groupId}/between/{after}/{before}",
+            value = LECTURE_URL_GET_ALL_BY_GROUP_ID_STARTING_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -109,7 +124,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/student/id/{studentId}/between/{after}/{before}",
+            value = LECTURE_URL_GET_ALL_BY_STUDENT_ID_STARTING_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -125,7 +140,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/lecturer/id/{lecturerId}/between/{after}/{before}",
+            value = LECTURE_URL_GET_ALL_BY_LECTURER_ID_STARTING_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -141,7 +156,7 @@ public class LecturesController {
     }
 
     @RequestMapping(
-            value = "/room/id/{roomId}/between/{after}/{before}",
+            value = LECTURE_URL_GET_ALL_BY_ROOM_ID_STARTING_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -158,7 +173,7 @@ public class LecturesController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = LECTURE_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -173,7 +188,7 @@ public class LecturesController {
 
 
     @RequestMapping(
-            value = "/",
+            value = LECTURE_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -185,6 +200,33 @@ public class LecturesController {
         lecture = lectureService.updateLecture(lecture);
         lectureDto = ModelMapper.transform(lecture, new LectureDto());
         return lectureDto;
+    }
+
+    @RequestMapping(
+            value = LECTURE_URL_CREATE,
+            method = RequestMethod.POST
+    )
+    @ResponseBody
+    @Authorizable(resource = LECTURE, action = CREATE)
+    public LectureDto createLecture(
+            @RequestBody LectureDto lectureDto
+    ) {
+        Lecture lecture = ModelMapper.apply(new Lecture(), lectureDto);
+        lecture = lectureService.createLecture(lecture);
+        lectureDto = ModelMapper.transform(lecture, new LectureDto());
+        return lectureDto;
+    }
+
+    @RequestMapping(
+            value = LECTURE_URL_DELETE_BY_ID,
+            method = RequestMethod.DELETE
+    )
+    @ResponseBody
+    @Authorizable(resource = LECTURE, action = DELETE)
+    public void deleteLectureById(
+            @PathVariable(name = "id") String id
+    ) {
+        lectureService.deleteLecture(id);
     }
 
 

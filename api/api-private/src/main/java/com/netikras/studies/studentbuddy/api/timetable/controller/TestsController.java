@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.timetable.controller;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
+import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
@@ -16,10 +17,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
 import java.util.Date;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.BASE_URL;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_CREATE_BY_LECTURE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_BETWEEN;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
@@ -29,7 +39,7 @@ import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(value = "/tests")
+@RequestMapping(value = BASE_URL)
 public class TestsController {
 
 
@@ -37,7 +47,7 @@ public class TestsController {
     private LectureService lectureService;
 
     @RequestMapping(
-            value = "/",
+            value = TESTS_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -46,6 +56,8 @@ public class TestsController {
             @RequestBody DisciplineTestDto disciplineTestDto
     ) {
         DisciplineTest test = ModelMapper.apply(new DisciplineTest(), disciplineTestDto);
+        test.setDiscipline(ModelMapper.apply(new Discipline(), disciplineTestDto.getDiscipline()));
+        test.setLecture(ModelMapper.apply(new Lecture(), disciplineTestDto.getLecture()));
         test = lectureService.createTest(test);
         disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
 
@@ -54,7 +66,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/due/lecture/id/{id}",
+            value = TESTS_URL_CREATE_BY_LECTURE_ID,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -78,6 +90,7 @@ public class TestsController {
         test.setDiscipline(lecture.getDiscipline());
         test.setLecture(lecture);
         test.setStartsOn(lecture.getStartsOn());
+        test.setDescription(description);
 
         test = lectureService.createTest(test);
         DisciplineTestDto dto = ModelMapper.transform(test, new DisciplineTestDto());
@@ -86,7 +99,7 @@ public class TestsController {
     }
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = TESTS_URL_GET_BY_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -102,7 +115,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/",
+            value = TESTS_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
@@ -120,7 +133,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = TESTS_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseStatus(code = OK, reason = "Test has been deleted")
@@ -136,7 +149,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/discipline/id/{id}/starts/between/{after}/{before}",
+            value = TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -156,7 +169,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/discipline/id/{id}",
+            value = TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -171,7 +184,7 @@ public class TestsController {
     }
 
     @RequestMapping(
-            value = "/discipline/id/{disciplineId}/group/id/{groupId}/starts/between/{after}/{before}",
+            value = TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -191,7 +204,7 @@ public class TestsController {
     }
 
     @RequestMapping(
-            value = "/discipline/id/{disciplineId}/group/id/{groupId}",
+            value = TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID,
             method = RequestMethod.GET
     )
     @ResponseBody

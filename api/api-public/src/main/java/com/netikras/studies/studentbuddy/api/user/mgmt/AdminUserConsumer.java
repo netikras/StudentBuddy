@@ -8,7 +8,7 @@ import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 import static com.netikras.studies.studentbuddy.api.constants.AdminUserConstants.endpointCreateUser;
 import static com.netikras.studies.studentbuddy.api.constants.AdminUserConstants.endpointDeleteUserById;
 
-
+@SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class AdminUserConsumer extends GenericRestConsumer {
 
     public UserDto createUser(UserDto userDto) {

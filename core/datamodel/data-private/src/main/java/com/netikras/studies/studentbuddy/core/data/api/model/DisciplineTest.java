@@ -39,19 +39,27 @@ public class DisciplineTest {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
     @Column(name = "starts_on")
     @Temporal(TemporalType.TIMESTAMP)
+    @ModelTransform(dtoFieldName = "startsOn")
     private Date startsOn;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "lecture_id")
+    @ModelTransform(dtoFieldName = "lecture", dtoUpdatable = false)
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "discipline_id")
+    @ModelTransform(dtoFieldName = "discipline", dtoUpdatable = false)
     private Discipline discipline;
+
+    @Column(name = "description")
+    @ModelTransform(dtoFieldName = "description")
+    private String description;
 
 
     public String getId() {
@@ -102,6 +110,14 @@ public class DisciplineTest {
         this.discipline = discipline;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "DisciplineTest{" +
@@ -111,6 +127,7 @@ public class DisciplineTest {
                 ", startsOn=" + startsOn +
                 ", lecture=" + lecture +
                 ", discipline=" + discipline +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

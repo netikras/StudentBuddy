@@ -29,6 +29,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_LOGIN}
+     */
     public static RemoteEndpoint endpointLogin() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_LOGIN)
@@ -36,6 +39,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_LOGOUT}
+     */
     public static RemoteEndpoint endpointLogout() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_LOGOUT)
@@ -43,6 +49,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_UPDATE_BY_ID}
+     */
     public static RemoteEndpoint endpointUpdateById() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_UPDATE_BY_ID)
@@ -50,6 +59,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_CHANGE_PASSWORD}
+     */
     public static RemoteEndpoint endpointChangePassword() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_CHANGE_PASSWORD)
@@ -57,6 +69,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_GET_BY_ID}
+     */
     public static RemoteEndpoint endpointGetById() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_GET_BY_ID)
@@ -64,6 +79,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_GET_BY_NAME}
+     */
     public static RemoteEndpoint endpointGetByName() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_GET_BY_NAME)
@@ -71,6 +89,9 @@ public class UserConstants {
                 ;
     }
 
+    /**
+     * {@value USER_URL_GET_USER_BY_PERSON_ID}
+     */
     public static RemoteEndpoint endpointGetByPersonId() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_GET_USER_BY_PERSON_ID)

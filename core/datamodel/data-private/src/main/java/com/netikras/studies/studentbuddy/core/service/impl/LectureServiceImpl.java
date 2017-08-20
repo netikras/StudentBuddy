@@ -210,8 +210,8 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public List<Assignment> getAllAssignmentsForLecture(String id, Date startsAfter, Date startsBefore) {
-        return assignmentDao.findAllByLecture_IdAndDueDateBetween(id, startsAfter, startsBefore);
+    public List<Assignment> getAllAssignmentsForLecture(String id) {
+        return assignmentDao.findAllByLecture_Id(id);
     }
 
     @Override
@@ -225,7 +225,17 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    public List<Assignment> getAllAssignmentsForStudent(String id, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(id, startsAfter, startsBefore);
+    }
+
+    @Override
     public List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore) {
         return assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndDueDateBetween(disciplineId, groupId, startsAfter, startsBefore);
+    }
+
+    @Override
+    public List<Assignment> getAllAssignmentsForDisciplineAndStudent(String disciplineId, String studentId, Date startsAfter, Date startsBefore) {
+        return assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(disciplineId, studentId, startsAfter, startsBefore);
     }
 }

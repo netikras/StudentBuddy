@@ -15,13 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.api.constants.AdminPersonConstants.ADM_PERS_URL_CREATE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminPersonConstants.ADM_PERS_URL_DELETE_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.AdminPersonConstants.ADM_PERS_URL_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.AdminPersonConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.PERSON;
 
 @RestController
-@RequestMapping(value = "/mgmt/person")
+@RequestMapping(value = BASE_URL)
 public class AdminPersonController {
 
 
@@ -30,7 +34,7 @@ public class AdminPersonController {
 
 
     @RequestMapping(
-            value = "/",
+            value = ADM_PERS_URL_CREATE,
             method = RequestMethod.POST
     )
     @ResponseBody
@@ -47,7 +51,7 @@ public class AdminPersonController {
 
 
     @RequestMapping(
-            value = "/id/{id}",
+            value = ADM_PERS_URL_DELETE_BY_ID,
             method = RequestMethod.DELETE
     )
     @ResponseBody
@@ -60,7 +64,7 @@ public class AdminPersonController {
 
 
     @RequestMapping(
-            value = "/",
+            value = ADM_PERS_URL_UPDATE,
             method = RequestMethod.PUT
     )
     @ResponseBody
