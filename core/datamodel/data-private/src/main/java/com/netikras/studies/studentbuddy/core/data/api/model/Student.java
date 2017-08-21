@@ -32,19 +32,23 @@ public class Student {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
+    @ModelTransform(dtoFieldName = "person", dtoUpdatable = false)
     private Person person;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
+    @ModelTransform(dtoFieldName = "group", dtoUpdatable = false)
     private StudentsGroup group;
 
     public String getId() {

@@ -16,6 +16,8 @@ public enum Action {
     _PARAM,
 
     GET,
+    GET_ALL,
+    SEARCH,
     CREATE,
     MODIFY,
     DELETE,

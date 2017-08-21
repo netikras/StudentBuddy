@@ -32,18 +32,22 @@ public class PersonnelMember {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "person_id")
+    @ModelTransform(dtoFieldName = "person", dtoUpdatable = false)
     private Person person;
 
     @Column(name = "title")
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
     public String getId() {

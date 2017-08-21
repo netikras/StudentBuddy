@@ -41,15 +41,19 @@ public class SchoolDepartment {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ModelTransform(dtoFieldName = "school", dtoUpdatable = false)
     private School school;
 
     @Column(name = "title", nullable = false)
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "department")
+    @ModelTransform(dtoFieldName = "buildings", dtoUpdatable = false)
     private List<Building> buildings;
 
 

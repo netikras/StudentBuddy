@@ -35,9 +35,11 @@ public class Lecturer {
     private Person person;
 
     @Column(name = "degree")
+    @ModelTransform
     private String degree;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecturer")
+    @ModelTransform(dtoUpdatable = false, dtoValueExtractField = "discipline")
     private List<DisciplineLecturer> disciplineLecturers;
 
     public String getId() {

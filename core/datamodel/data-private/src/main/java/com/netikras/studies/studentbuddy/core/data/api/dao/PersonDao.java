@@ -15,4 +15,8 @@ public interface PersonDao extends JpaRepo<Person> {
 
     List<Person> findAllByIdOrIdentificationOrPersonalCode(String id, String identification, String personalCode);
 
+    List<Person> findAllByFirstNameAndLastName(String firstName, String lastName);
+    List<Person> findAllByFirstName(String firstName);
+    List<Person> findAllByLastName(String lastName);
+
 }

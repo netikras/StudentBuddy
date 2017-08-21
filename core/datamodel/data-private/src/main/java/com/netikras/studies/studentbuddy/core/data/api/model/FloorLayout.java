@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.api.model.transformers.BlobToBytesTransformer;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -40,17 +41,21 @@ public class FloorLayout {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "floor_id")
+    @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;
 
     @Column(name = "active")
+    @ModelTransform
     private boolean active = true;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
+    @ModelTransform(dtoUpdatable = false, transformer = BlobToBytesTransformer.class)
     private Blob floorMap;
 
 

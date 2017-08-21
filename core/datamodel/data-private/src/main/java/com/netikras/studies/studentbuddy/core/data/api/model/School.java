@@ -41,13 +41,16 @@ public class School {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
 
     @Column(name = "title", nullable = false)
+    @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
     private String title;
 
     @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ModelTransform(dtoFieldName = "departments", dtoUpdatable = false)
     private List<SchoolDepartment> departments;
 
     public String getId() {

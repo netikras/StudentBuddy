@@ -1,7 +1,6 @@
 package com.netikras.studies.studentbuddy.commons.exception;
 
 
-import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.FriendlyException;
 import com.netikras.tools.common.remote.http.HttpStatus;
 
@@ -155,6 +154,7 @@ public class StudBudException extends FriendlyException {
                 ", url='" + url + '\'' +
                 ", developerMessage='" + developerMessage + '\'' +
                 ", wrappedException=" + wrappedException +
+                ", errors=" + getErrors() +
                 '}';
     }
 }

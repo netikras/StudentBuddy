@@ -7,10 +7,13 @@ public class StudentConstants {
 
     public static final String BASE_URL = "/student";
 
+    public static final String STUD_URL_GET_ALL = "/all";
     public static final String STUD_URL_GET_BY_ID = "/id/{id}";
+    public static final String STUD_URL_GET_BY_PERSON_ID = "/person/id/{id}";
     public static final String STUD_URL_UPDATE = "/";
 
     public static final String STUD_URL_GET_GROUP_BY_ID = "/group/id/{id}";
+    public static final String STUD_URL_GET_GROUP_BY_TITLE = "/group/title/{title}";
     public static final String STUD_URL_GET_ALL_GROUPS = "/group";
     public static final String STUD_URL_GET_ALL_STUDENTS_BY_GROUP_ID = "/all/group/id/{id}";
 
@@ -35,6 +38,16 @@ public class StudentConstants {
     }
 
     /**
+     * {@value STUD_URL_GET_BY_PERSON_ID}
+     */
+    public static RemoteEndpoint endpointGetStudentByPersonId() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_GET_BY_PERSON_ID)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
      * {@value STUD_URL_UPDATE}
      */
     public static RemoteEndpoint endpointUpdateStudent() {
@@ -50,6 +63,16 @@ public class StudentConstants {
     public static RemoteEndpoint endpointGetGroupById() {
         return getBaseEndpoint()
                 .setMethodUrl(STUD_URL_GET_GROUP_BY_ID)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value STUD_URL_GET_GROUP_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointGetGroupByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_GET_GROUP_BY_TITLE)
                 .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }

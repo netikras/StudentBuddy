@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.api.user.UserConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.RemoteEndpointServer;
+import com.netikras.tools.common.remote.http.GenericRestConsumer;
 import com.netikras.tools.common.remote.http.HttpRequest;
 import com.netikras.tools.common.remote.http.SessionContext;
 import org.slf4j.Logger;
@@ -47,15 +48,18 @@ public class GenericConsumerTest {
     protected static final String SYSTEM_USER_PASSWORD = "system";
 
     public void init() {
-        userConsumer = new UserConsumer();
-
         sessionContext = new SessionContext();
-        userConsumer.setSessionContext(sessionContext);
+        userConsumer = attachConsumer(new UserConsumer());
+    }
 
+    protected <T extends GenericRestConsumer> T attachConsumer(T consumer) {
+        if (consumer == null) return null;
 
-        userConsumer.addServer("default", server);
+        consumer.setSessionContext(getSessionContext());
+        consumer.addServer("default", server);
+        consumer.addListener("default", responseListener);
 
-        userConsumer.addListener("default", responseListener);
+        return consumer;
     }
 
     protected UserDto login(String username, String password) {

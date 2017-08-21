@@ -11,4 +11,5 @@ public interface StudentsGroupDao extends JpaRepo<StudentsGroup> {
 
     List<StudentsGroup> findByMembersContaining(Student member);
 
+    StudentsGroup findByTitle(String title);
 }

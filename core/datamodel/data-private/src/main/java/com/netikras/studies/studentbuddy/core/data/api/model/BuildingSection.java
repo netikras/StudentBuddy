@@ -31,12 +31,15 @@ public class BuildingSection {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "building_id")
+    @ModelTransform(dtoUpdatable = false)
     private Building building;
 
     @Column(name = "title")
+    @ModelTransform
     private String title;
 
     @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @ModelTransform(dtoUpdatable = false)
     private List<BuildingFloor> floors;
 
     public String getId() {

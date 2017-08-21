@@ -39,26 +39,26 @@ public class DisciplineTest {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @Column(name = "starts_on")
     @Temporal(TemporalType.TIMESTAMP)
-    @ModelTransform(dtoFieldName = "startsOn")
+    @ModelTransform
     private Date startsOn;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "lecture_id")
-    @ModelTransform(dtoFieldName = "lecture", dtoUpdatable = false)
+    @ModelTransform(dtoUpdatable = false)
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "discipline_id")
-    @ModelTransform(dtoFieldName = "discipline", dtoUpdatable = false)
+    @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
 
     @Column(name = "description")
-    @ModelTransform(dtoFieldName = "description")
+    @ModelTransform
     private String description;
 
 

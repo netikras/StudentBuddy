@@ -40,29 +40,36 @@ public class Lecture {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "discipline_id")
+    @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecture")
     @Fetch(FetchMode.SUBSELECT)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "assignments")
     private List<Assignment> pendingAssignments;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "lecture", orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "tests")
     private List<DisciplineTest> pendingTests;
 
     @Column(name = "starts_on")
     @Temporal(TemporalType.TIMESTAMP)
+    @ModelTransform(dtoUpdatable = false)
     private Date startsOn;
 
     @Column(name = "ends_on")
     @Temporal(TemporalType.TIMESTAMP)
+    @ModelTransform(dtoUpdatable = false)
     private Date endsOn;
 
     @Transient
+    @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
+    @ModelTransform
     private LectureRoom room;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -70,9 +77,11 @@ public class Lecture {
     private Lecturer lecturer;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @ModelTransform(dtoUpdatable = false)
     private StudentsGroup studentsGroup;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "visitors")
     private List<LectureGuest> lectureGuests;
 
     public String getId() {

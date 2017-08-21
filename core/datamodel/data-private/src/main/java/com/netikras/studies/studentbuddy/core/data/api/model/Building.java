@@ -43,14 +43,17 @@ public class Building {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
 
     @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
+    @ModelTransform(dtoUpdatable = false)
     private Address address;
 
     @Column(name = "title")
+    @ModelTransform
     private String title;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
@@ -58,6 +61,7 @@ public class Building {
     private SchoolDepartment department;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "building")
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSections")
     private List<BuildingSection> sections;
 
 

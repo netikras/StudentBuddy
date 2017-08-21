@@ -13,8 +13,10 @@ import java.util.List;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetAllGroups;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetAllStudentsByGroupId;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetGroupById;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetGroupByTitle;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetGuestById;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetStudentById;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetStudentByPersonId;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointUpdateGuest;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointUpdateStudent;
 
@@ -23,6 +25,15 @@ public class StudentConsumer extends GenericRestConsumer {
 
     public StudentDto getStudentById(String id) {
         HttpRequest request = createRequest(endpointGetStudentById())
+                .withExpectedType(StudentDto.class)
+                .setUrlProperty("id", id);
+
+        StudentDto studentDto = (StudentDto) sendRequest(request);
+        return studentDto;
+    }
+
+    public StudentDto getStudentByPersonId(String id) {
+        HttpRequest request = createRequest(endpointGetStudentByPersonId())
                 .withExpectedType(StudentDto.class)
                 .setUrlProperty("id", id);
 
@@ -43,6 +54,15 @@ public class StudentConsumer extends GenericRestConsumer {
         HttpRequest request = createRequest(endpointGetGroupById())
                 .withExpectedType(StudentsGroupDto.class)
                 .setUrlProperty("id", id);
+
+        StudentsGroupDto dto = (StudentsGroupDto) sendRequest(request);
+        return dto;
+    }
+
+    public StudentsGroupDto getGroupByTitle(String title) {
+        HttpRequest request = createRequest(endpointGetGroupByTitle())
+                .withExpectedType(StudentsGroupDto.class)
+                .setUrlProperty("title", title);
 
         StudentsGroupDto dto = (StudentsGroupDto) sendRequest(request);
         return dto;

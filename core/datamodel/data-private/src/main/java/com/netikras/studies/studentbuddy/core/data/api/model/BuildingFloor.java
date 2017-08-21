@@ -30,23 +30,29 @@ public class BuildingFloor {
     private String id;
 
     @Column(name = "number", nullable = false)
+    @ModelTransform(dtoUpdatable = false)
     private int number;
 
     @Column(name = "title")
+    @ModelTransform
     private String title;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "building_sec_id")
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSection")
     private BuildingSection section;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "building_id")
+    @ModelTransform(dtoUpdatable = false)
     private Building building;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "floor", orphanRemoval = true)
+    @ModelTransform(dtoUpdatable = false)
     private List<FloorLayout> layouts;
 
     @OneToMany(mappedBy = "floor", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "lectureRooms")
     private List<LectureRoom> rooms;
 
     public String getId() {

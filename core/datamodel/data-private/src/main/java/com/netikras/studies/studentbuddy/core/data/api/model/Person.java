@@ -6,14 +6,18 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by netikras on 17.6.21.
@@ -65,6 +69,9 @@ public class Person {
     @Column(name = "phone_no")
     @ModelTransform(dtoFieldName = "phoneNo")
     private String phoneNo;
+
+    @OneToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST}, fetch = FetchType.LAZY, mappedBy = "createdBy")
+    private List<Tag> userTags;
 
 
     public String getId() {
@@ -139,6 +146,13 @@ public class Person {
         this.phoneNo = phoneNo;
     }
 
+    public List<Tag> getUserTags() {
+        return userTags;
+    }
+
+    public void setUserTags(List<Tag> userTags) {
+        this.userTags = userTags;
+    }
 
     @Override
     public String toString() {

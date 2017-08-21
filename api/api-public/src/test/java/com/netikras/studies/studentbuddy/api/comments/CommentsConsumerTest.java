@@ -112,6 +112,7 @@ public class CommentsConsumerTest {
 
         CommentDto dto = createComment(comment);
 
+        logger.info("Created comment: {}", dto);
         assertNotNull("Created comment DTO must be returned", dto);
         assertNotEquals("Server must not use provided author's ID if such author is non-existent",
                 comment.getAuthor().getId(), dto.getAuthor().getId());
@@ -122,7 +123,7 @@ public class CommentsConsumerTest {
         assertEquals("Comment tags must be preserved",
                 comment.getTags().size(), dto.getTags().size());
 
-        logger.info("Created comment: {}", dto);
+        commentsConsumer.deleteById(dto.getId());
     }
 
     @Test

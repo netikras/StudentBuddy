@@ -31,34 +31,43 @@ public class Website {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_id")
+    @ModelTransform(dtoFieldName = "createdBy", dtoUpdatable = false)
     private Person createdBy;
 
     @Column(name = "address", nullable = false)
+    @ModelTransform(dtoFieldName = "address")
     private String address;
 
     @Column(name = "name", nullable = false)
+    @ModelTransform(dtoFieldName = "name", dtoUpdatable = false)
     private String name;
 
     @Column(name = "description", length = 256)
+    @ModelTransform(dtoFieldName = "description")
     private String description;
 
     @Column(name = "credentials")
+    @ModelTransform(dtoFieldName = "credentials")
     private String credentials;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "discipline_id")
+    @ModelTransform(dtoFieldName = "discipline")
     private Discipline discipline;
 
     @Column(name = "active")
+    @ModelTransform(dtoFieldName = "active")
     private boolean active = true;
 
     public String getId() {

@@ -37,23 +37,28 @@ public class Assignment {
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "discipline_id")
+    @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
 
     @Column(name = "description", nullable = false, length = 512)
+    @ModelTransform
     private String description;
 
     @Column(name = "created_on", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @Column(name = "due_date")
     @Temporal(TemporalType.TIMESTAMP)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "due")
     private Date dueDate;
 
     public String getId() {

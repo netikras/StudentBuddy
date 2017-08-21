@@ -39,29 +39,36 @@ public class LectureRoom {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
 
     @Column(name = "number")
+    @ModelTransform
     private String number; // e.g. 137A
 
     @Column(name = "title")
+    @ModelTransform
     private String title;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "school_id")
+    @ModelTransform(dtoUpdatable = false)
     private School school;
 
     @Transient
+    @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "floor_id")
+    @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;
 
 

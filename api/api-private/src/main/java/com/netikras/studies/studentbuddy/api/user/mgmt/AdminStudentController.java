@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +71,9 @@ public class AdminStudentController {
     public StudentDto createStudent(
             @RequestBody StudentDto studentDto
     ) {
-        Student student = ModelMapper.apply(new Student(), studentDto);
+        Student student = ModelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
+        student.setId(null);
+
         student = studentService.createStudent(student);
         studentDto = ModelMapper.transform(student, new StudentDto());
 

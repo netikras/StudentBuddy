@@ -169,6 +169,7 @@ public class StudBudUncheckedException extends FriendlyUncheckedException {
                 ", url='" + url + '\'' +
                 ", developerMessage='" + developerMessage + '\'' +
                 ", wrappedException=" + wrappedException +
+                ", errors=" + getErrors() +
                 '}';
     }
 }

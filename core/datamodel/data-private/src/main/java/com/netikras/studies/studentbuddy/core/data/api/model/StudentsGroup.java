@@ -34,18 +34,25 @@ public class StudentsGroup {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
+    @Column(name = "title", nullable = false, unique = true)
+    @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
     private String title;
 
+    @Column(name = "email")
+    @ModelTransform(dtoFieldName = "email")
     private String email;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
+    @ModelTransform(dtoFieldName = "members", dtoUpdatable = false)
     private List<Student> members;
 
 

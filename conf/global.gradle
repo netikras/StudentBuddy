@@ -10,7 +10,8 @@ sourceCompatibility = 1.8
 
 repositories {
     maven {
-        url "http://nx.netikras.com/repository/generic/snapshots"
+//        url "http://nx.netikras.com/repository/generic/snapshots"
+        url "http://nexus.netikras.com:8081/repository/generic/snapshots"
     }
     mavenCentral()
 }

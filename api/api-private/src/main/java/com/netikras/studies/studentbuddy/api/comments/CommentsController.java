@@ -12,6 +12,9 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
+import com.netikras.tools.common.exception.ErrorBody;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -288,7 +291,7 @@ public class CommentsController {
         User user = null;
 
         if (entity == null || entity.isEmpty()) {
-            errors.add(new ValidationError().setMessage("Entity type is mandatory"));
+            errors.add(new ValidationError().setMessage1("Entity type is mandatory"));
         }
 
         if (errors.isEmpty()) {
@@ -298,11 +301,11 @@ public class CommentsController {
                 user = ThreadContext.current().getUser();
                 allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
             } catch (IllegalArgumentException ilae) {
-                errors.add(new ValidationError().setMessage("Cannot determine entity type for value " + entity));
+                errors.add(new ValidationError().setMessage1("Cannot determine entity type for value " + entity));
             }
 
             if (!allowed) {
-                errors.add(new ValidationError().setMessage("User is unauthorized to perform action " + action + " on entity " + entity));
+                errors.add(new ValidationError().setMessage1("User is unauthorized to perform action " + action + " on entity " + entity));
             }
         }
 
@@ -315,7 +318,7 @@ public class CommentsController {
         boolean allowed = false;
 
         if (comment == null) {
-            errors.add(new ValidationError().setMessage("Comment is not provided"));
+            errors.add(new ValidationError().setMessage1("Comment is not provided"));
         }
 
         if (errors.isEmpty()) {
@@ -330,7 +333,7 @@ public class CommentsController {
                 Person authorPerson = comment.getAuthor();
                 if (!currentPerson.equals(authorPerson)) {
                     if (!systemService.isUserAllowedToPerformAction(currentUser, entity, MODERATE.name()))
-                        errors.add(new ValidationError().setMessage("User is not allowed to manipulate records as another person"));
+                        errors.add(new ValidationError().setMessage1("User is not allowed to manipulate records as another person"));
                 }
             }
         }
@@ -350,63 +353,5 @@ public class CommentsController {
         throwIfActionNotAllowedForComment(comment, action);
     }
 
-    class ErrorsCollection extends ArrayList<ValidationError> {
-
-
-        public String buildSingleMessage() {
-            if (isEmpty()) return null;
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (ValidationError error : this) {
-                stringBuilder.append(error);
-            }
-
-            return stringBuilder.toString();
-        }
-
-    }
-
-    class ValidationError {
-        private String message;
-        private String code;
-        private String suggestion;
-
-        public String getMessage() {
-            return message;
-        }
-
-        public ValidationError setMessage(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public String getCode() {
-            return code;
-        }
-
-        public ValidationError setCode(String code) {
-            this.code = code;
-            return this;
-        }
-
-        public String getSuggestion() {
-            return suggestion;
-        }
-
-        public ValidationError setSuggestion(String suggestion) {
-            this.suggestion = suggestion;
-            return this;
-        }
-
-        @Override
-        public String toString() {
-            return "ValidationError{" +
-                    "message='" + message + '\'' +
-                    ", code='" + code + '\'' +
-                    ", suggestion='" + suggestion + '\'' +
-                    '}';
-        }
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
 import java.util.Date;
@@ -14,7 +15,7 @@ public class LectureGuestDto {
     private Date createdOn;
     private Date updatedOn;
     private LectureDto lecture;
-    private StudentDto student;
+    private PersonDto person;
     private List<CommentDto> comments;
 
     public String getId() {
@@ -49,12 +50,12 @@ public class LectureGuestDto {
         this.lecture = lecture;
     }
 
-    public StudentDto getStudent() {
-        return student;
+    public PersonDto getPerson() {
+        return person;
     }
 
-    public void setStudent(StudentDto student) {
-        this.student = student;
+    public void setPerson(PersonDto person) {
+        this.person = person;
     }
 
     public List<CommentDto> getComments() {
@@ -73,7 +74,7 @@ public class LectureGuestDto {
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", lecture=" + lecture +
-                ", student=" + student +
+                ", person=" + person +
                 ", comments=" + comments +
                 '}';
     }

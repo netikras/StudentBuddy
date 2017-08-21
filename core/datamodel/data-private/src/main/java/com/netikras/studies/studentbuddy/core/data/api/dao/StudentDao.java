@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface StudentDao extends JpaRepo<Student> {
 
-    List<Student> findByPerson_Id(String person_id);
+    Student findByPerson_Id(String person_id);
 
     void deleteAllByPerson_Id(String person_id);
 

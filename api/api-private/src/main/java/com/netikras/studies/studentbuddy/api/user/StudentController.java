@@ -24,7 +24,9 @@ import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.B
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_ALL_GROUPS;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_ALL_STUDENTS_BY_GROUP_ID;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_BY_PERSON_ID;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GROUP_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GROUP_BY_TITLE;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GUEST_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE_GUEST;
@@ -51,6 +53,21 @@ public class StudentController {
             @PathVariable(name = "id") String id
     ) {
         Student student = studentService.getStudent(id);
+        StudentDto studentDto = ModelMapper.transform(student, new StudentDto());
+
+        return studentDto;
+    }
+
+    @RequestMapping(
+            value = STUD_URL_GET_BY_PERSON_ID,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = STUDENT, action = GET)
+    public StudentDto getStudentByPersonId(
+            @PathVariable(name = "id") String id
+    ) {
+        Student student = studentService.getStudentByPerson(id);
         StudentDto studentDto = ModelMapper.transform(student, new StudentDto());
 
         return studentDto;
@@ -87,6 +104,20 @@ public class StudentController {
             @PathVariable(name = "id") String id
     ) {
         StudentsGroup group = studentService.getStudentsGroup(id);
+        StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
+        return dto;
+    }
+
+    @RequestMapping(
+            value = STUD_URL_GET_GROUP_BY_TITLE,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = STUDENT_GROUP, action = GET)
+    public StudentsGroupDto getGroupByTitle(
+            @PathVariable(name = "title") String title
+    ) {
+        StudentsGroup group = studentService.getStudentsGroupByTitle(title);
         StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
         return dto;
     }

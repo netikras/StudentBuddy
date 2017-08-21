@@ -46,20 +46,25 @@ public class Discipline {
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "school_id")
+    @ModelTransform(dtoUpdatable = false)
     private School school;
 
     @Column(name = "title", nullable = false)
+    @ModelTransform
     private String title;
 
     @Column(name = "description", length = 512)
+    @ModelTransform
     private String description;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "websites")
     private List<Website> sites;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL)

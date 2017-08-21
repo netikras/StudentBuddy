@@ -1,15 +1,21 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureGuestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentsGroupDao;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
+import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,10 +32,13 @@ public class StudentServiceImpl implements StudentService {
     @Resource
     private LectureGuestDao lectureGuestDao;
 
+    @Resource
+    private PersonValidator personValidator;
+
 
 
     @Override
-    public List<Student> getStudentByPerson(String personId) {
+    public Student getStudentByPerson(String personId) {
         return studentDao.findByPerson_Id(personId);
     }
 
@@ -40,6 +49,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student createStudent(Student student) {
+        ErrorsCollection errors = personValidator.validateStudentForCreation(student, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setErrors(errors)
+                    .setMessage1("Cannot create a new student")
+                    .setMessage2("new student validation failed")
+                    .setStatusCode(HttpStatus.BAD_REQUEST);
+        }
         return studentDao.save(student);
     }
 
@@ -125,6 +142,11 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    public StudentsGroup getStudentsGroupByTitle(String title) {
+        return groupDao.findByTitle(title);
+    }
+
+    @Override
     public List<StudentsGroup> getAllStudentGroups() {
         return groupDao.findAll();
     }
@@ -166,6 +188,7 @@ public class StudentServiceImpl implements StudentService {
     public void deleteLectureGuest(String id) {
         lectureGuestDao.delete(id);
     }
+
 
 
 }

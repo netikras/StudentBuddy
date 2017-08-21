@@ -33,19 +33,23 @@ public class LectureGuest {
     @Column(name = "created_on", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "lecture_id")
+    @ModelTransform(dtoUpdatable = false)
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "person_id")
+    @ModelTransform(dtoUpdatable = false)
     private Person person;
 
     @Transient
