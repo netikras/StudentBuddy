@@ -47,7 +47,7 @@ public class GenericConsumerTest {
 
     protected static final String SYSTEM_USER_PASSWORD = "system";
 
-    public void init() {
+    public void initGenericConsumer() {
         sessionContext = new SessionContext();
         userConsumer = attachConsumer(new UserConsumer());
     }

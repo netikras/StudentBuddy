@@ -22,5 +22,6 @@ public interface DisciplineTestDao extends JpaRepo<DisciplineTest> {
 
     void deleteAllByLecture_StudentsGroup_IdAndDiscipline_Id(String lecture_studentsGroup_id, String discipline_id);
 
+    List<DisciplineTest> findAllByDescriptionLikeIgnoreCase(String description);
 
 }

@@ -5,6 +5,8 @@ import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 
+import java.util.List;
+
 public interface SchoolService {
 
     School createSchool(School school);
@@ -42,4 +44,23 @@ public interface SchoolService {
 
     void removeDiscipline(String id);
 
+    List<School> getAllSchools();
+
+    List<School> searchAllSchoolsByTitle(String query);
+
+    List<SchoolDepartment> searchAllDepartmentsByTitle(String query);
+
+    List<PersonnelMember> searchAllPersonnelByTitle(String query);
+
+    List<PersonnelMember> getAllPersonnelByTitle(String title);
+
+    List<PersonnelMember> getAllPersonnelByPerson(String personId);
+
+    List<PersonnelMember> searchAllPersonnelByFirstName(String query);
+
+    List<PersonnelMember> searchAllPersonnelByLastName(String query);
+
+    List<Discipline> searchAllDisciplinesByTitle(String query);
+
+    List<Discipline> searchAllDisciplinesByDescription(String query);
 }

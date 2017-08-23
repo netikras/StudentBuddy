@@ -11,8 +11,8 @@ public class GenericPersonAwareTest extends GenericConsumerTest {
     protected AdminPersonConsumer adminPersonConsumer;
 
     @Before
-    public void init() {
-        super.init();
+    public void initPersonAware() {
+        super.initGenericConsumer();
         adminPersonConsumer = attachConsumer(new AdminPersonConsumer());
         personConsumer = attachConsumer(new PersonConsumer());
     }

@@ -10,6 +10,7 @@ import com.netikras.studies.studentbuddy.core.service.FloorService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class FloorServiceImpl implements FloorService {
@@ -82,5 +83,21 @@ public class FloorServiceImpl implements FloorService {
     @Override
     public void deleteFloorLayout(String id) {
         floorLayoutDao.delete(id);
+    }
+
+
+    @Override
+    public List<LectureRoom> searchAllRoomsByTitle(String query) {
+        return roomDao.findAllByTitleLikeIgnoreCase(roomDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<LectureRoom> searchAllRoomsByNumber(String query) {
+        return roomDao.findAllByNumberLikeIgnoreCase(roomDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<BuildingFloor> searchAllByTitle(String query) {
+        return floorDao.findAllByTitleLikeIgnoreCase(floorDao.wrapSearchString(query));
     }
 }

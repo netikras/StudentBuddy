@@ -28,8 +28,8 @@ public class AdminConsumerTest extends GenericConsumerTest {
 
 
     @Before
-    public void init() {
-        super.init();
+    public void initGenericConsumer() {
+        super.initGenericConsumer();
         adminConsumer = new AdminConsumer();
         adminConsumer.setSessionContext(getSessionContext());
         adminConsumer.addServer("default", server);

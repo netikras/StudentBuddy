@@ -10,6 +10,7 @@ import com.netikras.studies.studentbuddy.core.service.LocationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -85,4 +86,15 @@ public class LocationServiceImpl implements LocationService {
     public void deleteAddress(String id) {
         addressDao.delete(id);
     }
+
+    @Override
+    public List<Building> searchAllBuildingsByTitle(String query) {
+        return buildingDao.findAllByTitleLikeIgnoreCase(buildingSectionDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<BuildingSection> searchAllSectionsByTitle(String query) {
+        return buildingSectionDao.findAllByTitleLikeIgnoreCase(buildingSectionDao.wrapSearchString(query));
+    }
+
 }

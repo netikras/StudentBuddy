@@ -9,7 +9,9 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,7 @@ import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.S
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE_GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
@@ -114,11 +117,12 @@ public class StudentController {
     )
     @ResponseBody
     @Authorizable(resource = STUDENT_GROUP, action = GET)
+    @Transactional
     public StudentsGroupDto getGroupByTitle(
             @PathVariable(name = "title") String title
     ) {
         StudentsGroup group = studentService.getStudentsGroupByTitle(title);
-        StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
+        StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto(), new MappingSettings().setDepthMax(3));
         return dto;
     }
 
@@ -130,7 +134,7 @@ public class StudentController {
     @Authorizable(resource = STUDENT_GROUP, action = GET)
     public List<StudentsGroupDto> getAllGroups() {
         List<StudentsGroup> groups = studentService.getAllStudentGroups();
-        List<StudentsGroupDto> dtos = (List<StudentsGroupDto>) ModelMapper.transformAll(groups, StudentsGroupDto.class);
+        List<StudentsGroupDto> dtos = (List<StudentsGroupDto>) ModelMapper.transformAll(groups, StudentsGroupDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
@@ -185,6 +189,89 @@ public class StudentController {
         dto = ModelMapper.transform(guest, new LectureGuestDto());
 
         return dto;
+    }
+
+
+    @RequestMapping(
+            value = "/search/firstName/{fname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = STUDENT, action = SEARCH)
+    public List<StudentDto> searchAllStudentsByFirstName(
+            @PathVariable(name = "fname") String fnameSubstring
+    ) {
+        List<Student> students = studentService.searchAllStudentsByFirstName(fnameSubstring);
+        List<StudentDto> studentDtos =
+                (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class, new MappingSettings().setDepthMax(3));
+
+        return studentDtos;
+    }
+
+    @RequestMapping(
+            value = "/search/lastName/{lname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = STUDENT, action = SEARCH)
+    public List<StudentDto> searchAllStudentsByLastName(
+            @PathVariable(name = "lname") String lnameSubstring
+    ) {
+        List<Student> students = studentService.searchAllStudentsByLastName(lnameSubstring);
+        List<StudentDto> studentDtos =
+                (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class, new MappingSettings().setDepthMax(3));
+
+        return studentDtos;
+    }
+
+
+    @RequestMapping(
+            value = "/group/search/title/{title}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = STUDENT_GROUP, action = SEARCH)
+    public List<StudentsGroupDto> searchAllGroupsByTitle(
+            @PathVariable(name = "title") String titleSubstring
+    ) {
+        List<StudentsGroup> groups = studentService.searchAllGroupsByTitle(titleSubstring);
+        List<StudentsGroupDto> groupDtos =
+                (List<StudentsGroupDto>) ModelMapper.transformAll(groups, StudentsGroupDto.class, new MappingSettings().setDepthMax(3));
+
+        return groupDtos;
+    }
+
+
+    @RequestMapping(
+            value = "/guest/search/lastName/{lname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = GUEST, action = SEARCH)
+    public List<LectureGuestDto> searchAllGuestsByLastName(
+            @PathVariable(name = "lname") String lnameSubstring
+    ) {
+        List<LectureGuest> guests = studentService.searchAllGuestsByLastName(lnameSubstring);
+        List<LectureGuestDto> guestDtos =
+                (List<LectureGuestDto>) ModelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
+
+        return guestDtos;
+    }
+
+    @RequestMapping(
+            value = "/guest/search/firstName/{fname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = GUEST, action = SEARCH)
+    public List<LectureGuestDto> searchAllGuestsByFirstName(
+            @PathVariable(name = "fname") String fnameSubstring
+    ) {
+        List<LectureGuest> guests = studentService.searchAllGuestsByFirstName(fnameSubstring);
+        List<LectureGuestDto> guestDtos =
+                (List<LectureGuestDto>) ModelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
+
+        return guestDtos;
     }
 
 

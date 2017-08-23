@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import java.util.List;
+
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_CREATE_ADDRESS;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_CREATE_BUILDING;
@@ -97,6 +99,20 @@ public class LocationController {
         locationService.deleteBuilding(id);
     }
 
+    @RequestMapping(
+            value = "/search/title/{title}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = BUILDING, action = Action.SEARCH)
+    public List<BuildingDto> searchBuildingByTitle(
+            @PathVariable(name = "title") String titleSubstring
+    ) {
+        List<Building> rooms = locationService.searchAllBuildingsByTitle(titleSubstring);
+        List<BuildingDto> dtos = (List<BuildingDto>) ModelMapper.transformAll(rooms, BuildingDto.class);
+        return dtos;
+    }
+
 
 
     // building section
@@ -152,6 +168,19 @@ public class LocationController {
         locationService.deleteBuildingSection(id);
     }
 
+    @RequestMapping(
+            value = "/section/search/title/{title}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = BUILDING_SECTION, action = Action.SEARCH)
+    public List<BuildingSectionDto> searchBuildingSectionByTitle(
+            @PathVariable(name = "title") String titleSubstring
+    ) {
+        List<BuildingSection> rooms = locationService.searchAllSectionsByTitle(titleSubstring);
+        List<BuildingSectionDto> dtos = (List<BuildingSectionDto>) ModelMapper.transformAll(rooms, BuildingSectionDto.class);
+        return dtos;
+    }
 
 
     // address

@@ -8,5 +8,6 @@ public interface RolePermissionsDao extends JpaRepo<RolePermissions> {
 
     RolePermissions findByRole_Name(String role_name);
 
+    List<RolePermissions> findAllByRole_NameLikeIgnoreCase(String role_name);
 
 }

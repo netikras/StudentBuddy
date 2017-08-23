@@ -97,4 +97,8 @@ public interface LectureService {
     List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore);
 
     List<Assignment> getAllAssignmentsForDisciplineAndStudent(String disciplineId, String studentId, Date startsAfter, Date startsBefore);
+
+    List<DisciplineTest> searchAllTestsByDescription(String query);
+
+    List<DisciplineTest> findAllTestsByDescription(String query);
 }

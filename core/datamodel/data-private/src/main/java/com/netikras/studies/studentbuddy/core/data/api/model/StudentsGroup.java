@@ -51,7 +51,7 @@ public class StudentsGroup {
     @ModelTransform(dtoFieldName = "email")
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "group", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
     @ModelTransform(dtoFieldName = "members", dtoUpdatable = false)
     private List<Student> members;
 

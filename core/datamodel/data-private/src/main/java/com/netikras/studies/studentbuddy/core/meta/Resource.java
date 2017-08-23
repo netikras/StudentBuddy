@@ -22,6 +22,7 @@ public enum Resource {
     GUEST,
     DISCIPLINE,
     SCHOOL,
+    SCHOOL_DEPARTMENT,
     PERSONNEL,
     NOTIFICATION,
     SYSTEM,

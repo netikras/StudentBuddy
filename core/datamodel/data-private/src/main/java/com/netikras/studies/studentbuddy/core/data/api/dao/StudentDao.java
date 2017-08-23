@@ -17,4 +17,8 @@ public interface StudentDao extends JpaRepo<Student> {
 
     List<Student> findAllByIdIsIn(Collection<String> id);
 
+    List<Student> findAllByPerson_FirstNameLikeIgnoreCase(String person_firstName);
+
+    List<Student> findAllByPerson_LastNameLikeIgnoreCase(String person_lastName);
+
 }

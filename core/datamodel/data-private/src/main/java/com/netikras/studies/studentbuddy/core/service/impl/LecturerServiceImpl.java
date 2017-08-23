@@ -83,6 +83,21 @@ public class LecturerServiceImpl implements LecturerService {
     }
 
     @Override
+    public List<Lecturer> searchAllByDegree(String query) {
+        return lecturerDao.findAllByDegreeLikeIgnoreCase(lecturerDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Lecturer> searchAllByFirstName(String query) {
+        return lecturerDao.findAllByPerson_FirstNameLikeIgnoreCase(lecturerDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Lecturer> searchAllByLastName(String query) {
+        return lecturerDao.findAllByPerson_LastNameLikeIgnoreCase(lecturerDao.wrapSearchString(query));
+    }
+
+    @Override
     public void attachToDiscipline(Lecturer lecturer, Discipline discipline) {
         List<DisciplineLecturer> disciplineLecturers = lecturer.getDisciplineLecturers();
         if (disciplineLecturers != null) {

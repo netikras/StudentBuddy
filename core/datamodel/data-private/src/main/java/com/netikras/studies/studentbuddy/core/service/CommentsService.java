@@ -21,6 +21,8 @@ public interface CommentsService {
 
     void removeTag(String commentId, String tagId);
 
+    List<Tag> searchAllTagsByValue(String query);
+
     List<Comment> findCommentsByType(String typeName);
 
     void deleteCommentsByType(String typeName);
@@ -32,4 +34,8 @@ public interface CommentsService {
     List<Comment> findCommentsByTagValue(String tagValue);
 
     List<Comment> findCommentsByPerson(String id);
+
+    List<Comment> searchAllByTitle(String query);
+
+    List<Comment> searchAllByText(String query);
 }

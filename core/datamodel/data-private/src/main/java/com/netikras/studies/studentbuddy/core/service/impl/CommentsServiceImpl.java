@@ -150,6 +150,11 @@ public class CommentsServiceImpl implements CommentsService {
         }
     }
 
+    @Override
+    public List<Tag> searchAllTagsByValue(String query) {
+        return tagDao.findAllByValueLikeIgnoreCase(tagDao.wrapSearchString(query));
+    }
+
     public List<Comment> findCommentsByType(String typeName) {
         return commentDao.findAllByEntityType(typeName);
     }
@@ -182,5 +187,15 @@ public class CommentsServiceImpl implements CommentsService {
     public List<Comment> findCommentsByPerson(String id) {
         List<Comment> comments = commentDao.findAllByAuthor_Id(id);
         return comments;
+    }
+
+    @Override
+    public List<Comment> searchAllByTitle(String query) {
+        return commentDao.findAllByTitleLikeIgnoreCase(commentDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Comment> searchAllByText(String query) {
+        return commentDao.findAllByTextLikeIgnoreCase(commentDao.wrapSearchString(query));
     }
 }

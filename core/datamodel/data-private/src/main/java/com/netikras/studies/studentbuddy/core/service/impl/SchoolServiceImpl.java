@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -107,5 +108,55 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public void removeDiscipline(String id) {
         disciplineDao.delete(id);
+    }
+
+    @Override
+    public List<School> getAllSchools() {
+        return schoolDao.findAll();
+    }
+
+    @Override
+    public List<School> searchAllSchoolsByTitle(String query) {
+        return schoolDao.findAllByTitleLikeIgnoreCase(schoolDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<SchoolDepartment> searchAllDepartmentsByTitle(String query) {
+        return departmentDao.findAllByTitleLikeIgnoreCase(schoolDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<PersonnelMember> searchAllPersonnelByTitle(String query) {
+        return personnelDao.findAllByTitleLikeIgnoreCase(personnelDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<PersonnelMember> getAllPersonnelByTitle(String title) {
+        return personnelDao.findAllByTitle(title);
+    }
+
+    @Override
+    public List<PersonnelMember> getAllPersonnelByPerson(String personId) {
+        return personnelDao.findAllByPerson_Id(personId);
+    }
+
+    @Override
+    public List<PersonnelMember> searchAllPersonnelByFirstName(String query) {
+        return personnelDao.findAllByPerson_FirstNameLikeIgnoreCase(personnelDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<PersonnelMember> searchAllPersonnelByLastName(String query) {
+        return personnelDao.findAllByPerson_LastNameLikeIgnoreCase(personnelDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Discipline> searchAllDisciplinesByTitle(String query) {
+        return disciplineDao.findAllByTitleLikeIgnoreCase(disciplineDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Discipline> searchAllDisciplinesByDescription(String query) {
+        return disciplineDao.findAllByDescriptionLikeIgnoreCase(disciplineDao.wrapSearchString(query));
     }
 }

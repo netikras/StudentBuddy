@@ -20,6 +20,14 @@ public interface PersonService {
 
     List<Person> findByFirstAndLastName(String firstName, String lastName);
 
+    List<Person> searchAllByFirstName(String query);
+
+    List<Person> searchAllByLastName(String query);
+
+    List<Person> searchAllByIdentification(String query);
+
+    List<Person> searchAllByPersonalCode(String query);
+
     Person createPerson(Person person);
 
     void deletePerson(String id);

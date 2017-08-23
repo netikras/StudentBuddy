@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.location;
 
-import com.netikras.studies.studentbuddy.api.constants.FloorConstants;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;

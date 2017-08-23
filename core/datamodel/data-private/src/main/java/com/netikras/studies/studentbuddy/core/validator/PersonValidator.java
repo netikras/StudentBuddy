@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -28,7 +29,47 @@ public class PersonValidator {
     @Resource
     private PersonDao personDao;
 
+    @Transactional
+    public ErrorsCollection validatePersonForCreation(Person person, ErrorsCollection errors) {
+        if (errors == null) errors = new ErrorsCollection();
 
+        if (person == null) {
+            errors.add(new ValidationError()
+                    .setMessage1("Person is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        if (person.getPersonalCode() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Every person must have unique PERSONAL_CODE and IDENTIFIER")
+                    .setMessage1("Missing PersonalCode")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        }
+
+        if (person.getIdentification() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Every person must have unique PERSONAL_CODE and IDENTIFIER")
+                    .setMessage1("Missing Identifier")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        }
+
+        Person existingPerson = fetchPerson(person);
+        if (existingPerson != null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Person with such PERSONAL_CODE or IDENTIFIER already exists. These fields must be unique for each person")
+                    .setMessage1("Person already exists")
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+    @Transactional
     public ErrorsCollection validateStudentForCreation(Student student, ErrorsCollection errors) {
         if (errors == null) errors = new ErrorsCollection();
 
@@ -37,41 +78,73 @@ public class PersonValidator {
                     .setMessage1("Student is not supplied")
                     .setStatus(NOT_FOUND.getCode())
             );
-        } else {
-            if (student.getGroup() != null) {
-                StudentsGroup group = fetchGroup(student.getGroup());
-                if (group == null) {
-                    errors.add(new ValidationError()
-                            .setSuggestion("Group must have either a valid ID or Title or both")
-                            .setMessage1("Provided group cannot be found in the database")
-                            .setStatus(NOT_FOUND.getCode())
-                    );
-                } else {
-                    compare(group, student.getGroup(), errors);
-                    student.setGroup(group);
-                }
-            }
-
-            Person person = fetchPerson(student.getPerson());
-            if (person == null) {
+            return errors;
+        }
+        if (student.getGroup() != null) {
+            StudentsGroup group = fetchGroup(student.getGroup());
+            if (group == null) {
                 errors.add(new ValidationError()
-                        .setSuggestion("All students must be based on an existing person. Either refer to an already existing person " +
-                                "or create a new one and refer to it by valid ID, IDENTIFICATION or PERSONAL_CODE or any valid combination of those")
-                        .setMessage1("Student person cannot be found in the database")
+                        .setSuggestion("Group must have either a valid ID or Title or both")
+                        .setMessage1("Provided group cannot be found in the database")
                         .setStatus(NOT_FOUND.getCode())
                 );
             } else {
-                compare(person, student.getPerson(), errors);
-                student.setPerson(person);
-                Student existingStudent = studentDao.findByPerson_Id(person.getId());
-                if (existingStudent != null) {
-                    errors.add(new ValidationError()
-                            .setSuggestion("Each person can have only one STUDENT record. Either use an existing student or remove it " +
-                                    "and create a new one")
-                            .setMessage1("This person is already a student")
-                            .setStatus(CONFLICT.getCode())
-                    );
-                }
+                compare(group, student.getGroup(), errors);
+                student.setGroup(group);
+            }
+        }
+
+        Person person = fetchPerson(student.getPerson());
+        if (person == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("All students must be based on an existing person. Either refer to an already existing person " +
+                            "or create a new one and refer to it by valid ID, IDENTIFICATION or PERSONAL_CODE or any valid combination of those")
+                    .setMessage1("Student person cannot be found in the database")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        } else {
+            compare(person, student.getPerson(), errors);
+            student.setPerson(person);
+            Student existingStudent = studentDao.findByPerson_Id(person.getId());
+            if (existingStudent != null) {
+                errors.add(new ValidationError()
+                        .setSuggestion("Each person can have only one STUDENT record. Either use an existing student or remove it " +
+                                "and create a new one")
+                        .setMessage1("This person is already a student")
+                        .setStatus(CONFLICT.getCode())
+                );
+            }
+
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateGroupForCreation(StudentsGroup group, ErrorsCollection errors) {
+        if (errors == null) errors = new ErrorsCollection();
+
+        if (group == null) {
+            errors.add(new ValidationError()
+                    .setMessage1("Group is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+        if (group.getTitle() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Every group must have its unique title. Provide one for this group before creating its record")
+                    .setMessage1("Group title is missing")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        } else {
+            StudentsGroup existingGroup = groupDao.findByTitle(group.getTitle());
+            if (existingGroup != null) {
+                errors.add(new ValidationError()
+                        .setSuggestion("Each group title must be unique")
+                        .setMessage1("Group with such title already exists")
+                        .setStatus(CONFLICT.getCode())
+                );
             }
         }
 
@@ -137,7 +210,8 @@ public class PersonValidator {
         }
     }
 
-    private StudentsGroup fetchGroup(StudentsGroup group) {
+    @Transactional
+    public StudentsGroup fetchGroup(StudentsGroup group) {
         if (group == null) return group;
         StudentsGroup fetchedGroup = null;
 
@@ -153,7 +227,8 @@ public class PersonValidator {
         return fetchedGroup;
     }
 
-    private Person fetchPerson(Person person) {
+    @Transactional
+    public Person fetchPerson(Person person) {
         Person fetchedPerson = null;
 
         if (person == null) {

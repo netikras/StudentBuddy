@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import java.util.List;
+
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_CREATE;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_FLOOR_DELETE_BY_ID;
@@ -100,6 +102,20 @@ public class FloorController {
         floorService.deleteFloor(id);
     }
 
+    @RequestMapping(
+            value = "/search/title/{title}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = FLOOR, action = Action.SEARCH)
+    public List<BuildingFloorDto> searchFloorsByTitle(
+            @PathVariable(name = "title") String titleSubstring
+    ) {
+        List<BuildingFloor> buildingFloors = floorService.searchAllByTitle(titleSubstring);
+        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) ModelMapper.transformAll(buildingFloors, BuildingFloorDto.class);
+        return dtos;
+    }
+
 
 
     // room
@@ -155,6 +171,33 @@ public class FloorController {
         floorService.deleteRoom(id);
     }
 
+    @RequestMapping(
+            value = "/floor/search/title/{title}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ROOM, action = Action.SEARCH)
+    public List<LectureRoomDto> searchRoomsByTitle(
+            @PathVariable(name = "title") String titleSubstring
+    ) {
+        List<LectureRoom> rooms = floorService.searchAllRoomsByTitle(titleSubstring);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) ModelMapper.transformAll(rooms, LectureRoomDto.class);
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = "/floor/search/number/{number}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ROOM, action = Action.SEARCH)
+    public List<LectureRoomDto> searchRoomsByNumber(
+            @PathVariable(name = "number") String numberSubstring
+    ) {
+        List<LectureRoom> rooms = floorService.searchAllRoomsByNumber(numberSubstring);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) ModelMapper.transformAll(rooms, LectureRoomDto.class);
+        return dtos;
+    }
 
 
 

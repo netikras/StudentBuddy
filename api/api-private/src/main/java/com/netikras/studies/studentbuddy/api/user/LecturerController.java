@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURER;
 
 @RestController
@@ -94,5 +96,53 @@ public class LecturerController {
         return dto;
     }
 
+
+    @RequestMapping(
+            value = "/search/degree/{degree}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = LECTURER, action = SEARCH)
+    public List<LecturerDto> searchAllLecturersByDescriotion(
+            @PathVariable(name = "degree") String degreeSubstring
+    ) {
+        List<Lecturer> lecturers = lecturerService.searchAllByDegree(degreeSubstring);
+        List<LecturerDto> lecturerDtos =
+                (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));
+
+        return lecturerDtos;
+    }
+
+    @RequestMapping(
+            value = "/search/firstName/{fname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = LECTURER, action = SEARCH)
+    public List<LecturerDto> searchAllLecturersByFirstName(
+            @PathVariable(name = "fname") String fnameSubstring
+    ) {
+        List<Lecturer> lecturers = lecturerService.searchAllByFirstName(fnameSubstring);
+        List<LecturerDto> lecturerDtos =
+                (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));
+
+        return lecturerDtos;
+    }
+
+    @RequestMapping(
+            value = "/search/lastName/{lname}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = LECTURER, action = SEARCH)
+    public List<LecturerDto> searchAllLecturersByLastName(
+            @PathVariable(name = "lname") String lnameSubstring
+    ) {
+        List<Lecturer> lecturers = lecturerService.searchAllByLastName(lnameSubstring);
+        List<LecturerDto> lecturerDtos =
+                (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));
+
+        return lecturerDtos;
+    }
 
 }

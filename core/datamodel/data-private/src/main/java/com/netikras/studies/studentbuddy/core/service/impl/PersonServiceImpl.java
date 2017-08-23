@@ -57,6 +57,26 @@ public class PersonServiceImpl implements PersonService {
         return personDao.findAllByFirstNameAndLastName(firstName, lastName);
     }
 
+    @Override
+    public List<Person> searchAllByFirstName(String query) {
+        return personDao.findAllByFirstNameLikeIgnoreCase(personDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Person> searchAllByLastName(String query) {
+        return personDao.findAllByLastNameLikeIgnoreCase(personDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Person> searchAllByIdentification(String query) {
+        return personDao.findAllByIdentificationLikeIgnoreCase(personDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Person> searchAllByPersonalCode(String query) {
+        return personDao.findAllByPersonalCodeLikeIgnoreCase(personDao.wrapSearchString(query));
+    }
+
 
     @Override
     public Person createPerson(Person person) {

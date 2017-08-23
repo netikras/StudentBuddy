@@ -5,6 +5,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,7 +43,8 @@ public class AdminPersonController {
     public PersonDto createPerson(
             @RequestBody PersonDto personDto
     ) {
-        Person person = ModelMapper.apply(new Person(), personDto);
+        Person person = ModelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
+        person.setId(null);
         person = personService.createPerson(person);
         personDto = ModelMapper.transform(person, new PersonDto());
 

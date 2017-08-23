@@ -22,4 +22,8 @@ public interface CommentDao extends JpaRepo<Comment> {
 
     List<Comment> findAllByAuthor_Id(String author_id);
 
+    List<Comment> findAllByTitleLikeIgnoreCase(String title);
+
+    List<Comment> findAllByTextLikeIgnoreCase(String text);
+
 }

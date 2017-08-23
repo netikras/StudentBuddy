@@ -238,4 +238,15 @@ public class LectureServiceImpl implements LectureService {
     public List<Assignment> getAllAssignmentsForDisciplineAndStudent(String disciplineId, String studentId, Date startsAfter, Date startsBefore) {
         return assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(disciplineId, studentId, startsAfter, startsBefore);
     }
+
+    @Override
+    public List<DisciplineTest> searchAllTestsByDescription(String query) {
+        return disciplineTestDao.findAllByDescriptionLikeIgnoreCase(disciplineTestDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<DisciplineTest> findAllTestsByDescription(String query) {
+        return disciplineTestDao.findAllByDescriptionLikeIgnoreCase(disciplineTestDao.wrapSearchString(query));
+    }
+
 }

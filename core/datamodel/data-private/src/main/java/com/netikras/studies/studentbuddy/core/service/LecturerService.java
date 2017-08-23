@@ -25,6 +25,12 @@ public interface LecturerService {
 
     List<Lecturer> findLecturersByDiscipline(String disciplineId);
 
+    List<Lecturer> searchAllByDegree(String query);
+
+    List<Lecturer> searchAllByFirstName(String query);
+
+    List<Lecturer> searchAllByLastName(String query);
+
     void attachToDiscipline(Lecturer lecturer, Discipline discipline);
 
     void detatchFromDiscipline(Lecturer lecturer, Discipline discipline);

@@ -19,4 +19,11 @@ public interface PersonDao extends JpaRepo<Person> {
     List<Person> findAllByFirstName(String firstName);
     List<Person> findAllByLastName(String lastName);
 
+    List<Person> findAllByLastNameLikeIgnoreCase(String lastName);
+
+    List<Person> findAllByFirstNameLikeIgnoreCase(String firstName);
+
+    List<Person> findAllByIdentificationLikeIgnoreCase(String identification);
+
+    List<Person> findAllByPersonalCodeLikeIgnoreCase(String personalCode);
 }

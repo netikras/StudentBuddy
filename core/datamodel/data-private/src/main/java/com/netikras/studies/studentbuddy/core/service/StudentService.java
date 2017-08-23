@@ -28,6 +28,10 @@ public interface StudentService {
 
     void removeStudentsFromGroup(String groupId, List<String> studentIds);
 
+    List<Student> searchAllStudentsByFirstName(String query);
+
+    List<Student> searchAllStudentsByLastName(String query);
+
     void addStudentToGroup(StudentsGroup group, Student student);
 
     void removeStudentFromGroup(StudentsGroup group, Student student);
@@ -35,6 +39,8 @@ public interface StudentService {
     StudentsGroup getStudentsGroup(String id);
 
     StudentsGroup getStudentsGroupByTitle(String title);
+
+    List<StudentsGroup> searchAllGroupsByTitle(String query);
 
     List<StudentsGroup> getAllStudentGroups();
 
@@ -53,4 +59,7 @@ public interface StudentService {
 
     LectureGuest getLectureGuest(String id);
 
+    List<LectureGuest> searchAllGuestsByFirstName(String query);
+
+    List<LectureGuest> searchAllGuestsByLastName(String query);
 }

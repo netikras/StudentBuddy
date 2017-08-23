@@ -4,6 +4,8 @@ import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 
+import java.util.List;
+
 public interface FloorService {
 
 
@@ -30,4 +32,10 @@ public interface FloorService {
     FloorLayout createFloorLayout(FloorLayout floorLayout);
 
     void deleteFloorLayout(String id);
+
+    List<LectureRoom> searchAllRoomsByTitle(String query);
+
+    List<LectureRoom> searchAllRoomsByNumber(String query);
+
+    List<BuildingFloor> searchAllByTitle(String query);
 }

@@ -4,6 +4,8 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 
+import java.util.List;
+
 public interface LocationService {
 
 
@@ -30,4 +32,8 @@ public interface LocationService {
     Address createAddress(Address address);
 
     void deleteAddress(String id);
+
+    List<Building> searchAllBuildingsByTitle(String query);
+
+    List<BuildingSection> searchAllSectionsByTitle(String query);
 }

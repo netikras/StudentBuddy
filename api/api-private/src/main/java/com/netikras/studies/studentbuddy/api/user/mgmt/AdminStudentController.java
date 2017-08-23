@@ -104,7 +104,7 @@ public class AdminStudentController {
     public StudentsGroupDto createGroup(
             @RequestBody StudentsGroupDto groupDto
     ) {
-        StudentsGroup group = ModelMapper.apply(new StudentsGroup(), groupDto);
+        StudentsGroup group = ModelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
         group = studentService.createStudentsGroup(group);
         StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
         return dto;

@@ -25,4 +25,6 @@ public interface AssignmentDao extends JpaRepo<Assignment> {
     List<Assignment> findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(String discipline_id, String studentId,
                                                                                                           Date after, Date before);
 
+    List<Assignment> findAllByDescriptionLikeIgnoreCase(String description);
+
 }

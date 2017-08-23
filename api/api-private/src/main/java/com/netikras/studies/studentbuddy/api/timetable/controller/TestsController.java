@@ -7,6 +7,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +35,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.TEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -218,6 +220,25 @@ public class TestsController {
 
         return dtos;
     }
+
+
+
+    @RequestMapping(
+            value = "/search/description/{descr}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = TEST, action = SEARCH)
+    public List<DisciplineTestDto> searchAllTestsByDescriotion(
+            @PathVariable(name = "descr") String descriptionSubstring
+    ) {
+        List<DisciplineTest> tests = lectureService.searchAllTestsByDescription(descriptionSubstring);
+        List<DisciplineTestDto> testDtos =
+                (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class, new MappingSettings().setDepthMax(3));
+
+        return testDtos;
+    }
+
 
 
 }

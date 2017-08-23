@@ -85,7 +85,7 @@ public class AdminStudentConsumer extends GenericRestConsumer {
 
     public boolean addAllStudentsToGroup(String groupId, String ... studentIds) {
         HttpRequest request = createRequest(endpointAddAllStudentsToGroup())
-                .setUrlProperty("studentId", studentIds)
+                .setUrlProperty("studentIds", studentIds)
                 .setUrlProperty("groupId", groupId);
 
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl(StudentsGroupDto.class);
@@ -107,7 +107,7 @@ public class AdminStudentConsumer extends GenericRestConsumer {
 
     public boolean removeAllStudentsFromGroup(String groupId, String ... studentId) {
         HttpRequest request = createRequest(endpointRemoveAllStudentsFromGroup())
-                .setUrlProperty("studentId", studentId)
+                .setUrlProperty("studentIds", studentId)
                 .setUrlProperty("groupId", groupId);
 
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl(StudentsGroupDto.class);
