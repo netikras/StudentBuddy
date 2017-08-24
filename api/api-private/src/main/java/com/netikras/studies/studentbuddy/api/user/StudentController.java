@@ -30,6 +30,11 @@ import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.S
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GROUP_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GROUP_BY_TITLE;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_GET_GUEST_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_SEARCH_ALL_BY_FIRST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_SEARCH_ALL_BY_LAST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_SEARCH_ALL_GROUPS_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_SEARCH_ALL_GUESTS_BY_FIRST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_SEARCH_ALL_GUESTS_BY_LAST_NAME;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.STUD_URL_UPDATE_GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
@@ -193,7 +198,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/search/firstName/{fname}",
+            value = STUD_URL_SEARCH_ALL_BY_FIRST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -209,7 +214,7 @@ public class StudentController {
     }
 
     @RequestMapping(
-            value = "/search/lastName/{lname}",
+            value = STUD_URL_SEARCH_ALL_BY_LAST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -226,7 +231,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/group/search/title/{title}",
+            value = STUD_URL_SEARCH_ALL_GROUPS_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -243,7 +248,7 @@ public class StudentController {
 
 
     @RequestMapping(
-            value = "/guest/search/lastName/{lname}",
+            value = STUD_URL_SEARCH_ALL_GUESTS_BY_LAST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -259,7 +264,7 @@ public class StudentController {
     }
 
     @RequestMapping(
-            value = "/guest/search/firstName/{fname}",
+            value = STUD_URL_SEARCH_ALL_GUESTS_BY_FIRST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody

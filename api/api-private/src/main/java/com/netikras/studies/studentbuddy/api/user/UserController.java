@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.service.UserService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+
+import java.util.List;
 
 import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
 
@@ -147,6 +150,48 @@ public class UserController {
         User user = userService.findUserByPerson(userId);
         dto = ModelMapper.transform(user, new UserDto());
         return dto;
+    }
+
+    @RequestMapping(
+            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_USERNAME,
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.SEARCH)
+    public List<UserDto> searchAllUsersByUsername(
+            @PathVariable(name = "username") String query
+    ) {
+        List<UserDto> dtos;
+        List<User> users = userService.searchAllUsersByUsername(query);
+        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_FIRST_NAME,
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.SEARCH)
+    public List<UserDto> searchAllUsersByFirstName(
+            @PathVariable(name = "fname") String query
+    ) {
+        List<UserDto> dtos;
+        List<User> users = userService.searchAllUsersByFirstName(query);
+        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        return dtos;
+    }
+
+    @RequestMapping(
+            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_LAST_NAME,
+            method = RequestMethod.GET
+    )
+    @Authorizable(resource = USER, action = Action.SEARCH)
+    public List<UserDto> searchAllUsersByLastName(
+            @PathVariable(name = "lname") String query
+    ) {
+        List<UserDto> dtos;
+        List<User> users = userService.searchAllUsersByLastName(query);
+        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        return dtos;
     }
 
 }

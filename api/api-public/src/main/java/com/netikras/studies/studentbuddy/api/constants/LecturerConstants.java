@@ -15,6 +15,10 @@ public class LecturerConstants {
 
     public static final String LECTURER_URL_UPDATE = "/";
 
+    public static final String LECTURER_URL_SEARCH_ALL_BY_DEGREE = "/search/degree/{degree}";
+    public static final String LECTURER_URL_SEARCH_ALL_BY_FIRST_NAME = "/search/fname/{fname}";
+    public static final String LECTURER_URL_SEARCH_ALL_BY_LAST_NAME = "/search/lname/{lname}";
+
 
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
@@ -62,4 +66,35 @@ public class LecturerConstants {
                 .setMethod(HttpRequest.HttpMethod.PUT)
                 ;
     }
+
+    /**
+     * {@value #LECTURER_URL_SEARCH_ALL_BY_DEGREE}
+     */
+    public static RemoteEndpoint endpointSearchAllByDegree() {
+        return getBaseEndpoint()
+                .setMethodUrl(LECTURER_URL_SEARCH_ALL_BY_DEGREE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #LECTURER_URL_SEARCH_ALL_BY_FIRST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllByFirstName() {
+        return getBaseEndpoint()
+                .setMethodUrl(LECTURER_URL_SEARCH_ALL_BY_FIRST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #LECTURER_URL_SEARCH_ALL_BY_LAST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllByLastName() {
+        return getBaseEndpoint()
+                .setMethodUrl(LECTURER_URL_SEARCH_ALL_BY_LAST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
 }

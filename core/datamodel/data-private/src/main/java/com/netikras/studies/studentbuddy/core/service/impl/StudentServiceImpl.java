@@ -184,7 +184,7 @@ public class StudentServiceImpl implements StudentService {
             throw new StudBudUncheckedException()
                     .setErrors(errors)
                     .setMessage1("Cannot create a new students group")
-                    .setMessage2("new group validation failed")
+                    .setMessage2("New group validation failed")
                     .setStatusCode(HttpStatus.BAD_REQUEST);
         }
         group.setId(null);

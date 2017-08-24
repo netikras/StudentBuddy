@@ -21,6 +21,12 @@ public class UserConstants {
 
     public static final String USER_URL_GET_USER_BY_PERSON_ID = "/person/id/{id}";
 
+    public static final String USER_URL_SEARCH_ALL_USERS_BY_USERNAME = "/search/username/{username}";
+
+    public static final String USER_URL_SEARCH_ALL_USERS_BY_FIRST_NAME = "/search/fname/{fname}";
+
+    public static final String USER_URL_SEARCH_ALL_USERS_BY_LAST_NAME = "/search/lname/{lname}";
+
 
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
@@ -95,6 +101,39 @@ public class UserConstants {
     public static RemoteEndpoint endpointGetByPersonId() {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_GET_USER_BY_PERSON_ID)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+
+    // search
+
+    /**
+     * {@value USER_URL_SEARCH_ALL_USERS_BY_USERNAME}
+     */
+    public static RemoteEndpoint endpointSearchAllUsersByUsername() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_SEARCH_ALL_USERS_BY_USERNAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value USER_URL_SEARCH_ALL_USERS_BY_FIRST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllUsersByFirstName() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_SEARCH_ALL_USERS_BY_FIRST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value USER_URL_SEARCH_ALL_USERS_BY_LAST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllUsersByLastName() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_SEARCH_ALL_USERS_BY_LAST_NAME)
                 .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }

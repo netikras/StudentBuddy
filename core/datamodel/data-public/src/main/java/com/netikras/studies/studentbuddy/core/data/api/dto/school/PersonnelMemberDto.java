@@ -4,13 +4,14 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
 import java.util.Date;
 
-public class PersonelMemberDto {
+public class PersonnelMemberDto {
 
     private String id;
     private Date createdOn;
     private Date updatedOn;
     private PersonDto person;
     private String title;
+    private SchoolDto school;
 
     public String getId() {
         return id;
@@ -52,14 +53,23 @@ public class PersonelMemberDto {
         this.title = title;
     }
 
+    public SchoolDto getSchool() {
+        return school;
+    }
+
+    public void setSchool(SchoolDto school) {
+        this.school = school;
+    }
+
     @Override
     public String toString() {
-        return "PersonelMemberDto{" +
+        return "PersonnelMemberDto{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", person=" + person +
                 ", title='" + title + '\'' +
+                ", school=" + school +
                 '}';
     }
 }

@@ -5,5 +5,6 @@ loadDep "hibernate"
 loadDep "spring-jpa"
 loadDep "spring-aop"
 loadDep "commons"
+loadDep "testing"
 loadProj ':core:datamodel:data-public'
 loadProj ':commons'

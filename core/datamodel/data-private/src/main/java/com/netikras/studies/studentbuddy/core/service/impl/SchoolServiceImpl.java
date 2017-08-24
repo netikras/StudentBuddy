@@ -72,6 +72,7 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public PersonnelMember createPersonnelMember(PersonnelMember member) {
+        // FIXME validate (school is mandatory!)
         return personnelDao.save(member);
     }
 
@@ -91,6 +92,11 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    public List<PersonnelMember> getAllPersonnelBySchool(String schoolId) {
+        return personnelDao.findAllBySchool_Id(schoolId);
+    }
+
+    @Override
     public Discipline createDiscipline(Discipline discipline) {
         return disciplineDao.save(discipline);
     }
@@ -106,7 +112,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public void removeDiscipline(String id) {
+    public void deleteDiscipline(String id) {
         disciplineDao.delete(id);
     }
 
@@ -148,6 +154,16 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public List<PersonnelMember> searchAllPersonnelByLastName(String query) {
         return personnelDao.findAllByPerson_LastNameLikeIgnoreCase(personnelDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<PersonnelMember> searchAllPersonnelByIdentifier(String identifier) {
+        return personnelDao.findAllByPerson_IdentificationIgnoreCase(personnelDao.wrapSearchString(identifier));
+    }
+
+    @Override
+    public List<PersonnelMember> searchAllPersonnelByPersonalCode(String code) {
+        return personnelDao.findAllByPerson_PersonalCodeLikeIgnoreCase(personnelDao.wrapSearchString(code));
     }
 
     @Override

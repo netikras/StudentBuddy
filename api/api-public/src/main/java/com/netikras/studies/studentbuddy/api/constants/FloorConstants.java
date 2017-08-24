@@ -13,6 +13,7 @@ public class FloorConstants {
     public static final String FLOOR_URL_FLOOR_UPDATE = "/";
     public static final String FLOOR_URL_FLOOR_GET_BY_ID = "/id/{id}";
     public static final String FLOOR_URL_FLOOR_DELETE_BY_ID = "/id/{id}";
+    public static final String FLOOR_URL_SEARCH_ALL_FLOOR_BY_TITLE = "/search/title/{title}";
 
 
     // room
@@ -21,7 +22,8 @@ public class FloorConstants {
     public static final String FLOOR_URL_ROOM_UPDATE = "/room";
     public static final String FLOOR_URL_ROOM_GET_BY_ID = "/room/id/{id}";
     public static final String FLOOR_URL_ROOM_DELETE_BY_ID = "/room/id/{id}";
-
+    public static final String FLOOR_URL_SEARCH_ALL_ROOMS_BY_TITLE = "/room/search/title/{title}";
+    public static final String FLOOR_URL_SEARCH_ALL_ROOMS_BY_NUMBER = "/room/search/number/{number}";
 
     // layout
 
@@ -29,7 +31,6 @@ public class FloorConstants {
     public static final String FLOOR_URL_LAYOUT_UPDATE = "/layout";
     public static final String FLOOR_URL_LAYOUT_GET_BY_ID = "/layout/id/{id}";
     public static final String FLOOR_URL_LAYOUT_DELETE_BY_ID = "/layout/id/{id}";
-
 
 
     private static RemoteEndpoint getBaseEndpoint() {
@@ -81,6 +82,16 @@ public class FloorConstants {
                 ;
     }
 
+    /**
+     * {@value FLOOR_URL_SEARCH_ALL_FLOOR_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointSearchAllFloorsByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(FLOOR_URL_SEARCH_ALL_FLOOR_BY_TITLE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
 
     // room
 
@@ -121,6 +132,26 @@ public class FloorConstants {
         return getBaseEndpoint()
                 .setMethodUrl(FLOOR_URL_ROOM_DELETE_BY_ID)
                 .setMethod(HttpRequest.HttpMethod.DELETE)
+                ;
+    }
+
+    /**
+     * {@value FLOOR_URL_SEARCH_ALL_ROOMS_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointSearchAllRoomsByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(FLOOR_URL_SEARCH_ALL_ROOMS_BY_TITLE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value FLOOR_URL_SEARCH_ALL_ROOMS_BY_NUMBER}
+     */
+    public static RemoteEndpoint endpointSearchAllRoomsByNumber() {
+        return getBaseEndpoint()
+                .setMethodUrl(FLOOR_URL_SEARCH_ALL_ROOMS_BY_NUMBER)
+                .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }
 

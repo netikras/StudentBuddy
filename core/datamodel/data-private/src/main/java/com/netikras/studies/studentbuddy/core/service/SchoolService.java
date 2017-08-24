@@ -42,7 +42,7 @@ public interface SchoolService {
 
     Discipline updateDiscipline(Discipline discipline);
 
-    void removeDiscipline(String id);
+    void deleteDiscipline(String id);
 
     List<School> getAllSchools();
 
@@ -63,4 +63,10 @@ public interface SchoolService {
     List<Discipline> searchAllDisciplinesByTitle(String query);
 
     List<Discipline> searchAllDisciplinesByDescription(String query);
+
+    List<PersonnelMember> searchAllPersonnelByIdentifier(String identifier);
+
+    List<PersonnelMember> searchAllPersonnelByPersonalCode(String code);
+
+    List<PersonnelMember> getAllPersonnelBySchool(String schoolId);
 }

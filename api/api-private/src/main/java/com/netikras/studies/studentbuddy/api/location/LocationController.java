@@ -31,6 +31,8 @@ import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_ADDRESS_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_BUILDING_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_GET_BUILDING_SECTION_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_SEARCH_ALL_BUILDINGS_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_SEARCH_ALL_BUILDING_SECTIONS_BY_TITLE;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_ADDRESS;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_BUILDING;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.LOC_URL_UPDATE_BUILDING_SECTION;
@@ -100,7 +102,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/search/title/{title}",
+            value = LOC_URL_SEARCH_ALL_BUILDINGS_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -169,7 +171,7 @@ public class LocationController {
     }
 
     @RequestMapping(
-            value = "/section/search/title/{title}",
+            value = LOC_URL_SEARCH_ALL_BUILDING_SECTIONS_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody

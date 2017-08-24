@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.GenericRestConsumer;
@@ -8,12 +9,17 @@ import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointChangePassword;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointGetById;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointGetByName;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointGetByPersonId;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointLogin;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointLogout;
+import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointSearchAllUsersByFirstName;
+import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointSearchAllUsersByLastName;
+import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointSearchAllUsersByUsername;
 import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endpointUpdateById;
 
 /**
@@ -23,9 +29,7 @@ import static com.netikras.studies.studentbuddy.api.constants.UserConstants.endp
 public class UserConsumer extends GenericRestConsumer {
 
 
-    public UserConsumer() {
-
-    }
+    private TypeReference usersListTypeRef = new TypeReference<List<UserDto>>() {};
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -86,6 +90,31 @@ public class UserConsumer extends GenericRestConsumer {
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl(UserDto.class);
         sendRequest(request, responseJson);
         return responseJson.isResponseSuccess();
+    }
+
+
+    public List<UserDto> searchAllUsersByFirstName(String firstName) {
+        HttpRequest<UserDto> request = createRequest(endpointSearchAllUsersByUsername())
+                .withTypeReference(usersListTypeRef)
+                .setUrlProperty("fname", firstName);
+        List<UserDto> dtos = (List<UserDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<UserDto> searchAllUsersByLastName(String lastName) {
+        HttpRequest<UserDto> request = createRequest(endpointSearchAllUsersByLastName())
+                .withTypeReference(usersListTypeRef)
+                .setUrlProperty("lname", lastName);
+        List<UserDto> dtos = (List<UserDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<UserDto> searchAllUsersByUsername(String username) {
+        HttpRequest<UserDto> request = createRequest(endpointSearchAllUsersByFirstName())
+                .withTypeReference(usersListTypeRef)
+                .setUrlProperty("username", username);
+        List<UserDto> dtos = (List<UserDto>) sendRequest(request);
+        return dtos;
     }
 
 

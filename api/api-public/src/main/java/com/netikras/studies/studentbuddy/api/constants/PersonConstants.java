@@ -16,6 +16,11 @@ public class PersonConstants {
     public static final String PERSON_URL_GET_ALL_BY_LAST_NAME = "/lname/{lastName}";
     public static final String PERSON_URL_GET_ALL_BY_FIRST_AND_LAST_NAME = "/fname/{firstName}/lname/{lastName}";
 
+    public static final String PERSON_URL_SEARCH_ALL_BY_LAST_NAME = "/search/lname/{lname}";
+    public static final String PERSON_URL_SEARCH_ALL_BY_FIRST_NAME = "/search/fname/{fname}";
+    public static final String PERSON_URL_SEARCH_ALL_BY_PERSONAL_CODE = "/search/code/{code}";
+    public static final String PERSON_URL_SEARCH_ALL_BY_IDENTIFIER = "/search/id2/{id}";
+
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
                 .setBaseUrl("/api" + BASE_URL)
@@ -89,6 +94,50 @@ public class PersonConstants {
     public static RemoteEndpoint endpointGetAllByFirstAndLastName() {
         return getBaseEndpoint()
                 .setMethodUrl(PERSON_URL_GET_ALL_BY_FIRST_AND_LAST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+
+
+    // search
+
+    /**
+     * {@value #PERSON_URL_SEARCH_ALL_BY_FIRST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllByFirstName() {
+        return getBaseEndpoint()
+                .setMethodUrl(PERSON_URL_SEARCH_ALL_BY_FIRST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #PERSON_URL_SEARCH_ALL_BY_LAST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllByLastName() {
+        return getBaseEndpoint()
+                .setMethodUrl(PERSON_URL_SEARCH_ALL_BY_LAST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #PERSON_URL_SEARCH_ALL_BY_PERSONAL_CODE}
+     */
+    public static RemoteEndpoint endpointSearchAllByPersonalCode() {
+        return getBaseEndpoint()
+                .setMethodUrl(PERSON_URL_SEARCH_ALL_BY_PERSONAL_CODE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value #PERSON_URL_SEARCH_ALL_BY_IDENTIFIER}
+     */
+    public static RemoteEndpoint endpointSearchAllByIdentifier() {
+        return getBaseEndpoint()
+                .setMethodUrl(PERSON_URL_SEARCH_ALL_BY_IDENTIFIER)
                 .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }

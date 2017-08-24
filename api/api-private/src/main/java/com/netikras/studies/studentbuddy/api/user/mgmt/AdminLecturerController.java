@@ -1,14 +1,11 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt;
 
-import com.netikras.studies.studentbuddy.api.constants.AdminLecturerConstants;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
-import com.netikras.studies.studentbuddy.core.service.impl.LectureServiceImpl;
-import com.netikras.studies.studentbuddy.core.service.impl.LecturerServiceImpl;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;

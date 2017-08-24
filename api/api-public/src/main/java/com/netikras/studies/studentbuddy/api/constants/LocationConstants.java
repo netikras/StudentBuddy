@@ -25,6 +25,10 @@ public class LocationConstants {
     public static final String LOC_URL_GET_ADDRESS_BY_ID = "/address/id/{id}";
     public static final String LOC_URL_DELETE_ADDRESS_BY_ID = "/address/id/{id}";
 
+    // search
+    public static final String LOC_URL_SEARCH_ALL_BUILDINGS_BY_TITLE = "/building/title/{title}";
+    public static final String LOC_URL_SEARCH_ALL_BUILDING_SECTIONS_BY_TITLE = "/building/section/title/{title}";
+
 
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
@@ -160,4 +164,25 @@ public class LocationConstants {
                 .setMethod(HttpRequest.HttpMethod.DELETE)
                 ;
     }
+
+    /**
+     * {@value LOC_URL_SEARCH_ALL_BUILDINGS_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointSearchAllBuildingsByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(LOC_URL_SEARCH_ALL_BUILDINGS_BY_TITLE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value LOC_URL_SEARCH_ALL_BUILDING_SECTIONS_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointSearchAllBuildingSectionsByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(LOC_URL_SEARCH_ALL_BUILDING_SECTIONS_BY_TITLE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
 }

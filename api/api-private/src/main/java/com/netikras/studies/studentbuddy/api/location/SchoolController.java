@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.location;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonelMemberDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
@@ -26,11 +26,23 @@ import java.util.List;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.BASE_URL;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_CREATE;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_CREATE_DEPARTMENT;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_CREATE_PERSONNEL;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_DELETE_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_DELETE_DEPARTMENT_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_GET_ALL;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_GET_ALL_DISCIPLINES_BY_SCHOOL_ID;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_GET_ALL_PERSONNEL_BY_SCHOOL_ID;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_GET_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_GET_DEPARTMENT_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_DEPARTMENTS_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_DISCIPLINES_BY_DESCRIPTION;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_DISCIPLINES_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_FIRST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_IDENTIFIER;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_LAST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_PERSONAL_CODE;
+import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_TITLE;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.SCHOOL_URL_UPDATE_DEPARTMENT;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
@@ -122,13 +134,13 @@ public class SchoolController {
     }
 
     @RequestMapping(
-            value = "/search/title/{query}",
+            value = SCHOOL_URL_SEARCH_ALL_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = SCHOOL, action = SEARCH)
     public List<SchoolDto> searchAllSchoolsByTitle(
-            @PathVariable(name = "query") String query
+            @PathVariable(name = "title") String query
     ) {
         List<School> schools = schoolService.searchAllSchoolsByTitle(query);
         List<SchoolDto> schoolDtos = (List<SchoolDto>) ModelMapper.transformAll(schools, SchoolDto.class, new MappingSettings().setDepthMax(3));
@@ -198,7 +210,165 @@ public class SchoolController {
     }
 
     @RequestMapping(
-            value = "/department/search/title/{title}",
+            value = "/discipline",
+            method = RequestMethod.POST
+    )
+    @ResponseBody
+    @Authorizable(resource = DISCIPLINE, action = CREATE)
+    public DisciplineDto createNewDiscipline(
+            @RequestBody DisciplineDto disciplineDto
+    ) {
+        Discipline discipline = ModelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
+        discipline = schoolService.createDiscipline(discipline);
+        disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        return disciplineDto;
+    }
+
+    @RequestMapping(
+            value = "/discipline",
+            method = RequestMethod.PUT
+    )
+    @ResponseBody
+    @Authorizable(resource = DISCIPLINE, action = MODIFY)
+    public DisciplineDto updateDiscipline(
+            @RequestBody DisciplineDto disciplineDto
+    ) {
+        Discipline discipline = ModelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
+        discipline = schoolService.updateDiscipline(discipline);
+        disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        return disciplineDto;
+    }
+
+    @RequestMapping(
+            value = "/discipline/id/{id}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = DISCIPLINE, action = GET)
+    public DisciplineDto getDisciplineById(
+            @PathVariable(value = "id") String id
+    ) {
+        Discipline discipline = schoolService.getDiscipline(id);
+        DisciplineDto disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        return disciplineDto;
+    }
+
+    @RequestMapping(
+            value = SCHOOL_URL_GET_ALL_DISCIPLINES_BY_SCHOOL_ID,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = DISCIPLINE, action = GET)
+    public List<DisciplineDto> getAllDisciplinesBySchoolId(
+            @PathVariable(value = "id") String id
+    ) {
+        List<Discipline> disciplines = schoolService.getAllDisciplinesBySchoolId(id);
+        List<DisciplineDto> disciplineDtos = (List<DisciplineDto>) ModelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(2));
+        return disciplineDtos;
+    }
+
+    @RequestMapping(
+            value = "/discipline/id/{id}",
+            method = RequestMethod.DELETE
+    )
+    @ResponseBody
+    @Authorizable(resource = DISCIPLINE, action = DELETE)
+    public void deleteDisciplineById(
+            @PathVariable(value = "id") String id
+    ) {
+        schoolService.deleteDiscipline(id);
+    }
+
+
+    //
+    //
+    // personnel
+    //
+    //
+
+
+    @RequestMapping(
+            value = "/personnel/id/{id}",
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = GET)
+    public PersonnelMemberDto getPersonnelMemberById(
+            @PathVariable(value = "id") String id
+    ) {
+        PersonnelMember personnelMember = schoolService.getPersonnelMember(id);
+        PersonnelMemberDto personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        return personnelMemberDto;
+    }
+
+    @RequestMapping(
+            value = "/personnel/id/{id}",
+            method = RequestMethod.DELETE
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = DELETE)
+    public void deletePersonnelMemberById(
+            @PathVariable(value = "id") String id
+    ) {
+        schoolService.deletePersonnelMember(id);
+    }
+
+    @RequestMapping(
+            value = SCHOOL_URL_CREATE_PERSONNEL,
+            method = RequestMethod.POST
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = CREATE)
+    public PersonnelMemberDto createPersonnelMember(
+            @RequestBody PersonnelMemberDto personnelMemberDto
+    ) {
+        PersonnelMember personnelMember = ModelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
+        personnelMember = schoolService.createPersonnelMember(personnelMember);
+        personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        return personnelMemberDto;
+    }
+
+    @RequestMapping(
+            value = "/personnel",
+            method = RequestMethod.PUT
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = MODIFY)
+    public PersonnelMemberDto updatePersonnelMember(
+            @RequestBody PersonnelMemberDto personnelMemberDto
+    ) {
+        PersonnelMember personnelMember = ModelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
+        personnelMember = schoolService.updatePersonnelMember(personnelMember);
+        personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        return personnelMemberDto;
+    }
+
+    @RequestMapping(
+            value = SCHOOL_URL_GET_ALL_PERSONNEL_BY_SCHOOL_ID,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = SEARCH)
+    public List<PersonnelMemberDto> getAllPersonnelBySchoolId(
+            @PathVariable(name = "id") String schoolId
+    ) {
+        List<PersonnelMember> personnelMembers = schoolService.getAllPersonnelBySchool(schoolId);
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
+
+        return memberDtos;
+    }
+
+
+
+    //
+    //
+    // search
+    //
+    //
+
+    @RequestMapping(
+            value = SCHOOL_URL_SEARCH_ALL_DEPARTMENTS_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -215,55 +385,87 @@ public class SchoolController {
 
 
     @RequestMapping(
-            value = "/personnel/search/title/{title}",
+            value = SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = PERSONNEL, action = SEARCH)
-    public List<PersonelMemberDto> searchAllPersonnelByTitle(
+    public List<PersonnelMemberDto> searchAllPersonnelByTitle(
             @PathVariable(name = "title") String titleSubstring
     ) {
         List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByTitle(titleSubstring);
-        List<PersonelMemberDto> memberDtos =
-                (List<PersonelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonelMemberDto.class, new MappingSettings().setDepthMax(3));
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
 
         return memberDtos;
     }
 
     @RequestMapping(
-            value = "/personnel/search/firstName/{fname}",
+            value = SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_FIRST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = PERSONNEL, action = SEARCH)
-    public List<PersonelMemberDto> searchAllPersonnelByFirstName(
+    public List<PersonnelMemberDto> searchAllPersonnelByFirstName(
             @PathVariable(name = "fname") String fnameSubstring
     ) {
         List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByFirstName(fnameSubstring);
-        List<PersonelMemberDto> memberDtos =
-                (List<PersonelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonelMemberDto.class, new MappingSettings().setDepthMax(3));
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
 
         return memberDtos;
     }
 
     @RequestMapping(
-            value = "/personnel/search/lastName/{lname}",
+            value = SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_LAST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = PERSONNEL, action = SEARCH)
-    public List<PersonelMemberDto> searchAllPersonnelByLastName(
+    public List<PersonnelMemberDto> searchAllPersonnelByLastName(
             @PathVariable(name = "lname") String lnameSubstring
     ) {
         List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByLastName(lnameSubstring);
-        List<PersonelMemberDto> memberDtos =
-                (List<PersonelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonelMemberDto.class, new MappingSettings().setDepthMax(3));
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
 
         return memberDtos;
     }
 
     @RequestMapping(
-            value = "/discipline/search/title/{title}",
+            value = SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_PERSONAL_CODE,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = SEARCH)
+    public List<PersonnelMemberDto> searchAllPersonnelByPersonalCode(
+            @PathVariable(name = "code") String code
+    ) {
+        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByPersonalCode(code);
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
+
+        return memberDtos;
+    }
+
+    @RequestMapping(
+            value = SCHOOL_URL_SEARCH_ALL_PERSONNEL_BY_IDENTIFIER,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = PERSONNEL, action = SEARCH)
+    public List<PersonnelMemberDto> searchAllPersonnelByIdentifier(
+            @PathVariable(name = "id") String identifier
+    ) {
+        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByIdentifier(identifier);
+        List<PersonnelMemberDto> memberDtos =
+                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
+
+        return memberDtos;
+    }
+
+    @RequestMapping(
+            value = SCHOOL_URL_SEARCH_ALL_DISCIPLINES_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -279,12 +481,12 @@ public class SchoolController {
     }
 
     @RequestMapping(
-            value = "/discipline/search/description/{descr}",
+            value = SCHOOL_URL_SEARCH_ALL_DISCIPLINES_BY_DESCRIPTION,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = DISCIPLINE, action = SEARCH)
-    public List<DisciplineDto> searchAllDisciplinesByDesctiotion(
+    public List<DisciplineDto> searchAllDisciplinesByDescription(
             @PathVariable(name = "descr") String descriptionSubstring
     ) {
         List<Discipline> disciplines = schoolService.searchAllDisciplinesByDescription(descriptionSubstring);

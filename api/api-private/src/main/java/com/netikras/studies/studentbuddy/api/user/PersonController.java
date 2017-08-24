@@ -24,6 +24,10 @@ import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PE
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_CODE;
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_GET_BY_IDENTIFIER;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_SEARCH_ALL_BY_FIRST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_SEARCH_ALL_BY_IDENTIFIER;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_SEARCH_ALL_BY_LAST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.PERSON_URL_SEARCH_ALL_BY_PERSONAL_CODE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET_ALL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
@@ -147,7 +151,7 @@ public class PersonController {
 
 
     @RequestMapping(
-            value = "/search/firstName/{fname}",
+            value = PERSON_URL_SEARCH_ALL_BY_FIRST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -163,7 +167,7 @@ public class PersonController {
     }
 
     @RequestMapping(
-            value = "/search/lastName/{lname}",
+            value = PERSON_URL_SEARCH_ALL_BY_LAST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -179,7 +183,7 @@ public class PersonController {
     }
 
     @RequestMapping(
-            value = "/search/code/{code}",
+            value = PERSON_URL_SEARCH_ALL_BY_PERSONAL_CODE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -195,7 +199,7 @@ public class PersonController {
     }
 
     @RequestMapping(
-            value = "/search/id2/{id}",
+            value = PERSON_URL_SEARCH_ALL_BY_IDENTIFIER,
             method = RequestMethod.GET
     )
     @ResponseBody

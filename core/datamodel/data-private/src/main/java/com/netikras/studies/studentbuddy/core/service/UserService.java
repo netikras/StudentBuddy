@@ -24,4 +24,10 @@ public interface UserService {
     List<User> findVirtualUsers();
 
     void changePassword(String userId, String password);
+
+    List<User> searchAllUsersByLastName(String query);
+
+    List<User> searchAllUsersByFirstName(String query);
+
+    List<User> searchAllUsersByUsername(String query);
 }

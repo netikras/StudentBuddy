@@ -1,11 +1,14 @@
 package com.netikras.studies.studentbuddy.api.location;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 import com.netikras.tools.common.remote.http.GenericRestConsumer;
 import com.netikras.tools.common.remote.http.HttpRequest;
 import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
+
+import java.util.List;
 
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointCreateAddress;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointCreateBuilding;
@@ -16,11 +19,17 @@ import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointGetAddressById;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointGetBuildingById;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointGetBuildingSectionById;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointSearchAllBuildingSectionsByTitle;
+import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointSearchAllBuildingsByTitle;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointUpdateAddress;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointUpdateBuilding;
 import static com.netikras.studies.studentbuddy.api.constants.LocationConstants.endpointUpdateBuildingSection;
 
 public class LocationConsumer extends GenericRestConsumer {
+
+
+    private TypeReference buildingsListTypeRef = new TypeReference<List<BuildingDto>>() {};
+    private TypeReference buildingSectionsListTypeRef = new TypeReference<List<BuildingSectionDto>>() {};
 
     // building
 
@@ -58,6 +67,15 @@ public class LocationConsumer extends GenericRestConsumer {
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl();
         sendRequest(request, responseJson);
         return responseJson.isResponseSuccess();
+    }
+
+    public List<BuildingDto> searchAllBuildingsByTitle(String title) {
+        HttpRequest request = createRequest(endpointSearchAllBuildingsByTitle())
+                .withTypeReference(buildingsListTypeRef)
+                .setUrlProperty("title", title);
+
+        List<BuildingDto> dtos = (List<BuildingDto>) sendRequest(request);
+        return dtos;
     }
 
 
@@ -99,6 +117,15 @@ public class LocationConsumer extends GenericRestConsumer {
         return responseJson.isResponseSuccess();
     }
 
+
+    public List<BuildingSectionDto> searchAllBuildingSectionsByTitle(String title) {
+        HttpRequest request = createRequest(endpointSearchAllBuildingSectionsByTitle())
+                .withTypeReference(buildingSectionsListTypeRef)
+                .setUrlProperty("title", title);
+
+        List<BuildingSectionDto> dtos = (List<BuildingSectionDto>) sendRequest(request);
+        return dtos;
+    }
 
     // address
 

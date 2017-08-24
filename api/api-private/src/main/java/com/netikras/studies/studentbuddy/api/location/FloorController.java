@@ -34,6 +34,9 @@ import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLO
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_DELETE_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_GET_BY_ID;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_ROOM_UPDATE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_SEARCH_ALL_FLOOR_BY_TITLE;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_SEARCH_ALL_ROOMS_BY_NUMBER;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.FLOOR_URL_SEARCH_ALL_ROOMS_BY_TITLE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ROOM;
@@ -103,7 +106,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/search/title/{title}",
+            value = FLOOR_URL_SEARCH_ALL_FLOOR_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -172,7 +175,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/floor/search/title/{title}",
+            value = FLOOR_URL_SEARCH_ALL_ROOMS_BY_TITLE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -186,7 +189,7 @@ public class FloorController {
     }
 
     @RequestMapping(
-            value = "/floor/search/number/{number}",
+            value = FLOOR_URL_SEARCH_ALL_ROOMS_BY_NUMBER,
             method = RequestMethod.GET
     )
     @ResponseBody

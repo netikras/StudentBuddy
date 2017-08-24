@@ -6,6 +6,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -50,6 +51,10 @@ public class PersonnelMember {
     @ModelTransform(dtoFieldName = "title")
     private String title;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER, optional = false)
+    @ModelTransform(dtoUpdatable = false)
+    private School school;
+
     public String getId() {
         return id;
     }
@@ -90,6 +95,14 @@ public class PersonnelMember {
         this.title = title;
     }
 
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
     @Override
     public String toString() {
         return "PersonnelMember{" +
@@ -98,6 +111,7 @@ public class PersonnelMember {
                 ", updatedOn=" + updatedOn +
                 ", person=" + person +
                 ", title='" + title + '\'' +
+                ", school=" + school +
                 '}';
     }
 }

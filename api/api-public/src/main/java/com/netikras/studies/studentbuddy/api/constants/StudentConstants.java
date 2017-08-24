@@ -20,6 +20,13 @@ public class StudentConstants {
     public static final String STUD_URL_GET_GUEST_BY_ID = "/guest/id/{id}";
     public static final String STUD_URL_UPDATE_GUEST = "/guest";
 
+    public static final String STUD_URL_SEARCH_ALL_BY_FIRST_NAME = "/search/fname/{fname}";
+
+    public static final String STUD_URL_SEARCH_ALL_BY_LAST_NAME = "/search/lname/{lname}";
+    public static final String STUD_URL_SEARCH_ALL_GROUPS_BY_TITLE = "/group/search/title/{title}";
+    public static final String STUD_URL_SEARCH_ALL_GUESTS_BY_LAST_NAME = "/guest/search/lname/{lname}";
+    public static final String STUD_URL_SEARCH_ALL_GUESTS_BY_FIRST_NAME = "/guest/search/fname/{fname}";
+
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
                 .setBaseUrl("/api" + BASE_URL)
@@ -116,5 +123,59 @@ public class StudentConstants {
                 .setMethod(HttpRequest.HttpMethod.PUT)
                 ;
     }
+
+    // search
+
+    /**
+     * {@value STUD_URL_SEARCH_ALL_BY_FIRST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchStudentsByFirstName() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_SEARCH_ALL_BY_FIRST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value STUD_URL_SEARCH_ALL_BY_LAST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllStudentsByLastName() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_SEARCH_ALL_BY_LAST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value STUD_URL_SEARCH_ALL_GROUPS_BY_TITLE}
+     */
+    public static RemoteEndpoint endpointSearchAllGroupsByTitle() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_SEARCH_ALL_GROUPS_BY_TITLE)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value STUD_URL_SEARCH_ALL_GUESTS_BY_FIRST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllGuestsByFirstName() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_SEARCH_ALL_GUESTS_BY_FIRST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value STUD_URL_SEARCH_ALL_GUESTS_BY_LAST_NAME}
+     */
+    public static RemoteEndpoint endpointSearchAllGuestsByLastName() {
+        return getBaseEndpoint()
+                .setMethodUrl(STUD_URL_SEARCH_ALL_BY_LAST_NAME)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+
 
 }

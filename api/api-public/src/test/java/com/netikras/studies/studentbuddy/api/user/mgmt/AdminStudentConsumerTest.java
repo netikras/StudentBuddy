@@ -375,6 +375,31 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
     }
 
     @Test
+    public void groupSearchTest() {
+        loginSystem();
+        StudentsGroupDto groupDto = getGroupForTesting();
+
+        assertNotNull("Group DTO should not be null after creation", groupDto);
+
+        List<StudentsGroupDto> groupDtos = studentConsumer.searchAllGroupsByTitle("PIN");
+        assertNotNull("There should be a non-null list of groups", groupDtos);
+        assertEquals("There must be 1 result", 1, groupDtos.size());
+        assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
+
+        groupDtos = studentConsumer.searchAllGroupsByTitle("P*N13");
+        assertNotNull("There should be a non-null list of groups", groupDtos);
+        assertEquals("There must be 1 result", 1, groupDtos.size());
+        assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
+
+        groupDtos = studentConsumer.searchAllGroupsByTitle("*N13$");
+        assertNotNull("There should be a non-null list of groups", groupDtos);
+        assertEquals("There must be 1 result", 1, groupDtos.size());
+        assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
+
+        adminStudentConsumer.deleteStudentGroupById(groupDtos.get(0).getId());
+    }
+
+    @Test
     @Ignore(value = "Guest creation is quite complicated as it needs the whole infra created (school, discipline, etc.)")
     public void createLectureGuestTest() throws Exception {
     }

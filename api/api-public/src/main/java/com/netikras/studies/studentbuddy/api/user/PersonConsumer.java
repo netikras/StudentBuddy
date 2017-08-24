@@ -14,6 +14,10 @@ import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.en
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointGetByCode;
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointGetById;
 import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointGetByIdetifier;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointSearchAllByFirstName;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointSearchAllByIdentifier;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointSearchAllByLastName;
+import static com.netikras.studies.studentbuddy.api.constants.PersonConstants.endpointSearchAllByPersonalCode;
 
 @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class PersonConsumer extends GenericRestConsumer {
@@ -79,6 +83,42 @@ public class PersonConsumer extends GenericRestConsumer {
                 .withTypeReference(peopleListTypeRef)
                 .setUrlProperty("firstName", firstName)
                 .setUrlProperty("lastName", lastName);
+
+        List<PersonDto> personDtos = (List<PersonDto>) sendRequest(request);
+        return personDtos;
+    }
+
+    public List<PersonDto> searchAllByFirstName(String firstName) {
+        HttpRequest request = createRequest(endpointSearchAllByFirstName())
+                .withTypeReference(peopleListTypeRef)
+                .setUrlProperty("fname", firstName);
+
+        List<PersonDto> personDtos = (List<PersonDto>) sendRequest(request);
+        return personDtos;
+    }
+
+    public List<PersonDto> searchAllByLastName(String lastName) {
+        HttpRequest request = createRequest(endpointSearchAllByLastName())
+                .withTypeReference(peopleListTypeRef)
+                .setUrlProperty("lname", lastName);
+
+        List<PersonDto> personDtos = (List<PersonDto>) sendRequest(request);
+        return personDtos;
+    }
+
+    public List<PersonDto> searchAllByPersonalCode(String code) {
+        HttpRequest request = createRequest(endpointSearchAllByPersonalCode())
+                .withTypeReference(peopleListTypeRef)
+                .setUrlProperty("code", code);
+
+        List<PersonDto> personDtos = (List<PersonDto>) sendRequest(request);
+        return personDtos;
+    }
+
+    public List<PersonDto> searchAllByIdentifier(String identifier) {
+        HttpRequest request = createRequest(endpointSearchAllByIdentifier())
+                .withTypeReference(peopleListTypeRef)
+                .setUrlProperty("id", identifier);
 
         List<PersonDto> personDtos = (List<PersonDto>) sendRequest(request);
         return personDtos;

@@ -1,11 +1,14 @@
 package com.netikras.studies.studentbuddy.api.location;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
 import com.netikras.tools.common.remote.http.GenericRestConsumer;
 import com.netikras.tools.common.remote.http.HttpRequest;
 import com.netikras.tools.common.remote.http.impl.json.HttpResponseJsonImpl;
+
+import java.util.List;
 
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointCreateFloor;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointCreateLayout;
@@ -16,11 +19,18 @@ import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.end
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointGetFloorById;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointGetLayoutById;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointGetRoomById;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointSearchAllFloorsByTitle;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointSearchAllRoomsByNumber;
+import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointSearchAllRoomsByTitle;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointUpdateFloor;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointUpdateLayout;
 import static com.netikras.studies.studentbuddy.api.constants.FloorConstants.endpointUpdateRoom;
 
 public class FloorConsumer extends GenericRestConsumer {
+
+
+    private TypeReference floorsListTypeRef = new TypeReference<List<BuildingFloorDto>>() {};
+    private TypeReference roomsListTypeRef = new TypeReference<List<LectureRoomDto>>() {};
 
     // floor
 
@@ -60,6 +70,14 @@ public class FloorConsumer extends GenericRestConsumer {
         return responseJson.isResponseSuccess();
     }
 
+    public List<BuildingFloorDto> searchAllFloorsByTitle(String title) {
+        HttpRequest request = createRequest(endpointSearchAllFloorsByTitle())
+                .withTypeReference(floorsListTypeRef)
+                .setUrlProperty("title", title);
+
+        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) sendRequest(request);
+        return dtos;
+    }
 
 
     // room
@@ -98,6 +116,25 @@ public class FloorConsumer extends GenericRestConsumer {
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl();
         sendRequest(request, responseJson);
         return responseJson.isResponseSuccess();
+    }
+
+
+    public List<LectureRoomDto> searchAllRoomsByTitle(String title) {
+        HttpRequest request = createRequest(endpointSearchAllRoomsByTitle())
+                .withTypeReference(roomsListTypeRef)
+                .setUrlProperty("title", title);
+
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<LectureRoomDto> searchAllRoomsByNumber(String number) {
+        HttpRequest request = createRequest(endpointSearchAllRoomsByNumber())
+                .withTypeReference(roomsListTypeRef)
+                .setUrlProperty("number", number);
+
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) sendRequest(request);
+        return dtos;
     }
 
 

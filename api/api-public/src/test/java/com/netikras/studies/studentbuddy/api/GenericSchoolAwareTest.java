@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api;
 
 import com.netikras.studies.studentbuddy.api.location.FloorConsumer;
 import com.netikras.studies.studentbuddy.api.location.LocationConsumer;
+import com.netikras.studies.studentbuddy.api.location.SchoolConsumer;
 import com.netikras.studies.studentbuddy.api.timetable.AssignmentConsumer;
 import com.netikras.studies.studentbuddy.api.timetable.LecturesConsumer;
 import com.netikras.studies.studentbuddy.api.timetable.TestsConsumer;
@@ -34,6 +35,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -47,6 +50,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected AssignmentConsumer assignmentConsumer;
     protected LecturesConsumer lecturesConsumer;
     protected TestsConsumer testsConsumer;
+    protected SchoolConsumer schoolConsumer;
 
     protected AdminLecturerConsumer adminLecturerConsumer;
     protected AdminStudentConsumer adminStudentConsumer;
@@ -61,6 +65,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         assignmentConsumer = attachConsumer(new AssignmentConsumer());
         testsConsumer = attachConsumer(new TestsConsumer());
         lecturesConsumer = attachConsumer(new LecturesConsumer());
+        schoolConsumer = attachConsumer(new SchoolConsumer());
 
         adminLecturerConsumer = attachConsumer(new AdminLecturerConsumer());
         adminStudentConsumer = attachConsumer(new AdminStudentConsumer());
@@ -195,6 +200,18 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         return layoutDto;
     }
 
+    protected AddressDto buildAddress() {
+        AddressDto addressDto = new AddressDto();
+
+        addressDto.setBuildingNo("12");
+        addressDto.setCity("Liepāja");
+        addressDto.setCountry("Latvia");
+        addressDto.setStreet("Jūras iela");
+        addressDto.setPostalCode("LV-3401");
+
+        return addressDto;
+    }
+
     protected DisciplineDto buildDiscipline() {
         DisciplineDto disciplineDto = new DisciplineDto();
         disciplineDto.setTitle("Math");
@@ -322,11 +339,73 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
     protected SchoolDto getNewSchoolForTesting() {
         SchoolDto schoolDto = buildSchool();
+        assertNotNull("School for testing should not be null", schoolDto);
+        return schoolDto;
+    }
 
+    protected SchoolDto getNewSchoolWithDepartmentForTesting() {
+        SchoolDto schoolDto = getNewSchoolForTesting();
+        SchoolDepartmentDto departmentDto = buildDepartment(buildBuilding(buildAddress()));
+        departmentDto.setSchool(schoolDto);
 
+        List<SchoolDepartmentDto> departmentDtos = schoolConsumer.searchAllDepartmentsByTitle(departmentDto.getTitle());
+        if (departmentDtos != null && !departmentDtos.isEmpty()) {
+            for (SchoolDepartmentDto dto : departmentDtos) {
+                schoolConsumer.deletetDepartmentById(dto.getId());
+            }
+        }
+
+        departmentDto = schoolConsumer.createDepartment(departmentDto);
+        schoolDto = schoolConsumer.getSchoolById(schoolDto.getId());
+
+        assertNotNull("School for testing should not be null", schoolDto);
+
+        assertNotNull("School must have department", schoolDto.getDepartments());
+        assertFalse("There should be at least one department in the list", schoolDto.getDepartments().isEmpty());
 
         return schoolDto;
     }
+
+    protected BuildingDto createNewBuildingForTesting() {
+        BuildingDto dummyBuilding = buildBuilding(
+                buildAddress(),
+                buidBuildingSection(
+                        buildFloor(
+                                buildFloorLayout(),
+                                buildRoom()
+                        )
+                )
+        );
+        BuildingDto buildingDto = null;
+        List<BuildingDto> buildingDtos = locationConsumer.searchAllBuildingsByTitle(dummyBuilding.getTitle());
+
+        if (buildingDtos != null && !buildingDtos.isEmpty()) {
+            buildingDtos.forEach(dto -> locationConsumer.deleteBuildingById(dto.getId()));
+        }
+
+        buildingDto = locationConsumer.createBuilding(buildingDto);
+        assertNotNull("Newly created building must be non-null", buildingDto);
+        assertEquals("Newly created building must have provided title", dummyBuilding.getTitle(), buildingDto.getTitle());
+
+        return buildingDto;
+    }
+
+
+    protected DisciplineDto createNewDisciplineForTesting() {
+        DisciplineDto dummyDiscipline = buildDiscipline();
+        DisciplineDto disciplineDto = null;
+
+        List<DisciplineDto> disciplineDtos = schoolConsumer.searchAllDisciplinesByTitle(dummyDiscipline.getTitle());
+        if (disciplineDtos != null && ! disciplineDtos.isEmpty()) {
+            disciplineDtos.forEach(dto -> schoolConsumer.deletetDisciplineById(dto.getId()));
+        }
+
+        disciplineDto = schoolConsumer.cre
+
+        return disciplineDto;
+    }
+
+
 
 
 }

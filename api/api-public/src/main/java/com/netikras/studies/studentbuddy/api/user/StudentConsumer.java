@@ -17,11 +17,21 @@ import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.e
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetGuestById;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetStudentById;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointGetStudentByPersonId;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointSearchAllGroupsByTitle;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointSearchAllGuestsByFirstName;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointSearchAllGuestsByLastName;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointSearchAllStudentsByLastName;
+import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointSearchStudentsByFirstName;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointUpdateGuest;
 import static com.netikras.studies.studentbuddy.api.constants.StudentConstants.endpointUpdateStudent;
 
 @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
 public class StudentConsumer extends GenericRestConsumer {
+
+
+    private TypeReference studentsListTypeRef = new TypeReference<List<StudentDto>>() {};
+    private TypeReference groupsListTypeRef = new TypeReference<List<StudentsGroupDto>>() {};
+    private TypeReference guestsListTypeRef = new TypeReference<List<LectureGuestDto>>() {};
 
     public StudentDto getStudentById(String id) {
         HttpRequest request = createRequest(endpointGetStudentById())
@@ -101,6 +111,53 @@ public class StudentConsumer extends GenericRestConsumer {
         HttpResponseJsonImpl responseJson = new HttpResponseJsonImpl(LectureGuestDto.class);
         sendRequest(request, responseJson);
         return responseJson.isResponseSuccess();
+    }
+
+    // search
+
+    public List<StudentDto> searchAllStudentsByFirstName(String query) {
+        HttpRequest request = createRequest(endpointSearchStudentsByFirstName())
+                .withTypeReference(studentsListTypeRef)
+                .setUrlProperty("fname", query);
+
+        List<StudentDto> dtos = (List<StudentDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<StudentDto> searchAllStudentsByLastName(String query) {
+        HttpRequest request = createRequest(endpointSearchAllStudentsByLastName())
+                .withTypeReference(studentsListTypeRef)
+                .setUrlProperty("lname", query);
+
+        List<StudentDto> dtos = (List<StudentDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<StudentsGroupDto> searchAllGroupsByTitle(String query) {
+        HttpRequest request = createRequest(endpointSearchAllGroupsByTitle())
+                .withTypeReference(groupsListTypeRef)
+                .setUrlProperty("title", query);
+
+        List<StudentsGroupDto> dtos = (List<StudentsGroupDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<LectureGuestDto> searchAllGuestsByFirstName(String query) {
+        HttpRequest request = createRequest(endpointSearchAllGuestsByFirstName())
+                .withTypeReference(guestsListTypeRef)
+                .setUrlProperty("fname", query);
+
+        List<LectureGuestDto> dtos = (List<LectureGuestDto>) sendRequest(request);
+        return dtos;
+    }
+
+    public List<LectureGuestDto> searchAllGuestsByLastName(String query) {
+        HttpRequest request = createRequest(endpointSearchAllGuestsByLastName())
+                .withTypeReference(guestsListTypeRef)
+                .setUrlProperty("lname", query);
+
+        List<LectureGuestDto> dtos = (List<LectureGuestDto>) sendRequest(request);
+        return dtos;
     }
 
 }

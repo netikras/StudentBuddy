@@ -20,6 +20,8 @@ public class TestsConstants {
     public static final String TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN =
             "/discipline/id/{disciplineId}/group/id/{groupId}/starts/between/{after}/{before}";
 
+    public static final String TESTS_URL_SEARCH_ALL_BY_DESCRIPTION = "/search/description/{descr}";
+
     private static RemoteEndpoint getBaseEndpoint() {
         return new RemoteEndpoint()
                 .setBaseUrl("/api" + BASE_URL)
@@ -113,6 +115,16 @@ public class TestsConstants {
     public static RemoteEndpoint endpointGetAllTestsByDisciplineIdAndGroupIdStartingBetween() {
         return getBaseEndpoint()
                 .setMethodUrl(TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN)
+                .setMethod(HttpRequest.HttpMethod.GET)
+                ;
+    }
+
+    /**
+     * {@value TESTS_URL_SEARCH_ALL_BY_DESCRIPTION}
+     */
+    public static RemoteEndpoint endpointSearchAllByDescription() {
+        return getBaseEndpoint()
+                .setMethodUrl(TESTS_URL_SEARCH_ALL_BY_DESCRIPTION)
                 .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }

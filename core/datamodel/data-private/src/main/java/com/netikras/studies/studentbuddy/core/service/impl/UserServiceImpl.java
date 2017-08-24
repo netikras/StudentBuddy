@@ -128,4 +128,20 @@ public class UserServiceImpl implements UserService {
     }
 
 
+    @Override
+    public List<User> searchAllUsersByLastName(String query) {
+        return userDao.findAllByNameLikeIgnoreCase(userDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<User> searchAllUsersByFirstName(String query) {
+        return userDao.findAllByPerson_FirstNameLikeIgnoreCase(userDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<User> searchAllUsersByUsername(String query) {
+        return userDao.findAllByPerson_LastNameLikeIgnoreCase(userDao.wrapSearchString(query));
+    }
+
+
 }

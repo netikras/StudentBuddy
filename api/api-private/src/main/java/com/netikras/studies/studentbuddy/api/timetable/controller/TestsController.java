@@ -30,6 +30,7 @@ import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TES
 import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_AND_GROUP_ID_BETWEEN;
 import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_ALL_FOR_DISCIPLINE_ID_BETWEEN;
 import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_SEARCH_ALL_BY_DESCRIPTION;
 import static com.netikras.studies.studentbuddy.api.constants.TestsConstants.TESTS_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
@@ -224,7 +225,7 @@ public class TestsController {
 
 
     @RequestMapping(
-            value = "/search/description/{descr}",
+            value = TESTS_URL_SEARCH_ALL_BY_DESCRIPTION,
             method = RequestMethod.GET
     )
     @ResponseBody

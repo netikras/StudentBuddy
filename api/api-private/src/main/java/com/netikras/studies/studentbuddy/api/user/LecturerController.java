@@ -20,6 +20,9 @@ import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_ALL_BY_DISCIPLINE_ID;
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_BY_PERSON_ID;
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_GET_BY_ID;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_SEARCH_ALL_BY_DEGREE;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_SEARCH_ALL_BY_FIRST_NAME;
+import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_SEARCH_ALL_BY_LAST_NAME;
 import static com.netikras.studies.studentbuddy.api.constants.LecturerConstants.LECTURER_URL_UPDATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
@@ -98,7 +101,7 @@ public class LecturerController {
 
 
     @RequestMapping(
-            value = "/search/degree/{degree}",
+            value = LECTURER_URL_SEARCH_ALL_BY_DEGREE,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -114,7 +117,7 @@ public class LecturerController {
     }
 
     @RequestMapping(
-            value = "/search/firstName/{fname}",
+            value = LECTURER_URL_SEARCH_ALL_BY_FIRST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
@@ -130,7 +133,7 @@ public class LecturerController {
     }
 
     @RequestMapping(
-            value = "/search/lastName/{lname}",
+            value = LECTURER_URL_SEARCH_ALL_BY_LAST_NAME,
             method = RequestMethod.GET
     )
     @ResponseBody
