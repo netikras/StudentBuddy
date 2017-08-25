@@ -57,13 +57,28 @@ public class SchoolDepartment {
     private List<Building> buildings;
 
 
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public School getSchool() {
@@ -90,11 +105,12 @@ public class SchoolDepartment {
         this.buildings = buildings;
     }
 
-
     @Override
     public String toString() {
         return "SchoolDepartment{" +
                 "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
                 ", school=" + school +
                 ", title='" + title + '\'' +
                 ", buildings=" + buildings +

@@ -13,4 +13,6 @@ public interface DisciplineDao extends JpaRepo<Discipline> {
 
     List<Discipline> findAllByTitleLikeIgnoreCase(String title);
 
+    List<Discipline> findAllBySchool_Id(String school_id);
+
 }

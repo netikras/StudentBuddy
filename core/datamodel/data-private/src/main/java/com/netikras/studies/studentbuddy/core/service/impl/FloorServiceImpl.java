@@ -7,10 +7,16 @@ import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 import com.netikras.studies.studentbuddy.core.service.FloorService;
+import com.netikras.studies.studentbuddy.core.validator.LocationValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class FloorServiceImpl implements FloorService {
@@ -23,6 +29,9 @@ public class FloorServiceImpl implements FloorService {
 
     @Resource
     private FloorLayoutDao floorLayoutDao;
+
+    @Resource
+    private LocationValidator locationValidator;
 
 
     @Override
@@ -37,6 +46,15 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     public BuildingFloor createFloor(BuildingFloor buildingFloor) {
+        ErrorsCollection errors = locationValidator.validateForCreation(buildingFloor, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new floor")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return floorDao.save(buildingFloor);
     }
 
@@ -57,6 +75,16 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     public LectureRoom createRoom(LectureRoom lectureRoom) {
+        ErrorsCollection errors = locationValidator.validateForCreation(lectureRoom, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new room")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
         return roomDao.save(lectureRoom);
     }
 
@@ -77,6 +105,16 @@ public class FloorServiceImpl implements FloorService {
 
     @Override
     public FloorLayout createFloorLayout(FloorLayout floorLayout) {
+        ErrorsCollection errors = locationValidator.validateForCreation(floorLayout, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new floor layout")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
         return floorLayoutDao.save(floorLayout);
     }
 
@@ -85,6 +123,8 @@ public class FloorServiceImpl implements FloorService {
         floorLayoutDao.delete(id);
     }
 
+
+    // search
 
     @Override
     public List<LectureRoom> searchAllRoomsByTitle(String query) {

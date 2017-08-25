@@ -10,4 +10,9 @@ public interface BuildingSectionDao extends JpaRepo<BuildingSection> {
 
     List<BuildingSection> findAllByTitleLikeIgnoreCase(String title);
 
+    BuildingSection findByTitleAndBuilding_Id(String title, String building_id);
+
+    BuildingSection findByTitleAndBuilding_Title(String title, String building_title);
+
+
 }

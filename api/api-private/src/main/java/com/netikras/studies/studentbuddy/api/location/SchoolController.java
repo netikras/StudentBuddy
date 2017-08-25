@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,10 +70,12 @@ public class SchoolController {
     )
     @ResponseBody
     @Authorizable(resource = SCHOOL, action = GET)
+    @Transactional
     public SchoolDto getSchoolById(
             @PathVariable(name = "id") String id
     ) {
         School school = schoolService.getSchool(id);
+        if (school != null) school.getDepartments();
         SchoolDto schoolDto = ModelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
         return schoolDto;
     }
@@ -99,6 +102,7 @@ public class SchoolController {
             @RequestBody SchoolDto schoolDto
     ) {
         School school = ModelMapper.apply(new School(), schoolDto, new MappingSettings().setForceUpdate(true));
+        if (school != null) school.setId(null);
         school = schoolService.createSchool(school);
         schoolDto = ModelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
 
@@ -160,6 +164,7 @@ public class SchoolController {
             @RequestBody SchoolDepartmentDto departmentDto
     ) {
         SchoolDepartment department = ModelMapper.apply(new SchoolDepartment(), departmentDto, new MappingSettings().setForceUpdate(true));
+        if (department != null) department.setId(null);
         department = schoolService.createSchoolDepartment(department);
         departmentDto = ModelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
 
@@ -188,10 +193,14 @@ public class SchoolController {
     )
     @ResponseBody
     @Authorizable(resource = SCHOOL_DEPARTMENT, action = GET)
+    @Transactional
     public SchoolDepartmentDto getSchoolDepartmentById(
             @PathVariable(name = "id") String id
     ) {
         SchoolDepartment department = schoolService.getSchoolDepartment(id);
+        if (department != null) {
+            department.getBuildings();
+        }
         SchoolDepartmentDto departmentDto = ModelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
 
         return departmentDto;
@@ -219,6 +228,7 @@ public class SchoolController {
             @RequestBody DisciplineDto disciplineDto
     ) {
         Discipline discipline = ModelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
+        if (discipline != null) discipline.setId(null);
         discipline = schoolService.createDiscipline(discipline);
         disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
         return disciplineDto;
@@ -323,6 +333,7 @@ public class SchoolController {
             @RequestBody PersonnelMemberDto personnelMemberDto
     ) {
         PersonnelMember personnelMember = ModelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
+        if (personnelMember != null) personnelMember.setId(null);
         personnelMember = schoolService.createPersonnelMember(personnelMember);
         personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
         return personnelMemberDto;
@@ -358,7 +369,6 @@ public class SchoolController {
 
         return memberDtos;
     }
-
 
 
     //

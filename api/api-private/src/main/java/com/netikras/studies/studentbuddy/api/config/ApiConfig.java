@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.config;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -36,7 +37,7 @@ import java.util.Properties;
         P.BASE_PACKAGE + ".core.data.sys.dao"
 })
 @PropertySource({"classpath:persistence-jndi.properties"})
-@EnableTransactionManagement
+@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 public class ApiConfig {
 
     String[] datamodelPackages = {

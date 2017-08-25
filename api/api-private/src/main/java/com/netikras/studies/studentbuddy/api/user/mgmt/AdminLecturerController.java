@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,7 +49,8 @@ public class AdminLecturerController {
     public LecturerDto createLecturer(
             @RequestBody LecturerDto dto
     ) {
-        Lecturer lecturer = ModelMapper.apply(new Lecturer(), dto);
+        Lecturer lecturer = ModelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
+        if (lecturer != null) lecturer.setId(null);
         lecturer = lecturerService.createLecturer(lecturer);
         dto = ModelMapper.transform(lecturer, new LecturerDto());
 
@@ -96,7 +98,6 @@ public class AdminLecturerController {
         Discipline discipline = schoolService.getDiscipline(disciplineId);
         lecturerService.detatchFromDiscipline(lecturer, discipline);
     }
-
 
 
 }

@@ -72,7 +72,7 @@ public class AdminStudentController {
             @RequestBody StudentDto studentDto
     ) {
         Student student = ModelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
-        student.setId(null);
+        if (student != null) student.setId(null);
 
         student = studentService.createStudent(student);
         studentDto = ModelMapper.transform(student, new StudentDto());
@@ -94,7 +94,6 @@ public class AdminStudentController {
     }
 
 
-
     @RequestMapping(
             value = ADM_STUD_CREATE_GROUP,
             method = RequestMethod.POST
@@ -111,8 +110,6 @@ public class AdminStudentController {
     }
 
 
-
-
     @RequestMapping(
             value = ADM_STUD_DELETE_GROUP_BY_ID,
             method = RequestMethod.DELETE
@@ -124,8 +121,6 @@ public class AdminStudentController {
     ) {
         studentService.deleteStudentsGroup(id);
     }
-
-
 
 
     @RequestMapping(
@@ -185,9 +180,6 @@ public class AdminStudentController {
     ) {
         studentService.removeStudentsFromGroup(groupId, studentIds);
     }
-
-
-
 
 
     @RequestMapping(
@@ -258,8 +250,6 @@ public class AdminStudentController {
     ) {
         studentService.deleteLectureGuest(id);
     }
-
-
 
 
 }

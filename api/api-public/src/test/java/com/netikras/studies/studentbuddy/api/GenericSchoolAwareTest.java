@@ -28,7 +28,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartme
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
-import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -338,14 +338,23 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     }
 
     protected SchoolDto getNewSchoolForTesting() {
-        SchoolDto schoolDto = buildSchool();
+        SchoolDto dummySchool = buildSchool();
+        SchoolDto schoolDto = null;
+        List<SchoolDto> schools = schoolConsumer.searchAllSchoolsByTitle(dummySchool.getTitle());
+
+        if (schools != null && ! schools.isEmpty()) {
+            schools.forEach(dto -> schoolConsumer.deletetSchoolById(dto.getId()));
+        }
+
+        schoolDto = schoolConsumer.createSchool(dummySchool);
+
         assertNotNull("School for testing should not be null", schoolDto);
         return schoolDto;
     }
 
     protected SchoolDto getNewSchoolWithDepartmentForTesting() {
         SchoolDto schoolDto = getNewSchoolForTesting();
-        SchoolDepartmentDto departmentDto = buildDepartment(buildBuilding(buildAddress()));
+        SchoolDepartmentDto departmentDto = buildDepartment(getNewBuildingForTesting());
         departmentDto.setSchool(schoolDto);
 
         List<SchoolDepartmentDto> departmentDtos = schoolConsumer.searchAllDepartmentsByTitle(departmentDto.getTitle());
@@ -366,7 +375,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         return schoolDto;
     }
 
-    protected BuildingDto createNewBuildingForTesting() {
+    protected BuildingDto getNewBuildingForTesting() {
         BuildingDto dummyBuilding = buildBuilding(
                 buildAddress(),
                 buidBuildingSection(
@@ -383,7 +392,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
             buildingDtos.forEach(dto -> locationConsumer.deleteBuildingById(dto.getId()));
         }
 
-        buildingDto = locationConsumer.createBuilding(buildingDto);
+        buildingDto = locationConsumer.createBuilding(dummyBuilding);
         assertNotNull("Newly created building must be non-null", buildingDto);
         assertEquals("Newly created building must have provided title", dummyBuilding.getTitle(), buildingDto.getTitle());
 
@@ -391,21 +400,71 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     }
 
 
-    protected DisciplineDto createNewDisciplineForTesting() {
+    protected DisciplineDto getNewDisciplineForTesting() {
         DisciplineDto dummyDiscipline = buildDiscipline();
         DisciplineDto disciplineDto = null;
 
         List<DisciplineDto> disciplineDtos = schoolConsumer.searchAllDisciplinesByTitle(dummyDiscipline.getTitle());
         if (disciplineDtos != null && ! disciplineDtos.isEmpty()) {
-            disciplineDtos.forEach(dto -> schoolConsumer.deletetDisciplineById(dto.getId()));
+            disciplineDtos.forEach(dto -> schoolConsumer.deleteDisciplineById(dto.getId()));
         }
 
-        disciplineDto = schoolConsumer.cre
+        dummyDiscipline.setSchool(getNewSchoolWithDepartmentForTesting());
+
+        disciplineDto = schoolConsumer.createDiscipline(dummyDiscipline);
+
+        assertNotNull("Newly created discipline must be non-null", disciplineDto);
 
         return disciplineDto;
     }
 
+    protected LecturerDto getNewLecturerForTesting() {
+        LecturerDto dummyLecturer = buildLecturer(getPersonForTesting(), getNewDisciplineForTesting());
+        LecturerDto lecturerDto = lecturerConsumer.getByPersonId(dummyLecturer.getPerson().getId());
 
+        if (lecturerDto != null) {
+            adminLecturerConsumer.deleteById(lecturerDto.getId());
+        }
+
+        lecturerDto = adminLecturerConsumer.createLecturer(dummyLecturer);
+        assertNotNull("Newly created lecturer must be non-null", lecturerDto);
+
+        return lecturerDto;
+    }
+
+    protected LectureDto getNewLectureForTesting() {
+        SchoolDto schoolDto = getNewSchoolWithDepartmentForTesting();
+        DisciplineDto disciplineDto = buildDiscipline();
+        disciplineDto.setSchool(schoolDto);
+        disciplineDto = schoolConsumer.createDiscipline(disciplineDto);
+        assertNotNull("Discipline must be created by now", disciplineDto);
+
+        StudentsGroupDto groupDto = getNewGroupForTesting();
+
+        List<BuildingDto> buildingDtos = locationConsumer.searchAllBuildingsByTitle(buildBuilding().getTitle());
+
+        LectureRoomDto roomDto = null;
+//        roomDto = schoolDto.getDepartments().get(0).getBuildings().get(0).getBuildingSections().get(0).getFloors().get(0).getLectureRooms().get(0);
+
+        LectureDto dummyLecture = buildLecture(disciplineDto, groupDto, roomDto);
+        LectureDto lectureDto = null;
+
+
+        return lectureDto;
+    }
+
+
+    @Test
+    public void testGetters() {
+        initSchoolAware();
+        loginSystem();
+        System.out.println(getNewLectureForTesting());
+        System.out.println(getNewSchoolForTesting());
+        System.out.println(getNewSchoolWithDepartmentForTesting());
+        System.out.println(getNewBuildingForTesting());
+        System.out.println(getNewDisciplineForTesting());
+        System.out.println(getNewLecturerForTesting());
+    }
 
 
 }

@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -211,7 +212,8 @@ public class LecturesController {
     public LectureDto createLecture(
             @RequestBody LectureDto lectureDto
     ) {
-        Lecture lecture = ModelMapper.apply(new Lecture(), lectureDto);
+        Lecture lecture = ModelMapper.apply(new Lecture(), lectureDto, new MappingSettings().setForceUpdate(true));
+        if (lecture != null) lecture.setId(null);
         lecture = lectureService.createLecture(lecture);
         lectureDto = ModelMapper.transform(lecture, new LectureDto());
         return lectureDto;
@@ -228,10 +230,6 @@ public class LecturesController {
     ) {
         lectureService.deleteLecture(id);
     }
-
-
-
-
 
 
     public long timeUnitsToMs(String units, long value) {

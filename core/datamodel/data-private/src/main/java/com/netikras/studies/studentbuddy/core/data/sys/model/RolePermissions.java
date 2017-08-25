@@ -44,8 +44,7 @@ public class RolePermissions {
     @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
-    // TODO optional must be false
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "modified_by_id")
     private User modifedBy;
 

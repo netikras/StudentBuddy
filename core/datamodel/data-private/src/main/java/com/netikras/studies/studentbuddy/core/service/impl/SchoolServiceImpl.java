@@ -9,10 +9,15 @@ import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -29,9 +34,21 @@ public class SchoolServiceImpl implements SchoolService {
     @Resource
     private PersonnelDao personnelDao;
 
+    @Resource
+    private SchoolValidator schoolValidator;
+
 
     @Override
     public School createSchool(School school) {
+        ErrorsCollection errors = schoolValidator.validateForCreation(school, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new school")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return schoolDao.save(school);
     }
 
@@ -52,6 +69,15 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public SchoolDepartment createSchoolDepartment(SchoolDepartment department) {
+        ErrorsCollection errors = schoolValidator.validateForCreation(department, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new department")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return departmentDao.save(department);
     }
 
@@ -72,7 +98,15 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public PersonnelMember createPersonnelMember(PersonnelMember member) {
-        // FIXME validate (school is mandatory!)
+        ErrorsCollection errors = schoolValidator.validateForCreation(member, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new personnel member")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return personnelDao.save(member);
     }
 
@@ -114,6 +148,11 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public void deleteDiscipline(String id) {
         disciplineDao.delete(id);
+    }
+
+    @Override
+    public List<Discipline> getAllDisciplinesBySchoolId(String id) {
+        return disciplineDao.findAllBySchool_Id(id);
     }
 
     @Override

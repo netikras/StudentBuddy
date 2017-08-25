@@ -44,7 +44,7 @@ public class AdminPersonController {
             @RequestBody PersonDto personDto
     ) {
         Person person = ModelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
-        person.setId(null);
+        if (person != null) person.setId(null);
         person = personService.createPerson(person);
         personDto = ModelMapper.transform(person, new PersonDto());
 

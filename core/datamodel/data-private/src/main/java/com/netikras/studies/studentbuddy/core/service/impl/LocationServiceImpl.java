@@ -7,10 +7,15 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.service.LocationService;
+import com.netikras.studies.studentbuddy.core.validator.LocationValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -24,6 +29,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Resource
     private BuildingSectionDao buildingSectionDao;
+
+    @Resource
+    private LocationValidator locationValidator;
 
 
 
@@ -39,6 +47,15 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Building createBuilding(Building building) {
+        ErrorsCollection errors = locationValidator.validateForCreation(building, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new building")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return buildingDao.save(building);
     }
 
@@ -59,6 +76,15 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public BuildingSection createBuildingSection(BuildingSection buildingSection) {
+        ErrorsCollection errors = locationValidator.validateForCreation(buildingSection, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new building section")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return buildingSectionDao.save(buildingSection);
     }
 
@@ -79,6 +105,15 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Address createAddress(Address address) {
+        ErrorsCollection errors = locationValidator.validateForCreation(address, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new address")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return addressDao.save(address);
     }
 

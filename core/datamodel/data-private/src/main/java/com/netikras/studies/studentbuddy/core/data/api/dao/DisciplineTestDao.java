@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface DisciplineTestDao extends JpaRepo<DisciplineTest> {
 
+    List<DisciplineTest> findAllByLecture_Id(String lecture_id);
 
     List<DisciplineTest> findAllByDiscipline_Id(String discipline_id);
 

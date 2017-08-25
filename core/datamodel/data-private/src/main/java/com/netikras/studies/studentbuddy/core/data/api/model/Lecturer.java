@@ -29,9 +29,9 @@ public class Lecturer {
     @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "person_id")
-    @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "person", dtoUpdatable = false)
     private Person person;
 
     @Column(name = "degree")

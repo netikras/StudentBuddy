@@ -42,13 +42,13 @@ import static com.netikras.studies.studentbuddy.api.constants.SchoolConstants.en
 
 public class SchoolConsumer extends GenericRestConsumer {
 
-    private TypeReference schoolsListTypeRef = new TypeReference<SchoolDto>() {
+    private TypeReference schoolsListTypeRef = new TypeReference<List<SchoolDto>>() {
     };
-    private TypeReference departmentsListTypeRef = new TypeReference<SchoolDepartmentDto>() {
+    private TypeReference departmentsListTypeRef = new TypeReference<List<SchoolDepartmentDto>>() {
     };
-    private TypeReference personnelListTypeRef = new TypeReference<PersonnelMemberDto>() {
+    private TypeReference personnelListTypeRef = new TypeReference<List<PersonnelMemberDto>>() {
     };
-    private TypeReference disciplineListTypeRef = new TypeReference<DisciplineDto>() {
+    private TypeReference disciplineListTypeRef = new TypeReference<List<DisciplineDto>>() {
     };
 
     public SchoolDto createSchool(SchoolDto schoolDto) {

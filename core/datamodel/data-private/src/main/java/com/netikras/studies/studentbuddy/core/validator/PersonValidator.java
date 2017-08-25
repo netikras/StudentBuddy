@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.EXPECTATION_FAILED;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Component
 public class PersonValidator {
@@ -151,7 +152,7 @@ public class PersonValidator {
         return errors;
     }
 
-    private void compare(StudentsGroup groupFromDb, StudentsGroup suppliedGroup, ErrorsCollection errors) {
+    protected void compare(StudentsGroup groupFromDb, StudentsGroup suppliedGroup, ErrorsCollection errors) {
 
         String groupId = suppliedGroup.getId();
         String groupTitle = suppliedGroup.getTitle();
@@ -177,7 +178,7 @@ public class PersonValidator {
 
     }
 
-    private void compare(Person personFromDb, Person suppliedPerson, ErrorsCollection errors) {
+    protected void compare(Person personFromDb, Person suppliedPerson, ErrorsCollection errors) {
         String personId = suppliedPerson.getId();
         String personIdentifier = suppliedPerson.getIdentification();
         String personCode = suppliedPerson.getPersonalCode();
@@ -211,7 +212,7 @@ public class PersonValidator {
     }
 
     @Transactional
-    public StudentsGroup fetchGroup(StudentsGroup group) {
+    protected StudentsGroup fetchGroup(StudentsGroup group) {
         if (group == null) return group;
         StudentsGroup fetchedGroup = null;
 
@@ -228,22 +229,22 @@ public class PersonValidator {
     }
 
     @Transactional
-    public Person fetchPerson(Person person) {
+    protected Person fetchPerson(Person person) {
         Person fetchedPerson = null;
 
         if (person == null) {
-            return person;
+            return fetchedPerson;
         }
 
         String personId = person.getId();
         String personIdentifier = person.getIdentification();
         String personCode = person.getPersonalCode();
 
-        if (personId != null && !personId.isEmpty()) {
+        if (!isNullOrEmpty(personId)) {
             fetchedPerson = personDao.findOne(personId);
-        } else if (personIdentifier != null && !personIdentifier.isEmpty()) {
+        } else if (!isNullOrEmpty(personIdentifier)) {
             fetchedPerson = personDao.findByIdentification(personIdentifier);
-        } else if (personCode != null && !personCode.isEmpty()) {
+        } else if (!isNullOrEmpty(personCode)) {
             fetchedPerson = personDao.findByPersonalCode(personCode);
         }
 

@@ -69,4 +69,6 @@ public interface SchoolService {
     List<PersonnelMember> searchAllPersonnelByPersonalCode(String code);
 
     List<PersonnelMember> getAllPersonnelBySchool(String schoolId);
+
+    List<Discipline> getAllDisciplinesBySchoolId(String id);
 }

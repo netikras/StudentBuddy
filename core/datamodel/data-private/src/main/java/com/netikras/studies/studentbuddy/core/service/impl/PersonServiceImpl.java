@@ -5,6 +5,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
+import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +16,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 
@@ -21,6 +25,8 @@ public class PersonServiceImpl implements PersonService {
 
     @Resource
     private PersonDao personDao;
+    @Resource
+    private PersonValidator personValidator;
 
     @Override
     public Person findPerson(String id) {
@@ -80,33 +86,13 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person createPerson(Person person) {
-        List<Person> existing = new ArrayList<>();
-        Person existingPerson = null;
-
-        if (person.getId() != null) {
-            existingPerson = personDao.findOne(person.getId());
-            if (existingPerson != null) existing.add(existingPerson);
-        }
-
-        if (person.getIdentification() != null) {
-            existingPerson = personDao.findByIdentification(person.getIdentification());
-            if (existingPerson != null) existing.add(existingPerson);
-        }
-
-        if (person.getPersonalCode() != null) {
-            existingPerson = personDao.findByPersonalCode(person.getPersonalCode());
-            if (existingPerson != null) existing.add(existingPerson);
-        }
-
-        if (!existing.isEmpty()) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Unable to create a new person")
-                    .setMessage2("People with "+existing.size()+" criteria out of given already exist")
-                    .setProbableCause(
-                            "id=" + person.getId()
-                                    + ", identification=" + person.getIdentification()
-                                    + ", code=" + person.getPersonalCode())
-                    .setStatusCode(CONFLICT)
+        ErrorsCollection errors = personValidator.validatePersonForCreation(person, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new person")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
                     ;
         }
 

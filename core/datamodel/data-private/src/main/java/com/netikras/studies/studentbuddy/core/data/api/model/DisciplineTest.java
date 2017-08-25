@@ -61,6 +61,10 @@ public class DisciplineTest {
     @ModelTransform
     private String description;
 
+    @Column(name = "exam")
+    @ModelTransform
+    private boolean exam = false;
+
 
     public String getId() {
         return id;
@@ -118,6 +122,14 @@ public class DisciplineTest {
         this.description = description;
     }
 
+    public boolean isExam() {
+        return exam;
+    }
+
+    public void setExam(boolean exam) {
+        this.exam = exam;
+    }
+
     @Override
     public String toString() {
         return "DisciplineTest{" +
@@ -128,6 +140,7 @@ public class DisciplineTest {
                 ", lecture=" + lecture +
                 ", discipline=" + discipline +
                 ", description='" + description + '\'' +
+                ", exam=" + exam +
                 '}';
     }
 }

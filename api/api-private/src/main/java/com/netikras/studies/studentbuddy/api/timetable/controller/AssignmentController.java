@@ -7,6 +7,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,7 +171,8 @@ public class AssignmentController {
     public AssignmentDto createAssignment(
             @RequestBody AssignmentDto dto
     ) {
-        Assignment assignment = ModelMapper.apply(new Assignment(), dto);
+        Assignment assignment = ModelMapper.apply(new Assignment(), dto, new MappingSettings().setForceUpdate(true));
+        if (assignment != null) assignment.setId(null);
         assignment = lectureService.createAssignment(assignment);
         dto = ModelMapper.transform(assignment, new AssignmentDto());
         return dto;

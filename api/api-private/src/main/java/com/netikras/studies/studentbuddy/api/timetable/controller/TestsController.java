@@ -58,9 +58,8 @@ public class TestsController {
     public DisciplineTestDto createTest(
             @RequestBody DisciplineTestDto disciplineTestDto
     ) {
-        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), disciplineTestDto);
-        test.setDiscipline(ModelMapper.apply(new Discipline(), disciplineTestDto.getDiscipline()));
-        test.setLecture(ModelMapper.apply(new Lecture(), disciplineTestDto.getLecture()));
+        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), disciplineTestDto, new MappingSettings().setForceUpdate(true));
+        if (test != null) test.setId(null);
         test = lectureService.createTest(test);
         disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
 
@@ -75,8 +74,8 @@ public class TestsController {
     @ResponseBody
     @Authorizable(resource = TEST, action = CREATE)
     public DisciplineTestDto createTest(
-        @PathVariable(name = "id") String dueLectureId,
-        @RequestBody String description
+            @PathVariable(name = "id") String dueLectureId,
+            @RequestBody String description
     ) {
         Lecture lecture = lectureService.findLecture(dueLectureId);
 
@@ -132,7 +131,6 @@ public class TestsController {
 
         return disciplineTestDto;
     }
-
 
 
     @RequestMapping(
@@ -223,14 +221,13 @@ public class TestsController {
     }
 
 
-
     @RequestMapping(
             value = TESTS_URL_SEARCH_ALL_BY_DESCRIPTION,
             method = RequestMethod.GET
     )
     @ResponseBody
     @Authorizable(resource = TEST, action = SEARCH)
-    public List<DisciplineTestDto> searchAllTestsByDescriotion(
+    public List<DisciplineTestDto> searchAllTestsByDescription(
             @PathVariable(name = "descr") String descriptionSubstring
     ) {
         List<DisciplineTest> tests = lectureService.searchAllTestsByDescription(descriptionSubstring);
@@ -239,7 +236,6 @@ public class TestsController {
 
         return testDtos;
     }
-
 
 
 }

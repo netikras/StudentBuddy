@@ -9,7 +9,9 @@ import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LocationService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,8 +58,10 @@ public class LocationController {
     )
     @ResponseBody
     @Authorizable(resource = BUILDING, action = Action.GET)
+    @Transactional
     public BuildingDto getBuilding(@PathVariable(name = "id") String id) {
         Building building = locationService.getBuilding(id);
+        if (building != null) building.getSections();
         BuildingDto dto = ModelMapper.transform(building, new BuildingDto());
         return dto;
     }
@@ -86,7 +90,8 @@ public class LocationController {
     public BuildingDto createBuilding(
             @RequestBody BuildingDto buildingDto
     ) {
-        Building building = ModelMapper.apply(new Building(), buildingDto);
+        Building building = ModelMapper.apply(new Building(), buildingDto, new MappingSettings().setForceUpdate(true));
+        if (building != null) building.setId(null);
         building = locationService.createBuilding(building);
         BuildingDto dto = ModelMapper.transform(building, new BuildingDto());
         return dto;
@@ -114,7 +119,6 @@ public class LocationController {
         List<BuildingDto> dtos = (List<BuildingDto>) ModelMapper.transformAll(rooms, BuildingDto.class);
         return dtos;
     }
-
 
 
     // building section
@@ -155,7 +159,8 @@ public class LocationController {
     public BuildingSectionDto createBuildingSection(
             @RequestBody BuildingSectionDto buildingSectionDto
     ) {
-        BuildingSection buildingSection = ModelMapper.apply(new BuildingSection(), buildingSectionDto);
+        BuildingSection buildingSection = ModelMapper.apply(new BuildingSection(), buildingSectionDto, new MappingSettings().setForceUpdate(true));
+        if (buildingSection != null) buildingSection.setId(null);
         buildingSection = locationService.createBuildingSection(buildingSection);
         BuildingSectionDto dto = ModelMapper.transform(buildingSection, new BuildingSectionDto());
         return dto;
@@ -223,7 +228,8 @@ public class LocationController {
     public AddressDto createAddress(
             @RequestBody AddressDto addressDto
     ) {
-        Address address = ModelMapper.apply(new Address(), addressDto);
+        Address address = ModelMapper.apply(new Address(), addressDto, new MappingSettings().setForceUpdate(true));
+        if (address != null) address.setId(null);
         address = locationService.createAddress(address);
         AddressDto dto = ModelMapper.transform(address, new AddressDto());
         return dto;

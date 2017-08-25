@@ -22,19 +22,32 @@ public class Address {
     private String id;
 
     @Column(name = "country", nullable = false)
+    @ModelTransform
     private String country;
 
     @Column(name = "city", nullable = false)
+    @ModelTransform
     private String city;
 
     @Column(name = "street", nullable = false)
+    @ModelTransform
     private String street;
 
     @Column(name = "number", nullable = false)
+    @ModelTransform(dtoFieldName = "buildingNo")
     private String buildingNumber;
 
     @Column(name = "postal_code")
+    @ModelTransform
     private String postalCode;
+
+    @Column(name = "longitude")
+    @ModelTransform
+    private String longitude;
+
+    @Column(name = "latitude")
+    @ModelTransform
+    private String latitude;
 
     public String getId() {
         return id;
@@ -84,6 +97,22 @@ public class Address {
         this.postalCode = postalCode;
     }
 
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
     @Override
     public String toString() {
         return "Address{" +
@@ -93,6 +122,8 @@ public class Address {
                 ", street='" + street + '\'' +
                 ", buildingNumber='" + buildingNumber + '\'' +
                 ", postalCode='" + postalCode + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", latitude='" + latitude + '\'' +
                 '}';
     }
 }

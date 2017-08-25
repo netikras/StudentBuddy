@@ -7,11 +7,16 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.studies.studentbuddy.core.validator.LectureValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
+import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class LectureServiceImpl implements LectureService {
@@ -24,6 +29,9 @@ public class LectureServiceImpl implements LectureService {
 
     @Resource
     private AssignmentDao assignmentDao;
+
+    @Resource
+    private LectureValidator lectureValidator;
 
 
     @Override
@@ -92,6 +100,15 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Lecture createLecture(Lecture lecture) {
+        ErrorsCollection errors = lectureValidator.validateForCreation(lecture, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new lecture")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return lectureDao.save(lecture);
     }
 
@@ -136,6 +153,15 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public DisciplineTest createTest(DisciplineTest test) {
+        ErrorsCollection errors = lectureValidator.validateForCreation(test, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new test")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return disciplineTestDao.save(test);
     }
 
@@ -191,6 +217,15 @@ public class LectureServiceImpl implements LectureService {
 
     @Override
     public Assignment createAssignment(Assignment assignment) {
+        ErrorsCollection errors = lectureValidator.validateForCreation(assignment, null);
+        if (!errors.isEmpty()) {
+            throw new FriendlyUncheckedException()
+                    .setMessage1("Cannot create new assignment")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return assignmentDao.save(assignment);
     }
 

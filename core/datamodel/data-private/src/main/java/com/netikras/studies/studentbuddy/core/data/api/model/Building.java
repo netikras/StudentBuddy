@@ -2,6 +2,8 @@ package com.netikras.studies.studentbuddy.core.data.api.model;
 
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -56,14 +58,19 @@ public class Building {
     @ModelTransform
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private SchoolDepartment department;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "building")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "building")
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSections")
+    @Fetch(value = FetchMode.SUBSELECT)
     private List<BuildingSection> sections;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "building")
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "floors")
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<BuildingFloor> floors;
 
     public String getId() {
         return id;
@@ -71,6 +78,22 @@ public class Building {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public Address getAddress() {
@@ -105,14 +128,25 @@ public class Building {
         this.sections = sections;
     }
 
+    public List<BuildingFloor> getFloors() {
+        return floors;
+    }
+
+    public void setFloors(List<BuildingFloor> floors) {
+        this.floors = floors;
+    }
+
     @Override
     public String toString() {
         return "Building{" +
                 "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
                 ", address=" + address +
                 ", title='" + title + '\'' +
                 ", department=" + department +
                 ", sections=" + sections +
+                ", floors=" + floors +
                 '}';
     }
 }

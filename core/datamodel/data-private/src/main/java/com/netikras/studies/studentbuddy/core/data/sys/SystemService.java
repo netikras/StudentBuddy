@@ -281,11 +281,11 @@ public class SystemService {
         if (resourceId == null || resourceId.isEmpty()) return permissions;
         if (permissionsForResource == null || permissionsForResource.isEmpty()) return permissions;
 
-        List<RolePermissions> storedPermissions = permissionsForResource.get(resourceId);
-        if (storedPermissions == null || storedPermissions.isEmpty()) return permissions;
+        List<RolePermissions> livePermissions = permissionsForResource.get(resourceId);
+        if (livePermissions == null || livePermissions.isEmpty()) return permissions;
 
         if (action != null && !action.isEmpty()) {
-            for (RolePermissions permission : storedPermissions) {
+            for (RolePermissions permission : livePermissions) {
                 for (ResourceActionLink actionLink : permission.getResourceActions()) {
                     if (actionLink.getAction().name().equals(action)) {
                         permissions.add(permission);
@@ -294,7 +294,7 @@ public class SystemService {
 
             }
         } else {
-            permissions = new ArrayList<>(storedPermissions);
+            permissions = new ArrayList<>(livePermissions);
         }
 
         return permissions;

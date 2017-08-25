@@ -209,7 +209,7 @@ public class StudentServiceImpl implements StudentService {
         LectureGuest guest = new LectureGuest();
         guest.setLecture(lecture);
         guest.setPerson(person);
-        return lectureGuestDao.save(guest);
+        return createLectureGuest(guest);
     }
 
     @Override

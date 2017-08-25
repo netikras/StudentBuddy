@@ -9,6 +9,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.FloorService;
+import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,7 +46,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Resource.ROOM;
 @RequestMapping(value = BASE_URL)
 public class FloorController {
 
-    
+
     @Resource
     private FloorService floorService;
 
@@ -90,7 +91,8 @@ public class FloorController {
     public BuildingFloorDto createBuildingFloor(
             @RequestBody BuildingFloorDto buildingFloorDto
     ) {
-        BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto);
+        BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto, new MappingSettings().setForceUpdate(true));
+        if (buildingFloor != null) buildingFloor.setId(null);
         buildingFloor = floorService.createFloor(buildingFloor);
         BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
@@ -118,7 +120,6 @@ public class FloorController {
         List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) ModelMapper.transformAll(buildingFloors, BuildingFloorDto.class);
         return dtos;
     }
-
 
 
     // room
@@ -159,7 +160,8 @@ public class FloorController {
     public LectureRoomDto createLectureRoom(
             @RequestBody LectureRoomDto lectureRoomDto
     ) {
-        LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto);
+        LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto, new MappingSettings().setForceUpdate(true));
+        if (lectureRoom != null) lectureRoom.setId(null);
         lectureRoom = floorService.createRoom(lectureRoom);
         LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
@@ -203,7 +205,6 @@ public class FloorController {
     }
 
 
-
     // layout
 
     @RequestMapping(
@@ -244,7 +245,8 @@ public class FloorController {
     public FloorLayoutDto createFloorLayout(
             @RequestBody FloorLayoutDto floorLayoutDto
     ) {
-        FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto);
+        FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto, new MappingSettings().setForceUpdate(true));
+        if (floorLayout != null) floorLayout.setId(null);
         floorLayout = floorService.createFloorLayout(floorLayout);
         FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;

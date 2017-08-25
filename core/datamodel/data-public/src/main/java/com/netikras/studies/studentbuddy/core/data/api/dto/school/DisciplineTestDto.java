@@ -9,6 +9,7 @@ public class DisciplineTestDto {
     private Date startsOn;
     private LectureDto lecture;
     private DisciplineDto discipline;
+    private boolean exam;
 
     public String getId() {
         return id;
@@ -50,6 +51,14 @@ public class DisciplineTestDto {
         this.discipline = discipline;
     }
 
+    public boolean isExam() {
+        return exam;
+    }
+
+    public void setExam(boolean exam) {
+        this.exam = exam;
+    }
+
     @Override
     public String toString() {
         return "DisciplineTestDto{" +
@@ -58,6 +67,7 @@ public class DisciplineTestDto {
                 ", startsOn=" + startsOn +
                 ", lecture=" + lecture +
                 ", discipline=" + discipline +
+                ", exam=" + exam +
                 '}';
     }
 }
