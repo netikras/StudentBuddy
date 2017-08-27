@@ -190,6 +190,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected FloorLayoutDto buildFloorLayout() {
         FloorLayoutDto layoutDto = new FloorLayoutDto();
         layoutDto.setActive(true);
+        layoutDto.setFloorMap(new byte[]{1, 0, 1, 4, 3, 84});
         return layoutDto;
     }
 
@@ -240,11 +241,12 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         return lectureDto;
     }
 
-    protected LectureDto buildLecture(DisciplineDto disciplineDto, StudentsGroupDto groupDto, LectureRoomDto roomDto) {
+    protected LectureDto buildLecture(DisciplineDto disciplineDto, StudentsGroupDto groupDto, LectureRoomDto roomDto, LecturerDto lecturerDto) {
         LectureDto lectureDto = buildLecture();
         lectureDto.setRoom(roomDto);
         lectureDto.setStudentsGroup(groupDto);
         lectureDto.setDiscipline(disciplineDto);
+        lectureDto.setLecturer(lecturerDto);
 
         return lectureDto;
     }
@@ -342,7 +344,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         SchoolDto schoolDto = null;
         List<SchoolDto> schools = schoolConsumer.searchAllSchoolsByTitle(dummySchool.getTitle());
 
-        if (schools != null && ! schools.isEmpty()) {
+        if (schools != null && !schools.isEmpty()) {
             schools.forEach(dto -> schoolConsumer.deletetSchoolById(dto.getId()));
         }
 
@@ -405,7 +407,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         DisciplineDto disciplineDto = null;
 
         List<DisciplineDto> disciplineDtos = schoolConsumer.searchAllDisciplinesByTitle(dummyDiscipline.getTitle());
-        if (disciplineDtos != null && ! disciplineDtos.isEmpty()) {
+        if (disciplineDtos != null && !disciplineDtos.isEmpty()) {
             disciplineDtos.forEach(dto -> schoolConsumer.deleteDisciplineById(dto.getId()));
         }
 
@@ -441,23 +443,40 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
         StudentsGroupDto groupDto = getNewGroupForTesting();
 
-        List<BuildingDto> buildingDtos = locationConsumer.searchAllBuildingsByTitle(buildBuilding().getTitle());
+        List<BuildingDto> buildingDtos = locationConsumer.searchAllBuildingsByTitle("^" + buildBuilding().getTitle() + "$");
 
         LectureRoomDto roomDto = null;
 //        roomDto = schoolDto.getDepartments().get(0).getBuildings().get(0).getBuildingSections().get(0).getFloors().get(0).getLectureRooms().get(0);
+        BuildingFloorDto floorDto =
+                floorConsumer.getFloorById(buildingDtos.get(0).getBuildingSections().get(0).getFloors().get(0).getId());
 
-        LectureDto dummyLecture = buildLecture(disciplineDto, groupDto, roomDto);
+        roomDto = floorDto.getLectureRooms().get(0);
+        LecturerDto lecturerDto = buildLecturer(getPersonForTesting(), disciplineDto);
+        lecturerDto = adminLecturerConsumer.createLecturer(lecturerDto);
+        assertNotNull("Newly created lecturer must be non-null", lecturerDto);
+        LectureDto dummyLecture = buildLecture(disciplineDto, groupDto, roomDto, lecturerDto);
         LectureDto lectureDto = null;
 
+        lectureDto = lecturesConsumer.create(dummyLecture);
+        assertNotNull("Newly created lecture should be non-null", lectureDto);
 
         return lectureDto;
     }
 
+    protected LectureGuestDto getNewGuestForTesting() {
+        LectureDto lectureDto = getNewLectureForTesting();
+        LectureGuestDto guestDto = buildGuest(lectureDto, getPersonForTesting());
+        // TODO implement methods in consumer
+        assertNotNull("Newly created guest must be non-null", guestDto);
+
+        return guestDto;
+    }
 
     @Test
     public void testGetters() {
         initSchoolAware();
         loginSystem();
+        System.out.println(getNewGuestForTesting());
         System.out.println(getNewLectureForTesting());
         System.out.println(getNewSchoolForTesting());
         System.out.println(getNewSchoolWithDepartmentForTesting());

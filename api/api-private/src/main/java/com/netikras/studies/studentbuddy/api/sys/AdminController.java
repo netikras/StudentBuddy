@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.sys;
 
 import com.netikras.studies.studentbuddy.api.constants.AdminConstants;
-import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
@@ -100,7 +100,7 @@ public class AdminController {
             @RequestBody SystemSettingDto settingDto
     ) {
         SystemSetting setting = ModelMapper.apply(new SystemSetting(), settingDto);
-        User creator = ThreadContext.current().getUser();
+        User creator = HttpThreadContext.current().getUser();
         setting.setModifiedBy(creator);
         setting = systemService.createSetting(setting);
         settingDto = ModelMapper.transform(setting, new SystemSettingDto());
@@ -116,7 +116,7 @@ public class AdminController {
             @RequestBody SystemSettingDto settingDto
     ) {
         SystemSetting setting = ModelMapper.apply(new SystemSetting(), settingDto);
-        User creator = ThreadContext.current().getUser();
+        User creator = HttpThreadContext.current().getUser();
         setting.setModifiedBy(creator);
         setting = systemService.updateSystemSetting(setting);
 

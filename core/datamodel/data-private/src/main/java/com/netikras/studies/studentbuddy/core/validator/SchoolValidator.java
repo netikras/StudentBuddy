@@ -68,7 +68,6 @@ public class SchoolValidator {
             );
         }
 
-        school.setDepartments(null);
         school.setId(null);
         return errors;
     }
@@ -105,7 +104,6 @@ public class SchoolValidator {
             );
         }
 
-        department.setBuildings(null);
         department.setId(null);
         return errors;
     }
@@ -234,8 +232,6 @@ public class SchoolValidator {
         }
 
 
-        discipline.setLectures(null);
-        discipline.setLecturers(null);
         discipline.setId(null);
         return errors;
     }

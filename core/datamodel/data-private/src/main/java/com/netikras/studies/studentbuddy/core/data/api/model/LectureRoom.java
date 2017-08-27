@@ -57,7 +57,7 @@ public class LectureRoom {
     @ModelTransform
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "school_id")
     @ModelTransform(dtoUpdatable = false)
     private School school;
@@ -66,7 +66,7 @@ public class LectureRoom {
     @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "floor_id")
     @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;
@@ -78,6 +78,22 @@ public class LectureRoom {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public String getNumber() {
@@ -124,6 +140,8 @@ public class LectureRoom {
     public String toString() {
         return "LectureRoom{" +
                 "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
                 ", number='" + number + '\'' +
                 ", title='" + title + '\'' +
                 ", school=" + school +

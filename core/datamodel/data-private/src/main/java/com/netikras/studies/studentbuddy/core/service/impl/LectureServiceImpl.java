@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.AssignmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineTestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
@@ -9,7 +10,6 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.validator.LectureValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -102,7 +102,7 @@ public class LectureServiceImpl implements LectureService {
     public Lecture createLecture(Lecture lecture) {
         ErrorsCollection errors = lectureValidator.validateForCreation(lecture, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new lecture")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)
@@ -149,13 +149,11 @@ public class LectureServiceImpl implements LectureService {
     }
 
 
-
-
     @Override
     public DisciplineTest createTest(DisciplineTest test) {
         ErrorsCollection errors = lectureValidator.validateForCreation(test, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new test")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)
@@ -219,7 +217,7 @@ public class LectureServiceImpl implements LectureService {
     public Assignment createAssignment(Assignment assignment) {
         ErrorsCollection errors = lectureValidator.validateForCreation(assignment, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new assignment")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)

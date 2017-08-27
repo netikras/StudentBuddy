@@ -74,6 +74,7 @@ public class Lecture {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "lecturer_id")
+    @ModelTransform
     private Lecturer lecturer;
 
     @ManyToOne(fetch = FetchType.EAGER)

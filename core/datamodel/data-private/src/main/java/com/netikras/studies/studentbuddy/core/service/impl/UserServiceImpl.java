@@ -5,9 +5,9 @@ import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
-import com.netikras.studies.studentbuddy.core.meta.PasswordValidationResult;
-import com.netikras.studies.studentbuddy.core.meta.PasswordValidator;
 import com.netikras.studies.studentbuddy.core.service.UserService;
+import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import com.netikras.tools.common.security.IntegrityUtils;
@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -25,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private SystemService systemService;
+
+    @Resource
+    private SystemValidator systemValidator;
 
     @Override
     public User login(AuthenticationDetail auth) {
@@ -57,8 +63,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         if (user == null) return null;
+        ErrorsCollection errors = systemValidator.validatePassword(user.getPassword(), null);
+        user.setPasswordHash(hashPassword(user.getPassword()));
         if (user.getPasswordHash() != null) {
             user.setPasswordHash(user.getPasswordHash().toLowerCase());
+        }
+        errors = systemValidator.validateForCreation(user, errors);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create new user")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
         return userDao.save(user);
     }
@@ -106,21 +123,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void changePassword(String userId, String password) {
+        ErrorsCollection errors = systemValidator.validatePassword(password, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Unable to update password")
+                    .setMessage2("Password does not mee requirements: " + errors.size())
+                    .setStatusCode(HttpStatus.BAD_REQUEST);
+        }
+
         User user = userDao.findOne(userId);
         user.setPasswordHash(hashPassword(password));
         userDao.save(user);
     }
 
-    public PasswordValidationResult validatePassword(String password) {
-        PasswordValidator validator = new PasswordValidator();
-        validator.setRequirements(systemService.getPasswordRequirements());
-
-        PasswordValidationResult result = validator.validate(password);
-
-        return result;
-    }
-
     public String hashPassword(String password) {
+        if (isNullOrEmpty(password)) {
+            return null;
+        }
         byte[] raw = IntegrityUtils.sha256sum(password.getBytes());
         password = IntegrityUtils.bytesToHexString(raw).toLowerCase();
         System.out.println("pwhash=" + password);

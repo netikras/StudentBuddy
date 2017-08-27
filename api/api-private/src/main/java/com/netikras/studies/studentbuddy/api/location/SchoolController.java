@@ -98,6 +98,7 @@ public class SchoolController {
     )
     @ResponseBody
     @Authorizable(resource = SCHOOL, action = CREATE)
+    @Transactional
     public SchoolDto createSchool(
             @RequestBody SchoolDto schoolDto
     ) {

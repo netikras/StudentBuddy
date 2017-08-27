@@ -61,7 +61,7 @@ public class AuthorizationFilter implements Filter {
                     ;
         }
 
-        ThreadContext requestContext = ThreadContext.current();
+        HttpThreadContext requestContext = HttpThreadContext.current();
 
         requestContext.setRequest((HttpServletRequest) request);
         requestContext.setResponse((HttpServletResponse) response);
@@ -102,7 +102,7 @@ public class AuthorizationFilter implements Filter {
         return request.getRequestURI().equals(loginUrl);
     }
 
-    public void redirectToLogin(ThreadContext context) {
+    public void redirectToLogin(HttpThreadContext context) {
         HttpServletResponse response = context.getResponse();
         try {
             response.sendRedirect(loginUrl);

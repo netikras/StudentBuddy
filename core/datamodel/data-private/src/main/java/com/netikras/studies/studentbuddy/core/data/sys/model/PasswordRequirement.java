@@ -74,8 +74,11 @@ public class PasswordRequirement {
         if (!enabled) return true;
 
         if (!hasWhitelist() && !hasBlacklist()) {
-            if (symbols.length < countMin || symbols.length > countMax) {
+            if (countMin >= 0 && symbols.length < countMin) {
                 // password length validation failed
+                return false;
+            }
+            if (countMax >= 0 && symbols.length > countMax) {
                 return false;
             }
         } else {

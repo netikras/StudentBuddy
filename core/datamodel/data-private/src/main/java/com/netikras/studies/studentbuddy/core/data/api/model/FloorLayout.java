@@ -44,7 +44,7 @@ public class FloorLayout {
     @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "floor_id")
     @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;
@@ -55,8 +55,10 @@ public class FloorLayout {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @ModelTransform(dtoUpdatable = false, transformer = BlobToBytesTransformer.class)
-    private Blob floorMap;
+    //@ModelTransform(dtoUpdatable = false, transformer = BlobToBytesTransformer.class)
+//    private Blob floorMap;
+    @ModelTransform(dtoUpdatable = false)
+    private byte[] floorMap;
 
 
     public String getId() {
@@ -65,6 +67,22 @@ public class FloorLayout {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
     public BuildingFloor getFloor() {
@@ -83,11 +101,11 @@ public class FloorLayout {
         this.active = active;
     }
 
-    public Blob getFloorMap() {
+    public byte[] getFloorMap() {
         return floorMap;
     }
 
-    public void setFloorMap(Blob floorMap) {
+    public void setFloorMap(byte[] floorMap) {
         this.floorMap = floorMap;
     }
 
@@ -95,9 +113,10 @@ public class FloorLayout {
     public String toString() {
         return "FloorLayout{" +
                 "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
                 ", floor=" + floor +
                 ", active=" + active +
-                ", floorMap=" + floorMap +
                 '}';
     }
 }

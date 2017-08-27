@@ -13,6 +13,7 @@ public class UserDto {
     private Date updatedOn;
     private List<String> roles;
     private PersonDto person;
+    private String password;
 
     public String getId() {
         return id;
@@ -60,6 +61,14 @@ public class UserDto {
 
     public void setPerson(PersonDto person) {
         this.person = person;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

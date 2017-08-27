@@ -1,6 +1,6 @@
 package com.netikras.studies.studentbuddy.api.aop.advices;
 
-import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
@@ -43,7 +43,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
 
         Object result = null;
 
-        User user = ThreadContext.current().getUser();
+        User user = HttpThreadContext.current().getUser();
 
         logger.debug("User {} attempting to perform action {} on resource {}",
                 user == null ? null : user.getName(), authorizable.action(), authorizable.resource());

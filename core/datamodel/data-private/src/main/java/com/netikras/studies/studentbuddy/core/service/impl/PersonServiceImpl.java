@@ -7,17 +7,13 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
 import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
-import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
-import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 
 @Service
@@ -88,7 +84,7 @@ public class PersonServiceImpl implements PersonService {
     public Person createPerson(Person person) {
         ErrorsCollection errors = personValidator.validatePersonForCreation(person, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new person")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)

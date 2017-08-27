@@ -35,7 +35,6 @@ public class StudentServiceImpl implements StudentService {
     private PersonValidator personValidator;
 
 
-
     @Override
     @Transactional
     public Student getStudentByPerson(String personId) {

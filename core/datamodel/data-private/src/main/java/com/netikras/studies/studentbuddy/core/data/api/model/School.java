@@ -49,7 +49,7 @@ public class School {
     @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
     private String title;
 
-    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ModelTransform(dtoFieldName = "departments", dtoUpdatable = false)
     private List<SchoolDepartment> departments;
 

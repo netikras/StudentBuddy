@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
 import com.netikras.tools.common.model.mapper.ModelTransform;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.CascadeType;
@@ -37,21 +39,23 @@ public class BuildingFloor {
     @ModelTransform
     private String title;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_sec_id")
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSection")
     private BuildingSection section;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "building_id")
     @ModelTransform(dtoUpdatable = false)
     private Building building;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "floor", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "floor", orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false)
     private List<FloorLayout> layouts;
 
-    @OneToMany(mappedBy = "floor", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "floor", orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "lectureRooms")
     private List<LectureRoom> rooms;
 

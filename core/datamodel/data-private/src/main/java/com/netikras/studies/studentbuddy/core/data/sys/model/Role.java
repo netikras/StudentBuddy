@@ -31,7 +31,7 @@ public class Role {
     @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "user", unique = true, nullable = false)
     @ModelTransform(dtoFieldName = "name", dtoUpdatable = false)
     private String name;
 

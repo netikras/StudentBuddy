@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.filters;
 
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.tools.common.security.ThreadContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,10 +9,10 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ThreadContext {
+public class HttpThreadContext extends ThreadContext {
 
 
-    public ThreadContext() {
+    public HttpThreadContext() {
         extras = new HashMap<>();
     }
 
@@ -25,18 +26,19 @@ public class ThreadContext {
 
     private Map<Object, Object> extras;
 
-    private static ThreadLocal<ThreadContext> context = null;
+    private static ThreadLocal<HttpThreadContext> context = null;
 
-    public static ThreadContext current() {
+    public static HttpThreadContext current() {
         if (context == null) {
             context = new ThreadLocal<>();
         }
         if (context.get() == null) {
-            context.set(new ThreadContext());
+            context.set(new HttpThreadContext());
         }
         return context.get();
     }
 
+    @Override
     public void clear(boolean withExtras) {
         setSession(null);
         setRequest(null);
@@ -151,8 +153,23 @@ public class ThreadContext {
     }
 
     @Override
+    public Object getValue(Object key) {
+        return getExtras().get(key);
+    }
+
+    @Override
+    public void removeValue(Object key) {
+        getExtras().remove(key);
+    }
+
+    @Override
+    public void addValue(Object key, Object value) {
+        getExtras().put(key, value);
+    }
+
+    @Override
     public String toString() {
-        return "ThreadContext{" +
+        return "HttpThreadContext{" +
                 "request=" + request +
                 ", response=" + response +
                 ", session=" + session +

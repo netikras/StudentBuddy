@@ -41,6 +41,9 @@ public class LocationValidator {
     @Resource
     private FloorDao floorDao;
 
+    @Resource
+    private EntityProvider entityProvider;
+
 
     @Transactional
     public ErrorsCollection validateForCreation(Building building, ErrorsCollection errors) {
@@ -69,7 +72,7 @@ public class LocationValidator {
             if (isNullOrEmpty(department.getId())) {
                 building.setDepartment(null);
             } else {
-                department = schoolDepartmentDao.getOne(department.getId());
+                department = entityProvider.fetch(department);
                 building.setDepartment(department);
                 if (department == null) {
                     errors.add(new ValidationError()
@@ -89,13 +92,37 @@ public class LocationValidator {
                     .setStatus(CONFLICT.getCode())
             );
         }
-        building.setFloors(null);
-        building.setId(null);
 
+        building.setId(null);
         return errors;
     }
 
+    @Transactional
+    public ErrorsCollection validateForUpdate(Building building, ErrorsCollection errors) {
+        errors = ensure(errors);
 
+        if (building == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot update a non-existing building")
+                    .setMessage1("Building is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        Building existing = entityProvider.fetch(building);
+        if (existing == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Building for update does not refer to any already existing building record")
+                    .setMessage1("Building is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        } else {
+            entityProvider.prepForUpdate(existing, building);
+        }
+
+        return errors;
+    }
 
     @Transactional
     public ErrorsCollection validateForCreation(BuildingSection section, ErrorsCollection errors) {
@@ -136,7 +163,6 @@ public class LocationValidator {
             }
         }
 
-        section.setFloors(null);
         section.setId(null);
         return errors;
     }
@@ -218,8 +244,6 @@ public class LocationValidator {
         }
 
         floor.setId(null);
-        floor.setRooms(null);
-
         return errors;
     }
 
@@ -317,9 +341,6 @@ public class LocationValidator {
         }
 
         room.setId(null);
-        room.setComments(null);
-        room.setSchool(null);
-
         return errors;
     }
 

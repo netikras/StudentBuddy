@@ -1,7 +1,6 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
-import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineLecturer;
@@ -10,7 +9,6 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
-import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

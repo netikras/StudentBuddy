@@ -1,21 +1,26 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.AddressDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.BuildingDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.BuildingSectionDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
+import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
+import com.netikras.studies.studentbuddy.core.service.FloorService;
 import com.netikras.studies.studentbuddy.core.service.LocationService;
 import com.netikras.studies.studentbuddy.core.validator.LocationValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
-import com.netikras.tools.common.exception.FriendlyUncheckedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -33,6 +38,8 @@ public class LocationServiceImpl implements LocationService {
     @Resource
     private LocationValidator locationValidator;
 
+    @Resource
+    private FloorService floorService;
 
 
     @Override
@@ -42,21 +49,78 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Building updateBuilding(Building building) {
-        return buildingDao.save(building);
-    }
-
-    @Override
-    public Building createBuilding(Building building) {
-        ErrorsCollection errors = locationValidator.validateForCreation(building, null);
+        ErrorsCollection errors = locationValidator.validateForUpdate(building, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
-                    .setMessage1("Cannot create new building")
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot update building")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)
                     .setStatusCode(BAD_REQUEST)
                     ;
         }
         return buildingDao.save(building);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Building createBuilding(Building building) {
+
+        List<BuildingFloor> floors = building.getFloors();
+        building.setFloors(null);
+
+        List<BuildingSection> sections = building.getSections();
+        building.setSections(null);
+
+        ErrorsCollection errors = locationValidator.validateForCreation(building, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create new building")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
+        Address address = building.getAddress();
+        if (address != null) {
+            address = createAddress(address);
+            building.setAddress(address);
+        }
+
+        building = buildingDao.save(building);
+
+        if (!isNullOrEmpty(floors)) {
+            List<BuildingFloor> createdFloors = new ArrayList<>();
+            for (BuildingFloor floor : floors) {
+                floor.setBuilding(building);
+                floor = floorService.createFloor(floor);
+                if (floor != null) {
+                    createdFloors.add(floor);
+                }
+            }
+            building.setFloors(createdFloors);
+        }
+
+        if (!isNullOrEmpty(sections)) {
+            List<BuildingSection> createdSections = new ArrayList<>();
+            for (BuildingSection section : sections) {
+                section.setBuilding(building);
+                if (!isNullOrEmpty(section.getFloors())) {
+                    for (BuildingFloor floor : section.getFloors()) {
+                        floor.setBuilding(building);
+                    }
+                }
+                section = createBuildingSection(section);
+                if (section != null) {
+                    createdSections.add(section);
+                }
+            }
+            building.setSections(createdSections);
+        }
+
+        building = buildingDao.findOne(building.getId());
+
+        return building;
     }
 
     @Override
@@ -75,17 +139,33 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public BuildingSection createBuildingSection(BuildingSection buildingSection) {
+        List<BuildingFloor> floors = buildingSection.getFloors();
+        buildingSection.setFloors(null);
+
         ErrorsCollection errors = locationValidator.validateForCreation(buildingSection, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new building section")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)
                     .setStatusCode(BAD_REQUEST)
                     ;
         }
-        return buildingSectionDao.save(buildingSection);
+
+        buildingSection = buildingSectionDao.save(buildingSection);
+
+        if (!isNullOrEmpty(floors)) {
+            for (BuildingFloor floor : floors) {
+                floor.setSection(buildingSection);
+                floorService.createFloor(floor);
+            }
+        }
+
+        buildingSection = buildingSectionDao.findOne(buildingSection.getId());
+
+        return buildingSection;
     }
 
     @Override
@@ -107,7 +187,7 @@ public class LocationServiceImpl implements LocationService {
     public Address createAddress(Address address) {
         ErrorsCollection errors = locationValidator.validateForCreation(address, null);
         if (!errors.isEmpty()) {
-            throw new FriendlyUncheckedException()
+            throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new address")
                     .setMessage2("Validation errors: " + errors.size())
                     .setErrors(errors)

@@ -130,15 +130,16 @@ public class MapsController {
 
 
     private void writeOutBuildingFloorMap(BuildingFloor floor, HttpServletResponse response) {
-        try {
-            InputStream mapInputStream = floor.getLayouts().get(0).getFloorMap().getBinaryStream();
-            IoUtils.copy(mapInputStream, response.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-            // todo throw custom exc
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return;
+//        try {
+//            InputStream mapInputStream = floor.getLayouts().get(0).getFloorMap().getBinaryStream();
+//            IoUtils.copy(mapInputStream, response.getOutputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // todo throw custom exc
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
 

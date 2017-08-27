@@ -18,6 +18,7 @@ public class LectureDto {
     private LectureRoomDto room;
     private StudentsGroupDto studentsGroup;
     private List<StudentDto> visitors;
+    private LecturerDto lecturer;
 
     public String getId() {
         return id;
@@ -99,6 +100,14 @@ public class LectureDto {
         this.visitors = visitors;
     }
 
+    public LecturerDto getLecturer() {
+        return lecturer;
+    }
+
+    public void setLecturer(LecturerDto lecturer) {
+        this.lecturer = lecturer;
+    }
+
     @Override
     public String toString() {
         return "LectureDto{" +
@@ -112,6 +121,7 @@ public class LectureDto {
                 ", room=" + room +
                 ", studentsGroup=" + studentsGroup +
                 ", visitors=" + visitors +
+                ", lecturer=" + lecturer +
                 '}';
     }
 }

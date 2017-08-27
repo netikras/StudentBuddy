@@ -18,6 +18,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -48,8 +49,16 @@ public class User {
     @ModelTransform(dtoFieldName = "name")
     private String name;
 
+    @Column(name = "alias", unique = true, nullable = false)
+    @ModelTransform(dtoFieldName = "alias")
+    private String alias;
+
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
+
+    @Transient
+    @ModelTransform(dtoUpdatable = false)
+    private String password;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
     @ModelTransform(dtoFieldName = "roles", dtoUpdatable = false, dtoValueExtractField = "name")
@@ -102,6 +111,14 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public List<UserRole> getRoles() {
         return roles;
     }
@@ -118,6 +135,14 @@ public class User {
         this.person = person;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -125,6 +150,7 @@ public class User {
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", name='" + name + '\'' +
+                ", alias='" + alias + '\'' +
                 ", passwordHash='" + passwordHash + '\'' +
                 ", roles=" + roles +
                 ", person=" + person +

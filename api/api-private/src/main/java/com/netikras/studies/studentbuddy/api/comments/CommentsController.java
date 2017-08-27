@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.comments;
 
 import com.netikras.studies.studentbuddy.api.constants.CommentConstants;
-import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.commons.model.PagedResults;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
@@ -12,7 +12,6 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
-import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_CREATE;
@@ -298,7 +296,7 @@ public class CommentsController {
             try {
                 com.netikras.studies.studentbuddy.core.meta.Resource resource =
                         com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(entity.toUpperCase());
-                user = ThreadContext.current().getUser();
+                user = HttpThreadContext.current().getUser();
                 allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
             } catch (IllegalArgumentException ilae) {
                 errors.add(new ValidationError().setMessage1("Cannot determine entity type for value " + entity));
@@ -327,7 +325,7 @@ public class CommentsController {
         }
 
         if (allowed) {
-            User currentUser = ThreadContext.current().getUser();
+            User currentUser = HttpThreadContext.current().getUser();
             if (currentUser != null && currentUser.getPerson() != null) {
                 Person currentPerson = currentUser.getPerson();
                 Person authorPerson = comment.getAuthor();

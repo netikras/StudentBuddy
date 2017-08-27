@@ -1,18 +1,21 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
+import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.CommentDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.TagDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.CommentTag;
-import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
+import com.netikras.studies.studentbuddy.core.validator.CommentValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
@@ -23,8 +26,9 @@ public class CommentsServiceImpl implements CommentsService {
     @Resource
     private TagDao tagDao;
 
+
     @Resource
-    private PersonDao personDao;
+    private CommentValidator commentValidator;
 
     @Override
     public Comment findComment(String id) {
@@ -49,30 +53,14 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @Transactional
     public Comment createComment(Comment comment) {
-        if (comment != null) {
-            Person author = personDao.findOne(comment.getAuthor().getId());
-
-            if (author == null) {
-                // either throw or create... up to implementation :)
-                // FIXME throw as Person shall not be created automatically
-                author = comment.getAuthor();
-                author.setId(null);
-                author = personDao.saveAndFlush(author);
-            }
-
-            List<CommentTag> commentTags = comment.getTags();
-            if (commentTags != null) {
-                for (CommentTag commentTag : commentTags) {
-                    commentTag.setComment(comment);
-                    Tag tag = tagDao.findByValue(commentTag.getTag().getValue());
-                    if (tag == null) {
-                        tag = commentTag.getTag();
-                        tag.setId(null);
-                        tag.setCreatedBy(author);
-                    }
-                    commentTag.setTag(tag);
-                }
-            }
+        ErrorsCollection errors = commentValidator.validateForCreation(comment, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create new comment")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
         return saveComment(comment);
     }
@@ -85,34 +73,16 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     @Transactional
     public void assignTag(String commentId, Tag tag) {
-        Comment comment = findComment(commentId);
-        if (comment == null) return;
+        Comment comment = commentDao.findOne(commentId);
+        ErrorsCollection errors = commentValidator.validateForAssignment(tag, comment, null);
 
-        Person author = comment.getAuthor();
-        Tag existingTag;
-
-        tag.setCreatedBy(null);
-        if (tag.getId() != null) {
-            existingTag = tagDao.findOne(tag.getId());
-            if (existingTag != null ) {
-                if (tag.getValue() == null // if only value has been supplied
-                        || tag.getValue().equals(existingTag.getValue())) { // OR a value matching existing tag's value
-                    tag = existingTag;
-                } else {
-                    tag.setId(null);
-                }
-            }
-        } else if (tag.getValue() != null) {
-            existingTag = tagDao.findByValue(tag.getValue());
-            if (existingTag != null) {
-                tag = existingTag;
-            } else {
-                tag.setId(null);
-            }
-        }
-
-        if (tag.getCreatedBy() == null) {
-            tag.setCreatedBy(author);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot assign tag to comment")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
 
         CommentTag commentTag = new CommentTag();

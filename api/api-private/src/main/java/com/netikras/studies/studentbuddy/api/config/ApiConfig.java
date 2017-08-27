@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.api.config;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.tools.common.properties.PropertiesAssistant;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -72,7 +73,9 @@ public class ApiConfig {
         lef.setPackagesToScan(datamodelPackages);
 
 
-        Properties props = new Properties();
+        Properties props;
+        props = PropertiesAssistant.getPrefixedProperties(propsw.props, "hibernate", false);
+
         props.setProperty("hibernate.dialect", propsw.getValue("hibernate.dialect", ""));
         props.setProperty("hibernate.hbm2ddl.auto", propsw.getValue("hibernate.hbm2ddl.auto", "validate"));
         props.setProperty("hibernate.hbm2ddl.import_files", propsw.getValue("hibernate.hbm2ddl.import_files", ""));
@@ -106,7 +109,6 @@ public class ApiConfig {
     public AuthorizationFilter authorizationFilter() {
         return new AuthorizationFilter();
     }
-
 
 
     class PropertiesWrapper {

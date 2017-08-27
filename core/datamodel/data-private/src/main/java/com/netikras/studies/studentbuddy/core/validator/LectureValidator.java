@@ -116,9 +116,9 @@ public class LectureValidator {
         }
 
         lecture.setLecturer(fetch(lecture.getLecturer()));
-        if (lecture.getDiscipline() == null) {
+        if (lecture.getLecturer() == null) {
             errors.add(new ValidationError()
-                    .setSuggestion("Lecture must be linked to an existing discipline")
+                    .setSuggestion("Lecture must be linked to an existing lecturer")
                     .setMessage1("Lecture lecturer missing")
                     .setStatus(NOT_FOUND.getCode())
             );

@@ -38,7 +38,7 @@ public class BuildingSection {
     @ModelTransform
     private String title;
 
-    @OneToMany(mappedBy = "section", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "section", fetch = FetchType.EAGER, orphanRemoval = true)
     @ModelTransform(dtoUpdatable = false)
     private List<BuildingFloor> floors;
 

@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user;
 
 import com.netikras.studies.studentbuddy.api.constants.UserConstants;
-import com.netikras.studies.studentbuddy.api.filters.ThreadContext;
+import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
@@ -64,7 +64,7 @@ public class UserController {
                     ;
         }
 
-        ThreadContext.current().setNewUser(user);
+        HttpThreadContext.current().setNewUser(user);
         return dto;
     }
 
@@ -73,7 +73,7 @@ public class UserController {
             method = RequestMethod.POST
     )
     public void logout() {
-        ThreadContext.current().removeUser();
+        HttpThreadContext.current().removeUser();
     }
 
 
