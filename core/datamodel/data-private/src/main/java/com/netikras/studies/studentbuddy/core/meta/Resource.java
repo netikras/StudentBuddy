@@ -26,6 +26,7 @@ public enum Resource {
     PERSONNEL,
     NOTIFICATION,
     SYSTEM,
+    ROLE_PERMISSIONS,
 
 
 }

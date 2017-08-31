@@ -193,6 +193,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteStudentsGroup(String groupId) {
+
+        StudentsGroup group = groupDao.findOne(groupId);
+        if (group != null) {
+
+        }
+
         groupDao.delete(groupId);
     }
 

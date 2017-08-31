@@ -11,6 +11,8 @@ public class UserConstants {
 
     public static final String USER_URL_LOGOUT = "/logout";
 
+    public static final String USER_URL_PERMISSIONS = "/permissions";
+
     public static final String USER_URL_UPDATE_BY_ID = "/id/{id}";
 
     public static final String USER_URL_CHANGE_PASSWORD = "/id/{id}/password";
@@ -52,6 +54,17 @@ public class UserConstants {
         return getBaseEndpoint()
                 .setMethodUrl(USER_URL_LOGOUT)
                 .setMethod(HttpRequest.HttpMethod.POST)
+                ;
+    }
+
+    /**
+     * {@value USER_URL_PERMISSIONS}<br/>
+     *  PARAM: userId
+     */
+    public static RemoteEndpoint endpointUserPermissions() {
+        return getBaseEndpoint()
+                .setMethodUrl(USER_URL_PERMISSIONS)
+                .setMethod(HttpRequest.HttpMethod.GET)
                 ;
     }
 

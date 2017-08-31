@@ -3,15 +3,21 @@ package com.netikras.studies.studentbuddy.api.user;
 import com.netikras.studies.studentbuddy.api.constants.UserConstants;
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.ResourceActionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionsDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
+import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +27,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.api.constants.UserConstants.USER_URL_PERMISSIONS;
+import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.meta.Resource.ROLE_PERMISSIONS;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @RestController
 @RequestMapping("/user")
@@ -33,6 +43,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private SystemService systemService;
 
 
     @RequestMapping(
@@ -76,6 +89,52 @@ public class UserController {
         HttpThreadContext.current().removeUser();
     }
 
+    @RequestMapping(
+            value = USER_URL_PERMISSIONS,
+            method = RequestMethod.GET
+    )
+    @ResponseBody
+    @Authorizable(resource = ROLE_PERMISSIONS, action = Action.GET)
+    @Transactional
+    public List<ResourceActionDto> getPermittedActions(
+            @RequestParam(name = "userId", required = false) String userId
+    ) {
+
+        User user = HttpThreadContext.current().getUser();
+
+        if (isNullOrEmpty(userId)) {
+            if (user != null) {
+                userId = user.getId();
+            }
+        } else {
+            if (!user.getId().equals(userId)) {
+                if (!systemService.isUserAllowedToPerformAction(user, ROLE_PERMISSIONS.name(), MODERATE.name())) {
+                    throw new StudBudUncheckedException()
+                            .setMessage1("Cannot get user's permissions")
+                            .setMessage2("Current user is not allowed to query other users' permissions")
+                            .setProbableCause(userId);
+                }
+            }
+        }
+
+        List<RolePermissions> rolePermissions = userService.getPermissions(userId);
+
+        List<RolePermissionsDto> permissions =
+                (List<RolePermissionsDto>) ModelMapper.transformAll(rolePermissions, RolePermissionsDto.class, new MappingSettings().setDepthMax(3));
+
+        List<ResourceActionDto> resourceActions = new ArrayList<>();
+        if (permissions != null) {
+            // Hide role-permission link from end user. Only reveal permissions.
+            for (RolePermissionsDto permission : permissions) {
+                List<ResourceActionDto> actionLinks = permission.getResourceActions();
+                if (isNullOrEmpty(actionLinks)) continue;
+                resourceActions.addAll(actionLinks);
+            }
+
+        }
+
+        return resourceActions;
+    }
 
     @RequestMapping(
             value = UserConstants.USER_URL_UPDATE_BY_ID,

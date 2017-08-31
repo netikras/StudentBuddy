@@ -46,13 +46,16 @@ public class RolePermissions {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "modified_by_id")
-    private User modifedBy;
+    @ModelTransform(dtoUpdatable = false)
+    private User modifiedBy;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "rolePermission")
+    @ModelTransform(dtoUpdatable = false)
     private List<ResourceActionLink> resourceActions;
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "role_id")
+    @ModelTransform(dtoUpdatable = false)
     private Role role;
 
     public String getId() {
@@ -79,12 +82,12 @@ public class RolePermissions {
         this.updatedOn = updatedOn;
     }
 
-    public User getModifedBy() {
-        return modifedBy;
+    public User getModifiedBy() {
+        return modifiedBy;
     }
 
-    public void setModifedBy(User modifedBy) {
-        this.modifedBy = modifedBy;
+    public void setModifiedBy(User modifiedBy) {
+        this.modifiedBy = modifiedBy;
     }
 
     public List<ResourceActionLink> getResourceActions() {
@@ -109,7 +112,7 @@ public class RolePermissions {
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
-                ", modifedBy=" + modifedBy +
+                ", modifiedBy=" + modifiedBy +
                 ", resourceActions=" + resourceActions +
                 ", role=" + role +
                 '}';

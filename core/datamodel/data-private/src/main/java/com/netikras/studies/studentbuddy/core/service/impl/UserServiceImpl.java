@@ -4,7 +4,9 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
+import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
@@ -103,6 +106,36 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUser(String id) {
         return userDao.findOne(id);
+    }
+
+    @Override
+    @Transactional
+    public List<RolePermissions> getPermissions(String userId) {
+        List<RolePermissions> permissions = new ArrayList<>();
+        if (isNullOrEmpty(userId)) {
+            return permissions;
+        }
+        User user = userDao.findOne(userId);
+        if (user == null) {
+            return permissions;
+        }
+
+
+        if (isNullOrEmpty(user.getRoles())) {
+            return permissions;
+        }
+
+        for (UserRole userRole : user.getRoles()) {
+            if (userRole == null || userRole.getRole() == null || isNullOrEmpty(userRole.getRole().getName())) {
+                continue;
+            }
+            List<RolePermissions> userRolePermissions = systemService.getPermissionsForRole(userRole.getRole().getName());
+            if (!isNullOrEmpty(userRolePermissions)) {
+                permissions.addAll(userRolePermissions);
+            }
+        }
+
+        return permissions;
     }
 
     @Override

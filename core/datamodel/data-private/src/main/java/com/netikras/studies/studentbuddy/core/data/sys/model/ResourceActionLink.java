@@ -41,10 +41,12 @@ public class ResourceActionLink {
 
     @Column(name = "resource")
     @Enumerated(EnumType.STRING)
+    @ModelTransform
     private Resource resource;
 
     @Column(name = "action")
     @Enumerated(EnumType.STRING)
+    @ModelTransform
     private Action action;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)

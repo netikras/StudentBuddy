@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.service;
 
+import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 
@@ -16,6 +17,9 @@ public interface UserService {
     void deleteUser(String id);
 
     User findUser(String id);
+
+    //    @Transactional
+    List<RolePermissions> getPermissions(String userId);
 
     User findUserByName(String name);
 

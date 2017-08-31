@@ -35,6 +35,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -466,10 +467,56 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected LectureGuestDto getNewGuestForTesting() {
         LectureDto lectureDto = getNewLectureForTesting();
         LectureGuestDto guestDto = buildGuest(lectureDto, getPersonForTesting());
-        // TODO implement methods in consumer
+        guestDto = adminStudentConsumer.createLectureGuest(guestDto);
+
         assertNotNull("Newly created guest must be non-null", guestDto);
 
         return guestDto;
+    }
+
+    protected void removeTestLecture(LectureDto lectureDto) {
+        lecturesConsumer.deleteById(lectureDto.getId());
+    }
+
+    protected void removeTestLecturer(LecturerDto lecturerDto) {
+        adminLecturerConsumer.deleteById(lecturerDto.getId());
+    }
+
+    protected void removeTestGuest(LectureGuestDto guestDto) {
+        adminStudentConsumer.deleteGuestById(guestDto.getId());
+    }
+
+    protected void deleteTestDiscipline(DisciplineDto disciplineDto) {
+        schoolConsumer.deleteDisciplineById(disciplineDto.getId());
+    }
+
+    protected void deleteTestSchool() {
+        SchoolDto dummySchool = buildSchool();
+        List<SchoolDto> schoolDtos = schoolConsumer.getAllSchools();
+        schoolDtos.forEach(dto -> {
+            if (dto.getTitle().equals(dummySchool.getTitle())) {
+                if (!isNullOrEmpty(dto.getDepartments())) {
+                    dto.getDepartments().forEach(this::deleteTestDepartment);
+
+                }
+                schoolConsumer.deletetSchoolById(dto.getId());
+            }
+        });
+    }
+
+    protected void deleteTestDepartment(SchoolDepartmentDto departmentDto) {
+        if (!isNullOrEmpty(departmentDto.getBuildings())) {
+            departmentDto.getBuildings().forEach(this::deleteTestBuilding);
+        }
+        schoolConsumer.deletetDepartmentById(departmentDto.getId());
+    }
+
+
+    protected void deleteTestBuilding(BuildingDto buildingDto) {
+        if (!isNullOrEmpty(buildingDto.getBuildingSections())) {
+
+        }
+
     }
 
     @Test
