@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthorizableActions {
 
-    @Pointcut("execution(public * com.netikras.studies.studentbuddy..*.*(..)) && @annotation(authorizable)")
+//    @Pointcut("execution(public * com.netikras.studies.studentbuddy..*.*(..)) && @annotation(authorizable)")
+    @Pointcut("execution(* com.netikras.studies.studentbuddy..*.*(..)) && @annotation(authorizable)")
     public void authorizableMethods(final Authorizable authorizable) {
 
     }

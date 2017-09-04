@@ -1,13 +1,12 @@
 package com.netikras.studies.studentbuddy.api.user;
 
-import com.netikras.studies.studentbuddy.api.constants.UserConstants;
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
+import com.netikras.studies.studentbuddy.api.user.generated.UserApiProducer;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.ResourceActionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionsDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
-import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.meta.Action;
@@ -18,28 +17,19 @@ import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.api.constants.UserConstants.USER_URL_PERMISSIONS;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ROLE_PERMISSIONS;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @RestController
-@RequestMapping("/user")
-public class UserController {
-
+public class UserProducer extends UserApiProducer {
 
     @Resource
     private UserService userService;
@@ -48,17 +38,44 @@ public class UserController {
     private SystemService systemService;
 
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_LOGIN,
-            method = RequestMethod.POST
-    )
-    @ResponseBody
-    public UserDto login(
-            @RequestParam(name = "username", required = false) String username,
-            @RequestParam(name = "password", required = false) String password,
-            @RequestBody(required = false) AuthenticationDetail auth
-    ) {
+    @Override
+    @Transactional
+    @Authorizable(resource = USER, action = Action.MODIFY)
+    protected UserDto onUpdateUserDto(UserDto item) {
+        User user = ModelMapper.apply(new User(), item);
+        user.setId(item.getId());
+        user = userService.updateUser(user);
 
+        item = ModelMapper.transform(user, new UserDto());
+
+        return item;
+    }
+
+    @Override
+    protected void onDeleteUserDto(String id) {
+        userService.deleteUser(id);
+    }
+
+    @Override
+    protected UserDto onCreateUserDto(UserDto item) {
+        User user = ModelMapper.apply(new User(), item, new MappingSettings().setForceUpdate(true));
+        user = userService.createUser(user);
+        item = ModelMapper.transform(user, new UserDto());
+        return item;
+    }
+
+    @Override
+    @Authorizable(resource = USER, action = Action.GET)
+    protected UserDto onRetrieveUserDto(String id) {
+        UserDto dto;
+        User user = userService.findUser(id);
+        dto = ModelMapper.transform(user, new UserDto());
+        return dto;
+    }
+
+
+    @Override
+    protected UserDto onLoginUserDto(String username, String password, AuthenticationDetail auth) {
         if (auth == null || auth.getUsername() == null || auth.getUsername().isEmpty()) {
             auth = new AuthenticationDetail();
             auth.setUsername(username);
@@ -81,25 +98,15 @@ public class UserController {
         return dto;
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_LOGOUT,
-            method = RequestMethod.POST
-    )
-    public void logout() {
+    @Override
+    protected void onLogoutUserDto() {
         HttpThreadContext.current().removeUser();
     }
 
-    @RequestMapping(
-            value = USER_URL_PERMISSIONS,
-            method = RequestMethod.GET
-    )
-    @ResponseBody
+    @Override
     @Authorizable(resource = ROLE_PERMISSIONS, action = Action.GET)
     @Transactional
-    public List<ResourceActionDto> getPermittedActions(
-            @RequestParam(name = "userId", required = false) String userId
-    ) {
-
+    protected List onGetPermittedActionsResourceActionDto(String userId) {
         User user = HttpThreadContext.current().getUser();
 
         if (isNullOrEmpty(userId)) {
@@ -136,121 +143,58 @@ public class UserController {
         return resourceActions;
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_UPDATE_BY_ID,
-            method = RequestMethod.PUT
-    )
+    @Override
     @Authorizable(resource = USER, action = Action.MODIFY)
-    public UserDto updateUser(
-            @PathVariable(name = "id") String userId,
-            @RequestBody UserDto userDto
-    ) {
-        userDto.setId(userId);
-        User user = ModelMapper.apply(new User(), userDto);
-        user.setId(userId);
-
-        user = userService.updateUser(user);
-
-        userDto = ModelMapper.transform(user, new UserDto());
-
-        return userDto;
-    }
-
-    @RequestMapping(
-            value = UserConstants.USER_URL_CHANGE_PASSWORD,
-            method = RequestMethod.PUT
-    )
-    @Authorizable(resource = USER, action = Action.MODIFY)
-    public void changePassword(
-            @PathVariable(name = "id") String userId,
-            @RequestParam(name = "password") String password
-    ) {
+    protected void onChangePasswordUserDto(String userId, String password) {
         userService.changePassword(userId, password);
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_GET_BY_ID,
-            method = RequestMethod.GET
-    )
+    @Override
     @Authorizable(resource = USER, action = Action.GET)
-    public UserDto getUser(
-            @PathVariable(name = "id") String userId
-    ) {
-        UserDto dto;
-        User user = userService.findUser(userId);
-        dto = ModelMapper.transform(user, new UserDto());
-        return dto;
-    }
-
-    @RequestMapping(
-            value = UserConstants.USER_URL_GET_BY_NAME,
-            method = RequestMethod.GET
-    )
-    @Authorizable(resource = USER, action = Action.GET)
-    public UserDto getUserByName(
-            @PathVariable(name = "name") String name
-    ) {
+    protected UserDto onGetByNameUserDto(String name) {
         UserDto dto;
         User user = userService.findUserByName(name);
         dto = ModelMapper.transform(user, new UserDto());
         return dto;
     }
 
-
-    @RequestMapping(
-            value = UserConstants.USER_URL_GET_USER_BY_PERSON_ID,
-            method = RequestMethod.GET
-    )
+    @Override
     @Authorizable(resource = USER, action = Action.GET)
-    public UserDto getUserByPerson(
-            @PathVariable(name = "id") String userId
-    ) {
+    protected UserDto onGetByPersonUserDto(String userId) {
         UserDto dto;
         User user = userService.findUserByPerson(userId);
         dto = ModelMapper.transform(user, new UserDto());
         return dto;
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_USERNAME,
-            method = RequestMethod.GET
-    )
+
+    // search
+
+    @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    public List<UserDto> searchAllUsersByUsername(
-            @PathVariable(name = "username") String query
-    ) {
+    protected List<UserDto> onSearchAllByUsernameUserDto(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByUsername(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_FIRST_NAME,
-            method = RequestMethod.GET
-    )
+    @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    public List<UserDto> searchAllUsersByFirstName(
-            @PathVariable(name = "fname") String query
-    ) {
+    protected List<UserDto> onSearchAllByFirstNameUserDto(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByFirstName(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
 
-    @RequestMapping(
-            value = UserConstants.USER_URL_SEARCH_ALL_USERS_BY_LAST_NAME,
-            method = RequestMethod.GET
-    )
+
+    @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    public List<UserDto> searchAllUsersByLastName(
-            @PathVariable(name = "lname") String query
-    ) {
+    protected List<UserDto> onSearchAllByLastNameUserDto(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByLastName(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
-
 }

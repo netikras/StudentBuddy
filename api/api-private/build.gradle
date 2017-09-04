@@ -11,6 +11,9 @@ loadProj ':core:datamodel:data-private'
 loadProj ':commons'
 
 
+enableApiAnnotations project
+
+
 def tomcatHomeLocal = '/opt/tomcat/apache-tomcat-8.5.11'
 
 

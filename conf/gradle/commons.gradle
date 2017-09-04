@@ -1,10 +1,32 @@
-
 repositories {
 //    maven {
 //        url "http://bot.netikras.com:8081/repository/generic/snapshots"
 //    }
 }
 
+
+
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+
+configurations {
+    apt
+}
+
+project.compileJava {
+    compileJava.options.annotationProcessorPath = configurations.apt
+}
+
 dependencies {
     compile group: 'com.netikras', name: 'commons', version: "${commonsVersion}"
+    apt group: 'com.netikras', name: 'commons', version: "${commonsVersion}"
+}
+
+
+ext.enableApiAnnotations = { Project project ->
+    project.compileJava.options.compilerArgs += [
+            "-processor", "com.netikras.tools.common.remote.http.rest.auto.RestApiAnnotationProcessor"
+    ]
 }

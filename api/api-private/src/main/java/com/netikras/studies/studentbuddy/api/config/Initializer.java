@@ -20,6 +20,8 @@ public class Initializer extends GenericWebApplicationInitializer implements Web
         System.out.println("INITIALIZING!!!");
     }
 
+    public static final String API_URL = "/api";
+
     @Override
     public String getContextConfigLocation() {
 
@@ -30,7 +32,7 @@ public class Initializer extends GenericWebApplicationInitializer implements Web
     public String[] getMappingUrls() {
         System.out.println("Providing mapping URLs");
         return new String[] {
-                "/api/*",
+                API_URL + "/*",
 //                "/user/login"
 
         };
