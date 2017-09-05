@@ -78,7 +78,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT, action = GET)
-    protected StudentDto onGetByPersonIdStudentDto(String id) {
+    protected StudentDto onGetStudentDtoByPersonId(String id) {
         Student student = studentService.getStudentByPerson(id);
         StudentDto studentDto = ModelMapper.transform(student, new StudentDto());
 
@@ -87,7 +87,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT_GROUP, action = GET)
-    protected StudentsGroupDto onGetByTitleStudentsGroupDto(String title) {
+    protected StudentsGroupDto onGetStudentsGroupDtoByTitle(String title) {
         StudentsGroup group = studentService.getStudentsGroupByTitle(title);
         StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto(), new MappingSettings().setDepthMax(3));
         return dto;
@@ -95,7 +95,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT_GROUP, action = GET_ALL)
-    protected List<StudentsGroupDto> onGetAllStudentsGroupDto() {
+    protected List<StudentsGroupDto> onGetStudentsGroupDtoAll() {
         List<StudentsGroup> groups = studentService.getAllStudentGroups();
         List<StudentsGroupDto> dtos = (List<StudentsGroupDto>) ModelMapper.transformAll(groups, StudentsGroupDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
@@ -103,7 +103,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT, action = GET)
-    protected List<StudentDto> onGetAllByGroupStudentDto(String id) {
+    protected List<StudentDto> onGetStudentDtoAllByGroup(String id) {
         List<Student> students = studentService.getStudentsByGroupId(id);
         List<StudentDto> dtos = (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class);
 
@@ -112,7 +112,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT, action = SEARCH)
-    protected List<StudentDto> onSearchAllByFirstNameStudentDto(String fnameSubstring) {
+    protected List<StudentDto> onSearchStudentDtoAllByFirstName(String fnameSubstring) {
         List<Student> students = studentService.searchAllStudentsByFirstName(fnameSubstring);
         List<StudentDto> studentDtos =
                 (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class, new MappingSettings().setDepthMax(3));
@@ -122,7 +122,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT, action = SEARCH)
-    protected List<StudentDto> onSearchAllByLastNameStudentDto(String lnameSubstring) {
+    protected List<StudentDto> onSearchStudentDtoAllByLastName(String lnameSubstring) {
         List<Student> students = studentService.searchAllStudentsByLastName(lnameSubstring);
         List<StudentDto> studentDtos =
                 (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class, new MappingSettings().setDepthMax(3));
@@ -132,7 +132,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT_GROUP, action = SEARCH)
-    protected List<StudentsGroupDto> onSearchAllByTitleStudentsGroupDto(String titleSubstring) {
+    protected List<StudentsGroupDto> onSearchStudentsGroupDtoAllByTitle(String titleSubstring) {
         List<StudentsGroup> groups = studentService.searchAllGroupsByTitle(titleSubstring);
         List<StudentsGroupDto> groupDtos =
                 (List<StudentsGroupDto>) ModelMapper.transformAll(groups, StudentsGroupDto.class, new MappingSettings().setDepthMax(3));
@@ -142,7 +142,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = GUEST, action = SEARCH)
-    protected List<LectureGuestDto> onSearchByLastNameLectureGuestDto(String lnameSubstring) {
+    protected List<LectureGuestDto> onSearchLectureGuestDtoByLastName(String lnameSubstring) {
         List<LectureGuest> guests = studentService.searchAllGuestsByLastName(lnameSubstring);
         List<LectureGuestDto> guestDtos =
                 (List<LectureGuestDto>) ModelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
@@ -152,7 +152,7 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = GUEST, action = SEARCH)
-    protected List<LectureGuestDto> onSearchByFirstNameLectureGuestDto(String fnameSubstring) {
+    protected List<LectureGuestDto> onSearchLectureGuestDtoByFirstName(String fnameSubstring) {
         List<LectureGuest> guests = studentService.searchAllGuestsByFirstName(fnameSubstring);
         List<LectureGuestDto> guestDtos =
                 (List<LectureGuestDto>) ModelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));

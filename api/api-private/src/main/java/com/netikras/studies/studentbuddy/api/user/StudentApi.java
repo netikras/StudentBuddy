@@ -40,7 +40,7 @@ public abstract class StudentApi {
     @RestEndpoint(url = "/search/fname/{fname}", method = HttpMethod.GET, dtoType = StudentDto.class)
     public abstract List<StudentDto> searchAllByFirstName(@MethodParam(type = Type.URL, name = "fname") String fnameSubstring);
 
-    @RestEndpoint(url = "/search/lname/{fname}", method = HttpMethod.GET, dtoType = StudentDto.class)
+    @RestEndpoint(url = "/search/lname/{lname}", method = HttpMethod.GET, dtoType = StudentDto.class)
     public abstract List<StudentDto> searchAllByLastName(@MethodParam(type = Type.URL, name = "lname") String lnameSubstring);
 
     @RestEndpoint(url = "/group/search/title/{title}", method = HttpMethod.GET, dtoType = StudentsGroupDto.class)

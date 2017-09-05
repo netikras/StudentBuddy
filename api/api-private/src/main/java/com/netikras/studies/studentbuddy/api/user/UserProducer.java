@@ -106,7 +106,7 @@ public class UserProducer extends UserApiProducer {
     @Override
     @Authorizable(resource = ROLE_PERMISSIONS, action = Action.GET)
     @Transactional
-    protected List onGetPermittedActionsResourceActionDto(String userId) {
+    protected List<ResourceActionDto> onGetResourceActionDtoPermittedActions(String userId) {
         User user = HttpThreadContext.current().getUser();
 
         if (isNullOrEmpty(userId)) {
@@ -145,13 +145,13 @@ public class UserProducer extends UserApiProducer {
 
     @Override
     @Authorizable(resource = USER, action = Action.MODIFY)
-    protected void onChangePasswordUserDto(String userId, String password) {
+    protected void onChangeUserDtoPassword(String userId, String password) {
         userService.changePassword(userId, password);
     }
 
     @Override
     @Authorizable(resource = USER, action = Action.GET)
-    protected UserDto onGetByNameUserDto(String name) {
+    protected UserDto onGetUserDtoByName(String name) {
         UserDto dto;
         User user = userService.findUserByName(name);
         dto = ModelMapper.transform(user, new UserDto());
@@ -160,7 +160,7 @@ public class UserProducer extends UserApiProducer {
 
     @Override
     @Authorizable(resource = USER, action = Action.GET)
-    protected UserDto onGetByPersonUserDto(String userId) {
+    protected UserDto onGetUserDtoByPerson(String userId) {
         UserDto dto;
         User user = userService.findUserByPerson(userId);
         dto = ModelMapper.transform(user, new UserDto());
@@ -172,7 +172,7 @@ public class UserProducer extends UserApiProducer {
 
     @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    protected List<UserDto> onSearchAllByUsernameUserDto(String query) {
+    protected List<UserDto> onSearchUserDtoAllByUsername(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByUsername(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
@@ -181,7 +181,7 @@ public class UserProducer extends UserApiProducer {
 
     @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    protected List<UserDto> onSearchAllByFirstNameUserDto(String query) {
+    protected List<UserDto> onSearchUserDtoAllByFirstName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByFirstName(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
@@ -191,7 +191,7 @@ public class UserProducer extends UserApiProducer {
 
     @Override
     @Authorizable(resource = USER, action = Action.SEARCH)
-    protected List<UserDto> onSearchAllByLastNameUserDto(String query) {
+    protected List<UserDto> onSearchUserDtoAllByLastName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByLastName(query);
         dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));

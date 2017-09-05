@@ -32,7 +32,7 @@ public abstract class UserApi {
     public abstract void logout();
 
 
-    @RestEndpoint(dtoType = ResourceActionDto.class, returnParam = ResourceActionDto.class, url = "/permissions", method = HttpMethod.GET)
+    @RestEndpoint(dtoType = ResourceActionDto.class, url = "/permissions", method = HttpMethod.GET)
     public abstract List<ResourceActionDto> getPermittedActions(String id);
 
 

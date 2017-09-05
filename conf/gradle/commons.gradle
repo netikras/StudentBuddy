@@ -30,3 +30,9 @@ ext.enableApiAnnotations = { Project project ->
             "-processor", "com.netikras.tools.common.remote.http.rest.auto.RestApiAnnotationProcessor"
     ]
 }
+
+ext.cleanApiAnnotations = {Project project ->
+    project.compileJava.options.compilerArgs += [
+            "-Arestapi.template.clean"
+    ]
+}

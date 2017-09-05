@@ -14,6 +14,15 @@ loadProj ':commons'
 enableApiAnnotations project
 
 
+task cleanRest() {
+    doLast {
+        cleanApiAnnotations project
+    }
+}
+
+cleanRest.finalizedBy build
+
+
 def tomcatHomeLocal = '/opt/tomcat/apache-tomcat-8.5.11'
 
 
