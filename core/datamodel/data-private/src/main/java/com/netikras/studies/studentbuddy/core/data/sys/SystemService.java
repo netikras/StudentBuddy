@@ -101,7 +101,7 @@ public class SystemService {
     }
 
     @Transactional
-    public void deleteSystemSetting(String name) {
+    public void deleteSystemSettingByName(String name) {
         settingsDao.deleteByName(name);
     }
 
@@ -116,7 +116,7 @@ public class SystemService {
     }
 
 
-    public SystemSetting getSetting(String name) {
+    public SystemSetting getSettingByName(String name) {
         if (getSystemSettings() == null) return null;
         if (name == null || name.isEmpty()) return null;
 
@@ -129,7 +129,7 @@ public class SystemService {
     }
 
     public String getSettingValue(String name, String defaultValue) {
-        SystemSetting setting = getSetting(name);
+        SystemSetting setting = getSettingByName(name);
         if (setting == null) return defaultValue;
         if (setting.getValue() == null && defaultValue != null) {
             return defaultValue;
@@ -321,4 +321,15 @@ public class SystemService {
     }
 
 
+    public SystemSetting getSetting(String id) {
+        return settingsDao.findOne(id);
+    }
+
+    public void deleteSystemSetting(String id) {
+        settingsDao.delete(id);
+    }
+
+    public PasswordRequirement getPasswordRequirement(String id) {
+        return passwordRequirementsDao.findOne(id);
+    }
 }

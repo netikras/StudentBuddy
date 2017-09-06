@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.user;
+package com.netikras.studies.studentbuddy.api.user.producer;
 
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.api.user.generated.UserApiProducer;

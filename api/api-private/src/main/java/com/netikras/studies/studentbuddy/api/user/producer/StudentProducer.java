@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.user;
+package com.netikras.studies.studentbuddy.api.user.producer;
 
 import com.netikras.studies.studentbuddy.api.user.generated.StudentApiProducer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
