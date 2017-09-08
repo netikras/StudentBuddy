@@ -2,7 +2,8 @@ package com.netikras.studies.studentbuddy.api.comments;
 
 
 import com.netikras.studies.studentbuddy.api.ResponseListener;
-import com.netikras.studies.studentbuddy.api.user.UserConsumer;
+import com.netikras.studies.studentbuddy.api.comments.generated.CommentsApiConsumer;
+import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -29,8 +30,8 @@ public class CommentsConsumerTest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private UserConsumer userConsumer;
-    private CommentsConsumer commentsConsumer;
+    private UserApiConsumer userConsumer;
+    private CommentsApiConsumer commentsConsumer;
     private SessionContext sessionContext;
     private RemoteEndpointServer server = new RemoteEndpointServer()
             .setProtocol(HttpRequest.Protocol.HTTP)
@@ -46,8 +47,8 @@ public class CommentsConsumerTest {
 
     @Before
     public void init() {
-        commentsConsumer = new CommentsConsumer();
-        userConsumer = new UserConsumer();
+        commentsConsumer = new CommentsApiConsumer();
+        userConsumer = new UserApiConsumer();
 
         sessionContext = new SessionContext();
         userConsumer.setSessionContext(sessionContext);
@@ -62,7 +63,7 @@ public class CommentsConsumerTest {
     }
 
     private UserDto login(String username, String password) {
-        UserDto userDto = userConsumer.login(new AuthenticationDetail()
+        UserDto userDto = userConsumer.loginUserDto("system", "system", new AuthenticationDetail()
                 .setUsername("system")
                 .setPassword("system")
         );
@@ -91,7 +92,7 @@ public class CommentsConsumerTest {
     }
 
     private CommentDto createComment(CommentDto commentDto) {
-        CommentDto dto = commentsConsumer.createComment(commentDto);
+        CommentDto dto = commentsConsumer.createCommentDto(commentDto);
         return dto;
     }
 
@@ -99,7 +100,7 @@ public class CommentsConsumerTest {
     public void getAllCommentsByTypeTest() {
         login("system", "system");
 
-        List<CommentDto> dtos = commentsConsumer.getAllCommentsByType("LECTURE", "112233");
+        List<CommentDto> dtos = commentsConsumer.getCommentDtoForType("LECTURE", "112233");
 
         logger.info("All comments by type: {}", dtos);
     }
@@ -123,7 +124,7 @@ public class CommentsConsumerTest {
         assertEquals("Comment tags must be preserved",
                 comment.getTags().size(), dto.getTags().size());
 
-        commentsConsumer.deleteById(dto.getId());
+        commentsConsumer.deleteCommentDto(dto.getId());
     }
 
     @Test
@@ -133,17 +134,17 @@ public class CommentsConsumerTest {
         commentDto = createComment(commentDto);
         commentDto = createComment(commentDto);
 
-        List<CommentDto> comments = commentsConsumer.getAllCommentsByType(commentDto.getEntityType(), commentDto.getEntityId());
+        List<CommentDto> comments = commentsConsumer.getCommentDtoForType(commentDto.getEntityType(), commentDto.getEntityId());
 
         assertNotNull("Newly created comments must be available for fetching", comments);
         assertFalse("Newly created comments must be available for fetching", comments.isEmpty());
 
         for (CommentDto dto : comments) {
             logger.info("Deleting comment: {}", dto);
-            commentsConsumer.deleteById(dto.getId());
+            commentsConsumer.deleteCommentDto(dto.getId());
         }
 
-        comments = commentsConsumer.getAllCommentsByType("LECTURE", "112233");
+        comments = commentsConsumer.getCommentDtoForType("LECTURE", "112233");
         logger.info("Comments after removal: {}", comments);
         assertNotNull("Comments list must be non-nul empty list", comments);
         assertTrue("Comments list must be empty after removal", comments.isEmpty());
@@ -159,7 +160,7 @@ public class CommentsConsumerTest {
 
         String tagValue = commentDto.getTags().get(0);
 
-        List<CommentDto> comments = commentsConsumer.getAllCommentsByTagValue(tagValue);
+        List<CommentDto> comments = commentsConsumer.getCommentDtoByTagValue(tagValue, 0L, 10L);
 
         assertNotNull("There should be plenty comments having given tag", comments);
         assertFalse("There should be plenty comments having given tag", comments.isEmpty());
@@ -167,10 +168,10 @@ public class CommentsConsumerTest {
         logger.info("All comments by tag {} ({}): {}", tagValue, comments.size(), comments);
 
         for (CommentDto dto : comments) {
-            commentsConsumer.deleteById(dto.getId());
+            commentsConsumer.deleteCommentDto(dto.getId());
         }
 
-        comments = commentsConsumer.getAllCommentsByTagValue(tagValue);
+        comments = commentsConsumer.getCommentDtoByTagValue(tagValue, 0L, 10L);
         logger.info("Comments after removal: {}", comments);
         assertTrue("After removal there should be none comments having given tag", comments.isEmpty());
 
@@ -186,13 +187,13 @@ public class CommentsConsumerTest {
 
         String authorId = commentDto.getAuthor().getId();
 
-        List<CommentDto> comments = commentsConsumer.getAllCommentsByPersonId(authorId);
+        List<CommentDto> comments = commentsConsumer.getCommentDtoAllByPerson(authorId);
         assertFalse("There should be at least a few comments having given author ID", comments.isEmpty());
         logger.info("Comments by author ID ({}): {}", comments.size(), comments);
 
-        commentsConsumer.deleteAllByPersonId(authorId);
+        commentsConsumer.deleteCommentDtoAllByPerson(authorId);
 
-        comments = commentsConsumer.getAllCommentsByPersonId(authorId);
+        comments = commentsConsumer.getCommentDtoAllByPerson(authorId);
         assertTrue("There should be no more comments left from the given author after removal", comments.isEmpty());
         logger.info("Comments by author ID after removal ({}): {}", comments.size(), comments);
     }

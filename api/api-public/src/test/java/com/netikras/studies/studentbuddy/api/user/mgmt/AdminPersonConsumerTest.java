@@ -21,17 +21,17 @@ public class AdminPersonConsumerTest extends GenericPersonAwareTest {
     @Test
     public void createPersonTest() throws Exception {
         loginSystem();
-        PersonDto personDto = personConsumer.getByIdentifier(buildPerson().getIdentification());
+        PersonDto personDto = personConsumer.getPersonDtoByIdentifier(buildPerson().getIdentification());
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
-            personDto = personConsumer.getByIdentifier(buildPerson().getIdentification());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
+            personDto = personConsumer.getPersonDtoByIdentifier(buildPerson().getIdentification());
         }
 
         Assert.assertNull("There should be no such person created yet", personDto);
 
-        personDto = adminPersonConsumer.createPerson(buildPerson());
+        personDto = adminPersonConsumer.createPersonDto(buildPerson());
         logger.info("New person created: {}", personDto);
-        adminPersonConsumer.deletePersonById(personDto.getId());
+        adminPersonConsumer.deletePersonDto(personDto.getId());
     }
 
     @Test
@@ -41,7 +41,7 @@ public class AdminPersonConsumerTest extends GenericPersonAwareTest {
 
         assertNotNull("There should be a person created already", personDto);
 
-        adminPersonConsumer.deletePersonById(personDto.getId());
+        adminPersonConsumer.deletePersonDto(personDto.getId());
     }
 
     @Test
@@ -51,54 +51,54 @@ public class AdminPersonConsumerTest extends GenericPersonAwareTest {
     @Test
     public void getAllTest() {
         loginSystem();
-        List<PersonDto> people = personConsumer.getAll();
+        List<PersonDto> people = personConsumer.getPersonDtoAll();
         PersonDto personDto = null;
         if (people == null || people.isEmpty()) {
             personDto = getPersonForTesting();
-            people = personConsumer.getAll();
+            people = personConsumer.getPersonDtoAll();
         }
 
         assertNotNull("There should be at least one person created already", people);
         assertFalse("There should be at least one person in the list", people.isEmpty());
 
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
         }
     }
 
     @Test
     public void getAllByFirstNameTest() {
         loginSystem();
-        List<PersonDto> people = personConsumer.getAllByFirstName(buildPerson().getFirstName());
+        List<PersonDto> people = personConsumer.getPersonDtoAllByFirstName(buildPerson().getFirstName());
         PersonDto personDto = null;
         if (people == null || people.isEmpty()) {
             personDto = getPersonForTesting();
-            people = personConsumer.getAllByFirstName(buildPerson().getFirstName());
+            people = personConsumer.getPersonDtoAllByFirstName(buildPerson().getFirstName());
         }
 
         assertNotNull("There should be at least one person created already", people);
         assertFalse("There should be at least one person in the list", people.isEmpty());
 
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
         }
     }
 
     @Test
     public void getAllByLastNameTest() {
         loginSystem();
-        List<PersonDto> people = personConsumer.getAllByLastName(buildPerson().getLastName());
+        List<PersonDto> people = personConsumer.getPersonDtoAllByLastName(buildPerson().getLastName());
         PersonDto personDto = null;
         if (people == null || people.isEmpty()) {
             personDto = getPersonForTesting();
-            people = personConsumer.getAllByLastName(buildPerson().getLastName());
+            people = personConsumer.getPersonDtoAllByLastName(buildPerson().getLastName());
         }
 
         assertNotNull("There should be at least one person created already", people);
         assertFalse("There should be at least one person in the list", people.isEmpty());
 
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
         }
     }
 
@@ -106,36 +106,36 @@ public class AdminPersonConsumerTest extends GenericPersonAwareTest {
     @Test
     public void getAllByFirstAndLastNameTest() {
         loginSystem();
-        List<PersonDto> people = personConsumer.getAllByFirstAndLastName(buildPerson().getFirstName(), buildPerson().getLastName());
+        List<PersonDto> people = personConsumer.getPersonDtoAllByFirstAndLastName(buildPerson().getFirstName(), buildPerson().getLastName());
         PersonDto personDto = null;
         if (people == null || people.isEmpty()) {
-            personDto = adminPersonConsumer.createPerson(buildPerson());
-            people = personConsumer.getAllByFirstAndLastName(buildPerson().getFirstName(), buildPerson().getLastName());
+            personDto = adminPersonConsumer.createPersonDto(buildPerson());
+            people = personConsumer.getPersonDtoAllByFirstAndLastName(buildPerson().getFirstName(), buildPerson().getLastName());
         }
 
         assertNotNull("There should be at least one person created already", people);
         assertFalse("There should be at least one person in the list", people.isEmpty());
 
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
         }
     }
 
     @Test
     public void deleteAllPeople() {
         loginSystem();
-        List<PersonDto> people = personConsumer.getAll();
+        List<PersonDto> people = personConsumer.getPersonDtoAll();
         PersonDto personDto = null;
         if (people == null || people.isEmpty()) {
-            personDto = adminPersonConsumer.createPerson(buildPerson());
-            people = personConsumer.getAll();
+            personDto = adminPersonConsumer.createPersonDto(buildPerson());
+            people = personConsumer.getPersonDtoAll();
         }
 
         assertNotNull("There should be at least one person created already", people);
         assertFalse("There should be at least one person in the list", people.isEmpty());
 
         for (PersonDto dto : people) {
-            adminPersonConsumer.deletePersonById(dto.getId());
+            adminPersonConsumer.deletePersonDto(dto.getId());
         }
 
     }

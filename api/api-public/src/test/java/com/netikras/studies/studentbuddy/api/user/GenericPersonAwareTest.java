@@ -1,20 +1,21 @@
 package com.netikras.studies.studentbuddy.api.user;
 
 import com.netikras.studies.studentbuddy.api.GenericConsumerTest;
-import com.netikras.studies.studentbuddy.api.user.mgmt.AdminPersonConsumer;
+import com.netikras.studies.studentbuddy.api.user.generated.PersonApiConsumer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminPersonApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import org.junit.Before;
 
 public class GenericPersonAwareTest extends GenericConsumerTest {
 
-    protected PersonConsumer personConsumer;
-    protected AdminPersonConsumer adminPersonConsumer;
+    protected PersonApiConsumer personConsumer;
+    protected AdminPersonApiConsumer adminPersonConsumer;
 
     @Before
     public void initPersonAware() {
         super.initGenericConsumer();
-        adminPersonConsumer = attachConsumer(new AdminPersonConsumer());
-        personConsumer = attachConsumer(new PersonConsumer());
+        adminPersonConsumer = attachConsumer(new AdminPersonApiConsumer());
+        personConsumer = attachConsumer(new PersonApiConsumer());
     }
 
 
@@ -33,9 +34,9 @@ public class GenericPersonAwareTest extends GenericConsumerTest {
 
     protected PersonDto getPersonForTesting() {
         loginSystem();
-        PersonDto personDto = personConsumer.getByCode(buildPerson().getPersonalCode());
+        PersonDto personDto = personConsumer.getPersonDtoByCode(buildPerson().getPersonalCode());
         if (personDto == null) {
-            personDto = adminPersonConsumer.createPerson(buildPerson());
+            personDto = adminPersonConsumer.createPersonDto(buildPerson());
         }
 
         return personDto;
@@ -43,10 +44,10 @@ public class GenericPersonAwareTest extends GenericConsumerTest {
 
     protected void removeTestPerson() {
         loginSystem();
-        PersonDto personDto = personConsumer.getByCode(buildPerson().getPersonalCode());
+        PersonDto personDto = personConsumer.getPersonDtoByCode(buildPerson().getPersonalCode());
 
         if (personDto != null) {
-            adminPersonConsumer.deletePersonById(personDto.getId());
+            adminPersonConsumer.deletePersonDto(personDto.getId());
         }
     }
 

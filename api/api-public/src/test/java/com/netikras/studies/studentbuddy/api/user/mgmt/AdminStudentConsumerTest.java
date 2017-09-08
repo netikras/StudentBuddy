@@ -2,7 +2,8 @@ package com.netikras.studies.studentbuddy.api.user.mgmt;
 
 
 import com.netikras.studies.studentbuddy.api.user.GenericPersonAwareTest;
-import com.netikras.studies.studentbuddy.api.user.StudentConsumer;
+import com.netikras.studies.studentbuddy.api.user.generated.StudentApiConsumer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminStudentApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,15 +25,15 @@ import static org.junit.Assert.assertTrue;
 public class AdminStudentConsumerTest extends GenericPersonAwareTest {
     private static final Logger logger = LoggerFactory.getLogger(AdminPersonConsumerTest.class);
 
-    private AdminStudentConsumer adminStudentConsumer;
-    private StudentConsumer studentConsumer;
+    private AdminStudentApiConsumer adminStudentConsumer;
+    private StudentApiConsumer studentConsumer;
 
 
     @Before
     public void initPersonAware() {
         super.initPersonAware();
-        studentConsumer = attachConsumer(new StudentConsumer());
-        adminStudentConsumer = attachConsumer(new AdminStudentConsumer());
+        studentConsumer = attachConsumer(new StudentApiConsumer());
+        adminStudentConsumer = attachConsumer(new AdminStudentApiConsumer());
     }
 
 
@@ -59,10 +61,10 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
     }
 
     protected StudentsGroupDto getGroupForTesting() {
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
 
         if (groupDto == null) {
-            groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+            groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         }
 
         return groupDto;
@@ -70,9 +72,9 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
 
     protected void removeTestGroup() {
         loginSystem();
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto != null) {
-            adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
+            adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
         }
     }
 
@@ -85,79 +87,79 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
     }
 
     @Test
-    public void createStudentTest() throws Exception {
+    public void createStudentDtoTest() throws Exception {
         loginSystem();
         PersonDto personDto = getPersonForTesting();
-        StudentDto studentDto = studentConsumer.getStudentByPersonId(personDto.getId());
+        StudentDto studentDto = studentConsumer.getStudentDtoByPersonId(personDto.getId());
         if (studentDto != null) {
-            adminStudentConsumer.deleteStudentById(studentDto.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto.getId());
         }
 
         studentDto = buildStudent(personDto);
         studentDto.setGroup(getGroupForTesting());
-        studentDto = adminStudentConsumer.createStudent(studentDto);
+        studentDto = adminStudentConsumer.createStudentDto(studentDto);
 
         assertNotNull("Student should be created by now", studentDto);
 
-        adminStudentConsumer.deleteStudentById(studentDto.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto.getId());
         removeTestPerson();
         removeTestGroup();
     }
 
     @Test
-    public void deleteStudentByIdTest() throws Exception {
+    public void deleteStudentDtoTest() throws Exception {
         loginSystem();
         PersonDto personDto = getPersonForTesting();
-        StudentDto studentDto = studentConsumer.getStudentByPersonId(personDto.getId());
+        StudentDto studentDto = studentConsumer.getStudentDtoByPersonId(personDto.getId());
         if (studentDto == null) {
             studentDto = buildStudent(personDto);
             studentDto.setGroup(getGroupForTesting());
-            studentDto = adminStudentConsumer.createStudent(studentDto);
+            studentDto = adminStudentConsumer.createStudentDto(studentDto);
 
         }
 
         assertNotNull("Student should be created by now", studentDto);
 
-        adminStudentConsumer.deleteStudentById(studentDto.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto.getId());
         removeTestPerson();
         removeTestGroup();
 
-        studentDto = studentConsumer.getStudentByPersonId(personDto.getId());
+        studentDto = studentConsumer.getStudentDtoByPersonId(personDto.getId());
         assertNull("Student should be deleted by now", studentDto);
         removeTestPerson();
         removeTestGroup();
     }
 
     @Test
-    public void createStudentGroupTest() throws Exception {
+    public void createStudentDtosGroupDtoTest() throws Exception {
         loginSystem();
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto != null) {
-            adminStudentConsumer.deleteGuestById(groupDto.getId());
+            adminStudentConsumer.deleteLectureGuestDto(groupDto.getId());
         }
 
         assertNull("There should be no test group created in the DB by now", groupDto);
 
-        groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+        groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         assertNotNull("New group should have been created", groupDto);
         assertEquals("New group should have given title", buildGroup().getTitle(), groupDto.getTitle());
 
-        adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
         removeTestPerson();
         removeTestGroup();
     }
 
     @Test
-    public void deleteStudentGroupByIdTest() throws Exception {
+    public void deleteStudentsGroupDtoTest() throws Exception {
         loginSystem();
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto == null) {
-            groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+            groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         }
 
         assertNotNull("Group DTO must not be null at this point", groupDto);
-        adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
-        groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
+        groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         assertNull("Group must have been deleted", groupDto);
         removeTestPerson();
         removeTestGroup();
@@ -166,40 +168,40 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
     @Test
     public void addStudentToGroupTest() throws Exception {
         loginSystem();
-        StudentDto studentDto = studentConsumer.getStudentByPersonId(getPersonForTesting().getId());
+        StudentDto studentDto = studentConsumer.getStudentDtoByPersonId(getPersonForTesting().getId());
         if (studentDto != null) {
-            adminStudentConsumer.deleteStudentById(studentDto.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto.getId());
         }
         assertNull("There should be no such student in the database atm", studentDto);
 
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto != null) {
-            adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
-            groupDto = studentConsumer.getGroupById(groupDto.getId());
+            adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
+            groupDto = studentConsumer.retrieveStudentsGroupDto(groupDto.getId());
         }
         assertNull("Group should be removed now", groupDto);
 
-        groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+        groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         assertNotNull("There should be a student group in the DB by now", groupDto);
 
-        studentDto = adminStudentConsumer.createStudent(buildStudent(getPersonForTesting()));
+        studentDto = adminStudentConsumer.createStudentDto(buildStudent(getPersonForTesting()));
         assertNotNull("Student should be created at this point", studentDto);
         assertNull("Student should not be assigned to any group", studentDto.getGroup());
 
-        adminStudentConsumer.addStudentToGroup(groupDto.getId(), studentDto.getId());
+        adminStudentConsumer.addStudentDtoToGroup(groupDto.getId(), studentDto.getId());
 
-        studentDto = studentConsumer.getStudentById(studentDto.getId());
+        studentDto = studentConsumer.retrieveStudentDto(studentDto.getId());
         assertNotNull("Student shall not be deleted yet", studentDto);
         assertNotNull("Student should be assigned to group now", studentDto.getGroup());
         assertEquals("Student should be assigned to that particular group", buildGroup().getTitle(), studentDto.getGroup().getTitle());
 
-        groupDto = studentConsumer.getGroupByTitle(groupDto.getTitle());
+        groupDto = studentConsumer.getStudentsGroupDtoByTitle(groupDto.getTitle());
         assertNotNull("The group should not be null", groupDto);
         assertEquals("There should be only one member in the group", 1, groupDto.getMembers().size());
         assertEquals("Member of the group must have a persisted ID", studentDto.getId(), groupDto.getMembers().get(0).getId());
 
-        adminStudentConsumer.deleteStudentById(studentDto.getId());
-        adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto.getId());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
         removeTestPerson();
         removeTestGroup();
     }
@@ -213,56 +215,58 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
         person2.setFirstName("John");
         person2.setLastName("Irwing");
         PersonDto personDto1 = getPersonForTesting();
-        PersonDto personDto2 = personConsumer.getByCode(person2.getPersonalCode());
+        PersonDto personDto2 = personConsumer.getPersonDtoByCode(person2.getPersonalCode());
         if (personDto2 == null) {
-            personDto2 = adminPersonConsumer.createPerson(person2);
+            personDto2 = adminPersonConsumer.createPersonDto(person2);
         }
 
-        StudentDto studentDto1 = studentConsumer.getStudentByPersonId(personDto1.getId());
-        StudentDto studentDto2 = studentConsumer.getStudentByPersonId(personDto2.getId());
+        StudentDto studentDto1 = studentConsumer.getStudentDtoByPersonId(personDto1.getId());
+        StudentDto studentDto2 = studentConsumer.getStudentDtoByPersonId(personDto2.getId());
         if (studentDto1 != null) {
-            adminStudentConsumer.deleteStudentById(studentDto1.getId());
-            studentDto1 = studentConsumer.getStudentByPersonId(personDto1.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto1.getId());
+            studentDto1 = studentConsumer.getStudentDtoByPersonId(personDto1.getId());
         }
         if (studentDto2 != null) {
-            adminStudentConsumer.deleteStudentById(studentDto2.getId());
-            studentDto2 = studentConsumer.getStudentByPersonId(personDto2.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto2.getId());
+            studentDto2 = studentConsumer.getStudentDtoByPersonId(personDto2.getId());
         }
         assertNull("There should be no such student1 in the database atm", studentDto1);
         assertNull("There should be no such student2 in the database atm", studentDto2);
 
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto != null) {
-            adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
-            groupDto = studentConsumer.getGroupById(groupDto.getId());
+            adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
+            groupDto = studentConsumer.retrieveStudentsGroupDto(groupDto.getId());
         }
         assertNull("Group should be removed now", groupDto);
 
-        groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+        groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         assertNotNull("There should be a student group in the DB by now", groupDto);
 
 
-        studentDto1 = adminStudentConsumer.createStudent(buildStudent(personDto1));
+        studentDto1 = adminStudentConsumer.createStudentDto(buildStudent(personDto1));
         assertNotNull("Student1 should be created at this point", studentDto1);
         assertNull("Student1 should not be assigned to any group", studentDto1.getGroup());
 
-        studentDto2 = adminStudentConsumer.createStudent(buildStudent(personDto2));
+        studentDto2 = adminStudentConsumer.createStudentDto(buildStudent(personDto2));
         assertNotNull("Student2 should be created at this point", studentDto2);
         assertNull("Student2 should not be assigned to any group", studentDto2.getGroup());
 
-        adminStudentConsumer.addAllStudentsToGroup(groupDto.getId(), studentDto1.getId(), studentDto2.getId());
+        List<String> studentIds = new ArrayList<>();
+        Collections.addAll(studentIds, studentDto1.getId(), studentDto2.getId());
+        adminStudentConsumer.addStudentDtoAllToGroup(groupDto.getId(), studentIds);
 
-        studentDto1 = studentConsumer.getStudentById(studentDto1.getId());
+        studentDto1 = studentConsumer.retrieveStudentDto(studentDto1.getId());
         assertNotNull("Student1 shall not be deleted yet", studentDto1);
         assertNotNull("Student1 should be assigned to group now", studentDto1.getGroup());
         assertEquals("Student1 should be assigned to that particular group", buildGroup().getTitle(), studentDto1.getGroup().getTitle());
 
-        studentDto2 = studentConsumer.getStudentById(studentDto2.getId());
+        studentDto2 = studentConsumer.retrieveStudentDto(studentDto2.getId());
         assertNotNull("Student2 shall not be deleted yet", studentDto2);
         assertNotNull("Student2 should be assigned to group now", studentDto2.getGroup());
         assertEquals("Student2 should be assigned to that particular group", buildGroup().getTitle(), studentDto2.getGroup().getTitle());
 
-        groupDto = studentConsumer.getGroupByTitle(groupDto.getTitle());
+        groupDto = studentConsumer.getStudentsGroupDtoByTitle(groupDto.getTitle());
         assertNotNull("The group should not be null", groupDto);
         assertEquals("There should be two members in the group", 2, groupDto.getMembers().size());
         assertTrue("Members of the group must have a persisted ID",
@@ -272,13 +276,13 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
                 studentDto1.getId().equals(groupDto.getMembers().get(1).getId())
                         || studentDto2.getId().equals(groupDto.getMembers().get(1).getId()));
 
-        adminStudentConsumer.removeAllStudentsFromGroup(groupDto.getId(), studentDto1.getId(), studentDto2.getId());
+        adminStudentConsumer.removeStudentDtoAllFromGroup(groupDto.getId(), studentIds);
 
-        adminStudentConsumer.deleteStudentById(studentDto1.getId());
-        adminStudentConsumer.deleteStudentById(studentDto2.getId());
-        adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto1.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto2.getId());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
 
-        adminPersonConsumer.deletePersonById(personDto2.getId());
+        adminPersonConsumer.deletePersonDto(personDto2.getId());
         removeTestPerson();
         removeTestGroup();
     }
@@ -297,57 +301,57 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
         person2.setFirstName("John");
         person2.setLastName("Irwing");
         PersonDto personDto1 = getPersonForTesting();
-        PersonDto personDto2 = personConsumer.getByCode(person2.getPersonalCode());
+        PersonDto personDto2 = personConsumer.getPersonDtoByCode(person2.getPersonalCode());
         if (personDto2 == null) {
-            personDto2 = adminPersonConsumer.createPerson(person2);
+            personDto2 = adminPersonConsumer.createPersonDto(person2);
         }
 
-        StudentDto studentDto1 = studentConsumer.getStudentByPersonId(personDto1.getId());
-        StudentDto studentDto2 = studentConsumer.getStudentByPersonId(personDto2.getId());
+        StudentDto studentDto1 = studentConsumer.getStudentDtoByPersonId(personDto1.getId());
+        StudentDto studentDto2 = studentConsumer.getStudentDtoByPersonId(personDto2.getId());
         if (studentDto1 != null) {
-            adminStudentConsumer.deleteStudentById(studentDto1.getId());
-            studentDto1 = studentConsumer.getStudentByPersonId(personDto1.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto1.getId());
+            studentDto1 = studentConsumer.getStudentDtoByPersonId(personDto1.getId());
         }
         if (studentDto2 != null) {
-            adminStudentConsumer.deleteStudentById(studentDto2.getId());
-            studentDto2 = studentConsumer.getStudentByPersonId(personDto2.getId());
+            adminStudentConsumer.deleteStudentDto(studentDto2.getId());
+            studentDto2 = studentConsumer.getStudentDtoByPersonId(personDto2.getId());
         }
         assertNull("There should be no such student1 in the database atm", studentDto1);
         assertNull("There should be no such student2 in the database atm", studentDto2);
 
-        StudentsGroupDto groupDto = studentConsumer.getGroupByTitle(buildGroup().getTitle());
+        StudentsGroupDto groupDto = studentConsumer.getStudentsGroupDtoByTitle(buildGroup().getTitle());
         if (groupDto != null) {
-            adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
-            groupDto = studentConsumer.getGroupById(groupDto.getId());
+            adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
+            groupDto = studentConsumer.retrieveStudentsGroupDto(groupDto.getId());
         }
         assertNull("Group should be removed now", groupDto);
 
-        groupDto = adminStudentConsumer.createStudentGroup(buildGroup());
+        groupDto = adminStudentConsumer.createStudentsGroupDto(buildGroup());
         assertNotNull("There should be a student group in the DB by now", groupDto);
 
 
-        studentDto1 = adminStudentConsumer.createStudent(buildStudent(personDto1));
+        studentDto1 = adminStudentConsumer.createStudentDto(buildStudent(personDto1));
         assertNotNull("Student1 should be created at this point", studentDto1);
         assertNull("Student1 should not be assigned to any group", studentDto1.getGroup());
 
-        studentDto2 = adminStudentConsumer.createStudent(buildStudent(personDto2));
+        studentDto2 = adminStudentConsumer.createStudentDto(buildStudent(personDto2));
         assertNotNull("Student2 should be created at this point", studentDto2);
         assertNull("Student2 should not be assigned to any group", studentDto2.getGroup());
 
-        adminStudentConsumer.addStudentToGroup(groupDto.getId(), studentDto1.getId());
-        adminStudentConsumer.addStudentToGroup(groupDto.getId(), studentDto2.getId());
+        adminStudentConsumer.addStudentDtoToGroup(groupDto.getId(), studentDto1.getId());
+        adminStudentConsumer.addStudentDtoToGroup(groupDto.getId(), studentDto2.getId());
 
-        studentDto1 = studentConsumer.getStudentById(studentDto1.getId());
+        studentDto1 = studentConsumer.retrieveStudentDto(studentDto1.getId());
         assertNotNull("Student1 shall not be deleted yet", studentDto1);
         assertNotNull("Student1 should be assigned to group now", studentDto1.getGroup());
         assertEquals("Student1 should be assigned to that particular group", buildGroup().getTitle(), studentDto1.getGroup().getTitle());
 
-        studentDto2 = studentConsumer.getStudentById(studentDto2.getId());
+        studentDto2 = studentConsumer.retrieveStudentDto(studentDto2.getId());
         assertNotNull("Student2 shall not be deleted yet", studentDto2);
         assertNotNull("Student2 should be assigned to group now", studentDto2.getGroup());
         assertEquals("Student2 should be assigned to that particular group", buildGroup().getTitle(), studentDto2.getGroup().getTitle());
 
-        groupDto = studentConsumer.getGroupByTitle(groupDto.getTitle());
+        groupDto = studentConsumer.getStudentsGroupDtoByTitle(groupDto.getTitle());
         assertNotNull("The group should not be null", groupDto);
         assertEquals("There should be two members in the group", 2, groupDto.getMembers().size());
         assertTrue("Members of the group must have a persisted ID",
@@ -357,19 +361,21 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
                 studentDto1.getId().equals(groupDto.getMembers().get(1).getId())
                         || studentDto2.getId().equals(groupDto.getMembers().get(1).getId()));
 
+        List<String> studentIds = new ArrayList<>();
+        Collections.addAll(studentIds, studentDto1.getId(), studentDto2.getId());
 
-        adminStudentConsumer.removeAllStudentsFromGroup(groupDto.getId(), studentDto1.getId(), studentDto2.getId());
+        adminStudentConsumer.removeStudentDtoAllFromGroup(groupDto.getId(), studentIds);
 
-        groupDto = studentConsumer.getGroupById(groupDto.getId());
+        groupDto = studentConsumer.retrieveStudentsGroupDto(groupDto.getId());
         assertNotNull("Group must not have been removed. Only its members", groupDto);
         logger.info("Group after removal: {}", groupDto);
         assertTrue("Group must have no more entries now", groupDto.getMembers().isEmpty());
 
-        adminStudentConsumer.deleteStudentById(studentDto1.getId());
-        adminStudentConsumer.deleteStudentById(studentDto2.getId());
-        adminStudentConsumer.deleteStudentGroupById(groupDto.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto1.getId());
+        adminStudentConsumer.deleteStudentDto(studentDto2.getId());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDto.getId());
 
-        adminPersonConsumer.deletePersonById(personDto2.getId());
+        adminPersonConsumer.deletePersonDto(personDto2.getId());
         removeTestPerson();
         removeTestGroup();
     }
@@ -381,22 +387,22 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
 
         assertNotNull("Group DTO should not be null after creation", groupDto);
 
-        List<StudentsGroupDto> groupDtos = studentConsumer.searchAllGroupsByTitle("PIN");
+        List<StudentsGroupDto> groupDtos = studentConsumer.searchStudentsGroupDtoAllByTitle("PIN");
         assertNotNull("There should be a non-null list of groups", groupDtos);
         assertEquals("There must be 1 result", 1, groupDtos.size());
         assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
 
-        groupDtos = studentConsumer.searchAllGroupsByTitle("P*N13");
+        groupDtos = studentConsumer.searchStudentsGroupDtoAllByTitle("P*N13");
         assertNotNull("There should be a non-null list of groups", groupDtos);
         assertEquals("There must be 1 result", 1, groupDtos.size());
         assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
 
-        groupDtos = studentConsumer.searchAllGroupsByTitle("*N13$");
+        groupDtos = studentConsumer.searchStudentsGroupDtoAllByTitle("*N13$");
         assertNotNull("There should be a non-null list of groups", groupDtos);
         assertEquals("There must be 1 result", 1, groupDtos.size());
         assertEquals("The found group should have a correct title", groupDto.getTitle(), groupDtos.get(0).getTitle());
 
-        adminStudentConsumer.deleteStudentGroupById(groupDtos.get(0).getId());
+        adminStudentConsumer.deleteStudentsGroupDto(groupDtos.get(0).getId());
     }
 
     @Test

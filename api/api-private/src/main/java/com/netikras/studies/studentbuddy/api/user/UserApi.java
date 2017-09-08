@@ -27,6 +27,11 @@ public abstract class UserApi {
             @MethodParam(type = Type.BODY, required = false) AuthenticationDetail auth
     );
 
+    @RestEndpoint(dtoType = UserDto.class, url = "/login/auth", method = HttpMethod.POST)
+    public abstract UserDto loginAuth(
+            @MethodParam(type = Type.BODY, required = false) AuthenticationDetail auth
+    );
+
 
     @RestEndpoint(dtoType = UserDto.class, url = "/logout", method = HttpMethod.POST)
     public abstract void logout();

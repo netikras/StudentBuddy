@@ -1,6 +1,6 @@
 package com.netikras.studies.studentbuddy.api;
 
-import com.netikras.studies.studentbuddy.api.user.UserConsumer;
+import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.RemoteEndpointServer;
@@ -24,7 +24,7 @@ public class GenericConsumerTest {
         responseListener = new ResponseListener(logger);
     }
 
-    private UserConsumer userConsumer;
+    private UserApiConsumer userConsumer;
     private SessionContext sessionContext;
     protected RemoteEndpointServer server = new RemoteEndpointServer()
             .setProtocol(HttpRequest.Protocol.HTTP)
@@ -49,7 +49,7 @@ public class GenericConsumerTest {
 
     public void initGenericConsumer() {
         sessionContext = new SessionContext();
-        userConsumer = attachConsumer(new UserConsumer());
+        userConsumer = attachConsumer(new UserApiConsumer());
     }
 
     protected <T extends GenericRestConsumer> T attachConsumer(T consumer) {
@@ -63,7 +63,7 @@ public class GenericConsumerTest {
     }
 
     protected UserDto login(String username, String password) {
-        UserDto userDto = userConsumer.login(new AuthenticationDetail()
+        UserDto userDto = userConsumer.loginUserDto("system", "system", new AuthenticationDetail()
                 .setUsername("system")
                 .setPassword("system")
         );
@@ -74,7 +74,7 @@ public class GenericConsumerTest {
         return sessionContext;
     }
 
-    public UserConsumer getUserConsumer() {
+    public UserApiConsumer getUserConsumer() {
         return userConsumer;
     }
 

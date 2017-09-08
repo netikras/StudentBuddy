@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.sys;
 
 
 import com.netikras.studies.studentbuddy.api.GenericConsumerTest;
+import com.netikras.studies.studentbuddy.api.sys.generated.AdminApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
 import org.junit.Before;
@@ -24,13 +25,13 @@ public class AdminConsumerTest extends GenericConsumerTest {
 //        super(logger);
     }
 
-    private AdminConsumer adminConsumer;
+    private AdminApiConsumer adminConsumer;
 
 
     @Before
     public void initGenericConsumer() {
         super.initGenericConsumer();
-        adminConsumer = new AdminConsumer();
+        adminConsumer = new AdminApiConsumer();
         adminConsumer.setSessionContext(getSessionContext());
         adminConsumer.addServer("default", server);
         adminConsumer.addListener("default", responseListener);
@@ -72,168 +73,168 @@ public class AdminConsumerTest extends GenericConsumerTest {
     }
 
     @Test
-    public void getLiveSettingsTest() throws Exception {
+    public void getSystemSettingDtoAllLiveTest() throws Exception {
         loginSystem();
-        List<SystemSettingDto> settingDtos = adminConsumer.getLiveSettings();
+        List<SystemSettingDto> settingDtos = adminConsumer.getSystemSettingDtoAllLive();
         if (settingDtos == null || settingDtos.isEmpty()) {
             logger.info("Creating setting entry as it does not yet exist");
-            adminConsumer.createSetting(buildSetting());
-            adminConsumer.refreshSettings();
+            adminConsumer.createSystemSettingDto(buildSetting());
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDtos = adminConsumer.getLiveSettings();
+            settingDtos = adminConsumer.getSystemSettingDtoAllLive();
         }
         logger.info("Live settings: {}", settingDtos);
         assertNotNull("There should be at least one live setting", settingDtos);
         assertFalse("There should be at least one live setting in the list", settingDtos.isEmpty());
-        adminConsumer.deleteSetting(buildSetting().getName());
-        adminConsumer.refreshSettings();
+        adminConsumer.deleteSystemSettingDto(buildSetting().getName());
+        adminConsumer.refreshSystemSettingDtoLive();
     }
 
     @Test
     public void getSettingsTest() throws Exception {
         loginSystem();
-        List<SystemSettingDto> settingDtos = adminConsumer.getSettings();
+        List<SystemSettingDto> settingDtos = adminConsumer.getSystemSettingDtoAllStored();
         if (settingDtos == null || settingDtos.isEmpty()) {
             logger.info("Creating setting entry as it does not yet exist");
-            adminConsumer.createSetting(buildSetting());
-            settingDtos = adminConsumer.getSettings();
+            adminConsumer.createSystemSettingDto(buildSetting());
+            settingDtos = adminConsumer.getSystemSettingDtoAllStored();
         }
         logger.info("Stored settings: {}", settingDtos);
         assertNotNull("There should be at least one stored setting", settingDtos);
         assertFalse("There should be at least one stored setting in the list", settingDtos.isEmpty());
-        adminConsumer.deleteSetting(buildSetting().getName());
+        adminConsumer.deleteSystemSettingDto(buildSetting().getName());
     }
 
     @Test
-    public void getLiveSettingTest() throws Exception {
+    public void getSystemSettingDtoLiveTest() throws Exception {
         loginSystem();
         SystemSettingDto settingDto = buildSetting();
-        settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+        settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
 
         if (settingDto == null) {
             logger.info("Creating setting entry as it does not yet exist");
             settingDto = buildSetting();
-            settingDto = adminConsumer.createSetting(settingDto);
-            adminConsumer.refreshSettings();
+            settingDto = adminConsumer.createSystemSettingDto(settingDto);
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+            settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         }
 
         logger.info("Retrieved setting: {}", settingDto);
         assertNotNull("Setting shall not be null", settingDto);
-        adminConsumer.deleteSetting(settingDto.getName());
-        adminConsumer.refreshSettings();
+        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        adminConsumer.refreshSystemSettingDtoLive();
     }
 
     @Test
-    public void getStoredSettingTest() throws Exception {
+    public void getSystemSettingDtoStoredTest() throws Exception {
         loginSystem();
-        SystemSettingDto settingDto = adminConsumer.getStoredSetting(buildSetting().getName());
+        SystemSettingDto settingDto = adminConsumer.getSystemSettingDtoStored(buildSetting().getName());
         if (settingDto == null) {
-            settingDto = adminConsumer.createSetting(buildSetting());
-            settingDto = adminConsumer.getStoredSetting(settingDto.getName());
+            settingDto = adminConsumer.createSystemSettingDto(buildSetting());
+            settingDto = adminConsumer.getSystemSettingDtoStored(settingDto.getName());
         }
 
         assertNotNull("Stored setting DTO must not be null", settingDto);
-        adminConsumer.deleteSetting(settingDto.getName());
+        adminConsumer.deleteSystemSettingDto(settingDto.getName());
     }
 
     @Test
-    public void createSettingTest() throws Exception {
+    public void createSystemSettingDtoTest() throws Exception {
         loginSystem();
         SystemSettingDto settingDto;
 
         settingDto = buildSetting();
 
-        settingDto = adminConsumer.createSetting(settingDto);
+        settingDto = adminConsumer.createSystemSettingDto(settingDto);
         logger.info("New setting: {}", settingDto);
-        List<SystemSettingDto> settingDtos = adminConsumer.getLiveSettings();
+        List<SystemSettingDto> settingDtos = adminConsumer.getSystemSettingDtoAllLive();
         logger.info("Live settings: {}", settingDtos);
 
-        adminConsumer.refreshSettings();
-        settingDtos = adminConsumer.getLiveSettings();
+        adminConsumer.refreshSystemSettingDtoLive();
+        settingDtos = adminConsumer.getSystemSettingDtoAllLive();
         logger.info("Live settings: {}", settingDtos);
     }
 
     @Test
-    public void updateSettingTest() throws Exception {
+    public void updateSystemSettingDtoTest() throws Exception {
         loginSystem();
 
         String newValue = "awesome!";
-        SystemSettingDto settingDto = adminConsumer.getLiveSetting(buildSetting().getName());
+        SystemSettingDto settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
         if (settingDto == null) {
             logger.info("Creating setting entry as it does not yet exist");
-            adminConsumer.createSetting(buildSetting());
-            adminConsumer.refreshSettings();
+            adminConsumer.createSystemSettingDto(buildSetting());
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDto = adminConsumer.getLiveSetting(buildSetting().getName());
+            settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
         }
 
         settingDto.setValue(newValue);
-        settingDto = adminConsumer.updateSetting(settingDto);
+        settingDto = adminConsumer.updateSystemSettingDto(settingDto);
 
         logger.info("Updated setting: {}", settingDto);
         assertEquals("Updated setting value should have changed", newValue, settingDto.getValue());
-        adminConsumer.deleteSetting(settingDto.getName());
-        adminConsumer.refreshSettings();
-        settingDto = adminConsumer.updateSetting(settingDto);
+        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        adminConsumer.refreshSystemSettingDtoLive();
+        settingDto = adminConsumer.updateSystemSettingDto(settingDto);
         assertNull("Must not allow updating non-existent settings", settingDto);
     }
 
     @Test
-    public void deleteSettingTest() throws Exception {
+    public void deleteSystemSettingDtoTest() throws Exception {
         loginSystem();
         SystemSettingDto settingDto = buildSetting();
-        settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+        settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         if (settingDto == null) {
-            settingDto = adminConsumer.createSetting(buildSetting());
-            adminConsumer.refreshSettings();
+            settingDto = adminConsumer.createSystemSettingDto(buildSetting());
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+            settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         }
         assertNotNull("Setting DTO must have been created for deletion", settingDto);
-        adminConsumer.deleteSetting(settingDto.getName());
-        settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         assertNotNull("Setting DTO must still be available in Live after deletion", settingDto);
-        settingDto = adminConsumer.getStoredSetting(settingDto.getName());
+        settingDto = adminConsumer.getSystemSettingDtoStored(settingDto.getName());
         assertNull("Setting DTO must be unavailable in Stored after deletion", settingDto);
-        adminConsumer.refreshSettings();
+        adminConsumer.refreshSystemSettingDtoLive();
         pause(1000);
-        settingDto = adminConsumer.getLiveSetting(buildSetting().getName());
+        settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
         assertNull("Setting must be gone after it's been deleted", settingDto);
     }
 
     @Test
-    public void refreshSettingsTest() throws Exception {
+    public void refreshSystemSettingDtoLiveTest() throws Exception {
         loginSystem();
-        SystemSettingDto settingDto = adminConsumer.getLiveSetting(buildSetting().getName());
+        SystemSettingDto settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
         if (settingDto != null) {
-            adminConsumer.deleteSetting(settingDto.getName());
-            adminConsumer.refreshSettings();
+            adminConsumer.deleteSystemSettingDto(settingDto.getName());
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDto = adminConsumer.getLiveSetting(buildSetting().getName());
+            settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
             assertNull("After removal and refresh setting must be no longer in Live", settingDto);
         } else {
-            settingDto = adminConsumer.createSetting(buildSetting());
-            adminConsumer.refreshSettings();
+            settingDto = adminConsumer.createSystemSettingDto(buildSetting());
+            adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
-            settingDto = adminConsumer.getLiveSetting(settingDto.getName());
+            settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
             assertNotNull("Newly created setting must be in Live after refresh", settingDto);
-            adminConsumer.deleteSetting(settingDto.getName());
-            adminConsumer.refreshSettings();
+            adminConsumer.deleteSystemSettingDto(settingDto.getName());
+            adminConsumer.refreshSystemSettingDtoLive();
         }
     }
 
     @Test
-    public void getLivePwReqsTest() throws Exception {
+    public void getPasswordRequirementDtoAllLiveTest() throws Exception {
         loginSystem();
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getLivePwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
         PasswordRequirementDto dto = null;
         if (requirementDtos == null || requirementDtos.isEmpty()) {
-            dto = adminConsumer.createPwReq(buildPwReq());
-            adminConsumer.refreshPwReqs();
+            adminConsumer.refreshPasswordRequirementDtoLive();
+            adminConsumer.getPasswordRequirementDtoAllLive();
             pause(1000);
-            requirementDtos = adminConsumer.getLivePwReqs();
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
         }
 
         logger.info("Live password requirements: {}", requirementDtos);
@@ -243,19 +244,19 @@ public class AdminConsumerTest extends GenericConsumerTest {
             dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
         }
         if (dto != null) {
-            adminConsumer.deletePwReq(dto.getId());
-            adminConsumer.refreshPwReqs();
+            adminConsumer.deletePasswordRequirementDto(dto.getId());
+            adminConsumer.refreshPasswordRequirementDtoLive();
         }
     }
 
     @Test
     public void getPwReqsTest() throws Exception {
         loginSystem();
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getStoredPwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         PasswordRequirementDto dto = null;
         if (requirementDtos == null || requirementDtos.isEmpty()) {
-            dto = adminConsumer.createPwReq(buildPwReq());
-            requirementDtos = adminConsumer.getStoredPwReqs();
+            dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         }
 
         logger.info("Live password requirements: {}", requirementDtos);
@@ -266,99 +267,99 @@ public class AdminConsumerTest extends GenericConsumerTest {
             dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
         }
         if (dto != null) {
-            adminConsumer.deletePwReq(dto.getId());
+            adminConsumer.deletePasswordRequirementDto(dto.getId());
         }
     }
 
     @Test
-    public void createPwReqTest() throws Exception {
+    public void createPasswordRequirementDtoTest() throws Exception {
         loginSystem();
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getStoredPwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         if (requirementDtos == null || requirementDtos.isEmpty()) {
-            adminConsumer.createPwReq(buildPwReq());
-            requirementDtos = adminConsumer.getStoredPwReqs();
+            adminConsumer.createPasswordRequirementDto(buildPwReq());
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         }
 
         PasswordRequirementDto dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
 
         if (dto != null) {
-            adminConsumer.deletePwReq(dto.getId());
+            adminConsumer.deletePasswordRequirementDto(dto.getId());
         }
 
-        dto = adminConsumer.createPwReq(buildPwReq());
+        dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
         logger.info("Newly created password requirement: {}", dto);
         assertNotNull("New password requirement must not be null", dto);
-        adminConsumer.deletePwReq(dto.getId());
+        adminConsumer.deletePasswordRequirementDto(dto.getId());
     }
 
     @Test
-    public void updatePwReqTest() throws Exception {
+    public void updatePasswordRequirementDtoTest() throws Exception {
         loginSystem();
 
         String newValue = "456";
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getStoredPwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         if (requirementDtos == null || requirementDtos.isEmpty()) {
-            adminConsumer.createPwReq(buildPwReq());
-            requirementDtos = adminConsumer.getStoredPwReqs();
+            adminConsumer.createPasswordRequirementDto(buildPwReq());
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         }
 
         PasswordRequirementDto dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
 
         if (dto == null) {
-            dto = adminConsumer.createPwReq(buildPwReq());
+            dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
         }
         dto.setWhitelist(newValue);
-        dto = adminConsumer.updatePwReq(dto);
+        dto = adminConsumer.updatePasswordRequirementDto(dto);
         logger.info("Updated pw req: {}", dto);
         assertEquals("Updated pw req must have adopted a new value", newValue, dto.getWhitelist());
 
-        adminConsumer.deletePwReq(dto.getId());
+        adminConsumer.deletePasswordRequirementDto(dto.getId());
     }
 
     @Test
-    public void deletePwReqTest() throws Exception {
+    public void deletePasswordRequirementDtoTest() throws Exception {
         loginSystem();
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getStoredPwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         if (requirementDtos == null || requirementDtos.isEmpty()) {
-            adminConsumer.createPwReq(buildPwReq());
-            requirementDtos = adminConsumer.getStoredPwReqs();
+            adminConsumer.createPasswordRequirementDto(buildPwReq());
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         }
 
         PasswordRequirementDto dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
 
         if (dto == null) {
-            dto = adminConsumer.createPwReq(buildPwReq());
+            dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
         }
 
         assertNotNull("Pw req must be available in Stored list", dto);
-        adminConsumer.deletePwReq(dto.getId());
+        adminConsumer.deletePasswordRequirementDto(dto.getId());
 
-        requirementDtos = adminConsumer.getStoredPwReqs();
+        requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
         dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
         assertNull("PwReq must be removed by now", dto);
 
     }
 
     @Test
-    public void refreshPwReqsTest() throws Exception {
+    public void refreshPasswordRequirementDtoLiveTest() throws Exception {
         loginSystem();
 
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getLivePwReqs();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
         PasswordRequirementDto dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
 
         if (dto == null) {
-            dto = adminConsumer.createPwReq(buildPwReq());
-            adminConsumer.refreshPwReqs();
+            dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
+            adminConsumer.refreshPasswordRequirementDtoLive();
             pause(1000);
-            requirementDtos = adminConsumer.getLivePwReqs();
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
             dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
             logger.info("PwReq after creation and refresh: {}", dto);
             assertNotNull("PwReq must be in Live after its created and refreshed", dto);
-            adminConsumer.deletePwReq(dto.getId());
+            adminConsumer.deletePasswordRequirementDto(dto.getId());
         } else {
-            adminConsumer.deletePwReq(dto.getId());
-            adminConsumer.refreshPwReqs();
-            requirementDtos = adminConsumer.getLivePwReqs();
+            adminConsumer.deletePasswordRequirementDto(dto.getId());
+            adminConsumer.refreshPasswordRequirementDtoLive();
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
             dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
             logger.info("PwReq after deletion and refresh: {}", dto);
             assertNull("PwReq must be no longer in Live after its deleted and refreshed", dto);

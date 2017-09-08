@@ -45,6 +45,9 @@ public abstract class AdminApi {
     @RestEndpoint(url = "/pwreq/live", method = HttpMethod.GET, dtoType = PasswordRequirementDto.class, action = "getAllLive")
     public abstract List<PasswordRequirementDto> getLivePasswordRequirements();
 
+    @RestEndpoint(url = "/pwreq/stored", method = HttpMethod.GET, dtoType = PasswordRequirementDto.class, action = "getAllStored")
+    public abstract List<PasswordRequirementDto> getStoredPasswordRequirements();
+
 
     @RestEndpoint(url = "/pwreq/refresh", method = HttpMethod.PUT, dtoType = PasswordRequirementDto.class, action = "refreshLive")
     public abstract void refreshPasswordRequirements();
