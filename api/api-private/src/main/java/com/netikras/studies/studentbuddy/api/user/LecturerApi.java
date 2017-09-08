@@ -25,7 +25,7 @@ public abstract class LecturerApi {
             @MethodParam(type = Type.URL, name = "id") String disciplineId);
 
 
-    @RestEndpoint(url = "/discipline/id/{id}", method = HttpMethod.GET)
+    @RestEndpoint(url = "/person/id/{id}", method = HttpMethod.GET)
     public abstract LecturerDto getByPersonId(
             @MethodParam(type = Type.URL, name = "id") String personId);
 
