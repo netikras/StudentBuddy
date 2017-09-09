@@ -41,6 +41,11 @@ public abstract class AdminApi {
             @MethodParam(type = Type.URL, name = "name") String name
     );
 
+    @RestEndpoint(url = "/settings/stored/name/{name}", method = HttpMethod.DELETE, dtoType = SystemSettingDto.class, action = "deleteStoredByName")
+    public abstract void deleteStoredSettingByName(
+            @MethodParam(type = Type.URL, name = "name") String name
+    );
+
 
     @RestEndpoint(url = "/pwreq/live", method = HttpMethod.GET, dtoType = PasswordRequirementDto.class, action = "getAllLive")
     public abstract List<PasswordRequirementDto> getLivePasswordRequirements();

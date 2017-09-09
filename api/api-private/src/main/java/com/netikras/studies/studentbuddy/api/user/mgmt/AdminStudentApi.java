@@ -46,10 +46,10 @@ public abstract class AdminStudentApi {
     );
 
 
-    @RestEndpoint(url = "/group/{groupId}/students/{studentId}", method = HttpMethod.DELETE, dtoType = StudentDto.class)
+    @RestEndpoint(url = "/group/{groupId}/students", method = HttpMethod.DELETE, dtoType = StudentDto.class)
     public abstract void removeAllFromGroup(
             @MethodParam(type = Type.URL, name = "groupId") String groupId,
-            @MethodParam(type = Type.URL, name = "studentIds") List<String> studentIds
+            @MethodParam(type = Type.BODY, name = "studentIds") List<String> studentIds
     );
 
 

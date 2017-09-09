@@ -63,9 +63,9 @@ public class GenericConsumerTest {
     }
 
     protected UserDto login(String username, String password) {
-        UserDto userDto = userConsumer.loginUserDto("system", "system", new AuthenticationDetail()
-                .setUsername("system")
-                .setPassword("system")
+        UserDto userDto = userConsumer.loginUserDto(username, password, new AuthenticationDetail()
+                .setUsername(username)
+                .setPassword(password)
         );
         return userDto;
     }

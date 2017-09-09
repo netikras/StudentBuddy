@@ -38,7 +38,8 @@ import java.util.Properties;
         P.BASE_PACKAGE + ".core.data.sys.dao"
 })
 @PropertySource({"classpath:persistence-jndi.properties"})
-@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+//@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
+@EnableTransactionManagement(mode = AdviceMode.PROXY)
 public class ApiConfig {
 
     String[] datamodelPackages = {

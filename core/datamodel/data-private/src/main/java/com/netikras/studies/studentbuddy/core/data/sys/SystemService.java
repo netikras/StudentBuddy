@@ -11,6 +11,8 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
 import com.netikras.tools.common.remote.http.HttpStatus;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +44,9 @@ public class SystemService {
 
 
     public List<PasswordRequirement> getPasswordRequirements() {
+        if (passwordRequirements == null) {
+            refreshPaswordRequirements();
+        }
         return passwordRequirements;
     }
 
@@ -73,6 +78,9 @@ public class SystemService {
 
 
     public List<SystemSetting> getSystemSettings() {
+        if (systemSettings == null) {
+            refreshSettings();
+        }
         return systemSettings;
     }
 
@@ -325,6 +333,7 @@ public class SystemService {
         return settingsDao.findOne(id);
     }
 
+    @Transactional
     public void deleteSystemSetting(String id) {
         settingsDao.delete(id);
     }

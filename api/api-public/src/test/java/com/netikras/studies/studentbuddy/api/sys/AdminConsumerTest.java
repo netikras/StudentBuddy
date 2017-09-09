@@ -86,7 +86,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
         logger.info("Live settings: {}", settingDtos);
         assertNotNull("There should be at least one live setting", settingDtos);
         assertFalse("There should be at least one live setting in the list", settingDtos.isEmpty());
-        adminConsumer.deleteSystemSettingDto(buildSetting().getName());
+        adminConsumer.deleteSystemSettingDtoStoredByName(buildSetting().getName());
         adminConsumer.refreshSystemSettingDtoLive();
     }
 
@@ -102,7 +102,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
         logger.info("Stored settings: {}", settingDtos);
         assertNotNull("There should be at least one stored setting", settingDtos);
         assertFalse("There should be at least one stored setting in the list", settingDtos.isEmpty());
-        adminConsumer.deleteSystemSettingDto(buildSetting().getName());
+        adminConsumer.deleteSystemSettingDtoStoredByName(buildSetting().getName());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
         }
 
         assertNotNull("Stored setting DTO must not be null", settingDto);
-        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        adminConsumer.deleteSystemSettingDtoStoredByName(settingDto.getName());
     }
 
     @Test
@@ -175,7 +175,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
 
         logger.info("Updated setting: {}", settingDto);
         assertEquals("Updated setting value should have changed", newValue, settingDto.getValue());
-        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        adminConsumer.deleteSystemSettingDtoStoredByName(settingDto.getName());
         adminConsumer.refreshSystemSettingDtoLive();
         settingDto = adminConsumer.updateSystemSettingDto(settingDto);
         assertNull("Must not allow updating non-existent settings", settingDto);
@@ -193,7 +193,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
             settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         }
         assertNotNull("Setting DTO must have been created for deletion", settingDto);
-        adminConsumer.deleteSystemSettingDto(settingDto.getName());
+        adminConsumer.deleteSystemSettingDtoStoredByName(settingDto.getName());
         settingDto = adminConsumer.getSystemSettingDtoLive(settingDto.getName());
         assertNotNull("Setting DTO must still be available in Live after deletion", settingDto);
         settingDto = adminConsumer.getSystemSettingDtoStored(settingDto.getName());
@@ -209,7 +209,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
         loginSystem();
         SystemSettingDto settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
         if (settingDto != null) {
-            adminConsumer.deleteSystemSettingDto(settingDto.getName());
+            adminConsumer.deleteSystemSettingDtoStoredByName(settingDto.getName());
             adminConsumer.refreshSystemSettingDtoLive();
             pause(1000);
             settingDto = adminConsumer.getSystemSettingDtoLive(buildSetting().getName());
@@ -252,11 +252,12 @@ public class AdminConsumerTest extends GenericConsumerTest {
     @Test
     public void getPwReqsTest() throws Exception {
         loginSystem();
-        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
+        List<PasswordRequirementDto> requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
         PasswordRequirementDto dto = null;
         if (requirementDtos == null || requirementDtos.isEmpty()) {
             dto = adminConsumer.createPasswordRequirementDto(buildPwReq());
-            requirementDtos = adminConsumer.getPasswordRequirementDtoAllStored();
+            adminConsumer.refreshPasswordRequirementDtoLive();
+            requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
         }
 
         logger.info("Live password requirements: {}", requirementDtos);
@@ -359,6 +360,7 @@ public class AdminConsumerTest extends GenericConsumerTest {
         } else {
             adminConsumer.deletePasswordRequirementDto(dto.getId());
             adminConsumer.refreshPasswordRequirementDtoLive();
+            pause(1000);
             requirementDtos = adminConsumer.getPasswordRequirementDtoAllLive();
             dto = findRequirement(buildPwReq().getTitle(), requirementDtos);
             logger.info("PwReq after deletion and refresh: {}", dto);

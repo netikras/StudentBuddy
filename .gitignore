@@ -31,6 +31,6 @@ config.codekit
 _sprite.properties
 .gradle/
 
-
+build/
 
 generated/
