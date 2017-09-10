@@ -117,7 +117,7 @@ public class AssignmentConsumer extends AssignmentApiProducer {
     @Override
     @Authorizable(resource = ASSIGNMENT, action = CREATE)
     protected AssignmentDto onCreateAssignmentDtoNew(String dueLectureId, String description) {
-        Lecture lecture = lectureService.findLecture(dueLectureId);
+        Lecture lecture = lectureService.getLecture(dueLectureId);
 
         if (lecture == null) {
             throw new StudBudUncheckedException()

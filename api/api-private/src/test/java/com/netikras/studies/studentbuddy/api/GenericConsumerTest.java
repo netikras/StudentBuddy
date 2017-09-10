@@ -48,8 +48,14 @@ public class GenericConsumerTest {
     protected static final String SYSTEM_USER_PASSWORD = "system";
 
     public void initGenericConsumer() {
-        sessionContext = new SessionContext();
-        userConsumer = attachConsumer(new UserApiConsumer());
+        if (getSessionContext() == null) {
+            sessionContext = new SessionContext();
+        }
+
+        if (getUserConsumer() == null) {
+            userConsumer = attachConsumer(new UserApiConsumer());
+        }
+
     }
 
     protected <T extends GenericRestConsumer> T attachConsumer(T consumer) {

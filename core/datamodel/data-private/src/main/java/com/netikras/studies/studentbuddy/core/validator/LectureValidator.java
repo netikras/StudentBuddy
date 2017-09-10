@@ -11,6 +11,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
@@ -188,7 +190,6 @@ public class LectureValidator {
             }
         }
 
-
         test.setId(null);
         return errors;
     }
@@ -239,8 +240,95 @@ public class LectureValidator {
         return errors;
     }
 
+    @Transactional
+    public ErrorsCollection validateForRemoval(Assignment assignment, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (assignment == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing assignment")
+                    .setMessage1("Assignment is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
 
     @Transactional
+    public ErrorsCollection validateForRemoval(DisciplineTest test, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (test == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing test")
+                    .setMessage1("Test is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Lecture lecture, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (lecture == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing lecture")
+                    .setMessage1("Lecture is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<DisciplineTest> tests = lecture.getPendingTests();
+        List<LectureGuest> guests = lecture.getLectureGuests();
+        List<Assignment> assignments = lecture.getPendingAssignments();
+
+
+
+        if (!isNullOrEmpty(tests)) {
+            StringBuilder ids = new StringBuilder();
+            tests.forEach(test -> ids.append(test.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a lecture linked to other entities, such as tests, assignments, guests, etc.")
+                    .setMessage1("Lecture is linked to scheduled tests")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(assignments)) {
+            StringBuilder ids = new StringBuilder();
+            assignments.forEach(assignment -> ids.append(assignment.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a lecture linked to other entities, such as tests, assignments, guests, etc.")
+                    .setMessage1("Lecture is linked to scheduled assignments")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(guests)) {
+            StringBuilder ids = new StringBuilder();
+            guests.forEach(guest -> ids.append(guest.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a lecture linked to other entities, such as tests, assignments, guests, etc.")
+                    .setMessage1("Lecture is linked to guests")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+
+        @Transactional
     protected Lecture fetch(Lecture lecture) {
         Lecture existing = null;
 

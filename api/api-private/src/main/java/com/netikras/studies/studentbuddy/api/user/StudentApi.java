@@ -24,8 +24,8 @@ import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class StudentApi {
 
-    @RestEndpoint(url = "/person/id/{id}", method = HttpMethod.GET)
-    public abstract StudentDto getByPersonId(@MethodParam(type = Type.URL, name = "id") String id);
+    @RestEndpoint(url = "/person/id/{id}", method = HttpMethod.GET, dtoType = StudentDto.class)
+    public abstract List<StudentDto> getAllByPersonId(@MethodParam(type = Type.URL, name = "id") String id);
 
     @RestEndpoint(url = "/group/title/{title}", method = HttpMethod.GET)
     public abstract StudentsGroupDto getByTitle(@MethodParam(type = Type.URL, name = "title") String title);

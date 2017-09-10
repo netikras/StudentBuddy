@@ -124,8 +124,42 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public void deleteBuilding(String id) {
+        Building building = getBuilding(id);
+        ErrorsCollection errors = locationValidator.validateForRemoval(building, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove building")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         buildingDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeBuilding(String id) {
+        Building building = getBuilding(id);
+        if (building == null) {
+            return;
+        }
+
+        List<BuildingSection> sections = building.getSections();
+        List<BuildingFloor> floors = building.getFloors();
+
+        if (!isNullOrEmpty(sections)) {
+            sections.forEach(section -> purgeBuildingSection(section.getId()));
+            building.setSections(null);
+        }
+
+        if (!isNullOrEmpty(floors)) {
+            floors.forEach(floor -> floorService.purgeFloor(floor.getId()));
+            building.setSections(null);
+        }
     }
 
     @Override
@@ -169,11 +203,39 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public void deleteBuildingSection(String id) {
+        BuildingSection section = getBuildingSection(id);
+        ErrorsCollection errors = locationValidator.validateForRemoval(section, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove building section")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         buildingSectionDao.delete(id);
     }
 
     @Override
+    @Transactional
+    public void purgeBuildingSection(String id) {
+        BuildingSection section = getBuildingSection(id);
+        if (section == null) {
+            return;
+        }
+
+        List<BuildingFloor> floors = section.getFloors();
+        if (!isNullOrEmpty(floors)) {
+            floors.forEach(floor -> floorService.purgeFloor(floor.getId()));
+            section.setFloors(null);
+        }
+
+    }
+
+        @Override
     public Address getAddress(String id) {
         return addressDao.findOne(id);
     }
@@ -198,7 +260,41 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public void deleteAddress(String id) {
+        Address address = getAddress(id);
+        ErrorsCollection errors = locationValidator.validateForRemoval(address, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove address")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+        addressDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeAddress(String id) {
+        Address address = getAddress(id);
+        if (address == null) {
+            return;
+        }
+
+        Building building = buildingDao.findByAddress_Id(id);
+        BuildingSection section = buildingSectionDao.findByAddress_Id(id);
+
+        if (building != null) {
+            purgeBuilding(building.getId());
+        }
+
+        if (section != null) {
+            purgeBuildingSection(section.getId());
+        }
+
         addressDao.delete(id);
     }
 

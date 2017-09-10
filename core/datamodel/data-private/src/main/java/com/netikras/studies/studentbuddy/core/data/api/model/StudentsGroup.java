@@ -12,6 +12,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -54,6 +56,11 @@ public class StudentsGroup {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
     @ModelTransform(dtoFieldName = "members", dtoUpdatable = false)
     private List<Student> members;
+
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "school_id")
+    @ModelTransform(dtoFieldName = "school", dtoUpdatable = false)
+    private School school;
 
 
     public String getId() {
@@ -122,6 +129,14 @@ public class StudentsGroup {
         return members.remove(student);
     }
 
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
     @Override
     public String toString() {
         return "StudentsGroup{" +
@@ -131,6 +146,7 @@ public class StudentsGroup {
                 ", title='" + title + '\'' +
                 ", email='" + email + '\'' +
                 ", members=" + members +
+                ", school=" + school +
                 '}';
     }
 }

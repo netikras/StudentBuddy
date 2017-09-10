@@ -1,13 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user;
 
-import com.netikras.studies.studentbuddy.api.GenericConsumerTest;
-import com.netikras.studies.studentbuddy.api.ResponseListener;
-import com.netikras.studies.studentbuddy.api.user.generated.UserApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.tools.common.remote.AuthenticationDetail;
-import com.netikras.tools.common.remote.RemoteEndpointServer;
-import com.netikras.tools.common.remote.http.HttpRequest;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class UserConsumerTest extends GenericConsumerTest {
+public class UserConsumerTest extends GenericPersonAwareTest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private static UserDto SYSTEM_USER = new UserDto();
@@ -115,6 +108,16 @@ public class UserConsumerTest extends GenericConsumerTest {
         logger.info("Restored user: {}", userDto);
         assertEquals("User detail must have been restored", SYSTEM_USER.getName(), userDto.getName());
 
+    }
+
+
+    @Test
+    public void createUserTest() {
+        loginSystem();
+
+        UserDto userDto = buildUser(getPersonForTesting(), "user_jack", "pw123");
+        userDto = getUserConsumer().createUserDto(userDto);
+        System.out.println(userDto);
     }
 
 

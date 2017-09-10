@@ -6,10 +6,12 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineLecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class LecturerServiceImpl implements LecturerService {
@@ -28,9 +31,13 @@ public class LecturerServiceImpl implements LecturerService {
     @Resource
     private SchoolValidator schoolValidator;
 
+    @Resource
+    private LectureService lectureService;
+
+
 
     @Override
-    public Lecturer getLecturerByPerson(String personId) {
+    public List<Lecturer> getLecturersByPerson(String personId) {
         return lecturerDao.findByPerson_Id(personId);
     }
 
@@ -80,8 +87,38 @@ public class LecturerServiceImpl implements LecturerService {
     }
 
     @Override
+    @Transactional
     public void deleteLecturer(String id) {
+        Lecturer lecturer = getLecturer(id);
+        ErrorsCollection errors = schoolValidator.validateForRemoval(lecturer, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove lecturer")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         lecturerDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeLecturer(String id) {
+        Lecturer lecturer = getLecturer(id);
+
+        if (lecturer == null) {
+            return;
+        }
+
+        if (!isNullOrEmpty(lecturer.getLectures())) {
+            List<String> ids = new ArrayList<>();
+            lecturer.getLectures().forEach(lecture -> ids.add(lecture.getId()));
+            lectureService.purgeLectures(ids);
+        }
+
+        lecturerDao.delete(lecturer);
     }
 
     @Override
@@ -142,10 +179,12 @@ public class LecturerServiceImpl implements LecturerService {
     @Override
     public void detatchFromDiscipline(Lecturer lecturer, Discipline discipline) {
         List<DisciplineLecturer> disciplineLecturers = lecturer.getDisciplineLecturers();
-        int initialDiscCount = disciplineLecturers.size();
-        if (disciplineLecturers != null) {
-            disciplineLecturers.removeIf(disciplineLecturer -> discipline.equals(disciplineLecturer.getDiscipline()));
+        if (isNullOrEmpty(disciplineLecturers)) {
+            return;
         }
+
+        int initialDiscCount = disciplineLecturers.size();
+        disciplineLecturers.removeIf(disciplineLecturer -> discipline.equals(disciplineLecturer.getDiscipline()));
 
         if (initialDiscCount != disciplineLecturers.size()) { // dirty
             updateLecturer(lecturer);

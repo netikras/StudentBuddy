@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
@@ -99,8 +100,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUser(String id) {
+        User user = userDao.findOne(id);
+        ErrorsCollection errors = systemValidator.validateForRemoval(user, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot delete user")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         userDao.delete(id);
+    }
+
+
+    @Override
+    @Transactional
+    public void purgeUser(String id) {
+        User user = userDao.findOne(id);
+        if (user == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot purge user")
+                    .setMessage2("User not found")
+                    .setProbableCause(id)
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+        userDao.delete(user);
     }
 
     @Override

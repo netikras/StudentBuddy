@@ -78,11 +78,11 @@ public class StudentProducer extends StudentApiProducer {
 
     @Override
     @Authorizable(resource = STUDENT, action = GET)
-    protected StudentDto onGetStudentDtoByPersonId(String id) {
-        Student student = studentService.getStudentByPerson(id);
-        StudentDto studentDto = ModelMapper.transform(student, new StudentDto());
+    protected List<StudentDto> onGetStudentDtoAllByPersonId(String id) {
+        List<Student> students = studentService.getStudentsByPerson(id);
+        List<StudentDto> dtos = (List<StudentDto>) ModelMapper.transformAll(students, StudentDto.class);
 
-        return studentDto;
+        return dtos;
     }
 
     @Override

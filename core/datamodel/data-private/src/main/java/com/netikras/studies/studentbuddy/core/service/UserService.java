@@ -16,6 +16,8 @@ public interface UserService {
 
     void deleteUser(String id);
 
+    void purgeUser(String id);
+
     User findUser(String id);
 
     //    @Transactional

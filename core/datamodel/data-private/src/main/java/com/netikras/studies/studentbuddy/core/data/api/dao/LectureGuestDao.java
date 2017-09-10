@@ -10,4 +10,6 @@ public interface LectureGuestDao extends JpaRepo<LectureGuest> {
 
     List<LectureGuest> findAllByPerson_LastNameLikeIgnoreCase(String person_lastName);
 
+    List<LectureGuest> findAllByPerson_Id(String person_id);
+
 }

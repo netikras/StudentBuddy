@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface CommentsService {
 
-    Comment findComment(String id);
+    Comment getComment(String id);
 
     List<Comment> findComments(String entityName, String entityId);
 
@@ -38,4 +38,6 @@ public interface CommentsService {
     List<Comment> searchAllByTitle(String query);
 
     List<Comment> searchAllByText(String query);
+
+    void purgeComment(String id);
 }

@@ -326,15 +326,15 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         StudentsGroupDto groupDto = getNewGroupForTesting();
         StudentDto dummyStudent = buildStudent(personDto);
         dummyStudent.setGroup(groupDto);
-        StudentDto studentDto = studentConsumer.getStudentDtoByPersonId(personDto.getId());
+        List<StudentDto> studentDtos = studentConsumer.getStudentDtoAllByPersonId(personDto.getId());
 
-        if (studentDto != null) {
-            adminStudentConsumer.deleteStudentDto(studentDto.getId());
-            studentDto = studentConsumer.retrieveStudentDto(studentDto.getId());
+        if (!isNullOrEmpty(studentDtos)) {
+            studentDtos.forEach(studentDto -> adminStudentConsumer.deleteStudentDto(studentDto.getId()));
+            studentDtos = studentConsumer.getStudentDtoAllByPersonId(personDto.getId());
         }
 
-        assertNull("There should be no such student in the database now", studentDto);
-        studentDto = adminStudentConsumer.createStudentDto(dummyStudent);
+        assertNull("There should be no such student in the database now", studentDtos);
+        StudentDto studentDto = adminStudentConsumer.createStudentDto(dummyStudent);
         assertNotNull("New student should have been created", studentDto);
 
         return studentDto;
@@ -423,13 +423,13 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
     protected LecturerDto getNewLecturerForTesting() {
         LecturerDto dummyLecturer = buildLecturer(getPersonForTesting(), getNewDisciplineForTesting());
-        LecturerDto lecturerDto = lecturerConsumer.getLecturerDtoByPersonId(dummyLecturer.getPerson().getId());
+        List<LecturerDto> lecturerDtos = lecturerConsumer.getLecturerDtoAllByPersonId(dummyLecturer.getPerson().getId());
 
-        if (lecturerDto != null) {
-            adminLecturerConsumer.deleteLecturerDto(lecturerDto.getId());
+        if (!isNullOrEmpty(lecturerDtos)) {
+            lecturerDtos.forEach(lecturerDto -> adminLecturerConsumer.deleteLecturerDto(lecturerDto.getId()));
         }
 
-        lecturerDto = adminLecturerConsumer.createLecturerDto(dummyLecturer);
+        LecturerDto lecturerDto = adminLecturerConsumer.createLecturerDto(dummyLecturer);
         assertNotNull("Newly created lecturer must be non-null", lecturerDto);
 
         return lecturerDto;

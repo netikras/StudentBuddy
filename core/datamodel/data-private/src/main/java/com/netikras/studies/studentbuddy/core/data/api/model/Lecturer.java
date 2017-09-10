@@ -42,6 +42,15 @@ public class Lecturer {
     @ModelTransform(dtoUpdatable = false, dtoValueExtractField = "discipline")
     private List<DisciplineLecturer> disciplineLecturers;
 
+    @OneToMany(orphanRemoval = true, mappedBy = "lecturer", fetch = FetchType.LAZY)
+    @ModelTransform(dtoUpdatable = false)
+    private List<Lecture> lectures;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id")
+    @ModelTransform(dtoUpdatable = false)
+    private School school;
+
     public String getId() {
         return id;
     }
@@ -74,6 +83,22 @@ public class Lecturer {
         this.disciplineLecturers = disciplineLecturers;
     }
 
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
+    }
+
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
     @Override
     public String toString() {
         return "Lecturer{" +
@@ -81,6 +106,8 @@ public class Lecturer {
                 ", person=" + person +
                 ", degree='" + degree + '\'' +
                 ", disciplineLecturers=" + disciplineLecturers +
+                ", lectures=" + lectures +
+                ", school=" + school +
                 '}';
     }
 }

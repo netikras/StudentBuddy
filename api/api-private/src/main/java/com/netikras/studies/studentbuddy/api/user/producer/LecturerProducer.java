@@ -42,27 +42,29 @@ public class LecturerProducer extends LecturerApiProducer {
         return dto;
     }
 
+
     @Override
     @Authorizable(resource = LECTURER, action = GET)
-    protected List<LecturerDto> onGetListByDiscipline(String disciplineId) {
-        List<Lecturer> lecturers = lecturerService.findLecturersByDiscipline(disciplineId);
+    protected List<LecturerDto> onGetLecturerDtoByDiscipline(String id) {
+        List<Lecturer> lecturers = lecturerService.findLecturersByDiscipline(id);
+        List<LecturerDto> dtos = (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class);
+
+        return dtos;
+    }
+
+
+    @Override
+    @Authorizable(resource = LECTURER, action = GET)
+    protected List<LecturerDto> onGetLecturerDtoAllByPersonId(String id) {
+        List<Lecturer> lecturers = lecturerService.getLecturersByPerson(id);
         List<LecturerDto> dtos = (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class);
 
         return dtos;
     }
 
     @Override
-    @Authorizable(resource = LECTURER, action = GET)
-    protected LecturerDto onGetLecturerDtoByPersonId(String id) {
-        Lecturer lecturers = lecturerService.getLecturerByPerson(id);
-        LecturerDto dto = ModelMapper.transform(lecturers, new LecturerDto());
-
-        return dto;
-    }
-
-    @Override
     @Authorizable(resource = LECTURER, action = SEARCH)
-    protected List<LecturerDto> onSearchListAllLecturersByDegree(String degree) {
+    protected List<LecturerDto> onSearchLecturerDtoAllLecturersByDegree(String degree) {
         List<Lecturer> lecturers = lecturerService.searchAllByDegree(degree);
         List<LecturerDto> lecturerDtos =
                 (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));
@@ -72,7 +74,7 @@ public class LecturerProducer extends LecturerApiProducer {
 
     @Override
     @Authorizable(resource = LECTURER, action = SEARCH)
-    protected List<LecturerDto> onSearchListByFirstName(String fname) {
+    protected List<LecturerDto> onSearchLecturerDtoByFirstName(String fname) {
         List<Lecturer> lecturers = lecturerService.searchAllByFirstName(fname);
         List<LecturerDto> lecturerDtos =
                 (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));
@@ -82,7 +84,7 @@ public class LecturerProducer extends LecturerApiProducer {
 
     @Override
     @Authorizable(resource = LECTURER, action = SEARCH)
-    protected List<LecturerDto> onSearchListAllLecturersByLastName(String lname) {
+    protected List<LecturerDto> onSearchLecturerDtoAllLecturersByLastName(String lname) {
         List<Lecturer> lecturers = lecturerService.searchAllByLastName(lname);
         List<LecturerDto> lecturerDtos =
                 (List<LecturerDto>) ModelMapper.transformAll(lecturers, LecturerDto.class, new MappingSettings().setDepthMax(3));

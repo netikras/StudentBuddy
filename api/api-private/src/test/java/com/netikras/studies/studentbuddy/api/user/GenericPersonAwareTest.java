@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.api.GenericConsumerTest;
 import com.netikras.studies.studentbuddy.api.user.generated.PersonApiConsumer;
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminPersonApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import org.junit.Before;
 
 public class GenericPersonAwareTest extends GenericConsumerTest {
@@ -30,6 +31,20 @@ public class GenericPersonAwareTest extends GenericConsumerTest {
         personDto.setPhoneNo("+37062346284");
 
         return personDto;
+    }
+
+    protected UserDto buildUser(PersonDto personDto, String username, String password) {
+        UserDto userDto = new UserDto();
+
+        userDto.setPerson(personDto);
+        userDto.setName(username);
+        userDto.setPassword(password);
+
+        return userDto;
+    }
+
+    protected UserDto buildUser() {
+        return buildUser(buildPerson(), "Andy007", "bondJamesBond007");
     }
 
     protected PersonDto getPersonForTesting() {

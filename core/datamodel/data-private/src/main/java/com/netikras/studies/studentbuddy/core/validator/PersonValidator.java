@@ -1,9 +1,16 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureGuestDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentsGroupDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -12,10 +19,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.EXPECTATION_FAILED;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
+import static com.netikras.tools.common.security.IntegrityUtils.ensureValue;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Component
@@ -23,16 +32,23 @@ public class PersonValidator {
 
     @Resource
     private StudentDao studentDao;
-
     @Resource
     private StudentsGroupDao groupDao;
-
     @Resource
     private PersonDao personDao;
+    @Resource
+    private PersonnelDao personnelDao;
+    @Resource
+    private LecturerDao lecturerDao;
+    @Resource
+    private LectureGuestDao guestDao;
+    @Resource
+    private LectureDao lectureDao;
+
 
     @Transactional
-    public ErrorsCollection validatePersonForCreation(Person person, ErrorsCollection errors) {
-        if (errors == null) errors = new ErrorsCollection();
+    public ErrorsCollection validateForCreation(Person person, ErrorsCollection errors) {
+        errors = ensure(errors);
 
         if (person == null) {
             errors.add(new ValidationError()
@@ -71,8 +87,8 @@ public class PersonValidator {
     }
 
     @Transactional
-    public ErrorsCollection validateStudentForCreation(Student student, ErrorsCollection errors) {
-        if (errors == null) errors = new ErrorsCollection();
+    public ErrorsCollection validateForCreation(Student student, ErrorsCollection errors) {
+        errors = ensure(errors);
 
         if (student == null) {
             errors.add(new ValidationError()
@@ -106,8 +122,8 @@ public class PersonValidator {
         } else {
             compare(person, student.getPerson(), errors);
             student.setPerson(person);
-            Student existingStudent = studentDao.findByPerson_Id(person.getId());
-            if (existingStudent != null) {
+            List<Student> existingStudents = studentDao.findByPerson_Id(person.getId());
+            if (!isNullOrEmpty(existingStudents)) {
                 errors.add(new ValidationError()
                         .setSuggestion("Each person can have only one STUDENT record. Either use an existing student or remove it " +
                                 "and create a new one")
@@ -122,8 +138,8 @@ public class PersonValidator {
     }
 
     @Transactional
-    public ErrorsCollection validateGroupForCreation(StudentsGroup group, ErrorsCollection errors) {
-        if (errors == null) errors = new ErrorsCollection();
+    public ErrorsCollection validateForCreation(StudentsGroup group, ErrorsCollection errors) {
+        errors = ensure(errors);
 
         if (group == null) {
             errors.add(new ValidationError()
@@ -151,6 +167,143 @@ public class PersonValidator {
 
         return errors;
     }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Person person, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (person == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a person a valid person ID must be supplied")
+                    .setMessage1("Person is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<Student> students = studentDao.findByPerson_Id(person.getId());
+        List<PersonnelMember> personnelMembers = personnelDao.findAllByPerson_Id(person.getId());
+        List<Lecturer> lecturers = lecturerDao.findByPerson_Id(person.getId());
+        List<LectureGuest> guests = guestDao.findAllByPerson_Id(person.getId());
+
+        if (!isNullOrEmpty(students)) {
+            StringBuilder ids = new StringBuilder();
+            personnelMembers.forEach(pm -> ids.append(pm.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a person it cannot be linked to any other entity (student, lecturer, etc.)")
+                    .setMessage1("Person is a student")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(lecturers)) {
+            StringBuilder ids = new StringBuilder();
+            personnelMembers.forEach(pm -> ids.append(pm.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a person it cannot be linked to any other entity (student, lecturer, etc.)")
+                    .setMessage1("Person is a lecturers")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(personnelMembers)) {
+            StringBuilder ids = new StringBuilder();
+            personnelMembers.forEach(pm -> ids.append(pm.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a person it cannot be linked to any other entity (student, lecturer, etc.)")
+                    .setMessage1("Person is a personnel member")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(guests)) {
+            StringBuilder ids = new StringBuilder();
+            guests.forEach(g -> ids.append(g.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a person it cannot be linked to any other entity (student, lecturer, etc.)")
+                    .setMessage1("Person is a lecture guest")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Student student, ErrorsCollection errors) {
+        errors = ensure(errors);
+        if (student == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a student a valid student ID must be supplied")
+                    .setMessage1("Student is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(LectureGuest guest, ErrorsCollection errors) {
+        errors = ensure(errors);
+        if (guest == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a lecture guest a valid guest ID must be supplied")
+                    .setMessage1("Guest is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(StudentsGroup group, ErrorsCollection errors) {
+        errors = ensure(errors);
+        if (group == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a students group a valid group ID must be supplied")
+                    .setMessage1("Group is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<Student> students = group.getMembers();
+        int lecturesCount = lectureDao.countAllByStudentsGroup_Id(group.getId());
+
+        if (!isNullOrEmpty(students)) {
+            StringBuilder ids = new StringBuilder();
+            students.forEach(student -> ids.append(student.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a students group it cannot be linked to any other entity (student, lecture, etc.)")
+                    .setMessage1("Students group has members")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (lecturesCount > 0) {
+            errors.add(new ValidationError()
+                    .setSuggestion("In order to remove a students group it cannot be linked to any other entity (student, lecture, etc.)")
+                    .setMessage1("Students group has lectures")
+                    .setCausedBy("" + lecturesCount)
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
 
     protected void compare(StudentsGroup groupFromDb, StudentsGroup suppliedGroup, ErrorsCollection errors) {
 
@@ -249,6 +402,10 @@ public class PersonValidator {
         }
 
         return fetchedPerson;
+    }
+
+    private ErrorsCollection ensure(ErrorsCollection errors) {
+        return ensureValue(errors, ErrorsCollection.class);
     }
 
 }

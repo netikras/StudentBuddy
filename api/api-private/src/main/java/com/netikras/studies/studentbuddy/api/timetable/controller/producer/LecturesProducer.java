@@ -45,7 +45,7 @@ public class LecturesProducer extends LecturesApiProducer {
     @Override
     @Authorizable(resource = LECTURE, action = GET)
     protected LectureDto onRetrieveLectureDto(String id) {
-        Lecture lecture = lectureService.findLecture(id);
+        Lecture lecture = lectureService.getLecture(id);
         LectureDto lectureDto = ModelMapper.transform(lecture, new LectureDto());
         return lectureDto;
     }

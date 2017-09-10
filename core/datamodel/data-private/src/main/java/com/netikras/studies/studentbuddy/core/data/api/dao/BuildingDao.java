@@ -13,4 +13,6 @@ public interface BuildingDao extends JpaRepo<Building> {
 
     List<Building> findAllByTitleLikeIgnoreCase(String title);
 
+    Building findByAddress_Id(String address_id);
+
 }

@@ -1,0 +1,5 @@
+dependencies {
+    // https://mvnrepository.com/artifact/simple-jndi/simple-jndi
+    testCompile group: 'simple-jndi', name: 'simple-jndi', version: "${sjndiVersion}"
+
+}

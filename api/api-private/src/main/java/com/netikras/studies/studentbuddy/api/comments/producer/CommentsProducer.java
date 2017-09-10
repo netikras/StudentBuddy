@@ -41,7 +41,7 @@ public class CommentsProducer extends CommentsApiProducer {
 
     @Override
     protected CommentDto onRetrieveCommentDto(String id) {
-        Comment comment = commentsService.findComment(id);
+        Comment comment = commentsService.getComment(id);
         throwIfActionNotAllowedForComment(comment, COMMENT_GET);
         CommentDto commentDto = ModelMapper.transform(comment, new CommentDto());
         return commentDto;
@@ -242,7 +242,7 @@ public class CommentsProducer extends CommentsApiProducer {
     }
 
     private void throwIfActionNotAllowedForCommentId(String commentId, Action action) {
-        Comment comment = commentsService.findComment(commentId);
+        Comment comment = commentsService.getComment(commentId);
         throwIfActionNotAllowedForComment(comment, action);
     }
 }

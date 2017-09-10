@@ -121,8 +121,8 @@ public class AdminStudentProducer extends AdminStudentApiProducer {
     @Override
     @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDtoByPersonId(String personId, String lectureId) {
-        Person person = personService.findPerson(personId);
-        Lecture lecture = lectureService.findLecture(lectureId);
+        Person person = personService.getPerson(personId);
+        Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
         LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
 
@@ -134,7 +134,7 @@ public class AdminStudentProducer extends AdminStudentApiProducer {
     @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDtoByPersonIdentifier(String personId, String lectureId) {
         Person person = personService.findPersonByIdentifier(personId);
-        Lecture lecture = lectureService.findLecture(lectureId);
+        Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
         LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
 

@@ -31,7 +31,7 @@ public class CommentsServiceImpl implements CommentsService {
     private CommentValidator commentValidator;
 
     @Override
-    public Comment findComment(String id) {
+    public Comment getComment(String id) {
         return commentDao.findOne(id);
     }
 
@@ -41,8 +41,31 @@ public class CommentsServiceImpl implements CommentsService {
     }
 
     @Override
+    @Transactional
     public void deleteComment(String id) {
+        Comment comment = getComment(id);
+        ErrorsCollection errors = commentValidator.validateForRemoval(comment, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove comment")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         commentDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeComment(String id) {
+        Comment comment = getComment(id);
+        if (comment == null) {
+            return;
+        }
+
+        commentDao.delete(comment);
     }
 
     @Transactional
@@ -98,7 +121,7 @@ public class CommentsServiceImpl implements CommentsService {
     public void removeTag(String commentId, String tagId) {
         boolean pristine = true;
 
-        Comment comment = findComment(commentId);
+        Comment comment = getComment(commentId);
         if (comment == null) return;
 
         if (tagId == null || tagId.isEmpty()) return;

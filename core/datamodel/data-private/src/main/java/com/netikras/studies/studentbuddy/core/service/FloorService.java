@@ -17,6 +17,8 @@ public interface FloorService {
 
     void deleteFloor(String id);
 
+    void purgeFloor(String id);
+
     LectureRoom getRoom(String id);
 
     LectureRoom updateRoom(LectureRoom lectureRoom);
@@ -24,6 +26,8 @@ public interface FloorService {
     LectureRoom createRoom(LectureRoom lectureRoom);
 
     void deleteRoom(String id);
+
+    void purgeRoom(String id);
 
     FloorLayout getFloorLayout(String id);
 

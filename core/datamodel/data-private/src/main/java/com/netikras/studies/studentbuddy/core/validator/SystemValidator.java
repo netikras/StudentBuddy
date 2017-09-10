@@ -218,6 +218,20 @@ public class SystemValidator {
     }
 
 
+    public ErrorsCollection validateForRemoval(User user, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (user == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("User is not provided")
+                    .setMessage1("User is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
 
     private ErrorsCollection ensure(ErrorsCollection errors) {
         return ensureValue(errors, ErrorsCollection.class);

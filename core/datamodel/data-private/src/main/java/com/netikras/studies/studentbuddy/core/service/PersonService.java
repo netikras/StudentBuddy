@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PersonService {
 
-    Person findPerson(String id);
+    Person getPerson(String id);
 
     Person findPersonByIdentifier(String identifier);
 
@@ -31,6 +31,8 @@ public interface PersonService {
     Person createPerson(Person person);
 
     void deletePerson(String id);
+
+    void purgePerson(String id);
 
     Person updatePerson(Person person);
 

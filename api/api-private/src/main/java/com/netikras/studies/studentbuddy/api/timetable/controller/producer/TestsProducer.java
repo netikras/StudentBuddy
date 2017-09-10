@@ -70,7 +70,7 @@ public class TestsProducer extends TestsApiProducer {
     @Override
     @Authorizable(resource = TEST, action = CREATE)
     protected DisciplineTestDto onCreateDisciplineTestDtoNew(String dueLectureId, String description) {
-        Lecture lecture = lectureService.findLecture(dueLectureId);
+        Lecture lecture = lectureService.getLecture(dueLectureId);
 
         if (lecture == null) {
             throw new StudBudUncheckedException()

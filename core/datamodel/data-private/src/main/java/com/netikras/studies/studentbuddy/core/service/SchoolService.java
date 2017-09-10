@@ -18,6 +18,8 @@ public interface SchoolService {
     void deleteSchool(String id);
 
 
+    void purgeSchool(String id);
+
     SchoolDepartment createSchoolDepartment(SchoolDepartment department);
 
     SchoolDepartment getSchoolDepartment(String id);
@@ -26,6 +28,8 @@ public interface SchoolService {
 
     void deleteSchoolDepartment(String id);
 
+
+    void purgeSchoolDepartment(String id);
 
     PersonnelMember createPersonnelMember(PersonnelMember member);
 
@@ -68,7 +72,11 @@ public interface SchoolService {
 
     List<PersonnelMember> searchAllPersonnelByPersonalCode(String code);
 
+    void purgePersonnelMember(String id);
+
     List<PersonnelMember> getAllPersonnelBySchool(String schoolId);
+
+    void purgeDiscipline(String id);
 
     List<Discipline> getAllDisciplinesBySchoolId(String id);
 }

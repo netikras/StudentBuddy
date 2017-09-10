@@ -69,6 +69,7 @@ public class User {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
+    @ModelTransform(dtoUpdatable = false)
     private Person person;
 
     public String getId() {

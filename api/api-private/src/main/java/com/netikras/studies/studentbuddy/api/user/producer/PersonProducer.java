@@ -27,7 +27,7 @@ public class PersonProducer extends PersonApiProducer {
     @Override
     @Authorizable(resource = PERSON, action = GET)
     protected PersonDto onRetrievePersonDto(String id) {
-        Person person = personService.findPerson(id);
+        Person person = personService.getPerson(id);
         PersonDto personDto = ModelMapper.transform(person, new PersonDto());
 
         return personDto;

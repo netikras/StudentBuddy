@@ -109,8 +109,26 @@ public class CommentValidator {
         return errors;
     }
 
-
     @Transactional
+    public ErrorsCollection validateForRemoval(Comment comment, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (comment == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot create a non-existing comment")
+                    .setMessage1("Comment is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+
+
+        return errors;
+    }
+
+
+        @Transactional
     public ErrorsCollection validateForAssignment(Tag tag, Comment comment, ErrorsCollection errors) {
         errors = ensure(errors);
 

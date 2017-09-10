@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface LecturerService {
 
-    Lecturer getLecturerByPerson(String personId);
+    List<Lecturer> getLecturersByPerson(String personId);
 
     Lecturer getLecturer(String id);
 
@@ -20,6 +20,8 @@ public interface LecturerService {
     Lecturer updateLecturer(Lecturer Lecturer);
 
     void deleteLecturer(String id);
+
+    void purgeLecturer(String id);
 
     void deleteLecturerByPerson(String personId);
 

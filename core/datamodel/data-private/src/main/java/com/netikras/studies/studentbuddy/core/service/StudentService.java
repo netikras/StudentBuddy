@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface StudentService {
 
-    Student getStudentByPerson(String personId);
+    List<Student> getStudentsByPerson(String personId);
 
     Student getStudent(String id);
 
@@ -19,6 +19,8 @@ public interface StudentService {
     Student updateStudent(Student student);
 
     void deleteStudent(String id);
+
+    void purgeStudent(String id);
 
     void deleteStudentByPerson(String personId);
 
@@ -48,6 +50,8 @@ public interface StudentService {
 
     void deleteStudentsGroup(String groupId);
 
+    void purgeStudentsGroup(String groupId);
+
     LectureGuest createLectureGuest(LectureGuest student);
 
     LectureGuest createLectureGuest(Person person, Lecture lecture);
@@ -58,6 +62,8 @@ public interface StudentService {
 
 
     LectureGuest getLectureGuest(String id);
+
+    void purgeLectureGuest(String id);
 
     List<LectureGuest> searchAllGuestsByFirstName(String query);
 

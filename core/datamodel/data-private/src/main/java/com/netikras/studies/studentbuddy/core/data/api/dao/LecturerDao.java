@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface LecturerDao extends JpaRepo<Lecturer> {
 
-    Lecturer findByPerson_Id(String person_id);
+    List<Lecturer> findByPerson_Id(String person_id);
 
     void deleteAllByPerson_Id(String person_id);
 

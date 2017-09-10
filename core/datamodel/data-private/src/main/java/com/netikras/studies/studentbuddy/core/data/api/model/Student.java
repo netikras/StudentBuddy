@@ -52,6 +52,16 @@ public class Student {
     @ModelTransform(dtoFieldName = "group", dtoUpdatable = false)
     private StudentsGroup group;
 
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "school_id")
+    @ModelTransform(dtoFieldName = "school", dtoUpdatable = false)
+    private School school;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "department_id")
+    @ModelTransform(dtoFieldName = "department", dtoUpdatable = false)
+    private SchoolDepartment department;
+
     public String getId() {
         return id;
     }
@@ -92,6 +102,22 @@ public class Student {
         this.group = group;
     }
 
+    public School getSchool() {
+        return school;
+    }
+
+    public void setSchool(School school) {
+        this.school = school;
+    }
+
+    public SchoolDepartment getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(SchoolDepartment department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -100,6 +126,8 @@ public class Student {
                 ", updatedOn=" + updatedOn +
                 ", person=" + person +
                 ", group=" + group +
+                ", school=" + school +
+                ", department=" + department +
                 '}';
     }
 }

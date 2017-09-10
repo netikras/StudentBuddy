@@ -58,4 +58,15 @@ public interface LectureDao extends JpaRepo<Lecture> {
     List<Lecture> findByLectureGuestsContainingAndStartsOnBetween(Student exclusiveStudent, Date startsAfter, Date startsBefore);
 
     List<Lecture> findByRoomAndStartsOnBetween(LectureRoom room, Date startsAfter, Date startsBefore);
+
+    List<Lecture> findAllByStudentsGroup_Id(String studentsGroup_id);
+
+    List<Lecture> findAllByRoom_Id(String room_id);
+
+    int countAllByStudentsGroup_Id(String studentsGroup_id);
+
+    int countAllByDiscipline_Id(String discipline_id);
+
+    int countAllByRoom_Id(String room_id);
+
 }

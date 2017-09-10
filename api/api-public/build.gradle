@@ -2,5 +2,4 @@ apply from: "$rootProject.rootDir/conf/global.gradle"
 
 loadDep "commons"
 
-loadDep "testing"
 loadProj ":core:datamodel:data-public"

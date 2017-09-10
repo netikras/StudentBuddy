@@ -1,10 +1,17 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureGuestDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
+import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
+import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
@@ -25,7 +32,7 @@ public class PersonServiceImpl implements PersonService {
     private PersonValidator personValidator;
 
     @Override
-    public Person findPerson(String id) {
+    public Person getPerson(String id) {
         return personDao.findOne(id);
     }
 
@@ -82,7 +89,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person createPerson(Person person) {
-        ErrorsCollection errors = personValidator.validatePersonForCreation(person, null);
+        ErrorsCollection errors = personValidator.validateForCreation(person, null);
         if (!errors.isEmpty()) {
             throw new StudBudUncheckedException()
                     .setMessage1("Cannot create new person")
@@ -98,14 +105,18 @@ public class PersonServiceImpl implements PersonService {
     @Override
     @Transactional
     public void deletePerson(String id) {
-        Person person = personDao.findOne(id);
-        if (person == null) {
+        Person person = getPerson(id);
+        ErrorsCollection errors = personValidator.validateForRemoval(person, null);
+        if (!errors.isEmpty()) {
             throw new StudBudUncheckedException()
-                    .setMessage1("Cannot delete a person")
-                    .setMessage2("Such person does not exist")
+                    .setMessage1("Cannot remove person")
+                    .setMessage2("Validation errors: " + errors.size())
                     .setProbableCause(id)
-                    .setStatusCode(NOT_FOUND);
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
+
         if (person.getUserTags() != null) {
             for (Tag tag : person.getUserTags()) {
                 tag.setCreatedBy(null);
@@ -113,6 +124,31 @@ public class PersonServiceImpl implements PersonService {
             personDao.saveAndFlush(person);
         }
         personDao.delete(id);
+    }
+
+    @Resource
+    private StudentDao studentDao;
+    @Resource
+    private LecturerDao lecturerDao;
+    @Resource
+    private LectureGuestDao guestDao;
+    @Resource
+    private StudentService studentService;
+    @Resource
+    private LecturerService lecturerService;
+    @Resource
+    private SchoolService schoolService;
+
+    @Override
+    @Transactional
+    public void purgePerson(String id) {
+        Person person = getPerson(id);
+        if (person == null) {
+            return;
+        }
+
+        List<Lecturer> lecturers = lecturerDao.findByPerson_Id(id);
+
     }
 
     @Override

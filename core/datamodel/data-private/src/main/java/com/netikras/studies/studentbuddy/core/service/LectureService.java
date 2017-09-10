@@ -10,7 +10,7 @@ import java.util.List;
 public interface LectureService {
 
     // Lookup
-    Lecture findLecture(String id);
+    Lecture getLecture(String id);
 
     List<Lecture> findLectures(Date startsAfter, Date startsBefore);
 
@@ -101,4 +101,12 @@ public interface LectureService {
     List<DisciplineTest> searchAllTestsByDescription(String query);
 
     List<DisciplineTest> findAllTestsByDescription(String query);
+
+    void purgeLecture(String id);
+
+    void purgeLectures(List<String> lectureIds);
+
+    void purgeLectureTest(String testId);
+
+    void purgeLectureAssignment(String id);
 }

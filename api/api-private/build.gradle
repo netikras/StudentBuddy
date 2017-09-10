@@ -5,6 +5,8 @@ loadDep "servlet"
 loadDep "spring-web"
 loadDep "spring-aspects"
 loadDep "commons"
+loadDep "simple-jndi"
+loadDep "testing"
 
 loadProj ':api:api-public'
 loadProj ':core:datamodel:data-private'

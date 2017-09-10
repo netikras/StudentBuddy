@@ -6,16 +6,24 @@ import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Student;
+import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
+import com.netikras.studies.studentbuddy.core.data.api.model.Website;
+import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
@@ -38,6 +46,13 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Resource
     private SchoolValidator schoolValidator;
+
+    @Resource
+    private LectureService lectureService;
+    @Resource
+    private LecturerService lecturerService;
+    @Resource
+    private StudentService studentService;
 
 
     @Override
@@ -82,10 +97,69 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void deleteSchool(String id) {
+        School school = getSchool(id);
+        ErrorsCollection errors = schoolValidator.validateForRemoval(school, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove school")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         schoolDao.delete(id);
     }
 
     @Override
+    @Transactional
+    public void purgeSchool(String id) {
+        School school = getSchool(id);
+        if (school == null) {
+            return;
+        }
+
+        List<SchoolDepartment> departments = school.getDepartments();
+        List<Discipline> disciplines = school.getDisciplines();
+        List<Lecturer> lecturers = school.getLecturers();
+        List<PersonnelMember> personnelMembers = school.getPersonnel();
+        List<Student> students = school.getStudents();
+        List<StudentsGroup> groups = school.getGroups();
+
+        if (!isNullOrEmpty(departments)) {
+            departments.forEach(department -> purgeSchoolDepartment(department.getId()));
+            school.setDepartments(null);
+        }
+
+        if (!isNullOrEmpty(disciplines)) {
+            disciplines.forEach(discipline -> purgeDiscipline(discipline.getId()));
+            school.setDisciplines(null);
+        }
+
+        if (!isNullOrEmpty(lecturers)) {
+            lecturers.forEach(lecturer -> lecturerService.purgeLecturer(lecturer.getId()));
+            school.setLecturers(null);
+        }
+
+        if (!isNullOrEmpty(personnelMembers)) {
+            personnelMembers.forEach(member -> purgePersonnelMember(member.getId()));
+            school.setPersonnel(null);
+        }
+
+        if (!isNullOrEmpty(students)) {
+            students.forEach(student -> studentService.purgeStudent(student.getId()));
+            school.setStudents(null);
+        }
+
+        if (!isNullOrEmpty(groups)) {
+            groups.forEach(group -> studentService.purgeStudentsGroup(group.getId()));
+            school.setGroups(null);
+        }
+
+        schoolDao.delete(school);
+    }
+
+        @Override
     public SchoolDepartment createSchoolDepartment(SchoolDepartment department) {
         ErrorsCollection errors = schoolValidator.validateForCreation(department, null);
         if (!errors.isEmpty()) {
@@ -111,7 +185,29 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void deleteSchoolDepartment(String id) {
+        SchoolDepartment department = getSchoolDepartment(id);
+        ErrorsCollection errors = schoolValidator.validateForRemoval(department, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove school department")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         departmentDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeSchoolDepartment(String id) {
+        SchoolDepartment department = getSchoolDepartment(id);
+        if (department == null) {
+            return;
+        }
+
+        departmentDao.delete(department);
     }
 
     @Override
@@ -140,7 +236,29 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void deletePersonnelMember(String id) {
+        PersonnelMember personnelMember = getPersonnelMember(id);
+        ErrorsCollection errors = schoolValidator.validateForRemoval(personnelMember, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove personnel member")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         personnelDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgePersonnelMember(String id) {
+        PersonnelMember personnelMember = getPersonnelMember(id);
+        if (personnelMember == null) {
+            return;
+        }
+
+        personnelDao.delete(personnelMember);
     }
 
     @Override
@@ -165,7 +283,37 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public void deleteDiscipline(String id) {
+        Discipline discipline = getDiscipline(id);
+        ErrorsCollection errors = schoolValidator.validateForRemoval(discipline, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot remove discipline")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setProbableCause(id)
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         disciplineDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeDiscipline(String id) {
+        Discipline discipline = getDiscipline(id);
+        if (discipline == null) {
+            return;
+        }
+
+        List<Website> websites = discipline.getSites();
+
+        if (!isNullOrEmpty(discipline.getLectures())) {
+            List<String> ids = new ArrayList<>();
+            discipline.getLectures().forEach(lecture -> ids.add(lecture.getId()));
+            lectureService.purgeLectures(ids);
+        }
+
+        disciplineDao.delete(discipline);
     }
 
     @Override

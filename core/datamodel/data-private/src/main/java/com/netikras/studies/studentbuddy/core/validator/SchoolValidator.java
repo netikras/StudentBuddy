@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
@@ -11,6 +12,10 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Student;
+import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
+import com.netikras.studies.studentbuddy.core.data.api.model.Website;
+import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import org.springframework.stereotype.Component;
@@ -21,6 +26,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 import static com.netikras.tools.common.security.IntegrityUtils.ensureValue;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
@@ -39,6 +45,10 @@ public class SchoolValidator {
 
     @Resource
     private LecturerDao lecturerDao;
+
+    @Resource
+    private LectureDao lectureDao;
+
 
     @Resource
     private DisciplineDao disciplineDao;
@@ -301,6 +311,215 @@ public class SchoolValidator {
             }
 
             lect.setId(null);
+        }
+
+        return errors;
+    }
+
+
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Discipline discipline, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (discipline == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing discipline")
+                    .setMessage1("Discipline is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<Website> websites = discipline.getSites();
+        List<DisciplineLecturer> lecturers = discipline.getLecturers();
+        int lecturesCount = lectureDao.countAllByDiscipline_Id(discipline.getId());
+
+
+        if (!isNullOrEmpty(websites)) {
+            StringBuilder ids = new StringBuilder();
+            websites.forEach(website -> ids.append(website.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete discipline linked to other downstream entities, such as websites, lecturers, lectures, etc.")
+                    .setMessage1("Discipline is linked to websites")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(lecturers)) {
+            StringBuilder ids = new StringBuilder();
+            lecturers.forEach(lecturer -> ids.append(lecturer.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete discipline linked to other downstream entities, such as websites, lecturers, lectures, etc.")
+                    .setMessage1("Discipline is linked to lecturers")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (lecturesCount > 0) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete discipline linked to other downstream entities, such as websites, lecturers, lectures, etc.")
+                    .setMessage1("Discipline is linked to lectures")
+                    .setCausedBy("" + lecturesCount)
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Lecturer lecturer, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (lecturer == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing lecturer")
+                    .setMessage1("Lecturer is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<Lecture> lectures = lecturer.getLectures();
+
+        if (!isNullOrEmpty(lectures)) {
+            StringBuilder ids = new StringBuilder();
+            lectures.forEach(lecture -> ids.append(lecture.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete lecturer linked to other downstream entities, such as lectures, etc.")
+                    .setMessage1("School is linked to lectures")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(PersonnelMember member, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (member == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing personnel member")
+                    .setMessage1("Personnel member is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(SchoolDepartment department, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (department == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing school department")
+                    .setMessage1("School department is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(School school, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (school == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing school")
+                    .setMessage1("School is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<SchoolDepartment> departments = school.getDepartments();
+        List<Discipline> disciplines = school.getDisciplines();
+        List<Lecturer> lecturers = school.getLecturers();
+        List<PersonnelMember> personnelMembers = school.getPersonnel();
+        List<Student> students = school.getStudents();
+        List<StudentsGroup> groups = school.getGroups();
+
+        if (!isNullOrEmpty(departments)) {
+            StringBuilder ids = new StringBuilder();
+            departments.forEach(department -> ids.append(department.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to departments")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(disciplines)) {
+            StringBuilder ids = new StringBuilder();
+            disciplines.forEach(discipline -> ids.append(discipline.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to disciplines")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(lecturers)) {
+            StringBuilder ids = new StringBuilder();
+            lecturers.forEach(lecturer -> ids.append(lecturer.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to lecturers")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(personnelMembers)) {
+            StringBuilder ids = new StringBuilder();
+            personnelMembers.forEach(member -> ids.append(member.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to personnel")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(students)) {
+            StringBuilder ids = new StringBuilder();
+            students.forEach(student -> ids.append(student.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to students")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(groups)) {
+            StringBuilder ids = new StringBuilder();
+            groups.forEach(group -> ids.append(group.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete school linked to other downstream entities, such as departments, disciplines, lecturers, student groups, personnel, etc.")
+                    .setMessage1("School is linked to student groups")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
         }
 
         return errors;

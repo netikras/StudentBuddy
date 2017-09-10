@@ -17,6 +17,8 @@ public interface LocationService {
 
     void deleteBuilding(String id);
 
+    void purgeBuilding(String id);
+
     BuildingSection getBuildingSection(String id);
 
     BuildingSection updateBuildingSection(BuildingSection buildingSection);
@@ -25,6 +27,8 @@ public interface LocationService {
 
     void deleteBuildingSection(String id);
 
+    void purgeBuildingSection(String id);
+
     Address getAddress(String id);
 
     Address updateAddress(Address address);
@@ -32,6 +36,8 @@ public interface LocationService {
     Address createAddress(Address address);
 
     void deleteAddress(String id);
+
+    void purgeAddress(String id);
 
     List<Building> searchAllBuildingsByTitle(String query);
 

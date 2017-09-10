@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureGuestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentsGroupDao;
@@ -9,6 +10,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
+import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -17,27 +19,33 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
     @Resource
     private StudentDao studentDao;
-
     @Resource
     private StudentsGroupDao groupDao;
-
     @Resource
     private LectureGuestDao lectureGuestDao;
-
     @Resource
     private PersonValidator personValidator;
+    @Resource
+    private LectureService lectureService;
+    @Resource
+    private LectureDao lectureDao;
 
 
     @Override
     @Transactional
-    public Student getStudentByPerson(String personId) {
+    public List<Student> getStudentsByPerson(String personId) {
         return studentDao.findByPerson_Id(personId);
     }
 
@@ -50,7 +58,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public Student createStudent(Student student) {
-        ErrorsCollection errors = personValidator.validateStudentForCreation(student, null);
+        ErrorsCollection errors = personValidator.validateForCreation(student, null);
         if (!errors.isEmpty()) {
             throw new StudBudUncheckedException()
                     .setErrors(errors)
@@ -71,7 +79,34 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteStudent(String id) {
+        Student student = getStudent(id);
+        ErrorsCollection errors = personValidator.validateForRemoval(student, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setErrors(errors)
+                    .setMessage1("Cannot remove student")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST);
+        }
+
         studentDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeStudent(String id) {
+        Student student = getStudent(id);
+        if (student == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot purge student")
+                    .setMessage2("Student not found")
+                    .setProbableCause(id)
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+
+        studentDao.delete(student);
     }
 
     @Override
@@ -178,13 +213,13 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public StudentsGroup createStudentsGroup(StudentsGroup group) {
         ErrorsCollection errors = new ErrorsCollection();
-        errors = personValidator.validateGroupForCreation(group, errors);
+        errors = personValidator.validateForCreation(group, errors);
         if (!errors.isEmpty()) {
             throw new StudBudUncheckedException()
                     .setErrors(errors)
                     .setMessage1("Cannot create a new students group")
                     .setMessage2("New group validation failed")
-                    .setStatusCode(HttpStatus.BAD_REQUEST);
+                    .setStatusCode(BAD_REQUEST);
         }
         group.setId(null);
         return groupDao.save(group);
@@ -193,13 +228,49 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteStudentsGroup(String groupId) {
-
         StudentsGroup group = groupDao.findOne(groupId);
-        if (group != null) {
-
+        ErrorsCollection errors = personValidator.validateForRemoval(group, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot delete group")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
 
         groupDao.delete(groupId);
+    }
+
+    @Override
+    @Transactional
+    public void purgeStudentsGroup(String groupId) {
+        StudentsGroup group = getStudentsGroup(groupId);
+        if (group == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot purge group")
+                    .setMessage2("Group not found")
+                    .setProbableCause(groupId)
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+
+        List<Student> students = group.getMembers();
+
+        List<String> ids = new ArrayList<>();
+        students.forEach(student -> ids.add(student.getId()));
+        removeStudentsFromGroup(groupId, ids);
+
+        group.setMembers(null);
+
+        List<Lecture> lectures = lectureDao.findAllByStudentsGroup_Id(groupId);
+        if (!isNullOrEmpty(lectures)) {
+            List<String> lectureIds = new ArrayList<>();
+            lectures.forEach(lecture -> lectureIds.add(lecture.getId()));
+            lectureService.purgeLectures(lectureIds);
+        }
+
+        groupDao.delete(group);
     }
 
     @Override
@@ -232,7 +303,34 @@ public class StudentServiceImpl implements StudentService {
     @Override
     @Transactional
     public void deleteLectureGuest(String id) {
+        LectureGuest guest = lectureGuestDao.findOne(id);
+        ErrorsCollection errors = personValidator.validateForRemoval(guest, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot delete guest")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
         lectureGuestDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeLectureGuest(String id) {
+        LectureGuest guest = getLectureGuest(id);
+        if (guest == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot purge guest")
+                    .setMessage2("Guest not found")
+                    .setProbableCause(id)
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+
+        lectureGuestDao.delete(guest);
     }
 
     @Override

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -41,6 +42,11 @@ public class BuildingSection {
     @OneToMany(mappedBy = "section", fetch = FetchType.EAGER, orphanRemoval = true)
     @ModelTransform(dtoUpdatable = false)
     private List<BuildingFloor> floors;
+
+    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "address_id")
+    @ModelTransform(dtoUpdatable = false)
+    private Address address;
 
     public String getId() {
         return id;
@@ -74,6 +80,14 @@ public class BuildingSection {
         this.floors = floors;
     }
 
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "BuildingSection{" +
@@ -81,6 +95,7 @@ public class BuildingSection {
                 ", building=" + building +
                 ", title='" + title + '\'' +
                 ", floors=" + floors +
+                ", address=" + address +
                 '}';
     }
 }

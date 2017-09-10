@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.core.validator;
 import com.netikras.studies.studentbuddy.core.data.api.dao.BuildingDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.BuildingSectionDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.FloorDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureRoomDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
@@ -344,6 +345,192 @@ public class LocationValidator {
         return errors;
     }
 
+    @Transactional
+    public ErrorsCollection validateForRemoval(Address address, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (address == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing address")
+                    .setMessage1("Address is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        Building building = buildingDao.findByAddress_Id(address.getId());
+        BuildingSection section = sectionDao.findByAddress_Id(address.getId());
+
+        if (building != null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete address linked to other downstream entities, such as buildings, building sections, etc.")
+                    .setMessage1("Address is linked to building")
+                    .setCausedBy(building.getId())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (section != null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete address linked to other downstream entities, such as buildings, building sections, etc.")
+                    .setMessage1("Address is linked to building section")
+                    .setCausedBy(section.getId())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(Building building, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (building == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing building")
+                    .setMessage1("Building is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<BuildingFloor> floors = building.getFloors();
+        List<BuildingSection> sections = building.getSections();
+
+        if (!isNullOrEmpty(floors)) {
+            StringBuilder ids = new StringBuilder();
+            floors.forEach(floor -> ids.append(floor.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete building linked to other downstream entities, such as building sections, floors, etc.")
+                    .setMessage1("Building is linked to floors")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        if (!isNullOrEmpty(sections)) {
+            StringBuilder ids = new StringBuilder();
+            sections.forEach(section -> ids.append(section.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete building linked to other downstream entities, such as building sections, floors, etc.")
+                    .setMessage1("Building is linked to building sections")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(BuildingSection section, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (section == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing building section")
+                    .setMessage1("Building section is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<BuildingFloor> floors = section.getFloors();
+
+        if (!isNullOrEmpty(floors)) {
+            StringBuilder ids = new StringBuilder();
+            floors.forEach(floor -> ids.append(floor.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete building section linked to other downstream entities, such as floors, etc.")
+                    .setMessage1("Building section is linked to floors")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(BuildingFloor floor, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (floor == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing floor")
+                    .setMessage1("Floor is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        List<LectureRoom> rooms = floor.getRooms();
+
+        if (!isNullOrEmpty(rooms)) {
+            StringBuilder ids = new StringBuilder();
+            rooms.forEach(room -> ids.append(room.getId()).append(" "));
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete floors linked to other downstream entities, such as lecture rooms, etc.")
+                    .setMessage1("Floor is linked to lecture rooms")
+                    .setCausedBy(ids.toString())
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+
+    @Resource
+    private LectureDao lectureDao;
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(LectureRoom room, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (room == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing room")
+                    .setMessage1("Room is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        int lecturesCount = lectureDao.countAllByRoom_Id(room.getId());
+
+        if (lecturesCount > 0) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete lecture rooms linked to other entities, such as lectures, etc.")
+                    .setMessage1("Lecture room is linked to lectures")
+                    .setCausedBy("" + lecturesCount)
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForRemoval(FloorLayout layout, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (layout == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot delete a non-existing floor layout")
+                    .setMessage1("Layout is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+
+
+        return errors;
+    }
 
     private ErrorsCollection ensure(ErrorsCollection errors) {
         return ensureValue(errors, ErrorsCollection.class);
