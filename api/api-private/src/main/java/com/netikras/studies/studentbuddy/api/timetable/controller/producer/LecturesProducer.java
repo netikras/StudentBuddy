@@ -17,6 +17,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.LECTURE;
 
 @RestController
@@ -25,6 +26,13 @@ public class LecturesProducer extends LecturesApiProducer {
     @Resource
     private LectureService lectureService;
 
+
+
+    @Override
+    @Authorizable(resource = LECTURE, action = PURGE)
+    protected void onPurgeLectureDto(String id) {
+        lectureService.purgeLecture(id);
+    }
 
     /*
      * @param groupId   Students' group ID, e.g. PIN13

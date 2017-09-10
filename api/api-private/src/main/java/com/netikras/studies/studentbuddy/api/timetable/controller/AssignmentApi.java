@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.timetable.controller;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
+import com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.RestApiLocation;
@@ -12,9 +13,10 @@ import com.netikras.tools.common.remote.http.rest.auto.generator.Param.Type;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
+import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PURGE;
 
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/assignment", cruds = {
-        @GenerateCrud(dtoType = AssignmentDto.class)
+        @GenerateCrud(dtoType = AssignmentDto.class, extend = {PURGE})
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class AssignmentApi {

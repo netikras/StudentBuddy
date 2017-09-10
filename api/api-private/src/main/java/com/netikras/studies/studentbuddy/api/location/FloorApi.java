@@ -14,11 +14,13 @@ import com.netikras.tools.common.remote.http.rest.auto.generator.Param.Type;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
+import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.GET_ALL;
+import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PURGE;
 
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/floor", cruds = {
-        @GenerateCrud(dtoType = BuildingFloorDto.class),
-        @GenerateCrud(dtoType = FloorLayoutDto.class, url = "/layout"),
-        @GenerateCrud(dtoType = LectureRoomDto.class, url = "/room")
+        @GenerateCrud(dtoType = BuildingFloorDto.class, extend = {PURGE}),
+        @GenerateCrud(dtoType = FloorLayoutDto.class, url = "/layout", extend = {PURGE}),
+        @GenerateCrud(dtoType = LectureRoomDto.class, url = "/room", extend = {PURGE}),
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class FloorApi {

@@ -15,11 +15,12 @@ import com.netikras.tools.common.remote.http.rest.auto.generator.Param.Type;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
+import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PURGE;
 
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/mgmt/student", cruds = {
-        @GenerateCrud(dtoType = StudentDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}),
-        @GenerateCrud(dtoType = StudentsGroupDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}, url = "/group"),
-        @GenerateCrud(dtoType = LectureGuestDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}, url = "/guest")
+        @GenerateCrud(dtoType = StudentDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}, extend = PURGE),
+        @GenerateCrud(dtoType = StudentsGroupDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}, url = "/group", extend = PURGE),
+        @GenerateCrud(dtoType = LectureGuestDto.class, methods = {CrudMethod.CREATE, CrudMethod.DELETE}, url = "/guest", extend = PURGE),
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class AdminStudentApi {

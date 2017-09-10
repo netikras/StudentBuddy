@@ -42,4 +42,6 @@ public interface FloorService {
     List<LectureRoom> searchAllRoomsByNumber(String query);
 
     List<BuildingFloor> searchAllByTitle(String query);
+
+    void purgeFloorLayout(String id);
 }

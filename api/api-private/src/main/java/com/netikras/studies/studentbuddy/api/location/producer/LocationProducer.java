@@ -20,6 +20,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ADDRESS;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.BUILDING;
@@ -30,6 +31,25 @@ public class LocationProducer extends LocationApiProducer {
 
     @Resource
     private LocationService locationService;
+
+    @Override
+    @Authorizable(resource = BUILDING, action = PURGE)
+    protected void onPurgeBuildingDto(String id) {
+        locationService.purgeBuilding(id);
+    }
+
+    @Override
+    @Authorizable(resource = BUILDING_SECTION, action = PURGE)
+    protected void onPurgeBuildingSectionDto(String id) {
+        locationService.purgeBuildingSection(id);
+    }
+
+    @Override
+    @Authorizable(resource = ADDRESS, action = PURGE)
+    protected void onPurgeAddressDto(String id) {
+        locationService.purgeAddress(id);
+    }
+
 
 
     @Override

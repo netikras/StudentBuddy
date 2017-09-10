@@ -19,6 +19,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.TEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
@@ -30,6 +31,11 @@ public class TestsProducer extends TestsApiProducer {
     private LectureService lectureService;
 
 
+    @Override
+    @Authorizable(resource = TEST, action = PURGE)
+    protected void onPurgeDisciplineTestDto(String id) {
+        lectureService.purgeLectureTest(id);
+    }
 
     @Override
     @Authorizable(resource = TEST, action = CREATE)

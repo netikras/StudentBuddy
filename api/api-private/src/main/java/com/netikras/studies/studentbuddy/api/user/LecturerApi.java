@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.api.user;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
 import com.netikras.tools.common.remote.http.rest.auto.CrudMethod;

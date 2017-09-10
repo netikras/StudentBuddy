@@ -20,6 +20,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.ASSIGNMENT;
 
 @RestController
@@ -29,6 +30,11 @@ public class AssignmentConsumer extends AssignmentApiProducer {
     private LectureService lectureService;
 
 
+    @Override
+    @Authorizable(resource = ASSIGNMENT, action = PURGE)
+    protected void onPurgeAssignmentDto(String id) {
+        lectureService.purgeLectureAssignment(id);
+    }
 
     @Override
     @Authorizable(resource = ASSIGNMENT, action = MODIFY)

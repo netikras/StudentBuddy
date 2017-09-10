@@ -48,6 +48,8 @@ public class ResponseListener extends RequestListener {
 
     @Override
     public Object onClientErrorResponse(HttpRequest request, HttpResponse response) {
+//        HttpResponseJsonImpl responseJson = (HttpResponseJsonImpl) response;
+//        logger.warn("Client error message: {}", responseJson.getObject());
         return super.onClientErrorResponse(request, response);
     }
 

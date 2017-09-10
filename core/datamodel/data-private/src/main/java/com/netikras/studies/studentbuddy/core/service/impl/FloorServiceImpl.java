@@ -231,6 +231,16 @@ public class FloorServiceImpl implements FloorService {
         floorLayoutDao.delete(id);
     }
 
+    @Override
+    @Transactional
+    public void purgeFloorLayout(String id) {
+        FloorLayout layout = getFloorLayout(id);
+        if (layout == null) {
+            return;
+        }
+
+        floorLayoutDao.delete(layout);
+    }
 
     // search
 

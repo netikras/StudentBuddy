@@ -23,6 +23,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET_ALL;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.DISCIPLINE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.PERSONNEL;
@@ -35,6 +36,30 @@ public class SchoolProducer extends SchoolApiProducer {
     @Resource
     private SchoolService schoolService;
 
+
+    @Override
+    @Authorizable(resource = SCHOOL, action = PURGE)
+    protected void onPurgeSchoolDto(String id) {
+        schoolService.purgeSchool(id);
+    }
+
+    @Override
+    @Authorizable(resource = SCHOOL_DEPARTMENT, action = PURGE)
+    protected void onPurgeSchoolDepartmentDto(String id) {
+        schoolService.purgeSchoolDepartment(id);
+    }
+
+    @Override
+    @Authorizable(resource = DISCIPLINE, action = PURGE)
+    protected void onPurgeDisciplineDto(String id) {
+        schoolService.purgeDiscipline(id);
+    }
+
+    @Override
+    @Authorizable(resource = PERSONNEL, action = PURGE)
+    protected void onPurgePersonnelMemberDto(String id) {
+        schoolService.purgePersonnelMember(id);
+    }
 
     @Override
     @Authorizable(resource = SCHOOL, action = DELETE)

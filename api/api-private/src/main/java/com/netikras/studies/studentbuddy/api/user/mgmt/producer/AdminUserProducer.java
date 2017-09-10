@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
 
 @RestController
@@ -20,6 +21,12 @@ public class AdminUserProducer extends AdminUserApiProducer {
     @Resource
     private UserService userService;
 
+
+    @Override
+    @Authorizable(resource = USER, action = PURGE)
+    protected void onPurgeUserDto(String id) {
+        userService.purgeUser(id);
+    }
 
     @Override
     @Authorizable(resource = USER, action = Action.CREATE)

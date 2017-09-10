@@ -43,7 +43,7 @@ public class BuildingSection {
     @ModelTransform(dtoUpdatable = false)
     private List<BuildingFloor> floors;
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @ModelTransform(dtoUpdatable = false)
     private Address address;

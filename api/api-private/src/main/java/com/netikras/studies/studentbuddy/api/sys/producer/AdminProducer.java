@@ -9,7 +9,6 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;

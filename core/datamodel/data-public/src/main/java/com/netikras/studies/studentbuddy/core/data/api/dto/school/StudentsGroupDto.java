@@ -11,6 +11,7 @@ public class StudentsGroupDto {
     private String title;
     private String email;
     private List<StudentDto> members;
+    private SchoolDto school;
 
     public String getId() {
         return id;
@@ -60,6 +61,14 @@ public class StudentsGroupDto {
         this.members = members;
     }
 
+    public SchoolDto getSchool() {
+        return school;
+    }
+
+    public void setSchool(SchoolDto school) {
+        this.school = school;
+    }
+
     @Override
     public String toString() {
         return "StudentsGroupDto{" +
@@ -69,6 +78,7 @@ public class StudentsGroupDto {
                 ", title='" + title + '\'' +
                 ", email='" + email + '\'' +
                 ", members=" + members +
+                ", school=" + school +
                 '}';
     }
 }

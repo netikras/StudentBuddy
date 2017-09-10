@@ -11,6 +11,8 @@ public class StudentDto {
     private Date updatedOn;
     private PersonDto person;
     private StudentsGroupDto group;
+    private SchoolDto school;
+    private SchoolDepartmentDto department;
 
     public String getId() {
         return id;
@@ -52,6 +54,22 @@ public class StudentDto {
         this.group = group;
     }
 
+    public SchoolDto getSchool() {
+        return school;
+    }
+
+    public void setSchool(SchoolDto school) {
+        this.school = school;
+    }
+
+    public SchoolDepartmentDto getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(SchoolDepartmentDto department) {
+        this.department = department;
+    }
+
     @Override
     public String toString() {
         return "StudentDto{" +
@@ -60,6 +78,8 @@ public class StudentDto {
                 ", updatedOn=" + updatedOn +
                 ", person=" + person +
                 ", group=" + group +
+                ", school=" + school +
+                ", department=" + department +
                 '}';
     }
 }

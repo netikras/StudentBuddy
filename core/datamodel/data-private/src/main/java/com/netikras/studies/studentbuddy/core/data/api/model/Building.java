@@ -49,7 +49,7 @@ public class Building {
     private Date updatedOn;
 
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @ModelTransform(dtoUpdatable = false)
     private Address address;

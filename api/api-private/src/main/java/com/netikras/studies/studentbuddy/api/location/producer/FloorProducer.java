@@ -20,6 +20,7 @@ import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP;
@@ -31,6 +32,23 @@ public class FloorProducer extends FloorApiProducer {
     @Resource
     private FloorService floorService;
 
+    @Override
+    @Authorizable(resource = FLOOR, action = PURGE)
+    protected void onPurgeBuildingFloorDto(String id) {
+        floorService.purgeFloor(id);
+    }
+
+    @Override
+    @Authorizable(resource = FLOOR_MAP, action = PURGE)
+    protected void onPurgeFloorLayoutDto(String id) {
+        floorService.purgeFloorLayout(id);
+    }
+
+    @Override
+    @Authorizable(resource = ROOM, action = PURGE)
+    protected void onPurgeLectureRoomDto(String id) {
+        floorService.purgeRoom(id);
+    }
 
     @Override
     @Authorizable(resource = FLOOR, action = MODIFY)

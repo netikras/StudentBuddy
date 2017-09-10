@@ -21,6 +21,7 @@ public enum Action {
     CREATE,
     MODIFY,
     DELETE,
+    PURGE,
     COMMENT_GET,
     COMMENT_CREATE,
     COMMENT_MODIFY,

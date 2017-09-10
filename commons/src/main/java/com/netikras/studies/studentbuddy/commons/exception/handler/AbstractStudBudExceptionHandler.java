@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.commons.exception.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netikras.tools.common.exception.ErrorBody;
 import com.netikras.tools.common.exception.FriendlyExceptionBase;
 import com.netikras.tools.common.remote.http.HttpStatus;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class AbstractStudBudExceptionHandler {
 
     protected abstract int getDefaultStatusCode();
+
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected ErrorBody processException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
         ErrorBody errorBody;

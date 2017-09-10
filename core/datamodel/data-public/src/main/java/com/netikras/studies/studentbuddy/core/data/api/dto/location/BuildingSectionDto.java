@@ -8,6 +8,7 @@ public class BuildingSectionDto {
     private BuildingDto building;
     private String title;
     private List<BuildingFloorDto> floors;
+    private AddressDto address;
 
     public String getId() {
         return id;
@@ -41,6 +42,14 @@ public class BuildingSectionDto {
         this.floors = floors;
     }
 
+    public AddressDto getAddress() {
+        return address;
+    }
+
+    public void setAddress(AddressDto address) {
+        this.address = address;
+    }
+
     @Override
     public String toString() {
         return "BuildingSectionDto{" +
@@ -48,6 +57,7 @@ public class BuildingSectionDto {
                 ", building=" + building +
                 ", title='" + title + '\'' +
                 ", floors=" + floors +
+                ", address=" + address +
                 '}';
     }
 }

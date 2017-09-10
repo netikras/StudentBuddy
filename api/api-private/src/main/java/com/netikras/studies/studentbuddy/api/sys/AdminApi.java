@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.sys;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
+import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;

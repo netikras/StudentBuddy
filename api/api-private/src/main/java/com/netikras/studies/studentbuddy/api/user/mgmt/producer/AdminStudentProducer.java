@@ -23,6 +23,7 @@ import java.util.List;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
@@ -39,6 +40,24 @@ public class AdminStudentProducer extends AdminStudentApiProducer {
     @Resource
     private LectureService lectureService;
 
+
+    @Override
+    @Authorizable(resource = STUDENT, action = PURGE)
+    protected void onPurgeStudentDto(String id) {
+        studentService.purgeStudent(id);
+    }
+
+    @Override
+    @Authorizable(resource = STUDENT_GROUP, action = PURGE)
+    protected void onPurgeStudentsGroupDto(String id) {
+        studentService.purgeStudentsGroup(id);
+    }
+
+    @Override
+    @Authorizable(resource = GUEST, action = PURGE)
+    protected void onPurgeLectureGuestDto(String id) {
+        studentService.purgeLectureGuest(id);
+    }
 
     @Override
     @Authorizable(resource = STUDENT, action = CREATE)

@@ -5,6 +5,7 @@ import com.netikras.studies.studentbuddy.api.user.GenericPersonAwareTest;
 import com.netikras.studies.studentbuddy.api.user.generated.StudentApiConsumer;
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminStudentApiConsumer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 import org.junit.Before;
@@ -54,6 +55,10 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
 
     protected StudentsGroupDto buildGroup() {
         StudentsGroupDto groupDto = new StudentsGroupDto();
+
+        SchoolDto schoolDto = new SchoolDto();
+        schoolDto.setTitle("Mutiny school");
+        groupDto.setSchool(schoolDto);
 
         groupDto.setEmail("pin13@gmail.com");
         groupDto.setTitle("PIN13");
@@ -129,9 +134,37 @@ public class AdminStudentConsumerTest extends GenericPersonAwareTest {
         removeTestGroup();
 
         studentDtos = studentConsumer.getStudentDtoAllByPersonId(personDto.getId());
-        assertNull("Student should be deleted by now", studentDto);
+        assertNull("Student should be deleted by now", studentDtos);
         removeTestPerson();
         removeTestGroup();
+    }
+
+    @Test
+    public void purgePersonTest() {
+        loginSystem();
+        PersonDto personDto = getPersonForTesting();
+        List<StudentDto> studentDtos = studentConsumer.getStudentDtoAllByPersonId(personDto.getId());
+        StudentDto studentDto;
+        if (isNullOrEmpty(studentDtos)) {
+            studentDto = buildStudent(personDto);
+            studentDto.setGroup(getGroupForTesting());
+            SchoolDto schoolDto = new SchoolDto();
+            schoolDto.setTitle("Mutiny school");
+            studentDto.setSchool(schoolDto);
+            studentDto = adminStudentConsumer.createStudentDto(studentDto);
+        } else {
+            studentDto = studentDtos.get(0);
+        }
+
+        assertNotNull("Student should be created by now", studentDto);
+
+        adminPersonConsumer.purgePersonDto(personDto.getId());
+
+        personDto = personConsumer.retrievePersonDto(personDto.getId());
+        studentDto = studentConsumer.retrieveStudentDto(studentDto.getId());
+
+        assertNull("Person should have been purged", personDto);
+        assertNull("Student should have been purged", studentDto);
     }
 
     @Test

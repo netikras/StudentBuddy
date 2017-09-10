@@ -28,6 +28,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartme
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
+import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -145,6 +146,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected BuildingDto buildBuilding() {
         BuildingDto buildingDto = new BuildingDto();
         buildingDto.setTitle("Main building");
+        buildingDto.setAddress(buildAddress());
         return buildingDto;
     }
 
@@ -379,15 +381,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     }
 
     protected BuildingDto getNewBuildingForTesting() {
-        BuildingDto dummyBuilding = buildBuilding(
-                buildAddress(),
-                buidBuildingSection(
-                        buildFloor(
-                                buildFloorLayout(),
-                                buildRoom()
-                        )
-                )
-        );
+        BuildingDto dummyBuilding = buildBuilding();
         BuildingDto buildingDto = null;
         List<BuildingDto> buildingDtos = locationConsumer.searchBuildingDtoAllByTitle(dummyBuilding.getTitle());
 
@@ -517,6 +511,24 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
         }
 
+    }
+
+
+    @Test
+    public void test1() {
+        initSchoolAware();
+        loginSystem();
+        BuildingDto buildingDto = getNewBuildingForTesting();
+        System.out.println(buildingDto);
+        BuildingSectionDto sectionDto = buidBuildingSection();
+        sectionDto.setBuilding(buildingDto);
+        sectionDto.setAddress(buildAddress());
+        sectionDto = locationConsumer.createBuildingSectionDto(sectionDto);
+        System.out.println(sectionDto);
+
+        locationConsumer.deleteBuildingDto(buildingDto.getId());
+
+        locationConsumer.purgeBuildingDto(buildingDto.getId());
     }
 
     @Test

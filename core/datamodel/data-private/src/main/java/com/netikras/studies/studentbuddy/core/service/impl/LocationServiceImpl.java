@@ -153,13 +153,15 @@ public class LocationServiceImpl implements LocationService {
 
         if (!isNullOrEmpty(sections)) {
             sections.forEach(section -> purgeBuildingSection(section.getId()));
-            building.setSections(null);
+            building.getSections().clear();
         }
 
         if (!isNullOrEmpty(floors)) {
             floors.forEach(floor -> floorService.purgeFloor(floor.getId()));
-            building.setSections(null);
+            building.getFloors().clear();
         }
+
+        buildingDao.delete(building);
     }
 
     @Override
@@ -233,6 +235,7 @@ public class LocationServiceImpl implements LocationService {
             section.setFloors(null);
         }
 
+        buildingSectionDao.delete(section);
     }
 
         @Override

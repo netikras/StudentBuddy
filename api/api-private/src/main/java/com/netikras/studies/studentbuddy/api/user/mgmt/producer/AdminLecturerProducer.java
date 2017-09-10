@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
 import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.meta.Resource.DISCIPLINE;
 
 @RestController
@@ -27,6 +28,12 @@ public class AdminLecturerProducer extends AdminLecturerApiProducer {
     @Resource
     private SchoolService schoolService;
 
+
+    @Override
+    @Authorizable(resource = DISCIPLINE, action = PURGE)
+    protected void onPurgeLecturerDto(String id) {
+        lecturerService.purgeLecturer(id);
+    }
 
     @Override
     @Authorizable(resource = DISCIPLINE, action = CREATE)

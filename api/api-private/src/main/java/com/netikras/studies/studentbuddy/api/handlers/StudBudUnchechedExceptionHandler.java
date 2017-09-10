@@ -12,6 +12,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @ControllerAdvice
 public class StudBudUnchechedExceptionHandler extends AbstractStudBudExceptionHandler {
@@ -24,7 +25,15 @@ public class StudBudUnchechedExceptionHandler extends AbstractStudBudExceptionHa
     @ResponseBody
     @Override
     public ErrorBody processException(HttpServletResponse response, HttpServletRequest request, Exception exception) {
-        return super.processException(response, request, exception);
+
+        ErrorBody errorBody = super.processException(response, request, exception);
+//        try {
+//            objectMapper.writeValue(response.getOutputStream(), errorBody);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        return errorBody;
     }
 
 
