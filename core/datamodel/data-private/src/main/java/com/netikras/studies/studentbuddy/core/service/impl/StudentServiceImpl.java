@@ -106,7 +106,7 @@ public class StudentServiceImpl implements StudentService {
                     ;
         }
 
-        studentDao.delete(student);
+        studentDao.delete(id);
     }
 
     @Override
@@ -270,7 +270,7 @@ public class StudentServiceImpl implements StudentService {
             lectureService.purgeLectures(lectureIds);
         }
 
-        groupDao.delete(group);
+        groupDao.delete(groupId);
     }
 
     @Override

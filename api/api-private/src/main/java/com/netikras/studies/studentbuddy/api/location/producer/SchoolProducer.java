@@ -40,7 +40,12 @@ public class SchoolProducer extends SchoolApiProducer {
     @Override
     @Authorizable(resource = SCHOOL, action = PURGE)
     protected void onPurgeSchoolDto(String id) {
-        schoolService.purgeSchool(id);
+        try {
+            schoolService.purgeSchool(id);
+        } catch (Exception e) {
+            e.printStackTrace();
+//            schoolService.purgeSchool(id);
+        }
     }
 
     @Override

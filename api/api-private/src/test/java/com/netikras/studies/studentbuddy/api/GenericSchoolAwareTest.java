@@ -545,7 +545,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         }
 
         if (!isNullOrEmpty(buildingDtos)) {
-            fail("Buildings should have been removed");
+            fail("Buildings should have been purged");
         }
     }
 
@@ -692,6 +692,8 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         testDto.setDiscipline(disciplineDto);
         testDto = testsConsumer.createDisciplineTestDto(testDto);
         assertNotNull("Discipline test should have been created", testDto);
+
+//        schoolConsumer.purgeDisciplineDto(disciplineDto.getId());
 
     }
 

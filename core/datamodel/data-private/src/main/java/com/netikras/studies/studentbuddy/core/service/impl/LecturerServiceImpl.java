@@ -118,7 +118,7 @@ public class LecturerServiceImpl implements LecturerService {
             lectureService.purgeLectures(ids);
         }
 
-        lecturerDao.delete(lecturer);
+        lecturerDao.delete(id);
     }
 
     @Override

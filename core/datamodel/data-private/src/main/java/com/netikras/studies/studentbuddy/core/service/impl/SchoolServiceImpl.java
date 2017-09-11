@@ -6,12 +6,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
-import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
-import com.netikras.studies.studentbuddy.core.data.api.model.Student;
-import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.studies.studentbuddy.core.data.api.model.Website;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
@@ -20,16 +17,15 @@ import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
-import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -55,6 +51,9 @@ public class SchoolServiceImpl implements SchoolService {
     private LecturerService lecturerService;
     @Resource
     private StudentService studentService;
+
+    @Resource
+    private EntityManager entityManager;
 
 
     @Override
@@ -114,7 +113,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional(propagation = REQUIRES_NEW)
+    @Transactional
     public void purgeSchool(String id) {
         School school = getSchool(id);
         if (school == null) {
@@ -123,37 +122,37 @@ public class SchoolServiceImpl implements SchoolService {
 
         if (!isNullOrEmpty(school.getDepartments())) {
             school.getDepartments().forEach(department -> purgeSchoolDepartment(department.getId()));
-//            school.setDepartments(null);
+            school.getDepartments().clear();
         }
 
         if (!isNullOrEmpty(school.getDisciplines())) {
             school.getDisciplines().forEach(discipline -> purgeDiscipline(discipline.getId()));
-//            school.setDisciplines(null);
+            school.getDisciplines().clear();
         }
 
         if (!isNullOrEmpty(school.getLecturers())) {
             school.getLecturers().forEach(lecturer -> lecturerService.purgeLecturer(lecturer.getId()));
-//            school.setLecturers(null);
+            school.getLecturers().clear();
         }
 
         if (!isNullOrEmpty(school.getPersonnel())) {
             school.getPersonnel().forEach(member -> purgePersonnelMember(member.getId()));
-//            school.setPersonnel(null);
+            school.getPersonnel().clear();
         }
 
         if (!isNullOrEmpty(school.getStudents())) {
             school.getStudents().forEach(student -> studentService.purgeStudent(student.getId()));
-//            school.setStudents(null);
+            school.getStudents().clear();
         }
 
         if (!isNullOrEmpty(school.getGroups())) {
             school.getGroups().forEach(group -> studentService.purgeStudentsGroup(group.getId()));
-//            school.setGroups(null);
+            school.getGroups().clear();
         }
 
         school = getSchool(id);
 
-        schoolDao.delete(school);
+        schoolDao.delete(id);
     }
 
     @Override
@@ -197,14 +196,14 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional(propagation = REQUIRES_NEW)
+    @Transactional
     public void purgeSchoolDepartment(String id) {
         SchoolDepartment department = getSchoolDepartment(id);
         if (department == null) {
             return;
         }
 
-        departmentDao.delete(department);
+        departmentDao.delete(id);
     }
 
     @Override
@@ -248,14 +247,14 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional(propagation = REQUIRES_NEW)
+    @Transactional
     public void purgePersonnelMember(String id) {
         PersonnelMember personnelMember = getPersonnelMember(id);
         if (personnelMember == null) {
             return;
         }
 
-        personnelDao.delete(personnelMember);
+        personnelDao.delete(id);
     }
 
     @Override
@@ -295,7 +294,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional(propagation = REQUIRES_NEW)
+    @Transactional
     public void purgeDiscipline(String id) {
         Discipline discipline = getDiscipline(id);
         if (discipline == null) {
@@ -318,9 +317,7 @@ public class SchoolServiceImpl implements SchoolService {
             discipline.getTests().forEach(test -> lectureService.purgeLectureTest(test.getId()));
         }
 
-        discipline = getDiscipline(id);
-
-        disciplineDao.delete(discipline);
+        disciplineDao.delete(id);
     }
 
     @Override

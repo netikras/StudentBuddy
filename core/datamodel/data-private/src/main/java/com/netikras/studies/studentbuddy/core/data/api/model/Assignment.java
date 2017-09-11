@@ -35,7 +35,7 @@ public class Assignment {
     @JoinColumn(name = "lecture_id")
     private Lecture lecture;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "discipline_id")
     @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
