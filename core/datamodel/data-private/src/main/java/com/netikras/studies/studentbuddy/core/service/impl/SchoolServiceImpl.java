@@ -20,6 +20,7 @@ import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -112,54 +114,49 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgeSchool(String id) {
         School school = getSchool(id);
         if (school == null) {
             return;
         }
 
-        List<SchoolDepartment> departments = school.getDepartments();
-        List<Discipline> disciplines = school.getDisciplines();
-        List<Lecturer> lecturers = school.getLecturers();
-        List<PersonnelMember> personnelMembers = school.getPersonnel();
-        List<Student> students = school.getStudents();
-        List<StudentsGroup> groups = school.getGroups();
-
-        if (!isNullOrEmpty(departments)) {
-            departments.forEach(department -> purgeSchoolDepartment(department.getId()));
-            school.setDepartments(null);
+        if (!isNullOrEmpty(school.getDepartments())) {
+            school.getDepartments().forEach(department -> purgeSchoolDepartment(department.getId()));
+//            school.setDepartments(null);
         }
 
-        if (!isNullOrEmpty(disciplines)) {
-            disciplines.forEach(discipline -> purgeDiscipline(discipline.getId()));
-            school.setDisciplines(null);
+        if (!isNullOrEmpty(school.getDisciplines())) {
+            school.getDisciplines().forEach(discipline -> purgeDiscipline(discipline.getId()));
+//            school.setDisciplines(null);
         }
 
-        if (!isNullOrEmpty(lecturers)) {
-            lecturers.forEach(lecturer -> lecturerService.purgeLecturer(lecturer.getId()));
-            school.setLecturers(null);
+        if (!isNullOrEmpty(school.getLecturers())) {
+            school.getLecturers().forEach(lecturer -> lecturerService.purgeLecturer(lecturer.getId()));
+//            school.setLecturers(null);
         }
 
-        if (!isNullOrEmpty(personnelMembers)) {
-            personnelMembers.forEach(member -> purgePersonnelMember(member.getId()));
-            school.setPersonnel(null);
+        if (!isNullOrEmpty(school.getPersonnel())) {
+            school.getPersonnel().forEach(member -> purgePersonnelMember(member.getId()));
+//            school.setPersonnel(null);
         }
 
-        if (!isNullOrEmpty(students)) {
-            students.forEach(student -> studentService.purgeStudent(student.getId()));
-            school.setStudents(null);
+        if (!isNullOrEmpty(school.getStudents())) {
+            school.getStudents().forEach(student -> studentService.purgeStudent(student.getId()));
+//            school.setStudents(null);
         }
 
-        if (!isNullOrEmpty(groups)) {
-            groups.forEach(group -> studentService.purgeStudentsGroup(group.getId()));
-            school.setGroups(null);
+        if (!isNullOrEmpty(school.getGroups())) {
+            school.getGroups().forEach(group -> studentService.purgeStudentsGroup(group.getId()));
+//            school.setGroups(null);
         }
+
+        school = getSchool(id);
 
         schoolDao.delete(school);
     }
 
-        @Override
+    @Override
     public SchoolDepartment createSchoolDepartment(SchoolDepartment department) {
         ErrorsCollection errors = schoolValidator.validateForCreation(department, null);
         if (!errors.isEmpty()) {
@@ -200,7 +197,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgeSchoolDepartment(String id) {
         SchoolDepartment department = getSchoolDepartment(id);
         if (department == null) {
@@ -251,7 +248,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgePersonnelMember(String id) {
         PersonnelMember personnelMember = getPersonnelMember(id);
         if (personnelMember == null) {
@@ -298,7 +295,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgeDiscipline(String id) {
         Discipline discipline = getDiscipline(id);
         if (discipline == null) {
@@ -312,6 +309,16 @@ public class SchoolServiceImpl implements SchoolService {
             discipline.getLectures().forEach(lecture -> ids.add(lecture.getId()));
             lectureService.purgeLectures(ids);
         }
+
+        if (!isNullOrEmpty(discipline.getAssignments())) {
+            discipline.getAssignments().forEach(assignment -> lectureService.purgeLectureAssignment(assignment.getId()));
+        }
+
+        if (!isNullOrEmpty(discipline.getTests())) {
+            discipline.getTests().forEach(test -> lectureService.purgeLectureTest(test.getId()));
+        }
+
+        discipline = getDiscipline(id);
 
         disciplineDao.delete(discipline);
     }

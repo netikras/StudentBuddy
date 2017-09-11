@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -59,6 +60,16 @@ public class StudentsGroupDto {
 
     public void setMembers(List<StudentDto> members) {
         this.members = members;
+    }
+
+    public List<StudentDto> addStudent(StudentDto studentDto) {
+        List<StudentDto> dtos = getMembers();
+        if (dtos == null) {
+            dtos = new ArrayList<>();
+            setMembers(dtos);
+        }
+        dtos.add(studentDto);
+        return dtos;
     }
 
     public SchoolDto getSchool() {

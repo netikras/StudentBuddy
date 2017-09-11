@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class LecturerDto {
@@ -10,6 +11,7 @@ public class LecturerDto {
     private PersonDto person;
     private String degree;
     private List<DisciplineDto> disciplines;
+    private SchoolDto school;
 
     public String getId() {
         return id;
@@ -35,12 +37,30 @@ public class LecturerDto {
         this.degree = degree;
     }
 
+    public SchoolDto getSchool() {
+        return school;
+    }
+
+    public void setSchool(SchoolDto school) {
+        this.school = school;
+    }
+
     public List<DisciplineDto> getDisciplines() {
         return disciplines;
     }
 
     public void setDisciplines(List<DisciplineDto> disciplines) {
         this.disciplines = disciplines;
+    }
+
+    public List<DisciplineDto> addDiscipline(DisciplineDto disciplineDto) {
+        List<DisciplineDto> dtos = getDisciplines();
+        if (dtos == null) {
+            dtos = new ArrayList<>();
+            setDisciplines(dtos);
+        }
+        dtos.add(disciplineDto);
+        return dtos;
     }
 
     @Override
@@ -50,6 +70,7 @@ public class LecturerDto {
                 ", person=" + person +
                 ", degree='" + degree + '\'' +
                 ", disciplines=" + disciplines +
+                ", school=" + school +
                 '}';
     }
 }

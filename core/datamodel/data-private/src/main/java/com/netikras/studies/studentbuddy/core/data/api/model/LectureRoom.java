@@ -57,11 +57,6 @@ public class LectureRoom {
     @ModelTransform
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "school_id")
-    @ModelTransform(dtoUpdatable = false)
-    private School school;
-
     @Transient
     @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
@@ -112,14 +107,6 @@ public class LectureRoom {
         this.title = title;
     }
 
-    public School getSchool() {
-        return school;
-    }
-
-    public void setSchool(School school) {
-        this.school = school;
-    }
-
     public List<Comment> getComments() {
         return comments;
     }
@@ -144,7 +131,6 @@ public class LectureRoom {
                 ", updatedOn=" + updatedOn +
                 ", number='" + number + '\'' +
                 ", title='" + title + '\'' +
-                ", school=" + school +
                 ", comments=" + comments +
                 ", floor=" + floor +
                 '}';

@@ -95,7 +95,7 @@ public class AdminStudentProducer extends AdminStudentApiProducer {
     @Override
     @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDto(LectureGuestDto dto) {
-        LectureGuest guest = ModelMapper.apply(new LectureGuest(), dto);
+        LectureGuest guest = ModelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
         guest = studentService.createLectureGuest(guest);
         dto = ModelMapper.transform(guest, new LectureGuestDto());
 

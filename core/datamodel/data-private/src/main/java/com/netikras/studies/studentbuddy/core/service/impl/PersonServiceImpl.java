@@ -4,9 +4,13 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureGuestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
+import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
@@ -22,6 +26,7 @@ import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class PersonServiceImpl implements PersonService {
@@ -30,6 +35,22 @@ public class PersonServiceImpl implements PersonService {
     private PersonDao personDao;
     @Resource
     private PersonValidator personValidator;
+    @Resource
+    private StudentDao studentDao;
+    @Resource
+    private LecturerDao lecturerDao;
+    @Resource
+    private LectureGuestDao guestDao;
+    @Resource
+    private PersonnelDao personnelDao;
+    @Resource
+    private StudentService studentService;
+    @Resource
+    private LecturerService lecturerService;
+    @Resource
+    private SchoolService schoolService;
+
+
 
     @Override
     public Person getPerson(String id) {
@@ -126,18 +147,6 @@ public class PersonServiceImpl implements PersonService {
         personDao.delete(id);
     }
 
-    @Resource
-    private StudentDao studentDao;
-    @Resource
-    private LecturerDao lecturerDao;
-    @Resource
-    private LectureGuestDao guestDao;
-    @Resource
-    private StudentService studentService;
-    @Resource
-    private LecturerService lecturerService;
-    @Resource
-    private SchoolService schoolService;
 
     @Override
     @Transactional
@@ -148,7 +157,26 @@ public class PersonServiceImpl implements PersonService {
         }
 
         List<Lecturer> lecturers = lecturerDao.findByPerson_Id(id);
+        if (!isNullOrEmpty(lecturers)) {
+            lecturers.forEach(lecturer -> lecturerService.purgeLecturer(lecturer.getId()));
+        }
 
+        List<Student> students = studentDao.findByPerson_Id(id);
+        if (!isNullOrEmpty(students)) {
+            students.forEach(student -> studentService.purgeStudent(student.getId()));
+        }
+
+        List<LectureGuest> guests = guestDao.findAllByPerson_Id(id);
+        if (!isNullOrEmpty(guests)) {
+            guests.forEach(guest -> studentService.purgeLectureGuest(guest.getId()));
+        }
+
+        List<PersonnelMember> personnelMembers = personnelDao.findAllByPerson_Id(id);
+        if (!isNullOrEmpty(personnelMembers)) {
+            personnelMembers.forEach(member -> schoolService.purgePersonnelMember(member.getId()));
+        }
+
+        personDao.delete(id);
     }
 
     @Override

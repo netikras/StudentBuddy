@@ -28,7 +28,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartme
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
-import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
@@ -57,8 +58,8 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected AdminLecturerApiConsumer adminLecturerConsumer;
     protected AdminStudentApiConsumer adminStudentConsumer;
 
-
-    protected void initSchoolAware() {
+    @Before
+    public void initSchoolAware() {
         initPersonAware();
         locationConsumer = attachConsumer(new LocationApiConsumer());
         floorConsumer = attachConsumer(new FloorApiConsumer());
@@ -160,6 +161,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected BuildingSectionDto buidBuildingSection() {
         BuildingSectionDto sectionDto = new BuildingSectionDto();
         sectionDto.setTitle("Main section");
+        sectionDto.setAddress(buildAddress());
         return sectionDto;
     }
 
@@ -256,6 +258,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
     protected AssignmentDto buildAssignment() {
         AssignmentDto assignmentDto = new AssignmentDto();
+        assignmentDto.setDescription("Solve math problems on page #449");
         assignmentDto.setDue(new Date());
         return assignmentDto;
     }
@@ -269,6 +272,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     protected DisciplineTestDto buildDisciplineTest() {
         DisciplineTestDto testDto = new DisciplineTestDto();
         testDto.setStartsOn(new Date());
+        testDto.setDescription("Last quarter test");
         return testDto;
     }
 
@@ -515,6 +519,184 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
 
     @Test
+    public void purgeSchools() {
+        loginSystem();
+
+        List<SchoolDto> schoolDtos = schoolConsumer.searchSchoolDtoAllByTitle(buildSchool().getTitle());
+        if (!isNullOrEmpty(schoolDtos)) {
+            schoolDtos.forEach(schoolDto -> schoolConsumer.purgeSchoolDto(schoolDto.getId()));
+            schoolDtos = schoolConsumer.searchSchoolDtoAllByTitle(buildSchool().getTitle());
+        }
+
+        if (!isNullOrEmpty(schoolDtos)) {
+            fail("Schools should have been purged");
+        }
+    }
+
+
+    @Test
+    public void purgeBuildings() {
+        loginSystem();
+
+        List<BuildingDto> buildingDtos = locationConsumer.searchBuildingDtoAllByTitle(buildBuilding().getTitle());
+        if (!isNullOrEmpty(buildingDtos)) {
+            buildingDtos.forEach(buildingDto -> locationConsumer.purgeBuildingDto(buildingDto.getId()));
+            buildingDtos = locationConsumer.searchBuildingDtoAllByTitle(buildBuilding().getTitle());
+        }
+
+        if (!isNullOrEmpty(buildingDtos)) {
+            fail("Buildings should have been removed");
+        }
+    }
+
+
+    protected PersonDto purgePersonByIdentifier(String identifier) {
+        PersonDto personDto = personConsumer.getPersonDtoByIdentifier(identifier);
+        if (personDto != null) {
+            adminPersonConsumer.purgePersonDto(personDto.getId());
+            personDto = personConsumer.retrievePersonDto(personDto.getId());
+        }
+
+        return personDto;
+    }
+
+
+
+    @Test
+    public void purgePeople() {
+        loginSystem();
+
+        PersonDto personDto = purgePersonByIdentifier(buildPerson().getIdentification());
+        assertNull("Person should have been purged", personDto);
+
+
+        personDto = purgePersonByIdentifier("00000001");
+        assertNull("Person should have been purged", personDto);
+
+
+        personDto = purgePersonByIdentifier("00000002");
+        assertNull("Person should have been purged", personDto);
+
+
+        personDto = purgePersonByIdentifier("00000003");
+        assertNull("Person should have been purged", personDto);
+
+    }
+
+    @Test
+    public void purgeAll() {
+        purgeBuildings();
+        purgePeople();
+        purgeSchools();
+    }
+
+    @Test
+    public void createInfraTest() {
+        loginSystem();
+
+        purgeAll();
+
+        BuildingDto buildingDto = buildBuilding();
+        buildingDto = locationConsumer.createBuildingDto(buildingDto);
+        assertNotNull("Building should have been created", buildingDto);
+
+        BuildingSectionDto sectionDto = buidBuildingSection();
+        sectionDto.setBuilding(buildingDto);
+        sectionDto = locationConsumer.createBuildingSectionDto(sectionDto);
+        assertNotNull("Building section should have been created", sectionDto);
+
+        BuildingFloorDto floorDto = buildFloor();
+        floorDto.setBuilding(buildingDto);
+        floorDto.setBuildingSection(sectionDto);
+        floorDto = floorConsumer.createBuildingFloorDto(floorDto);
+        assertNotNull("Floor should have been created", floorDto);
+
+
+        SchoolDto schoolDto = buildSchool();
+        schoolDto = schoolConsumer.createSchoolDto(schoolDto);
+        assertNotNull("School should have been created", schoolDto);
+
+        SchoolDepartmentDto departmentDto = buildDepartment();
+        departmentDto.setSchool(schoolDto);
+        departmentDto.addBuilding(buildingDto);
+        departmentDto = schoolConsumer.createSchoolDepartmentDto(departmentDto);
+        assertNotNull("School department should have been created", departmentDto);
+
+        LectureRoomDto roomDto = buildRoom();
+        roomDto.setSchool(schoolDto);
+        roomDto.setFloor(floorDto);
+        roomDto = floorConsumer.createLectureRoomDto(roomDto);
+        assertNotNull("Lectures room should have been created", roomDto);
+
+        DisciplineDto disciplineDto = buildDiscipline();
+        disciplineDto.setSchool(schoolDto);
+        disciplineDto = schoolConsumer.createDisciplineDto(disciplineDto);
+        assertNotNull("Discipline should have been created", disciplineDto);
+
+        StudentsGroupDto groupDto = buildGroup();
+        groupDto.setSchool(schoolDto);
+        groupDto = adminStudentConsumer.createStudentsGroupDto(groupDto);
+        assertNotNull("Students group should have been created", groupDto);
+
+        PersonDto personDto1 = buildPerson();
+        personDto1.setPersonalCode("000000001");
+        personDto1.setIdentification("00000001");
+        personDto1 = adminPersonConsumer.createPersonDto(personDto1);
+        assertNotNull("Person 1 should have been created", personDto1);
+
+        StudentDto studentDto = buildStudent(personDto1);
+        studentDto.setSchool(schoolDto);
+        studentDto = adminStudentConsumer.createStudentDto(studentDto);
+        assertNotNull("Student should have been created", studentDto);
+
+        PersonDto personDto2 = buildPerson();
+        personDto2.setPersonalCode("000000002");
+        personDto2.setIdentification("00000002");
+        personDto2 = adminPersonConsumer.createPersonDto(personDto2);
+        assertNotNull("Person 2 should have been created", personDto2);
+
+        LecturerDto lecturerDto = buildLecturer();
+        lecturerDto.setSchool(schoolDto);
+        lecturerDto.setPerson(personDto2);
+        lecturerDto.addDiscipline(disciplineDto);
+        lecturerDto = adminLecturerConsumer.createLecturerDto(lecturerDto);
+        assertNotNull("Lecturer should have been created", lecturerDto);
+
+        PersonDto personDto3 = buildPerson();
+        personDto3.setPersonalCode("000000003");
+        personDto3.setIdentification("00000003");
+        personDto3 = adminPersonConsumer.createPersonDto(personDto3);
+        assertNotNull("Person 3 should have been created", personDto3);
+
+        LectureDto lectureDto = buildLecture();
+        lectureDto.setDiscipline(disciplineDto);
+        lectureDto.setLecturer(lecturerDto);
+        lectureDto.setRoom(roomDto);
+        lectureDto.setStudentsGroup(groupDto);
+        lectureDto = lecturesConsumer.createLectureDto(lectureDto);
+        assertNotNull("Lecture should have been created", lectureDto);
+
+        LectureGuestDto guestDto = buildGuest();
+        guestDto.setPerson(personDto3);
+        guestDto.setLecture(lectureDto);
+        guestDto = adminStudentConsumer.createLectureGuestDto(guestDto);
+        assertNotNull("Lecture guest should have been created", guestDto);
+
+        AssignmentDto assignmentDto = buildAssignment();
+        assignmentDto.setDiscipline(disciplineDto);
+        assignmentDto = assignmentConsumer.createAssignmentDto(assignmentDto);
+        assertNotNull("Assignment should have been created", assignmentDto);
+
+        DisciplineTestDto testDto = buildDisciplineTest();
+        testDto.setLecture(lectureDto);
+        testDto.setDiscipline(disciplineDto);
+        testDto = testsConsumer.createDisciplineTestDto(testDto);
+        assertNotNull("Discipline test should have been created", testDto);
+
+    }
+
+
+    @Test
     public void test1() {
         initSchoolAware();
         loginSystem();
@@ -527,8 +709,12 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         System.out.println(sectionDto);
 
         locationConsumer.deleteBuildingDto(buildingDto.getId());
+        buildingDto = locationConsumer.retrieveBuildingDto(buildingDto.getId());
+        assertNotNull("Building deletion should have failed", buildingDto);
 
         locationConsumer.purgeBuildingDto(buildingDto.getId());
+        buildingDto = locationConsumer.retrieveBuildingDto(buildingDto.getId());
+        assertNull("Building should have been purged", buildingDto);
     }
 
     @Test

@@ -75,6 +75,14 @@ public class Discipline {
     @Fetch(FetchMode.SUBSELECT)
     private List<Lecture> lectures;
 
+    @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Assignment> assignments;
+
+    @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<DisciplineTest> tests;
+
 
     public String getId() {
         return id;
@@ -132,16 +140,51 @@ public class Discipline {
         this.lectures = lectures;
     }
 
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public List<Assignment> getAssignments() {
+        return assignments;
+    }
+
+    public void setAssignments(List<Assignment> assignments) {
+        this.assignments = assignments;
+    }
+
+    public List<DisciplineTest> getTests() {
+        return tests;
+    }
+
+    public void setTests(List<DisciplineTest> tests) {
+        this.tests = tests;
+    }
+
     @Override
     public String toString() {
         return "Discipline{" +
                 "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
                 ", school=" + school +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", sites=" + sites +
                 ", lecturers=" + lecturers +
                 ", lectures=" + lectures +
+                ", assignments=" + assignments +
                 '}';
     }
 }

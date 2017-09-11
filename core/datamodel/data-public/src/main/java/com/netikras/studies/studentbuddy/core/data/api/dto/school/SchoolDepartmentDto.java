@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +52,16 @@ public class SchoolDepartmentDto {
 
     public void setBuildings(List<BuildingDto> buildings) {
         this.buildings = buildings;
+    }
+
+    public List<BuildingDto> addBuilding(BuildingDto buildingDto) {
+        List<BuildingDto> dtos = getBuildings();
+        if (dtos == null) {
+            dtos = new ArrayList<>();
+            setBuildings(dtos);
+        }
+        dtos.add(buildingDto);
+        return dtos;
     }
 
     @Override

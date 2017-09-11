@@ -10,6 +10,7 @@ public class DisciplineTestDto {
     private LectureDto lecture;
     private DisciplineDto discipline;
     private boolean exam;
+    private String description;
 
     public String getId() {
         return id;
@@ -59,6 +60,14 @@ public class DisciplineTestDto {
         this.exam = exam;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "DisciplineTestDto{" +
@@ -68,6 +77,7 @@ public class DisciplineTestDto {
                 ", lecture=" + lecture +
                 ", discipline=" + discipline +
                 ", exam=" + exam +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

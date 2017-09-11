@@ -13,6 +13,7 @@ import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.LectureValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+import static org.springframework.transaction.annotation.Propagation.REQUIRES_NEW;
 
 @Service
 public class LectureServiceImpl implements LectureService {
@@ -308,7 +310,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class, propagation = REQUIRES_NEW)
     public void purgeLectures(List<String> lectureIds) {
         if (isNullOrEmpty(lectureIds)) {
             return;
@@ -328,32 +330,32 @@ public class LectureServiceImpl implements LectureService {
         if (!isNullOrEmpty(lecture.getPendingAssignments())) {
             lecture.getPendingAssignments().forEach(
                     assignment -> purgeLectureAssignment(assignment.getId()));
-            lecture.setPendingAssignments(null);
+//            lecture.setPendingAssignments(null);
         }
 
         if (!isNullOrEmpty(lecture.getPendingTests())) {
             lecture.getPendingTests().forEach(
                     test -> purgeLectureTest(test.getId()));
-            lecture.setPendingTests(null);
+//            lecture.setPendingTests(null);
         }
 
         if (!isNullOrEmpty(lecture.getLectureGuests())) {
             lecture.getLectureGuests().forEach(
                     guest -> studentService.purgeLectureGuest(guest.getId()));
-            lecture.setLectureGuests(null);
+//            lecture.setLectureGuests(null);
         }
 
         if (!isNullOrEmpty(lecture.getComments())) {
             lecture.getComments().forEach(
                     comment -> commentsService.purgeComment(comment.getId()));
-            lecture.setComments(null);
+//            lecture.setComments(null);
         }
 
         lectureDao.delete(lecture);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgeLectureTest(String testId) {
         DisciplineTest test = getTest(testId);
         if (test == null) {
@@ -364,7 +366,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = REQUIRES_NEW)
     public void purgeLectureAssignment(String id) {
         Assignment assignment = getAssignment(id);
         if (assignment == null) {
