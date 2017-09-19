@@ -1,0 +1,10 @@
+apply from: "$rootProject.rootDir/conf/global.gradle"
+
+loadDep "log4j"
+loadDep "hibernate"
+loadDep "spring-jpa"
+loadDep "spring-aop"
+loadDep "commons"
+loadDep "testing"
+loadProj ':core:datamodel:data-private'
+loadProj ':commons'

@@ -9,8 +9,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
-import com.netikras.studies.studentbuddy.core.meta.Action;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -23,9 +23,9 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.ROLE_PERMISSIONS;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.USER;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROLE_PERMISSIONS;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.USER;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @RestController

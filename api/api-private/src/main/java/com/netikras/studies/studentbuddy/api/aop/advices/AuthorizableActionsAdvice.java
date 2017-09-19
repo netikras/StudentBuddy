@@ -4,7 +4,7 @@ import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static com.netikras.studies.studentbuddy.core.meta.Resource._PARAM;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
 
 /**
  * Created by netikras on 17.3.11.
@@ -58,8 +58,8 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
                     ;
         }
 
-        com.netikras.studies.studentbuddy.core.meta.Resource resource = getResource(joinPoint, authorizable);
-        com.netikras.studies.studentbuddy.core.meta.Action action = getAction(joinPoint, authorizable);
+        com.netikras.studies.studentbuddy.core.data.meta.Resource resource = getResource(joinPoint, authorizable);
+        com.netikras.studies.studentbuddy.core.data.meta.Action action = getAction(joinPoint, authorizable);
 
 
         boolean isAllowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
@@ -86,8 +86,8 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
     }
 
 
-    private com.netikras.studies.studentbuddy.core.meta.Resource getResource(JoinPoint joinPoint, Authorizable authorizable) {
-        com.netikras.studies.studentbuddy.core.meta.Resource resource = authorizable.resource();
+    private com.netikras.studies.studentbuddy.core.data.meta.Resource getResource(JoinPoint joinPoint, Authorizable authorizable) {
+        com.netikras.studies.studentbuddy.core.data.meta.Resource resource = authorizable.resource();
         if (_PARAM.equals(resource)) {
             if (authorizable.resourceParam().isEmpty()) {
                 return resource;
@@ -109,7 +109,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
                 }
 
                 value = value.toUpperCase();
-                resource = com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(value);
+                resource = com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(value);
 
             } catch (Throwable throwable) {
                 logger.error("Possible mistake in the code. Method {} param with name {} cannot be transformed to Resource",
@@ -121,8 +121,8 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
     }
 
 
-    private com.netikras.studies.studentbuddy.core.meta.Action getAction(JoinPoint joinPoint, Authorizable authorizable) {
-        com.netikras.studies.studentbuddy.core.meta.Action action = authorizable.action();
+    private com.netikras.studies.studentbuddy.core.data.meta.Action getAction(JoinPoint joinPoint, Authorizable authorizable) {
+        com.netikras.studies.studentbuddy.core.data.meta.Action action = authorizable.action();
         if (_PARAM.equals(action)) {
             if (authorizable.actionParam().isEmpty()) {
                 return action;
@@ -145,7 +145,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
 
                 value = value.toUpperCase();
 
-                action = com.netikras.studies.studentbuddy.core.meta.Action.valueOf(value);
+                action = com.netikras.studies.studentbuddy.core.data.meta.Action.valueOf(value);
 
             } catch (Throwable throwable) {
                 logger.error("Possible mistake in the code. Method {} param with name {} cannot be transformed to Resource",

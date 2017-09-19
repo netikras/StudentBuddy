@@ -9,8 +9,8 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
-import com.netikras.studies.studentbuddy.core.meta.Action;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.COMMENT_MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
-import static com.netikras.studies.studentbuddy.core.meta.Resource._PARAM;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
 import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
@@ -189,8 +189,8 @@ public class CommentsProducer extends CommentsApiProducer {
 
         if (errors.isEmpty()) {
             try {
-                com.netikras.studies.studentbuddy.core.meta.Resource resource =
-                        com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(entity.toUpperCase());
+                com.netikras.studies.studentbuddy.core.data.meta.Resource resource =
+                        com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(entity.toUpperCase());
                 user = HttpThreadContext.current().getUser();
                 allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
             } catch (IllegalArgumentException ilae) {

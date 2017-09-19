@@ -4,7 +4,7 @@ import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminLecturerAp
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.DISCIPLINE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE;
 
 @RestController
 public class AdminLecturerProducer extends AdminLecturerApiProducer {

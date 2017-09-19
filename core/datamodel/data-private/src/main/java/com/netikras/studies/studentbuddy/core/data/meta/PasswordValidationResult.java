@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.core.meta;
+package com.netikras.studies.studentbuddy.core.data.meta;
 
 import java.util.HashMap;
 import java.util.Map;

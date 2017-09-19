@@ -1,7 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.sys.model;
 
-import com.netikras.studies.studentbuddy.core.meta.Action;
-import com.netikras.studies.studentbuddy.core.meta.Resource;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.meta.Resource;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -52,6 +52,54 @@ public class ActionRequirement {
     private Action action;
 
 
+    public String getId() {
+        return id;
+    }
 
+    public void setId(String id) {
+        this.id = id;
+    }
 
+    public Date getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
+    public Resource getResource() {
+        return resource;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
+    public Action getAction() {
+        return action;
+    }
+
+    public void setAction(Action action) {
+        this.action = action;
+    }
+
+    @Override
+    public String toString() {
+        return "ActionRequirement{" +
+                "id='" + id + '\'' +
+                ", createdOn=" + createdOn +
+                ", updatedOn=" + updatedOn +
+                ", resource=" + resource +
+                ", action=" + action +
+                '}';
+    }
 }

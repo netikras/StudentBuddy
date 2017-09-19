@@ -80,8 +80,8 @@ public class CommentValidator {
             );
         } else {
             try {
-                com.netikras.studies.studentbuddy.core.meta.Resource entityType =
-                        com.netikras.studies.studentbuddy.core.meta.Resource.valueOf(comment.getEntityType().toUpperCase());
+                com.netikras.studies.studentbuddy.core.data.meta.Resource entityType =
+                        com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(comment.getEntityType().toUpperCase());
                 JpaRepo repo = repositories.getRepoForResource(entityType);
                 if (repo == null)
                     throw new Exception("Cannot find repository for entity type");

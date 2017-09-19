@@ -11,6 +11,7 @@ loadDep "testing"
 loadProj ':api:api-public'
 loadProj ':core:datamodel:data-private'
 loadProj ':commons'
+loadProj ':core:services'
 
 
 enableApiAnnotations project

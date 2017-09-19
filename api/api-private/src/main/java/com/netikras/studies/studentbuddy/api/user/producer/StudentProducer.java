@@ -7,26 +7,28 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupD
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
+
 import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET_ALL;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.SEARCH;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP;
 
 @RestController
 public class StudentProducer extends StudentApiProducer {
 
-    @javax.annotation.Resource
+    @Resource
     private StudentService studentService;
 
     @Override

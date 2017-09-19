@@ -7,7 +7,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomD
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.FloorService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.ROOM;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.SEARCH;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR_MAP;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROOM;
 
 @RestController
 public class FloorProducer extends FloorApiProducer {

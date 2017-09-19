@@ -9,7 +9,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.GUEST;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP;
 
 @RestController
 public class AdminStudentProducer extends AdminStudentApiProducer {

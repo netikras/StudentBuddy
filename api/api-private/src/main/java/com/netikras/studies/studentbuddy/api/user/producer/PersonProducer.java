@@ -3,7 +3,7 @@ package com.netikras.studies.studentbuddy.api.user.producer;
 import com.netikras.studies.studentbuddy.api.user.generated.PersonApiProducer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET_ALL;
-import static com.netikras.studies.studentbuddy.core.meta.Action.SEARCH;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.PERSON;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.SEARCH;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
 
 @RestController
 public class PersonProducer extends PersonApiProducer {

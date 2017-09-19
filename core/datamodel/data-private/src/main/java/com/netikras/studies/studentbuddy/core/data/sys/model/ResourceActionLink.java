@@ -1,11 +1,10 @@
 package com.netikras.studies.studentbuddy.core.data.sys.model;
 
-import com.netikras.studies.studentbuddy.core.meta.Action;
-import com.netikras.studies.studentbuddy.core.meta.Resource;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.meta.Resource;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

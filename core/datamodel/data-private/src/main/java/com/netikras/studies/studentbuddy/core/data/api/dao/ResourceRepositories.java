@@ -32,7 +32,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import javax.management.Notification;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,32 +43,32 @@ public class ResourceRepositories {
     private ApplicationContext context;
 
 
-    private static final Map<com.netikras.studies.studentbuddy.core.meta.Resource, Class<? extends JpaRepo>> RESOURCE_REPO_CLASS_MAP;
+    private static final Map<com.netikras.studies.studentbuddy.core.data.meta.Resource, Class<? extends JpaRepo>> RESOURCE_REPO_CLASS_MAP;
 
     static {
         RESOURCE_REPO_CLASS_MAP = new HashMap<>();
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.LECTURE, LectureDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.ASSIGNMENT, AssignmentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.PERSON, PersonDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT_GROUP, StudentsGroupDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.TEST, DisciplineTestDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.STUDENT, StudentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.USER, UserDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.GUEST, LectureGuestDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.LECTURER, LecturerDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.ADDRESS, AddressDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.BUILDING, BuildingDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.BUILDING_SECTION, BuildingSectionDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR, FloorDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.FLOOR_MAP, FloorLayoutDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.ROOM, LectureRoomDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.DISCIPLINE, DisciplineDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.PERSONNEL, PersonnelDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.SCHOOL, SchoolDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.SCHOOL_DEPARTMENT, SchoolDepartmentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.NOTIFICATION, null);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource.SYSTEM, null);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.meta.Resource._PARAM, null);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE, LectureDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ASSIGNMENT, AssignmentDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON, PersonDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP, StudentsGroupDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.TEST, DisciplineTestDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT, StudentDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.USER, UserDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST, LectureGuestDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURER, LecturerDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ADDRESS, AddressDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING, BuildingDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING_SECTION, BuildingSectionDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR, FloorDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR_MAP, FloorLayoutDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ROOM, LectureRoomDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE, DisciplineDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSONNEL, PersonnelDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL, SchoolDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL_DEPARTMENT, SchoolDepartmentDao.class);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.NOTIFICATION, null);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM, null);
+        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM, null);
     }
 
     private static final Map<Class, Class<? extends JpaRepo>> MODEL_REPO_CLASS_MAP;
@@ -104,7 +103,7 @@ public class ResourceRepositories {
     }
 
 
-    public JpaRepo getRepoForResource(com.netikras.studies.studentbuddy.core.meta.Resource resource) {
+    public JpaRepo getRepoForResource(com.netikras.studies.studentbuddy.core.data.meta.Resource resource) {
         if (resource == null) return null;
         Class repoClass = RESOURCE_REPO_CLASS_MAP.get(resource);
         if (repoClass == null) return null;

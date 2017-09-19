@@ -5,7 +5,7 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -16,12 +16,12 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Action.PURGE;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.ASSIGNMENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ASSIGNMENT;
 
 @RestController
 public class AssignmentConsumer extends AssignmentApiProducer {

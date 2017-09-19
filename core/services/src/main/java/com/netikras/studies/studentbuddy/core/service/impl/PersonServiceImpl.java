@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
-import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service

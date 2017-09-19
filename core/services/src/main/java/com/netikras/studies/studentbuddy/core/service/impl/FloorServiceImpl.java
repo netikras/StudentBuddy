@@ -11,7 +11,6 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureRoom;
 import com.netikras.studies.studentbuddy.core.service.FloorService;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
-import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.validator.LocationValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;

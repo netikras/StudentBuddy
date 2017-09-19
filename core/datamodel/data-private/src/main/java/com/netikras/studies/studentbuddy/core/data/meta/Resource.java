@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.core.meta;
+package com.netikras.studies.studentbuddy.core.data.meta;
 
 public enum Resource {
 

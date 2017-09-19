@@ -6,7 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto
 import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
-import com.netikras.studies.studentbuddy.core.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.meta.Action.GET_ALL;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODERATE;
-import static com.netikras.studies.studentbuddy.core.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.SYSTEM_PWREQ;
-import static com.netikras.studies.studentbuddy.core.meta.Resource.SYSTEM_SETTING;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_PWREQ;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_SETTING;
 
 @RestController
 public class AdminProducer extends AdminApiProducer {

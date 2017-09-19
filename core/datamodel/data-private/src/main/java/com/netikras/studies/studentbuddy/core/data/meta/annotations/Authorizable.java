@@ -1,7 +1,7 @@
-package com.netikras.studies.studentbuddy.core.meta.annotations;
+package com.netikras.studies.studentbuddy.core.data.meta.annotations;
 
-import com.netikras.studies.studentbuddy.core.meta.Action;
-import com.netikras.studies.studentbuddy.core.meta.Resource;
+import com.netikras.studies.studentbuddy.core.data.meta.Resource;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
