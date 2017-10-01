@@ -1,11 +1,10 @@
-package com.netikras.studies.studentbuddy.core.data.sys.model;
+package com.netikras.studies.studentbuddy.core.data.api.model;
 
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,17 +12,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "role_permissions")
-public class RolePermissions {
+@Table(name = "discipline_lecturer")
+public class CourseLecturer {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -32,31 +28,23 @@ public class RolePermissions {
     @ModelTransform(dtoFieldName = "id", dtoUpdatable = false)
     private String id;
 
-    @Column(name = "created_on", updatable = false)
+    @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
     private Date updatedOn;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "modified_by_id")
-    @ModelTransform(dtoUpdatable = false)
-    private User modifiedBy;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "course_id")
+    private Course course;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "rolePermission")
-    @ModelTransform(dtoUpdatable = false)
-    private List<ResourceActionLink> resourceActions;
-
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "role_id")
-    @ModelTransform(dtoUpdatable = false)
-    private Role role;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "lecturer_id")
+    private Lecturer lecturer;
 
     public String getId() {
         return id;
@@ -82,39 +70,30 @@ public class RolePermissions {
         this.updatedOn = updatedOn;
     }
 
-    public User getModifiedBy() {
-        return modifiedBy;
+    public Course getCourse() {
+        return course;
     }
 
-    public void setModifiedBy(User modifiedBy) {
-        this.modifiedBy = modifiedBy;
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
-    public List<ResourceActionLink> getResourceActions() {
-        return resourceActions;
+    public Lecturer getLecturer() {
+        return lecturer;
     }
 
-    public void setResourceActions(List<ResourceActionLink> resourceActions) {
-        this.resourceActions = resourceActions;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
+    public void setLecturer(Lecturer lecturer) {
+        this.lecturer = lecturer;
     }
 
     @Override
     public String toString() {
-        return "RolePermissions{" +
+        return "CourseLecturer{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
-                ", modifiedBy=" + modifiedBy +
-                ", resourceActions=" + resourceActions +
-                ", role=" + role +
+                ", course=" + course +
+                ", lecturer=" + lecturer +
                 '}';
     }
 }

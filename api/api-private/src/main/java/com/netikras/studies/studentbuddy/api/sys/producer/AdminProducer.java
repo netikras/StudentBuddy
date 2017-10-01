@@ -3,10 +3,10 @@ package com.netikras.studies.studentbuddy.api.sys.producer;
 import com.netikras.studies.studentbuddy.api.sys.generated.AdminApiProducer;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
+import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
-import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
@@ -101,7 +101,7 @@ public class AdminProducer extends AdminApiProducer {
 
     @Override
     @Authorizable(resource = SYSTEM_SETTING, action = GET_ALL)
-    protected List<SystemSettingDto> onGetSystemSettingDtoAllStored() {
+    public List<SystemSettingDto> onGetSystemSettingDtoAllStored() {
         List<SystemSetting> settings = systemService.fetchSystemSettings();
         ModelMapper.transformAll(settings, SystemSettingDto.class);
         List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) ModelMapper.transformAll(settings, SystemSettingDto.class);
@@ -145,7 +145,7 @@ public class AdminProducer extends AdminApiProducer {
     @Override
     @Authorizable(resource = SYSTEM_PWREQ, action = MODERATE)
     protected void onRefreshPasswordRequirementDtoLive() {
-        systemService.refreshPaswordRequirements();
+        systemService.refreshPasswordRequirements();
     }
 
     @Override

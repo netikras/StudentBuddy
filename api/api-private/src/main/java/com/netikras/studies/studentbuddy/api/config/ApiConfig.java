@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.config;
 
+import com.netikras.studies.studentbuddy.api.aop.advices.AuthorizableActionsAdvice;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
@@ -28,10 +29,10 @@ import java.util.Properties;
  * Created by netikras on 17.6.21.
  */
 @Configuration
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy()
 @ComponentScan(basePackages = {
         P.BASE_PACKAGE + ".api",
-        P.BASE_PACKAGE + ".core"
+        P.BASE_PACKAGE + ".core",
 })
 @EnableJpaRepositories(basePackages = {
         P.BASE_PACKAGE + ".core.data.api.dao",
@@ -50,6 +51,11 @@ public class ApiConfig {
 
     @Resource
     private Environment env;
+//
+//    @Bean
+//    public AuthorizableActionsAdvice aspectBeanAuthorization() {
+//        return new AuthorizableActionsAdvice();
+//    }
 
     @Bean(name = "configProperties")
     public PropertiesWrapper propertiesWrapper(Environment environment) {

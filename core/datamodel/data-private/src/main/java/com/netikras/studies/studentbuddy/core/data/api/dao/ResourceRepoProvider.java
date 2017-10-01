@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
@@ -24,8 +25,8 @@ import com.netikras.studies.studentbuddy.core.data.sys.dao.PasswordRequirementsD
 import com.netikras.studies.studentbuddy.core.data.sys.dao.SettingsDao;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
-import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import org.springframework.context.ApplicationContext;
@@ -34,10 +35,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 
 @Component
-public class ResourceRepositories {
+public class ResourceRepoProvider {
 
     @Resource
     private ApplicationContext context;
@@ -96,12 +100,25 @@ public class ResourceRepositories {
         MODEL_REPO_CLASS_MAP.put(SchoolDepartment.class, SchoolDepartmentDao.class);
         MODEL_REPO_CLASS_MAP.put(Tag.class, TagDao.class);
         MODEL_REPO_CLASS_MAP.put(Role.class, RoleDao.class);
-        MODEL_REPO_CLASS_MAP.put(RolePermissions.class, RolePermissionsDao.class);
+        MODEL_REPO_CLASS_MAP.put(Course.class, CourseDao.class);
+        MODEL_REPO_CLASS_MAP.put(ResourceActionLink.class, RolePermissionDao.class);
         MODEL_REPO_CLASS_MAP.put(Comment.class, CommentDao.class);
         MODEL_REPO_CLASS_MAP.put(SystemSetting.class, SettingsDao.class);
         MODEL_REPO_CLASS_MAP.put(PasswordRequirement.class, PasswordRequirementsDao.class);
     }
 
+    public Class getTypeForResource(String resourceName) {
+        JpaRepo repo = getRepoForResource(resourceName);
+        if (repo != null) {
+            Class repoClass = repo.getClass();
+            for (Entry<Class, Class<? extends JpaRepo>> classClassEntry : MODEL_REPO_CLASS_MAP.entrySet()) {
+                if (classClassEntry.getValue().equals(repoClass)) {
+                    return classClassEntry.getKey();
+                }
+            }
+        }
+        return null;
+    }
 
     public JpaRepo getRepoForResource(com.netikras.studies.studentbuddy.core.data.meta.Resource resource) {
         if (resource == null) return null;
@@ -110,6 +127,11 @@ public class ResourceRepositories {
 
         JpaRepo repo = (JpaRepo) context.getBean(repoClass);
         return repo;
+    }
+
+    public JpaRepo getRepoForResource(String resourceName) {
+        if (isNullOrEmpty(resourceName)) return null;
+        return getRepoForResource(com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(resourceName.toUpperCase()));
     }
 
     public JpaRepo getRepoForModel(Object model) {

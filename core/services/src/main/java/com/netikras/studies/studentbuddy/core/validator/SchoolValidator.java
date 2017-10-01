@@ -1,10 +1,12 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
+import com.netikras.studies.studentbuddy.core.data.api.dao.CourseDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineLecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
@@ -14,15 +16,12 @@ import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
-import com.netikras.studies.studentbuddy.core.data.api.model.Website;
-import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
@@ -36,23 +35,18 @@ public class SchoolValidator {
 
     @Resource
     private SchoolDao schoolDao;
-
     @Resource
     private PersonnelDao personnelDao;
-
     @Resource
     private PersonValidator personValidator;
-
     @Resource
     private LecturerDao lecturerDao;
-
     @Resource
     private LectureDao lectureDao;
-
-
     @Resource
     private DisciplineDao disciplineDao;
-
+    @Resource
+    private CourseDao courseDao;
     @Resource
     private LectureValidator lectureValidator;
 
@@ -246,6 +240,44 @@ public class SchoolValidator {
         return errors;
     }
 
+    public ErrorsCollection validateForCreation(Course course, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (course == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot create a non-existing course")
+                    .setMessage1("Course is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        Discipline discipline = course.getDiscipline();
+
+        if (discipline == null || isNullOrEmpty(discipline.getId()) || disciplineDao.findOne(discipline.getId()) == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("A course represents a set of discipline lectures hence discipline association is mandatory")
+                    .setMessage1("Course discipline is missing")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        }
+
+        if (course.getTitle() != null) {
+            Course existingCourse = courseDao.findByTitle(course.getTitle());
+            if (existingCourse != null) {
+                errors.add(new ValidationError()
+                        .setSuggestion("Each course must have a unique title or no title at all")
+                        .setMessage1("Course with such title already exists")
+                        .setCausedBy(existingCourse.getTitle())
+                        .setStatus(CONFLICT.getCode())
+                );
+            }
+        }
+
+        course.setId(null);
+        return errors;
+    }
+
     @Transactional
     public ErrorsCollection validateForMultiplication(List<Lecture> lectures, ErrorsCollection errors) {
         errors = ensure(errors);
@@ -332,21 +364,9 @@ public class SchoolValidator {
             return errors;
         }
 
-        List<Website> websites = discipline.getSites();
         List<DisciplineLecturer> lecturers = discipline.getLecturers();
         int lecturesCount = lectureDao.countAllByDiscipline_Id(discipline.getId());
 
-
-        if (!isNullOrEmpty(websites)) {
-            StringBuilder ids = new StringBuilder();
-            websites.forEach(website -> ids.append(website.getId()).append(" "));
-            errors.add(new ValidationError()
-                    .setSuggestion("Cannot delete discipline linked to other downstream entities, such as websites, lecturers, lectures, etc.")
-                    .setMessage1("Discipline is linked to websites")
-                    .setCausedBy(ids.toString())
-                    .setStatus(CONFLICT.getCode())
-            );
-        }
 
         if (!isNullOrEmpty(lecturers)) {
             StringBuilder ids = new StringBuilder();

@@ -2,7 +2,7 @@ package com.netikras.studies.studentbuddy.api.filters;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class AuthorizationFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         logger.debug("INCOMING REQUEST");
-        boolean isLoggedIn;
+        boolean loggedIn;
 
         if (systemService.getSettingValue(SysProp.SESSION_SUSPEND)) {
             throw new StudBudUncheckedException()
@@ -66,26 +66,38 @@ public class AuthorizationFilter implements Filter {
         requestContext.setRequest((HttpServletRequest) request);
         requestContext.setResponse((HttpServletResponse) response);
 
-        isLoggedIn = requestContext.isSessionValid()
-                && requestContext.getUser() != null;
+        loggedIn = isLoggedIn();
 
-        logger.debug("User {} approaching by the URL: {}. loggedIn={}", requestContext.getUser(), ((HttpServletRequest) request).getRequestURI(), isLoggedIn);
+        logger.debug("User {} approaching by the URL: {}. loggedIn={}", requestContext.getUser(), ((HttpServletRequest) request).getRequestURI(), loggedIn);
 
-        if (isLoggedIn) {
-            logger.info("Requestor's session validated. Proceeding with the request.");
-            chain.doFilter(request, response);
-        } else if (isAimingToLogin((HttpServletRequest) request)) {
-            logger.info("Requestor is attempting to login. Proceeding with the request.");
+        if (isAimingToLogin((HttpServletRequest) request)) {
+            requestContext.destroy();
+
+            requestContext.setUser(systemService.getGuestUser());
+            requestContext.setRequest((HttpServletRequest) request);
+            requestContext.setResponse((HttpServletResponse) response);
+
+            logger.info("Requester is attempting to login. Proceeding with the request.");
             chain.doFilter(request, response);
 
             if (requestContext.getUser() != null) {
                 requestContext.getSession()
                         .setMaxInactiveInterval(systemService.getSettingValue(SysProp.SESSION_TIMEOUT));
             }
+        } else if (loggedIn) {
+            logger.info("Requester's session validated. Proceeding with the request.");
+            chain.doFilter(request, response);
         } else {
-            logger.info("User {} is not logged in for the request. Returning 401", requestContext.getUser());
+
+            requestContext.setUser(systemService.getGuestUser());
+
+            if (requestContext.getUser() != null) {
+                chain.doFilter(request, response);
+            } else { // guest account is disabled
+                logger.info("User {} is not logged in for the request. Returning 401", requestContext.getUser());
 //            redirectToLogin(requestContext);
-            ((HttpServletResponse) response).sendError(HttpStatus.UNAUTHORIZED.getCode(), "Not logged in");
+                ((HttpServletResponse) response).sendError(HttpStatus.UNAUTHORIZED.getCode(), "Not logged in");
+            }
         }
 
         requestContext.clear(true);
@@ -97,6 +109,12 @@ public class AuthorizationFilter implements Filter {
 
     }
 
+    private boolean isLoggedIn() {
+        HttpThreadContext requestContext = HttpThreadContext.current();
+        return requestContext.isSessionValid()
+                && requestContext.getUser() != null
+                && !"guest".equals(requestContext.getUser().getName());
+    }
 
     private boolean isAimingToLogin(HttpServletRequest request) {
         return request.getRequestURI().equals(loginUrl);

@@ -2,11 +2,11 @@ package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
-import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -121,12 +121,7 @@ public class UserServiceImpl implements UserService {
     public void purgeUser(String id) {
         User user = userDao.findOne(id);
         if (user == null) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot purge user")
-                    .setMessage2("User not found")
-                    .setProbableCause(id)
-                    .setStatusCode(NOT_FOUND)
-                    ;
+            return;
         }
         userDao.delete(user);
     }
@@ -138,8 +133,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public List<RolePermissions> getPermissions(String userId) {
-        List<RolePermissions> permissions = new ArrayList<>();
+    public List<ResourceActionLink> getPermissions(String userId) {
+        List<ResourceActionLink> permissions = new ArrayList<>();
         if (isNullOrEmpty(userId)) {
             return permissions;
         }
@@ -157,7 +152,7 @@ public class UserServiceImpl implements UserService {
             if (userRole == null || userRole.getRole() == null || isNullOrEmpty(userRole.getRole().getName())) {
                 continue;
             }
-            List<RolePermissions> userRolePermissions = systemService.getPermissionsForRole(userRole.getRole().getName());
+            List<ResourceActionLink> userRolePermissions = systemService.getPermissionsForRole(userRole.getRole().getName());
             if (!isNullOrEmpty(userRolePermissions)) {
                 permissions.addAll(userRolePermissions);
             }

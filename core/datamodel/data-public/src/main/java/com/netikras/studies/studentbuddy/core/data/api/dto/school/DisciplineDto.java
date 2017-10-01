@@ -1,9 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.WebsiteDto;
-
 import java.util.Date;
-import java.util.List;
 
 public class DisciplineDto {
 
@@ -12,7 +9,7 @@ public class DisciplineDto {
     private String title;
     private String description;
     private SchoolDto school;
-    private List<WebsiteDto> websites;
+    private CourseDto course;
 
     public String getId() {
         return id;
@@ -54,12 +51,12 @@ public class DisciplineDto {
         this.school = school;
     }
 
-    public List<WebsiteDto> getWebsites() {
-        return websites;
+    public CourseDto getCourse() {
+        return course;
     }
 
-    public void setWebsites(List<WebsiteDto> websites) {
-        this.websites = websites;
+    public void setCourse(CourseDto course) {
+        this.course = course;
     }
 
     @Override
@@ -70,7 +67,7 @@ public class DisciplineDto {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", school=" + school +
-                ", websites=" + websites +
+                ", course=" + course +
                 '}';
     }
 }

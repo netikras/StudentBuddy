@@ -10,6 +10,7 @@ public class LectureDto {
 
     private String id;
     private DisciplineDto discipline;
+    private CourseDto course;
     private List<AssignmentDto> assignments;
     private List<DisciplineTestDto> tests;
     private Date startsOn;
@@ -34,6 +35,14 @@ public class LectureDto {
 
     public void setDiscipline(DisciplineDto discipline) {
         this.discipline = discipline;
+    }
+
+    public CourseDto getCourse() {
+        return course;
+    }
+
+    public void setCourse(CourseDto course) {
+        this.course = course;
     }
 
     public List<AssignmentDto> getAssignments() {
@@ -113,6 +122,7 @@ public class LectureDto {
         return "LectureDto{" +
                 "id='" + id + '\'' +
                 ", discipline=" + discipline +
+                ", course=" + course +
                 ", assignments=" + assignments +
                 ", tests=" + tests +
                 ", startsOn=" + startsOn +

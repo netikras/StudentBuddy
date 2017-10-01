@@ -1,6 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.meta.ResourceActionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
@@ -37,8 +37,8 @@ public abstract class UserApi {
     public abstract void logout();
 
 
-    @RestEndpoint(dtoType = ResourceActionDto.class, url = "/permissions", method = HttpMethod.GET)
-    public abstract List<ResourceActionDto> getPermittedActions(String id);
+    @RestEndpoint(dtoType = RolePermissionDto.class, url = "/permissions", method = HttpMethod.GET)
+    public abstract List<RolePermissionDto> getPermittedActions(String id);
 
 
     @RestEndpoint(dtoType = UserDto.class, url = "/id/{id}/password", method = HttpMethod.PUT)

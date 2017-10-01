@@ -64,11 +64,6 @@ public class Discipline {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
-    @ModelTransform(dtoUpdatable = false, dtoFieldName = "websites")
-    private List<Website> sites;
-
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SUBSELECT)
     private List<DisciplineLecturer> lecturers;
 
     @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -82,6 +77,11 @@ public class Discipline {
     @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private List<DisciplineTest> tests;
+
+    @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @Fetch(FetchMode.SUBSELECT)
+    @ModelTransform
+    private List<Course> courses;
 
 
     public String getId() {
@@ -116,14 +116,6 @@ public class Discipline {
         this.description = description;
     }
 
-    public List<Website> getSites() {
-        return sites;
-    }
-
-    public void setSites(List<Website> sites) {
-        this.sites = sites;
-    }
-
     public List<DisciplineLecturer> getLecturers() {
         return lecturers;
     }
@@ -134,6 +126,14 @@ public class Discipline {
 
     public List<Lecture> getLectures() {
         return lectures;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public void setLectures(List<Lecture> lectures) {
@@ -181,7 +181,6 @@ public class Discipline {
                 ", school=" + school +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", sites=" + sites +
                 ", lecturers=" + lecturers +
                 ", lectures=" + lectures +
                 ", assignments=" + assignments +

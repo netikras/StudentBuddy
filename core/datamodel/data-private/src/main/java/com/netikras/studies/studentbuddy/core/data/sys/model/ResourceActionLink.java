@@ -21,6 +21,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 @Entity
 @Table(name = "resource_action")
 public class ResourceActionLink {
@@ -48,15 +50,43 @@ public class ResourceActionLink {
     @ModelTransform
     private Action action;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "role_permission_id")
-    private RolePermissions rolePermission;
+    @Column(name = "entity_id")
+    @ModelTransform
+    private String entityId;
 
+    @Column(name = "strict")
+    @ModelTransform
+    private boolean strict = true;
+
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    public ResourceActionLink() {
+    }
+
+    public ResourceActionLink(Resource resource, Action action, String entityId) {
+        this.resource = resource;
+        this.action = action;
+        this.entityId = entityId;
+    }
 
     public boolean isLike(ResourceActionLink otherLnk) {
         return otherLnk != null
                 && getResource().equals(otherLnk.getResource())
-                && getAction().equals(otherLnk.getAction());
+                && getAction().equals(otherLnk.getAction())
+                && isStrict() == otherLnk.isStrict()
+                && areEqual(getEntityId(), otherLnk.getEntityId())
+                ;
+    }
+
+    private boolean areEqual(Object left, Object right) {
+        if (left == right) return true;
+        if (left == null || right == null) {
+            return false;
+        }
+
+        return left.equals(right);
     }
 
     public String getId() {
@@ -91,12 +121,28 @@ public class ResourceActionLink {
         this.action = action;
     }
 
-    public RolePermissions getRolePermission() {
-        return rolePermission;
+    public String getEntityId() {
+        return entityId;
     }
 
-    public void setRolePermission(RolePermissions rolePermission) {
-        this.rolePermission = rolePermission;
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public boolean isStrict() {
+        return strict;
+    }
+
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     @Override
@@ -106,7 +152,9 @@ public class ResourceActionLink {
                 ", createdOn=" + createdOn +
                 ", resource=" + resource +
                 ", action=" + action +
-                ", rolePermission=" + rolePermission +
+                ", entityId='" + entityId + '\'' +
+                ", strict=" + strict +
+                ", role=" + role +
                 '}';
     }
 }

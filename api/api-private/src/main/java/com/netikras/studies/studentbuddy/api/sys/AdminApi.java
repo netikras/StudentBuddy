@@ -1,8 +1,8 @@
 package com.netikras.studies.studentbuddy.api.sys;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
-import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;
@@ -17,7 +17,8 @@ import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
 
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/admin", cruds = {
         @GenerateCrud(dtoType = SystemSettingDto.class, url = "/settings/stored"),
-        @GenerateCrud(dtoType = PasswordRequirementDto.class, url = "/pwreq/stored")
+        @GenerateCrud(dtoType = PasswordRequirementDto.class, url = "/pwreq/stored"),
+        @GenerateCrud(dtoType = RolePermissionDto.class, url = "/role/permission")
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class AdminApi {

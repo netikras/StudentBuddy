@@ -2,9 +2,10 @@ package com.netikras.studies.studentbuddy.api.aop.advices;
 
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
-import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -20,7 +21,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
  * Created by netikras on 17.3.11.
@@ -34,6 +40,10 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
 
     @Resource
     private SystemService systemService;
+    @Resource
+    private ResourceRepoProvider repoProvider;
+
+    private Map<String, Field> fieldsCache = new HashMap<>();
 
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -62,7 +72,10 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
         com.netikras.studies.studentbuddy.core.data.meta.Action action = getAction(joinPoint, authorizable);
 
 
-        boolean isAllowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
+        boolean isAllowed = false;
+        String resourceId = getResourceId(resource, joinPoint);
+
+        isAllowed = systemService.isUserAllowedToPerformAction(user, resource.name(), resourceId, action.name());
 
         if (!isAllowed) {
             logger.debug("Resource access not authorized");
@@ -85,6 +98,40 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
         return result;
     }
 
+    private String getResourceId(com.netikras.studies.studentbuddy.core.data.meta.Resource resource, JoinPoint joinPoint) {
+
+        String resourceId = null;
+
+        Class resourceType = repoProvider.getTypeForResource(resource.name());
+        if (!isNullOrEmpty(joinPoint.getArgs())) {
+            for (Object arg : joinPoint.getArgs()) {
+                if (arg != null && resourceType.isAssignableFrom(arg.getClass())) {
+
+                    try {
+                        Field idField = getField(arg.getClass(), "id");
+                        resourceId = (String) idField.get(arg);
+                        break;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        return resourceId;
+    }
+
+    private Field getField(Class clazz, String fieldName) throws Exception {
+        String alias = fieldName + "@" + clazz.toString();
+        Field field = fieldsCache.get(alias);
+        if (field == null) {
+            field = clazz.getField(fieldName);
+            field.setAccessible(true);
+            fieldsCache.put(alias, field);
+        }
+
+        return field;
+    }
 
     private com.netikras.studies.studentbuddy.core.data.meta.Resource getResource(JoinPoint joinPoint, Authorizable authorizable) {
         com.netikras.studies.studentbuddy.core.data.meta.Resource resource = authorizable.resource();

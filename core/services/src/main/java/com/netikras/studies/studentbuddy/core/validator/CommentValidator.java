@@ -3,7 +3,7 @@ package com.netikras.studies.studentbuddy.core.validator;
 import com.netikras.studies.studentbuddy.core.data.api.dao.CommentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.JpaRepo;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepositories;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
 import com.netikras.studies.studentbuddy.core.data.api.dao.TagDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.CommentTag;
@@ -26,7 +26,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public class CommentValidator {
 
     @Resource
-    private ResourceRepositories repositories;
+    private ResourceRepoProvider repositories;
 
     @Resource
     private CommentDao commentDao;

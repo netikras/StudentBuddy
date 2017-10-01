@@ -43,6 +43,11 @@ public class Lecture {
     @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "course_id")
+    @ModelTransform(dtoUpdatable = false, dtoFieldName = "course")
+    private Course course;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecture")
     @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "assignments")
@@ -99,6 +104,14 @@ public class Lecture {
 
     public void setDiscipline(Discipline discipline) {
         this.discipline = discipline;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public List<Assignment> getPendingAssignments() {
@@ -187,6 +200,7 @@ public class Lecture {
         return "Lecture{" +
                 "id='" + id + '\'' +
                 ", discipline=" + discipline +
+                ", course=" + course +
                 ", pendingAssignments=" + pendingAssignments +
                 ", pendingTests=" + pendingTests +
                 ", startsOn=" + startsOn +

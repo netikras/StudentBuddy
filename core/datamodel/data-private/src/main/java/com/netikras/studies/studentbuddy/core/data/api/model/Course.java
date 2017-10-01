@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
-
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -23,8 +23,8 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "students_group")
-public class StudentsGroup {
+@Table(name = "course")
+public class Course {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -36,36 +36,36 @@ public class StudentsGroup {
     @Column(name = "created_on")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
+    @ModelTransform(dtoUpdatable = false)
     private Date createdOn;
 
     @Column(name = "updated_on")
     @Temporal(TemporalType.TIMESTAMP)
     @UpdateTimestamp
-    @ModelTransform(dtoFieldName = "updatedOn", dtoUpdatable = false)
+    @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
     @Column(name = "title", nullable = false, unique = true)
-    @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
+    @ModelTransform
     private String title;
 
-    @Column(name = "email")
-    @ModelTransform(dtoFieldName = "email")
-    private String email;
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "discipline_id")
+    @ModelTransform(dtoUpdatable = false)
+    private Discipline discipline;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "group", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
-    @ModelTransform(dtoFieldName = "members", dtoUpdatable = false)
-    private List<Student> members;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @ModelTransform(dtoUpdatable = false)
+    private List<CourseLecturer> lecturers;
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "school_id")
-    @ModelTransform(dtoFieldName = "school", dtoUpdatable = false)
-    private School school;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "course")
+    @ModelTransform(dtoUpdatable = false)
+    private List<Lecture> lectures;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
-    @ModelTransform(dtoFieldName = "courses", dtoUpdatable = false)
-    private List<Course> courses;
-
+    @ManyToOne(optional = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    @ModelTransform
+    private StudentsGroup group;
 
     public String getId() {
         return id;
@@ -99,66 +99,59 @@ public class StudentsGroup {
         this.title = title;
     }
 
-    public String getEmail() {
-        return email;
+    public Discipline getDiscipline() {
+        return discipline;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setDiscipline(Discipline discipline) {
+        this.discipline = discipline;
     }
 
-    public List<Student> getMembers() {
-        return members;
+    public List<CourseLecturer> getLecturers() {
+        return lecturers;
     }
 
-    public void setMembers(List<Student> members) {
-        this.members = members;
+    public void setLecturers(List<CourseLecturer> lecturers) {
+        this.lecturers = lecturers;
     }
 
-    public List<Course> getCourses() {
-        return courses;
+    public StudentsGroup getGroup() {
+        return group;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
+    public void setGroup(StudentsGroup group) {
+        this.group = group;
     }
 
-    public boolean addMember(Student student) {
-        List<Student> members = getMembers();
-        if (members == null) {
-            members = new ArrayList<>();
-            setMembers(members);
+    public List<Lecture> getLectures() {
+        return lectures;
+    }
+
+    public void setLectures(List<Lecture> lectures) {
+        this.lectures = lectures;
+    }
+
+    public List<Lecture> addLecture(Lecture lecture) {
+        List<Lecture> lectureList = getLectures();
+        if (lectureList == null) {
+            lectureList = new ArrayList<>();
+            setLectures(lectureList);
         }
-        return members.add(student);
-    }
-
-    public boolean removeMember(Student student) {
-        List<Student> members = getMembers();
-        if (members == null || members.isEmpty()) {
-            return false;
-        }
-
-        return members.remove(student);
-    }
-
-    public School getSchool() {
-        return school;
-    }
-
-    public void setSchool(School school) {
-        this.school = school;
+        lectureList.add(lecture);
+        return lectureList;
     }
 
     @Override
     public String toString() {
-        return "StudentsGroup{" +
+        return "Course{" +
                 "id='" + id + '\'' +
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", title='" + title + '\'' +
-                ", email='" + email + '\'' +
-                ", members=" + members +
-                ", school=" + school +
+                ", discipline=" + discipline +
+                ", lecturers=" + lecturers +
+                ", lectures=" + lectures +
+                ", group=" + group +
                 '}';
     }
 }

@@ -106,6 +106,19 @@ public class HttpThreadContext extends ThreadContext {
         getSession().setAttribute("user", user);
     }
 
+    public void destroy() {
+        try {
+            HttpSession session = getSession();
+            clear(true);
+            if (session != null) {
+                session.invalidate();
+            }
+        } catch (Exception e) {
+
+        }
+
+    }
+
     public void removeUser() {
         if (getSession() != null) {
             getSession().removeAttribute("user");

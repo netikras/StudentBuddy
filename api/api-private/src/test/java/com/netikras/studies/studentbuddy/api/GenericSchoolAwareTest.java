@@ -18,7 +18,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloo
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
@@ -29,6 +31,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -223,6 +226,15 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         disciplineDto.setTitle("Math");
         disciplineDto.setDescription("The best ever!");
         return disciplineDto;
+    }
+
+    protected CourseDto buildCourse(DisciplineDto disciplineDto) {
+        CourseDto courseDto = new CourseDto();
+
+        courseDto.setDiscipline(disciplineDto);
+        courseDto.setTitle("OOP course #7");
+
+        return courseDto;
     }
 
     protected LecturerDto buildLecturer() {
@@ -583,18 +595,13 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
 
     }
 
-    @Test
-    public void purgeAll() {
-        purgeBuildings();
-        purgePeople();
-        purgeSchools();
-    }
 
-    @Test
-    public void createInfraTest() {
-        loginSystem();
+    protected SchoolDto createInfra(boolean fresh) {
 
-        purgeAll();
+
+        if (fresh) {
+            purgeAll();
+        }
 
         BuildingDto buildingDto = buildBuilding();
         buildingDto = locationConsumer.createBuildingDto(buildingDto);
@@ -638,6 +645,11 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         groupDto = adminStudentConsumer.createStudentsGroupDto(groupDto);
         assertNotNull("Students group should have been created", groupDto);
 
+        CourseDto courseDto = buildCourse(disciplineDto);
+        courseDto.setGroup(groupDto);
+        courseDto = schoolConsumer.createCourseDto(courseDto);
+        assertNotNull("Course should have been created", courseDto);
+
         PersonDto personDto1 = buildPerson();
         personDto1.setPersonalCode("000000001");
         personDto1.setIdentification("00000001");
@@ -676,6 +688,10 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         lectureDto = lecturesConsumer.createLectureDto(lectureDto);
         assertNotNull("Lecture should have been created", lectureDto);
 
+        courseDto = schoolConsumer.assignCourseDtoLecture(courseDto.getId(), lectureDto.getId());
+        assertEquals("There should be 1 lecture in the course", 1, courseDto.getLectures().size());
+        assertEquals("Given lecture should have been associated to the course", lectureDto.getId(), courseDto.getLectures().get(0).getId());
+
         LectureGuestDto guestDto = buildGuest();
         guestDto.setPerson(personDto3);
         guestDto.setLecture(lectureDto);
@@ -692,6 +708,22 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
         testDto.setDiscipline(disciplineDto);
         testDto = testsConsumer.createDisciplineTestDto(testDto);
         assertNotNull("Discipline test should have been created", testDto);
+
+        return schoolDto;
+    }
+
+    @Test
+    public void purgeAll() {
+        purgeBuildings();
+        purgePeople();
+        purgeSchools();
+    }
+
+    @Test
+    public void createInfraTest() {
+        loginSystem();
+
+        createInfra(true);
 
 //        schoolConsumer.purgeDisciplineDto(disciplineDto.getId());
 
@@ -720,6 +752,7 @@ public class GenericSchoolAwareTest extends GenericPersonAwareTest {
     }
 
     @Test
+    @Ignore
     public void testGetters() {
         initSchoolAware();
         loginSystem();

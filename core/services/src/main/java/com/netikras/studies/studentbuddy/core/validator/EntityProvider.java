@@ -1,7 +1,8 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
 import com.netikras.studies.studentbuddy.core.data.api.dao.JpaRepo;
-import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepositories;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
+import com.netikras.studies.studentbuddy.core.data.api.dao.RoleDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
@@ -22,9 +23,10 @@ import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
+import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
-import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import org.springframework.stereotype.Component;
@@ -40,7 +42,7 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public class EntityProvider {
 
     @Resource
-    private ResourceRepositories repositories;
+    private ResourceRepoProvider repositories;
 
 
     @Transactional
@@ -147,9 +149,14 @@ public class EntityProvider {
 
         JpaRepo<User> repo = repositories.getRepoForModel(item.getClass());
         if (repo == null) return existing;
+        UserDao dao = (UserDao) repo;
 
         if (!isNullOrEmpty(item.getId())) {
             existing = repo.findOne(item.getId());
+        }
+
+        if (existing == null && !isNullOrEmpty(item.getName())) {
+            existing = dao.findByName(item.getName());
         }
 
         return existing;
@@ -371,21 +378,26 @@ public class EntityProvider {
 
         JpaRepo<Role> repo = repositories.getRepoForModel(item.getClass());
         if (repo == null) return existing;
+        RoleDao dao = (RoleDao) repo;
 
         if (!isNullOrEmpty(item.getId())) {
             existing = repo.findOne(item.getId());
+        }
+
+        if (existing == null && !isNullOrEmpty(item.getName())) {
+            existing = dao.findByName(item.getName());
         }
 
         return existing;
     }
 
     @Transactional
-    public RolePermissions fetch(RolePermissions item) {
-        RolePermissions existing = null;
+    public ResourceActionLink fetch(ResourceActionLink item) {
+        ResourceActionLink existing = null;
 
         if (item == null) return existing;
 
-        JpaRepo<RolePermissions> repo = repositories.getRepoForModel(item.getClass());
+        JpaRepo<ResourceActionLink> repo = repositories.getRepoForModel(item.getClass());
         if (repo == null) return existing;
 
         if (!isNullOrEmpty(item.getId())) {

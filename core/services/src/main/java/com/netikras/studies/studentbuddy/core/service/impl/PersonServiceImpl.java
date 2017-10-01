@@ -12,10 +12,12 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
+import com.netikras.studies.studentbuddy.core.service.UserService;
 import com.netikras.studies.studentbuddy.core.validator.PersonValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,8 @@ public class PersonServiceImpl implements PersonService {
     private LecturerService lecturerService;
     @Resource
     private SchoolService schoolService;
+    @Resource
+    private UserService userService;
 
 
 
@@ -173,6 +177,11 @@ public class PersonServiceImpl implements PersonService {
         List<PersonnelMember> personnelMembers = personnelDao.findAllByPerson_Id(id);
         if (!isNullOrEmpty(personnelMembers)) {
             personnelMembers.forEach(member -> schoolService.purgePersonnelMember(member.getId()));
+        }
+
+        User user = userService.findUserByPerson(person.getId());
+        if (user != null) {
+            userService.purgeUser(user.getId());
         }
 
         personDao.delete(id);

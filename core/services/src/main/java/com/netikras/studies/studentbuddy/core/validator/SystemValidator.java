@@ -1,19 +1,15 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
-import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
-import com.netikras.studies.studentbuddy.core.data.api.dao.RoleDao;
-import com.netikras.studies.studentbuddy.core.data.api.model.Person;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
-import com.netikras.studies.studentbuddy.core.data.sys.dao.PasswordRequirementsDao;
+import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidationResult;
+import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidator;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.SettingsDao;
-import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
-import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidationResult;
-import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidator;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import org.springframework.stereotype.Component;
@@ -32,17 +28,11 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 public class SystemValidator {
 
     @Resource
-    private UserDao userDao;
-    @Resource
-    private RoleDao roleDao;
-    @Resource
-    private PersonDao personDao;
-    @Resource
     private SettingsDao settingsDao;
     @Resource
-    private PasswordRequirementsDao passwordRequirementsDao;
-    @Resource
     private SystemService systemService;
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Transactional
@@ -78,7 +68,7 @@ public class SystemValidator {
             );
         }
 
-        User existingUser = fetch(user);
+        User existingUser = entityProvider.fetch(user);
         if (existingUser != null) {
             errors.add(new ValidationError()
                     .setSuggestion("Every user must have a unique username and alias")
@@ -87,7 +77,7 @@ public class SystemValidator {
             );
         }
 
-        user.setPerson(fetch(user.getPerson()));
+        user.setPerson(entityProvider.fetch(user.getPerson()));
 
         if (user.getPerson() == null) {
             errors.add(new ValidationError()
@@ -112,7 +102,7 @@ public class SystemValidator {
                     continue;
                 }
 
-                Role existingRole = fetch(role);
+                Role existingRole = entityProvider.fetch(role);
                 if (existingRole == null) {
                     role.setId(null);
                 } else {
@@ -178,9 +168,61 @@ public class SystemValidator {
                     .setMessage1("Setting name missing")
                     .setStatus(NOT_FOUND.getCode())
             );
+        } else {
+            SystemSetting existingSetting = settingsDao.findByName(setting.getName());
+            if (existingSetting != null) {
+                errors.add(new ValidationError()
+                        .setSuggestion("System setting with such name already exists")
+                        .setMessage1("Setting already exists")
+                        .setCausedBy(existingSetting.getName())
+                        .setStatus(CONFLICT.getCode())
+                );
+            }
         }
 
+
         setting.setId(null);
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForCreation(ResourceActionLink permission, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (permission == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot create a non-existing role permission")
+                    .setMessage1("Role permission is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        Role role = permission.getRole();
+
+        if (role == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Role permissions must link a role and one or more resource actions")
+                    .setMessage1("Role missing")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            permission.setId(null);
+            return errors;
+        }
+
+
+        Role existingRole = entityProvider.fetch(role);
+
+        if (existingRole == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Each role can be linked to a single RolePermissions collection. " +
+                            "If collection already exists feel free to modify it")
+                    .setMessage1("Role permissions already exist")
+                    .setStatus(CONFLICT.getCode())
+            );
+        }
+
+        permission.setId(null);
         return errors;
     }
 
@@ -237,46 +279,5 @@ public class SystemValidator {
         return ensureValue(errors, ErrorsCollection.class);
     }
 
-    @Transactional
-    protected User fetch(User item) {
-        User existing = null;
 
-        if (item == null) return existing;
-
-        if (!isNullOrEmpty(item.getId())) {
-            existing = userDao.findOne(item.getId());
-        } else if (!isNullOrEmpty(item.getName())) {
-            existing = userDao.findByName(item.getName());
-        } else if (!isNullOrEmpty(item.getName())) {
-            existing = userDao.findByAlias(item.getAlias());
-        }
-
-        return existing;
-    }
-
-    @Transactional
-    protected Person fetch(Person item) {
-        Person existing = null;
-
-        if (item == null) return existing;
-
-        if (!isNullOrEmpty(item.getId())) {
-            existing = personDao.findOne(item.getId());
-        }
-
-        return existing;
-    }
-
-    @Transactional
-    protected Role fetch(Role item) {
-        Role existing = null;
-
-        if (item == null) return existing;
-
-        if (!isNullOrEmpty(item.getId())) {
-            existing = roleDao.findOne(item.getId());
-        }
-
-        return existing;
-    }
 }

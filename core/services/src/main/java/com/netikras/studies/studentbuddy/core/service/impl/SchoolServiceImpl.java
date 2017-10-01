@@ -1,15 +1,18 @@
 package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.studies.studentbuddy.core.data.api.dao.CourseDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
+import com.netikras.studies.studentbuddy.core.data.api.model.CourseLecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
-import com.netikras.studies.studentbuddy.core.data.api.model.Website;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.LecturerService;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
@@ -35,6 +38,9 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Resource
     private DisciplineDao disciplineDao;
+
+    @Resource
+    private CourseDao courseDao;
 
     @Resource
     private SchoolDepartmentDao departmentDao;
@@ -153,6 +159,126 @@ public class SchoolServiceImpl implements SchoolService {
         school = getSchool(id);
 
         schoolDao.delete(id);
+    }
+
+    @Override
+    public Course getCourse(String id) {
+        return courseDao.findOne(id);
+    }
+
+    @Override
+    public List<Course> getAllCourses() {
+        return courseDao.findAll();
+    }
+
+    @Override
+    public List<Course> getAllCoursesByDiscipline(String disciplineId) {
+        return courseDao.findAllByDiscipline_Id(disciplineId);
+    }
+
+    @Override
+    public List<Course> getAllCoursesBySchool(String schoolId) {
+        return courseDao.findAllByDiscipline_School_Id(schoolId);
+    }
+
+    @Override
+    @Transactional
+    public Course createCourse(Course course) {
+        ErrorsCollection errors = schoolValidator.validateForCreation(course, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create new course")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
+        return courseDao.save(course);
+    }
+
+    @Override
+    public Course updateCourse(Course course) {
+        return courseDao.save(course);
+    }
+
+    @Override
+    public void deleteCourse(String id) {
+        courseDao.delete(id);
+    }
+
+    @Override
+    @Transactional
+    public void purgeCourse(String id) {
+        Course course = getCourse(id);
+        if (course == null) return;
+
+        if (!isNullOrEmpty(course.getLecturers())) {
+            for (CourseLecturer courseLecturer : course.getLecturers()) {
+                courseLecturer.getLecturer().setCourseLecturers(null);
+                lecturerService.updateLecturer(courseLecturer.getLecturer());
+            }
+        }
+
+        if (!isNullOrEmpty(course.getLectures())) {
+            for (Lecture lecture : course.getLectures()) {
+                lecture.setCourse(null);
+                lectureService.updateLecture(lecture);
+            }
+        }
+
+        courseDao.delete(course.getId());
+    }
+
+    @Override
+    @Transactional
+    public Course assignCourseLecture(String courseId, String lectureId) {
+        Course course = getCourse(courseId);
+        if (course == null) {
+            return null;
+        }
+
+        Lecture lecture = lectureService.getLecture(lectureId);
+        if (lecture == null) {
+            return null;
+        }
+
+        if (course.getLectures().contains(lecture)) {
+            return course;
+        }
+
+        lecture.setCourse(course);
+
+        lecture = lectureService.updateLecture(lecture);
+        if (lecture == null
+                || lecture.getCourse() == null
+                || !courseId.equals(lecture.getCourse().getId())) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot assign lecture to a course")
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
+        course.addLecture(lecture);
+
+        return course;
+    }
+
+    @Override
+    @Transactional
+    public Course unassignCourseLecture(String courseId, String lectureId) {
+        Course course = getCourse(courseId);
+        if (course == null) {
+            return null;
+        }
+
+        if (isNullOrEmpty(course.getLectures())) {
+            return course;
+        }
+
+        course.getLectures().removeIf(lecture -> lecture.getId().equals(lectureId));
+        course = updateCourse(course);
+        return course;
     }
 
     @Override
@@ -301,8 +427,6 @@ public class SchoolServiceImpl implements SchoolService {
             return;
         }
 
-        List<Website> websites = discipline.getSites();
-
         if (!isNullOrEmpty(discipline.getLectures())) {
             List<String> ids = new ArrayList<>();
             discipline.getLectures().forEach(lecture -> ids.add(lecture.getId()));
@@ -315,6 +439,10 @@ public class SchoolServiceImpl implements SchoolService {
 
         if (!isNullOrEmpty(discipline.getTests())) {
             discipline.getTests().forEach(test -> lectureService.purgeLectureTest(test.getId()));
+        }
+
+        if (!isNullOrEmpty(discipline.getCourses())) {
+            discipline.getCourses().forEach(course -> purgeCourse(course.getId()));
         }
 
         disciplineDao.delete(id);
@@ -387,5 +515,10 @@ public class SchoolServiceImpl implements SchoolService {
     @Override
     public List<Discipline> searchAllDisciplinesByDescription(String query) {
         return disciplineDao.findAllByDescriptionLikeIgnoreCase(disciplineDao.wrapSearchString(query));
+    }
+
+    @Override
+    public List<Course> searchAllCoursesByTitle(String query) {
+        return courseDao.findAllByTitleLikeIgnoreCase(courseDao.wrapSearchString(query));
     }
 }

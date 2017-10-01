@@ -1,5 +1,8 @@
 package com.netikras.studies.studentbuddy.core.data.sys.model;
 
+import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.meta.Resource;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,8 +20,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Entity
 @Table(name = "role")
@@ -44,7 +50,11 @@ public class Role {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
-    private User createdBy;
+    private Person createdBy;
+
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "role")
+    @ModelTransform
+    private List<ResourceActionLink> permissions;
 
     public String getId() {
         return id;
@@ -70,12 +80,34 @@ public class Role {
         this.createdOn = createdOn;
     }
 
-    public User getCreatedBy() {
+    public Person getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(User createdBy) {
+    public void setCreatedBy(Person createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public List<ResourceActionLink> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<ResourceActionLink> permissions) {
+        this.permissions = permissions;
+    }
+
+    public List<ResourceActionLink> addPermission(ResourceActionLink permission) {
+        List<ResourceActionLink> permissions = getPermissions();
+        if (permissions == null) {
+            permissions = new ArrayList<>();
+            setPermissions(permissions);
+        }
+        permissions.add(permission);
+        return permissions;
+    }
+
+    public List<ResourceActionLink> addPermission(Resource resource, Action action, String resourceId) {
+        return addPermission(new ResourceActionLink(resource, action, resourceId));
     }
 
     @Override
@@ -85,6 +117,7 @@ public class Role {
                 ", name='" + name + '\'' +
                 ", createdOn=" + createdOn +
                 ", createdBy=" + createdBy +
+                ", permissions=" + permissions +
                 '}';
     }
 }

@@ -20,4 +20,20 @@ import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PUR
 public abstract class AdminUserApi {
 
 
+    @RestEndpoint(dtoType = UserDto.class, url = "/id/{id}/role/name/{rolename}", method = HttpRequest.HttpMethod.PUT)
+    public abstract UserDto assignRoleByName(
+            @MethodParam(type = Param.Type.URL, name = "id") String userId,
+            @MethodParam(type = Param.Type.URL, name = "rolename") String roleName
+    );
+
+    @RestEndpoint(dtoType = UserDto.class, url = "/id/{id}/role/name/{rolename}", method = HttpRequest.HttpMethod.DELETE)
+    public abstract UserDto unassignRoleByName(
+            @MethodParam(type = Param.Type.URL, name = "id") String userId,
+            @MethodParam(type = Param.Type.URL, name = "rolename") String roleName
+    );
+
+
+
+
+
 }

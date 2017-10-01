@@ -7,11 +7,11 @@ import com.netikras.studies.studentbuddy.commons.model.PagedResults;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
-import com.netikras.studies.studentbuddy.core.data.sys.SystemService;
-import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.meta.Action;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.MappingSettings;
@@ -192,7 +192,7 @@ public class CommentsProducer extends CommentsApiProducer {
                 com.netikras.studies.studentbuddy.core.data.meta.Resource resource =
                         com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(entity.toUpperCase());
                 user = HttpThreadContext.current().getUser();
-                allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), action.name());
+                allowed = systemService.isUserAllowedToPerformAction(user, resource.name(), null, action.name());
             } catch (IllegalArgumentException ilae) {
                 errors.add(new ValidationError().setMessage1("Cannot determine entity type for value " + entity));
             }
@@ -225,7 +225,7 @@ public class CommentsProducer extends CommentsApiProducer {
                 Person currentPerson = currentUser.getPerson();
                 Person authorPerson = comment.getAuthor();
                 if (!currentPerson.equals(authorPerson)) {
-                    if (!systemService.isUserAllowedToPerformAction(currentUser, entity, MODERATE.name()))
+                    if (!systemService.isUserAllowedToPerformAction(currentUser, entity, null, MODERATE.name()))
                         errors.add(new ValidationError().setMessage1("User is not allowed to manipulate records as another person"));
                 }
             }

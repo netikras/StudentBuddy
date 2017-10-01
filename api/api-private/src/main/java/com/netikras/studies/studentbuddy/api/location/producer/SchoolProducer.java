@@ -1,10 +1,12 @@
 package com.netikras.studies.studentbuddy.api.location.producer;
 
 import com.netikras.studies.studentbuddy.api.location.generated.SchoolApiProducer;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
@@ -25,6 +27,7 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.SEARCH;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.COURSE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSONNEL;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL;
@@ -172,6 +175,84 @@ public class SchoolProducer extends SchoolApiProducer {
         Discipline discipline = schoolService.getDiscipline(id);
         DisciplineDto disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
         return disciplineDto;
+    }
+
+
+    @Override
+    @Authorizable(resource = COURSE, action = CREATE)
+    protected CourseDto onCreateCourseDto(CourseDto item) {
+        Course course = ModelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
+        course = schoolService.createCourse(course);
+        return ModelMapper.transform(course, new CourseDto());
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = DELETE)
+    protected void onDeleteCourseDto(String id) {
+        schoolService.deleteCourse(id);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = MODIFY)
+    protected CourseDto onUpdateCourseDto(CourseDto item) {
+        Course course = ModelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
+        course = schoolService.updateCourse(course);
+        return ModelMapper.transform(course, new CourseDto());
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = GET)
+    protected CourseDto onRetrieveCourseDto(String id) {
+        Course course = schoolService.getCourse(id);
+        return ModelMapper.transform(course, new CourseDto());
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = GET_ALL)
+    protected List<CourseDto> onGetCourseDtoAll() {
+        List<Course> courses = schoolService.getAllCourses();
+        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = PURGE)
+    protected void onPurgeCourseDto(String id) {
+        schoolService.purgeCourse(id);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = GET_ALL)
+    protected List<CourseDto> onGetCourseDtoAllBySchoolId(String id) {
+        List<Course> courses = schoolService.getAllCoursesBySchool(id);
+        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = GET_ALL)
+    protected List<CourseDto> onGetCourseDtoAllByDisciplineId(String id) {
+        List<Course> courses = schoolService.getAllCoursesByDiscipline(id);
+        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = SEARCH)
+    protected List<CourseDto> onSearchCourseDtoAllByTitle(String title) {
+        List<Course> courses = schoolService.searchAllCoursesByTitle(title);
+        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = MODIFY)
+    protected CourseDto onAssignCourseDtoLecture(String courseId, String lectureId) {
+        Course course = schoolService.assignCourseLecture(courseId, lectureId);
+        return ModelMapper.transform(course, new CourseDto());
+    }
+
+    @Override
+    @Authorizable(resource = COURSE, action = MODIFY)
+    protected CourseDto onUnassignCourseDtoLecture(String courseId, String lectureId) {
+        Course course = schoolService.unassignCourseLecture(courseId, lectureId);
+        return ModelMapper.transform(course, new CourseDto());
     }
 
     @Override

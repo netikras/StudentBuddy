@@ -21,6 +21,7 @@ public enum Resource {
     STUDENT_GROUP,
     GUEST,
     DISCIPLINE,
+    COURSE,
     SCHOOL,
     SCHOOL_DEPARTMENT,
     PERSONNEL,

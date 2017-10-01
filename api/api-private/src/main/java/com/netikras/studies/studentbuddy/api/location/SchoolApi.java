@@ -1,12 +1,12 @@
 package com.netikras.studies.studentbuddy.api.location;
 
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
-import com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.RestApiLocation;
@@ -24,25 +24,11 @@ import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PUR
         @GenerateCrud(dtoType = SchoolDto.class, extend = {PURGE, GET_ALL}),
         @GenerateCrud(dtoType = SchoolDepartmentDto.class, url = "/department", extend = {PURGE}),
         @GenerateCrud(dtoType = DisciplineDto.class, url = "/discipline", extend = {PURGE}),
+        @GenerateCrud(dtoType = CourseDto.class, url = "/course", extend = {PURGE, GET_ALL}),
         @GenerateCrud(dtoType = PersonnelMemberDto.class, url = "/personnel", extend = {PURGE})
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class SchoolApi {
-
-//    @RestEndpoint(url = "/purge/id/{id}", method = HttpMethod.DELETE, dtoType = SchoolDto.class)
-//    public abstract void purgeSchool(@MethodParam(type = Type.URL, name = "id") String id);
-//
-//    @RestEndpoint(url = "/department/purge/id/{id}", method = HttpMethod.DELETE, dtoType = SchoolDepartmentDto.class)
-//    public abstract void purgeDepartment(@MethodParam(type = Type.URL, name = "id") String id);
-//
-//    @RestEndpoint(url = "/discipline/purge/id/{id}", method = HttpMethod.DELETE, dtoType = DisciplineDto.class)
-//    public abstract void purgeDiscipline(@MethodParam(type = Type.URL, name = "id") String id);
-//
-//    @RestEndpoint(url = "/member/purge/id/{id}", method = HttpMethod.DELETE, dtoType = PersonnelMemberDto.class)
-//    public abstract void purgeMember(@MethodParam(type = Type.URL, name = "id") String id);
-
-//    @RestEndpoint(url = "/all", method = HttpMethod.GET, dtoType = SchoolDto.class, action = "getAll")
-//    public abstract List<SchoolDto> getAllSchools();
 
 
     @RestEndpoint(url = "/search/title/{title}", method = HttpMethod.GET, dtoType = SchoolDto.class, action = "searchAllByTitle")
@@ -51,15 +37,42 @@ public abstract class SchoolApi {
     );
 
 
-    @RestEndpoint(url = "/id/{id}/{discipline}", method = HttpMethod.GET, dtoType = DisciplineDto.class, action = "getAllBySchoolId")
+    @RestEndpoint(url = "/id/{id}/discipline", method = HttpMethod.GET, dtoType = DisciplineDto.class, action = "getAllBySchoolId")
     public abstract List<DisciplineDto> getAllDisciplinesBySchoolId(
             @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/id/{id}/course", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllBySchoolId")
+    public abstract List<CourseDto> getAllCoursesBySchoolId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/course/{courseId}/lecture/{lectureId}", method = HttpMethod.PUT, dtoType = CourseDto.class, action = "assignLecture")
+    public abstract CourseDto assignCourseLecture(
+            @MethodParam(type = Type.URL, name = "courseId") String courseId,
+            @MethodParam(type = Type.URL, name = "lectureId") String lectureId
+    );
+
+    @RestEndpoint(url = "/course/{courseId}/lecture/{lectureId}", method = HttpMethod.DELETE, dtoType = CourseDto.class, action = "unassignLecture")
+    public abstract CourseDto unassignCourseLecture(
+            @MethodParam(type = Type.URL, name = "courseId") String courseId,
+            @MethodParam(type = Type.URL, name = "lectureId") String lectureId
     );
 
 
     @RestEndpoint(url = "/id/{id}/personnel", method = HttpMethod.GET, dtoType = PersonnelMemberDto.class, action = "searchAllBySchoolId")
     public abstract List<PersonnelMemberDto> getAllPersonnelBySchoolId(
             @MethodParam(type = Type.URL, name = "id") String schoolId
+    );
+
+    @RestEndpoint(url = "/discipline/id/{id}/course", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllByDisciplineId")
+    public abstract List<CourseDto> getAllCoursesByDisciplineId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/course/search/title/{title}", method = HttpMethod.GET, dtoType = CourseDto.class, action = "searchAllByTitle")
+    public abstract List<CourseDto> searchAllCoursesByTitle(
+            @MethodParam(type = Type.URL, name = "title") String titleSubstring
     );
 
 

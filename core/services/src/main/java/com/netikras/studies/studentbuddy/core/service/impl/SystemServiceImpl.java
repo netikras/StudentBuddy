@@ -1,18 +1,27 @@
-package com.netikras.studies.studentbuddy.core.data.sys;
+package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
-import com.netikras.studies.studentbuddy.core.data.api.dao.RolePermissionsDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.JpaRepo;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
+import com.netikras.studies.studentbuddy.core.data.api.dao.RoleDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.RolePermissionDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.PasswordRequirementsDao;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.SettingsDao;
+import com.netikras.studies.studentbuddy.core.data.sys.dao.UserDao;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
 import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
-import com.netikras.studies.studentbuddy.core.data.sys.model.RolePermissions;
+import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
+import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
+import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.remote.http.HttpStatus;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,61 +31,94 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.security.IntegrityUtils.areEqual;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+
 @Service
-public class SystemService {
+public class SystemServiceImpl implements SystemService {
 
     @Resource
     private SettingsDao settingsDao;
-
     @Resource
     private PasswordRequirementsDao passwordRequirementsDao;
-
     @Resource
-    private RolePermissionsDao rolePermissionsDao;
+    private RoleDao roleDao;
+    @Resource
+    private UserDao userDao;
+    @Resource
+    private SystemValidator systemValidator;
+    @Resource
+    private ResourceRepoProvider repoProvider;
+    @Resource
+    private RolePermissionDao permissionDao;
+
+    private User guestUser = null;
 
     private List<PasswordRequirement> passwordRequirements;
 
     private List<SystemSetting> systemSettings;
 
-    private Map<String, List<RolePermissions>> permissionsForRole;
+    private Map<String, List<ResourceActionLink>> permissionsForRole;
 
-    private Map<String, List<RolePermissions>> permissionsForResource;
+    private Map<String, List<ResourceActionLink>> permissionsForResource;
 
+    @Override
+    @Transactional
+    public User getGuestUser() {
 
+        if (getSettingValue("disable_guest", false)) {
+            return null;
+        }
+
+        if (guestUser == null
+                || getSettingValue("refresh_guest", false)) {
+            guestUser = userDao.findByName("guest");
+        }
+        return guestUser;
+    }
+
+    @Override
     public List<PasswordRequirement> getPasswordRequirements() {
         if (passwordRequirements == null) {
-            refreshPaswordRequirements();
+            refreshPasswordRequirements();
         }
         return passwordRequirements;
     }
 
+    @Override
     @Transactional
     public List<PasswordRequirement> fetchPasswordRequirements() {
         return passwordRequirementsDao.findAll();
     }
 
+    @Override
     @Transactional
     public PasswordRequirement createPasswordRequirement(PasswordRequirement requirement) {
         return passwordRequirementsDao.save(requirement);
     }
 
-    public List<PasswordRequirement> refreshPaswordRequirements() {
+    @Override
+    public List<PasswordRequirement> refreshPasswordRequirements() {
         passwordRequirements = fetchPasswordRequirements();
         return getPasswordRequirements();
     }
 
+    @Override
     @Transactional
     public void deletePasswordRequirement(String id) {
         passwordRequirementsDao.delete(id);
     }
 
 
+    @Override
     @Transactional
     public PasswordRequirement updatePasswordRequirement(PasswordRequirement requirement) {
         return passwordRequirementsDao.save(requirement);
     }
 
 
+    @Override
     public List<SystemSetting> getSystemSettings() {
         if (systemSettings == null) {
             refreshSettings();
@@ -84,16 +126,19 @@ public class SystemService {
         return systemSettings;
     }
 
+    @Override
     @Transactional
     public List<SystemSetting> fetchSystemSettings() {
         return settingsDao.findAll();
     }
 
+    @Override
     public List<SystemSetting> refreshSettings() {
         systemSettings = fetchSystemSettings();
         return getSystemSettings();
     }
 
+    @Override
     @Transactional
     public SystemSetting updateSystemSetting(SystemSetting setting) {
         SystemSetting oldSetting = settingsDao.findByName(setting.getName());
@@ -108,22 +153,36 @@ public class SystemService {
         return settingsDao.save(setting);
     }
 
+    @Override
     @Transactional
     public void deleteSystemSettingByName(String name) {
         settingsDao.deleteByName(name);
     }
 
+    @Override
     @Transactional
     public SystemSetting createSetting(SystemSetting setting) {
+        ErrorsCollection errors = systemValidator.validateForCreation(setting, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create role permissions")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
         return settingsDao.save(setting);
     }
 
+    @Override
     @Transactional
     public SystemSetting getStoredSetting(String name) {
         return settingsDao.findByName(name);
     }
 
 
+    @Override
     public SystemSetting getSettingByName(String name) {
         if (getSystemSettings() == null) return null;
         if (name == null || name.isEmpty()) return null;
@@ -136,6 +195,7 @@ public class SystemService {
         return null;
     }
 
+    @Override
     public String getSettingValue(String name, String defaultValue) {
         SystemSetting setting = getSettingByName(name);
         if (setting == null) return defaultValue;
@@ -145,6 +205,7 @@ public class SystemService {
         return setting.getValue();
     }
 
+    @Override
     public boolean getSettingValue(String name, boolean defaultValue) {
         String settingValue = getSettingValue(name, "" + defaultValue);
         boolean result = defaultValue;
@@ -156,6 +217,8 @@ public class SystemService {
         return result;
     }
 
+
+    @Override
     public int getSettingValue(String name, int defaultValue) {
         String settingValue = getSettingValue(name, "" + defaultValue);
         int result = defaultValue;
@@ -167,6 +230,8 @@ public class SystemService {
         return result;
     }
 
+
+    @Override
     public long getSettingValue(String name, long defaultValue) {
         String settingValue = getSettingValue(name, "" + defaultValue);
         long result = defaultValue;
@@ -178,80 +243,75 @@ public class SystemService {
         return result;
     }
 
+    @Override
     public int getSettingValue(SysProp.IntProperty property) {
         return getSettingValue(property.getName(), property.getDefaultValue());
     }
 
+    @Override
     public long getSettingValue(SysProp.LongProperty property) {
         return getSettingValue(property.getName(), property.getDefaultValue());
     }
 
+    @Override
     public boolean getSettingValue(SysProp.BooleanProperty property) {
         return getSettingValue(property.getName(), property.getDefaultValue());
     }
 
+    @Override
     public String getSettingValue(SysProp.StringProperty property) {
         return getSettingValue(property.getName(), property.getDefaultValue());
     }
 
 
+    @Override
     @Transactional
-    public RolePermissions createRolePermissions(RolePermissions permissions) {
-        return rolePermissionsDao.save(permissions);
-    }
-
-    @Transactional
-    public RolePermissions addRolePermission(String roleName, ResourceActionLink resourceActionLink) {
-        RolePermissions permissions = rolePermissionsDao.findByRole_Name(roleName);
-        if (permissions == null) return null;
-
-        if (permissions.getResourceActions() == null) {
-            permissions.setResourceActions(new ArrayList<>());
-        } else {
-            for (ResourceActionLink link : permissions.getResourceActions()) {
-                if (resourceActionLink.isLike(link)) {
-                    return permissions;
-                }
-            }
+    public ResourceActionLink createRolePermission(ResourceActionLink permission) {
+        ErrorsCollection errors = systemValidator.validateForCreation(permission, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create role permissions")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
         }
-        permissions.getResourceActions().add(resourceActionLink);
-
-        permissions = rolePermissionsDao.save(permissions);
-        return permissions;
+        return permissionDao.save(permission);
     }
 
+    @Override
     @Transactional
     public void removeRolePermission(String roleName, ResourceActionLink resourceActionLink) {
-        RolePermissions permissions = rolePermissionsDao.findByRole_Name(roleName);
-        if (permissions == null) return;
+        Role role = roleDao.findByName(roleName);
+        if (role == null) return;
 
-        if (permissions.getResourceActions() == null) return;
+        if (isNullOrEmpty(role.getPermissions())) return;
 
-        boolean removed = permissions.getResourceActions().removeIf(resourceActionLink::isLike);
+        boolean removed = role.getPermissions().removeIf(resourceActionLink::isLike);
 
         if (removed) {
-            rolePermissionsDao.save(permissions);
+            roleDao.save(role);
         }
     }
 
 
+    @Override
     @Transactional
-    public List<RolePermissions> fetchRolePermissions() {
-        return rolePermissionsDao.findAll();
+    public List<Role> fetchRoles() {
+        return roleDao.findAll();
     }
 
-
-    public List<RolePermissions> refreshRolePermissions() {
-        List<RolePermissions> freshPermissions = fetchRolePermissions();
-
-        sortFreshPermissions(freshPermissions);
-
-        return freshPermissions;
+    @Override
+    public List<Role> refreshRolesPermissions() {
+        List<Role> freshRoles = fetchRoles();
+        sortFreshPermissions(freshRoles);
+        return freshRoles;
     }
 
-    public List<RolePermissions> sortFreshPermissions(List<RolePermissions> freshPermissions) {
+    public void sortFreshPermissions(List<Role> freshRoles) {
 
-        List<RolePermissions> permissions;
+        List<ResourceActionLink> permissionsByResource = null;
+        List<ResourceActionLink> permissionsByRole = null;
 
         if (permissionsForRole == null) permissionsForRole = new HashMap<>();
         if (permissionsForResource == null) permissionsForResource = new HashMap<>();
@@ -259,47 +319,45 @@ public class SystemService {
         permissionsForResource.clear();
         permissionsForRole.clear();
 
-        if (freshPermissions == null || freshPermissions.isEmpty()) return null;
+        if (isNullOrEmpty(freshRoles)) return;
 
-        for (RolePermissions permission : freshPermissions) {
-            if (permission.getResourceActions() == null || permission.getResourceActions().isEmpty()) continue;
+        for (Role role : freshRoles) {
+            if (isNullOrEmpty(role.getPermissions())) continue;
 
-            String role = permission.getRole().getName();
+            String roleName = role.getName();
 
-            for (ResourceActionLink resourceAction : permission.getResourceActions()) {
+            for (ResourceActionLink resourceAction : role.getPermissions()) {
                 String resource = resourceAction.getResource().name();
-                permissions = permissionsForResource.computeIfAbsent(resource, k -> new ArrayList<>());
-                permissions.add(permission);
-            }
-            permissions = permissionsForRole.computeIfAbsent(role, k -> new ArrayList<>());
-            permissions.add(permission);
-        }
+                permissionsByResource = permissionsForResource.computeIfAbsent(resource, k -> new ArrayList<>());
+                permissionsByResource.add(resourceAction);
 
-        return freshPermissions;
+                permissionsByRole = permissionsForRole.computeIfAbsent(roleName, k -> new ArrayList<>());
+                permissionsByRole.add(resourceAction);
+            }
+        }
     }
 
-    public List<RolePermissions> getPermissionsForRole(String roleName) {
+    @Override
+    public List<ResourceActionLink> getPermissionsForRole(String roleName) {
         return permissionsForRole == null ? new ArrayList<>() : permissionsForRole.get(roleName);
     }
 
 
-    public List<RolePermissions> getPermissionsForResource(String resourceId, String action) {
-        List<RolePermissions> permissions = new ArrayList<>();
+    @Override
+    public List<ResourceActionLink> getPermissionsForResource(String resourceName, String action) {
+        List<ResourceActionLink> permissions = new ArrayList<>();
 
-        if (resourceId == null || resourceId.isEmpty()) return permissions;
-        if (permissionsForResource == null || permissionsForResource.isEmpty()) return permissions;
+        if (isNullOrEmpty(resourceName)) return permissions;
+        if (isNullOrEmpty(permissionsForResource)) return permissions;
 
-        List<RolePermissions> livePermissions = permissionsForResource.get(resourceId);
-        if (livePermissions == null || livePermissions.isEmpty()) return permissions;
+        List<ResourceActionLink> livePermissions = permissionsForResource.get(resourceName);
+        if (isNullOrEmpty(livePermissions)) return permissions;
 
-        if (action != null && !action.isEmpty()) {
-            for (RolePermissions permission : livePermissions) {
-                for (ResourceActionLink actionLink : permission.getResourceActions()) {
-                    if (actionLink.getAction().name().equals(action)) {
-                        permissions.add(permission);
-                    }
+        if (!isNullOrEmpty(action)) {
+            for (ResourceActionLink permission : livePermissions) {
+                if (permission.getAction().name().equals(action)) {
+                    permissions.add(permission);
                 }
-
             }
         } else {
             permissions = new ArrayList<>(livePermissions);
@@ -309,18 +367,39 @@ public class SystemService {
     }
 
     // TODO move this to facade?
-    public boolean isUserAllowedToPerformAction(User user, String resourceName, String actionName) {
+    @Override
+    @Transactional
+    public boolean isUserAllowedToPerformAction(User user, String resourceName, String resourceId, String actionName) {
         if (user == null) return false;
         if ("system".equals(user.getName())) return true;
-        if (user.getRoles() == null || user.getRoles().isEmpty()) return false;
+        if (isNullOrEmpty(user.getRoles())) return false;
 
-        List<RolePermissions> actionPermissions = getPermissionsForResource(resourceName, actionName);
-        if (actionPermissions == null || actionPermissions.isEmpty()) return false;
+        List<ResourceActionLink> actionPermissions = getPermissionsForResource(resourceName, actionName);
+        if (isNullOrEmpty(actionPermissions)) return false;
 
-        for (RolePermissions permissions : actionPermissions) {
+
+        if (!isNullOrEmpty(resourceId)) {
+            if (com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE.name().equals(resourceName)) {
+                JpaRepo<Lecture> repo = repoProvider.getRepoForResource(resourceName);
+                Course course = repo.findOne(resourceId).getCourse();
+                if (course != null
+                        && !isNullOrEmpty(course.getId())) {
+                    resourceId = course.getId();
+                }
+
+            }
+        }
+
+        for (ResourceActionLink permissions : actionPermissions) {
             for (UserRole userRole : user.getRoles()) {
                 if (userRole.getRole().equals(permissions.getRole())) {
-                    return true;
+                    if (permissions.isStrict()) {
+                        if (areEqual(permissions.getEntityId(), resourceId)) {
+                            return true;
+                        }
+                    } else {
+                        return true;
+                    }
                 }
             }
 
@@ -329,15 +408,18 @@ public class SystemService {
     }
 
 
+    @Override
     public SystemSetting getSetting(String id) {
         return settingsDao.findOne(id);
     }
 
+    @Override
     @Transactional
     public void deleteSystemSetting(String id) {
         settingsDao.delete(id);
     }
 
+    @Override
     public PasswordRequirement getPasswordRequirement(String id) {
         return passwordRequirementsDao.findOne(id);
     }

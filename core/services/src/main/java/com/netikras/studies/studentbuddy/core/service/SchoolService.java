@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.core.service;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
@@ -19,6 +21,26 @@ public interface SchoolService {
 
 
     void purgeSchool(String id);
+
+    Course getCourse(String id);
+
+    List<Course> getAllCourses();
+
+    List<Course> getAllCoursesByDiscipline(String disciplineId);
+
+    List<Course> getAllCoursesBySchool(String schoolId);
+
+    Course createCourse(Course course);
+
+    Course updateCourse(Course course);
+
+    void deleteCourse(String id);
+
+    void purgeCourse(String id);
+
+    Course assignCourseLecture(String courseId, String lectureId);
+
+    Course unassignCourseLecture(String courseId, String lectureId);
 
     SchoolDepartment createSchoolDepartment(SchoolDepartment department);
 
@@ -79,4 +101,6 @@ public interface SchoolService {
     void purgeDiscipline(String id);
 
     List<Discipline> getAllDisciplinesBySchoolId(String id);
+
+    List<Course> searchAllCoursesByTitle(String query);
 }
