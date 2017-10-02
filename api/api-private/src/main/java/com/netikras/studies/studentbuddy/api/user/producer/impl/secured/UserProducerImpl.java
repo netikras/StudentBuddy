@@ -1,4 +1,4 @@
-package com.netikras.studies.studentbuddy.api.user.impl.secured;
+package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.api.sys.producer.AdminProducer;

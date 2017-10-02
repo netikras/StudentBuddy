@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer;
 
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminUserApiProducer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured.AdminUserProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.data.meta.Action;
@@ -19,29 +20,21 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.USER;
 public class AdminUserProducer extends AdminUserApiProducer {
 
     @Resource
-    private UserService userService;
+    private AdminUserProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = USER, action = PURGE)
     protected void onPurgeUserDto(String id) {
-        userService.purgeUser(id);
+        impl.purgeUser(id);
     }
 
     @Override
-    @Authorizable(resource = USER, action = Action.CREATE)
     protected UserDto onCreateUserDto(UserDto userDto) {
-        User user = ModelMapper.apply(new User(), userDto, new MappingSettings().setForceUpdate(true));
-        if (user != null) user.setId(null);
-        user = userService.createUser(user);
-        userDto = ModelMapper.transform(user, new UserDto());
-
-        return userDto;
+        return impl.createUser(userDto);
     }
 
     @Override
-    @Authorizable(resource = USER, action = Action.DELETE)
     protected void onDeleteUserDto(String id) {
-        userService.deleteUser(id);
+        impl.deleteUser(id);
     }
 }

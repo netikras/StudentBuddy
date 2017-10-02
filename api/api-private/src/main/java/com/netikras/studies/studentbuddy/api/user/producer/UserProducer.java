@@ -1,18 +1,14 @@
 package com.netikras.studies.studentbuddy.api.user.producer;
 
 import com.netikras.studies.studentbuddy.api.user.generated.UserApiProducer;
-import com.netikras.studies.studentbuddy.api.user.impl.secured.UserProducerImpl;
+import com.netikras.studies.studentbuddy.api.user.producer.impl.secured.UserProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
-import com.netikras.studies.studentbuddy.core.data.meta.Action;
-import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.tools.common.remote.AuthenticationDetail;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
-
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.USER;
 
 @RestController
 public class UserProducer extends UserApiProducer {
@@ -37,7 +33,6 @@ public class UserProducer extends UserApiProducer {
     }
 
     @Override
-    @Authorizable(resource = USER, action = Action.GET)
     public UserDto onRetrieveUserDto(String id) {
         return impl.getUser(id);
     }

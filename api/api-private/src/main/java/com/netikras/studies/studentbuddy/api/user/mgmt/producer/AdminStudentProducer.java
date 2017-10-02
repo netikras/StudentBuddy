@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer;
 
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminStudentApiProducer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured.AdminStudentProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -32,131 +33,83 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_
 public class AdminStudentProducer extends AdminStudentApiProducer {
 
     @Resource
-    private StudentService studentService;
-
-    @Resource
-    private PersonService personService;
-
-    @Resource
-    private LectureService lectureService;
+    private AdminStudentProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = STUDENT, action = PURGE)
     protected void onPurgeStudentDto(String id) {
-        studentService.purgeStudent(id);
+        impl.purgeStudent(id);
     }
 
     @Override
-    @Authorizable(resource = STUDENT_GROUP, action = PURGE)
     protected void onPurgeStudentsGroupDto(String id) {
-        studentService.purgeStudentsGroup(id);
+        impl.purgeStudentsGroup(id);
     }
 
     @Override
-    @Authorizable(resource = GUEST, action = PURGE)
     protected void onPurgeLectureGuestDto(String id) {
-        studentService.purgeLectureGuest(id);
+        impl.purgeLectureGuest(id);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = CREATE)
     protected StudentDto onCreateStudentDto(StudentDto studentDto) {
-        Student student = ModelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
-        if (student != null) student.setId(null);
-
-        student = studentService.createStudent(student);
-        studentDto = ModelMapper.transform(student, new StudentDto());
-
-        return studentDto;
+        return impl.createStudent(studentDto);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = DELETE)
     protected void onDeleteStudentDto(String id) {
-        studentService.deleteStudent(id);
+        impl.deleteStudent(id);
     }
 
     @Override
-    @Authorizable(resource = STUDENT_GROUP, action = CREATE)
     protected StudentsGroupDto onCreateStudentsGroupDto(StudentsGroupDto groupDto) {
-        StudentsGroup group = ModelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
-        group = studentService.createStudentsGroup(group);
-        StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
-        return dto;
+        return impl.createStudentsGroup(groupDto);
     }
 
     @Override
-    @Authorizable(resource = STUDENT_GROUP, action = DELETE)
     protected void onDeleteStudentsGroupDto(String id) {
-        studentService.deleteStudentsGroup(id);
+        impl.deleteStudentsGroup(id);
     }
 
     @Override
-    @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDto(LectureGuestDto dto) {
-        LectureGuest guest = ModelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
-        guest = studentService.createLectureGuest(guest);
-        dto = ModelMapper.transform(guest, new LectureGuestDto());
-
-        return dto;
+        return impl.createLectureGuest(dto);
     }
 
     @Override
-    @Authorizable(resource = GUEST, action = DELETE)
     protected void onDeleteLectureGuestDto(String id) {
-        studentService.deleteLectureGuest(id);
+        impl.deleteLectureGuest(id);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = MODERATE)
     protected void onAddStudentDtoAllToGroup(String groupId, List<String> studentIds) {
-        studentService.addStudentsToGroup(groupId, studentIds);
+        impl.addAllStudentsToGroup(groupId, studentIds);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = MODERATE)
     protected void onAddStudentDtoToGroup(String groupId, String studentId) {
-        StudentsGroup group = studentService.getStudentsGroup(groupId);
-        Student student = studentService.getStudent(studentId);
-        studentService.addStudentToGroup(group, student);
+        impl.addStudentToGroup(groupId, studentId);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = MODERATE)
     protected void onRemoveStudentDtoFromGroup(String groupId, String studentId) {
-        StudentsGroup group = studentService.getStudentsGroup(groupId);
-        Student student = studentService.getStudent(studentId);
-        studentService.removeStudentFromGroup(group, student);
+        impl.removeStudentFromGroup(groupId, studentId);
     }
 
     @Override
-    @Authorizable(resource = STUDENT, action = MODERATE)
     protected void onRemoveStudentDtoAllFromGroup(String groupId, List<String> studentIds) {
-        studentService.removeStudentsFromGroup(groupId, studentIds);
+        impl.removeAllStudentsFromGroup(groupId, studentIds);
     }
 
 
     @Override
-    @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDtoByPersonId(String personId, String lectureId) {
-        Person person = personService.getPerson(personId);
-        Lecture lecture = lectureService.getLecture(lectureId);
-        LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
-
-        return dto;
+        return impl.createLectureGuestsByPersonId(personId, lectureId);
     }
 
 
     @Override
-    @Authorizable(resource = GUEST, action = CREATE)
     protected LectureGuestDto onCreateLectureGuestDtoByPersonIdentifier(String personId, String lectureId) {
-        Person person = personService.findPersonByIdentifier(personId);
-        Lecture lecture = lectureService.getLecture(lectureId);
-        LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
-
-        return dto;
+        return impl.createLectureGuestByPersonIdentifier(personId, lectureId);
     }
 }

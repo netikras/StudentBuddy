@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer;
 
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminLecturerApiProducer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured.AdminLecturerProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
@@ -23,48 +24,31 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLI
 public class AdminLecturerProducer extends AdminLecturerApiProducer {
 
     @Resource
-    private LecturerService lecturerService;
-
-    @Resource
-    private SchoolService schoolService;
+    private AdminLecturerProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = PURGE)
     protected void onPurgeLecturerDto(String id) {
-        lecturerService.purgeLecturer(id);
+        impl.purgeLecturer(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = CREATE)
     protected LecturerDto onCreateLecturerDto(LecturerDto dto) {
-        Lecturer lecturer = ModelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
-        if (lecturer != null) lecturer.setId(null);
-        lecturer = lecturerService.createLecturer(lecturer);
-        dto = ModelMapper.transform(lecturer, new LecturerDto());
-
-        return dto;
+        return impl.createLecturer(dto);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = DELETE)
     protected void onDeleteLecturerDto(String id) {
-        lecturerService.deleteLecturer(id);
+        impl.deleteLecturer(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = MODIFY)
     protected void onAssignLecturerDtoToDiscipline(String lecturerId, String disciplineId) {
-        Lecturer lecturer = lecturerService.getLecturer(lecturerId);
-        Discipline discipline = schoolService.getDiscipline(disciplineId);
-        lecturerService.attachToDiscipline(lecturer, discipline);
+        impl.assignLecturerToDiscipline(lecturerId, disciplineId);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = MODIFY)
     protected void onUnassignLecturerDtoFromDiscipline(String lecturerId, String disciplineId) {
-        Lecturer lecturer = lecturerService.getLecturer(lecturerId);
-        Discipline discipline = schoolService.getDiscipline(disciplineId);
-        lecturerService.detatchFromDiscipline(lecturer, discipline);
+        impl.unassignLecturerFromDiscipline(lecturerId, disciplineId);
     }
 }

@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.location.producer;
 
 import com.netikras.studies.studentbuddy.api.location.generated.SchoolApiProducer;
+import com.netikras.studies.studentbuddy.api.location.producer.impl.secured.SchoolProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
@@ -37,368 +38,222 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL_D
 public class SchoolProducer extends SchoolApiProducer {
 
     @Resource
-    private SchoolService schoolService;
+    private SchoolProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = SCHOOL, action = PURGE)
     protected void onPurgeSchoolDto(String id) {
-        try {
-            schoolService.purgeSchool(id);
-        } catch (Exception e) {
-            e.printStackTrace();
-//            schoolService.purgeSchool(id);
-        }
+        impl.purgeSchool(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = PURGE)
     protected void onPurgeSchoolDepartmentDto(String id) {
-        schoolService.purgeSchoolDepartment(id);
+        impl.purgeSchoolDepartment(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = PURGE)
     protected void onPurgeDisciplineDto(String id) {
-        schoolService.purgeDiscipline(id);
+        impl.purgeDiscipline(id);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = PURGE)
     protected void onPurgePersonnelMemberDto(String id) {
-        schoolService.purgePersonnelMember(id);
+        impl.purgePersonnelMember(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = DELETE)
     protected void onDeleteSchoolDto(String id) {
-        schoolService.deleteSchool(id);
+        impl.deleteSchool(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = MODIFY)
     protected SchoolDto onUpdateSchoolDto(SchoolDto schoolDto) {
-        School school = ModelMapper.apply(new School(), schoolDto);
-        school = schoolService.updateSchool(school);
-        schoolDto = ModelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
-
-        return schoolDto;
+        return impl.updateSchool(schoolDto);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = CREATE)
     protected SchoolDto onCreateSchoolDto(SchoolDto schoolDto) {
-        School school = ModelMapper.apply(new School(), schoolDto, new MappingSettings().setForceUpdate(true));
-        if (school != null) school.setId(null);
-        school = schoolService.createSchool(school);
-        schoolDto = ModelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
-
-        return schoolDto;
+        return impl.createSchool(schoolDto);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = GET)
     protected SchoolDto onRetrieveSchoolDto(String id) {
-        School school = schoolService.getSchool(id);
-        if (school != null) school.getDepartments();
-        SchoolDto schoolDto = ModelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
-        return schoolDto;
+        return impl.getSchool(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = DELETE)
     protected void onDeleteSchoolDepartmentDto(String id) {
-        schoolService.deleteSchoolDepartment(id);
+        impl.deleteSchool(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = MODIFY)
     protected SchoolDepartmentDto onUpdateSchoolDepartmentDto(SchoolDepartmentDto departmentDto) {
-        SchoolDepartment department = ModelMapper.apply(new SchoolDepartment(), departmentDto);
-        department = schoolService.updateSchoolDepartment(department);
-        departmentDto = ModelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
-
-        return departmentDto;
+        return impl.updateSchoolDepartment(departmentDto);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = CREATE)
     protected SchoolDepartmentDto onCreateSchoolDepartmentDto(SchoolDepartmentDto departmentDto) {
-        SchoolDepartment department = ModelMapper.apply(new SchoolDepartment(), departmentDto, new MappingSettings().setForceUpdate(true));
-        if (department != null) department.setId(null);
-        department = schoolService.createSchoolDepartment(department);
-        departmentDto = ModelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
-
-        return departmentDto;
+        return impl.createSchoolDepartment(departmentDto);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = GET)
     protected SchoolDepartmentDto onRetrieveSchoolDepartmentDto(String id) {
-        SchoolDepartment department = schoolService.getSchoolDepartment(id);
-        if (department != null) {
-            department.getBuildings();
-        }
-        SchoolDepartmentDto departmentDto = ModelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
-
-        return departmentDto;
+        return impl.getSchoolDepartment(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = DELETE)
     protected void onDeleteDisciplineDto(String id) {
-        schoolService.deleteDiscipline(id);
+        impl.deleteDiscipline(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = MODIFY)
     protected DisciplineDto onUpdateDisciplineDto(DisciplineDto disciplineDto) {
-        Discipline discipline = ModelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
-        discipline = schoolService.updateDiscipline(discipline);
-        disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
-        return disciplineDto;
+        return impl.updateDiscipline(disciplineDto);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = CREATE)
     protected DisciplineDto onCreateDisciplineDto(DisciplineDto disciplineDto) {
-        Discipline discipline = ModelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
-        if (discipline != null) discipline.setId(null);
-        discipline = schoolService.createDiscipline(discipline);
-        disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
-        return disciplineDto;
+        return impl.createDiscipline(disciplineDto);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = GET)
     protected DisciplineDto onRetrieveDisciplineDto(String id) {
-        Discipline discipline = schoolService.getDiscipline(id);
-        DisciplineDto disciplineDto = ModelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
-        return disciplineDto;
+        return impl.getDiscipline(id);
     }
 
 
     @Override
-    @Authorizable(resource = COURSE, action = CREATE)
     protected CourseDto onCreateCourseDto(CourseDto item) {
-        Course course = ModelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
-        course = schoolService.createCourse(course);
-        return ModelMapper.transform(course, new CourseDto());
+        return impl.createCourse(item);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = DELETE)
     protected void onDeleteCourseDto(String id) {
-        schoolService.deleteCourse(id);
+        impl.deleteCourse(id);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = MODIFY)
     protected CourseDto onUpdateCourseDto(CourseDto item) {
-        Course course = ModelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
-        course = schoolService.updateCourse(course);
-        return ModelMapper.transform(course, new CourseDto());
+        return impl.updateCourse(item);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = GET)
     protected CourseDto onRetrieveCourseDto(String id) {
-        Course course = schoolService.getCourse(id);
-        return ModelMapper.transform(course, new CourseDto());
+        return impl.getCourse(id);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = GET_ALL)
     protected List<CourseDto> onGetCourseDtoAll() {
-        List<Course> courses = schoolService.getAllCourses();
-        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+        return impl.getAllCourses();
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = PURGE)
     protected void onPurgeCourseDto(String id) {
-        schoolService.purgeCourse(id);
+        impl.purgeCourse(id);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = GET_ALL)
     protected List<CourseDto> onGetCourseDtoAllBySchoolId(String id) {
-        List<Course> courses = schoolService.getAllCoursesBySchool(id);
-        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+        return impl.getAllCoursesBySchoolId(id);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = GET_ALL)
     protected List<CourseDto> onGetCourseDtoAllByDisciplineId(String id) {
-        List<Course> courses = schoolService.getAllCoursesByDiscipline(id);
-        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+        return impl.getAllCoursesByDisciplineId(id);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = SEARCH)
     protected List<CourseDto> onSearchCourseDtoAllByTitle(String title) {
-        List<Course> courses = schoolService.searchAllCoursesByTitle(title);
-        return (List<CourseDto>) ModelMapper.transformAll(courses, CourseDto.class);
+        return impl.searchAllCoursesByTitle(title);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = MODIFY)
     protected CourseDto onAssignCourseDtoLecture(String courseId, String lectureId) {
-        Course course = schoolService.assignCourseLecture(courseId, lectureId);
-        return ModelMapper.transform(course, new CourseDto());
+        return impl.assignCourseLecture(courseId, lectureId);
     }
 
     @Override
-    @Authorizable(resource = COURSE, action = MODIFY)
     protected CourseDto onUnassignCourseDtoLecture(String courseId, String lectureId) {
-        Course course = schoolService.unassignCourseLecture(courseId, lectureId);
-        return ModelMapper.transform(course, new CourseDto());
+        return impl.unassignCourseLecture(courseId, lectureId);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = DELETE)
     protected void onDeletePersonnelMemberDto(String id) {
-        schoolService.deletePersonnelMember(id);
+        impl.deletePersonnelMember(id);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = MODIFY)
     protected PersonnelMemberDto onUpdatePersonnelMemberDto(PersonnelMemberDto personnelMemberDto) {
-        PersonnelMember personnelMember = ModelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
-        personnelMember = schoolService.updatePersonnelMember(personnelMember);
-        personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
-        return personnelMemberDto;
+        return impl.updatePersonnelMember(personnelMemberDto);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = CREATE)
     protected PersonnelMemberDto onCreatePersonnelMemberDto(PersonnelMemberDto personnelMemberDto) {
-        PersonnelMember personnelMember = ModelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
-        if (personnelMember != null) personnelMember.setId(null);
-        personnelMember = schoolService.createPersonnelMember(personnelMember);
-        personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
-        return personnelMemberDto;
+        return impl.createPersonnelMember(personnelMemberDto);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = GET)
     protected PersonnelMemberDto onRetrievePersonnelMemberDto(String id) {
-        PersonnelMember personnelMember = schoolService.getPersonnelMember(id);
-        PersonnelMemberDto personnelMemberDto = ModelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
-        return personnelMemberDto;
+        return impl.getPersonnelMember(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = GET_ALL)
     protected List<SchoolDto> onGetSchoolDtoAll() {
-        List<School> schools = schoolService.getAllSchools();
-        List<SchoolDto> schoolDtos = (List<SchoolDto>) ModelMapper.transformAll(schools, SchoolDto.class, new MappingSettings().setDepthMax(3));
-        return schoolDtos;
+        return impl.getAllSchools();
     }
 
     @Override
-    @Authorizable(resource = SCHOOL, action = SEARCH)
     protected List<SchoolDto> onSearchSchoolDtoAllByTitle(String title) {
-        List<School> schools = schoolService.searchAllSchoolsByTitle(title);
-        List<SchoolDto> schoolDtos = (List<SchoolDto>) ModelMapper.transformAll(schools, SchoolDto.class, new MappingSettings().setDepthMax(3));
-        return schoolDtos;
+        return impl.searchAllSchoolsByTitle(title);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = SEARCH)
     protected List<DisciplineDto> onGetDisciplineDtoAllBySchoolId(String id) {
-        List<Discipline> disciplines = schoolService.getAllDisciplinesBySchoolId(id);
-        List<DisciplineDto> disciplineDtos = (List<DisciplineDto>) ModelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(2));
-        return disciplineDtos;
+        return impl.getAllDisciplinesBySchoolId(id);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllBySchoolId(String id) {
-        List<PersonnelMember> personnelMembers = schoolService.getAllPersonnelBySchool(id);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersBySchoolId(id);
     }
 
     @Override
-    @Authorizable(resource = SCHOOL_DEPARTMENT, action = SEARCH)
     protected List<SchoolDepartmentDto> onSearchSchoolDepartmentDtoAllByTitle(String title) {
-        List<SchoolDepartment> departments = schoolService.searchAllDepartmentsByTitle(title);
-        List<SchoolDepartmentDto> departmentDtos =
-                (List<SchoolDepartmentDto>) ModelMapper.transformAll(departments, SchoolDepartmentDto.class, new MappingSettings().setDepthMax(3));
-
-        return departmentDtos;
+        return impl.searchAllSchoolDepartmentsByTitle(title);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllByTitle(String title) {
-        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByTitle(title);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersByTitle(title);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllByFirstName(String fname) {
-        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByFirstName(fname);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersByFirstName(fname);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllByLastName(String lname) {
-        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByLastName(lname);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersByLastName(lname);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllByCode(String code) {
-        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByPersonalCode(code);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersByCode(code);
     }
 
     @Override
-    @Authorizable(resource = PERSONNEL, action = SEARCH)
     protected List<PersonnelMemberDto> onSearchPersonnelMemberDtoAllByIdentifier(String id) {
-        List<PersonnelMember> personnelMembers = schoolService.searchAllPersonnelByIdentifier(id);
-        List<PersonnelMemberDto> memberDtos =
-                (List<PersonnelMemberDto>) ModelMapper.transformAll(personnelMembers, PersonnelMemberDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllPersonnelMembersByIdentifier(id);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = SEARCH)
     protected List<DisciplineDto> onSearchDisciplineDtoAllByTitle(String title) {
-        List<Discipline> disciplines = schoolService.searchAllDisciplinesByTitle(title);
-        List<DisciplineDto> memberDtos =
-                (List<DisciplineDto>) ModelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllDisciplinesByTitle(title);
     }
 
     @Override
-    @Authorizable(resource = DISCIPLINE, action = SEARCH)
     protected List<DisciplineDto> onSearchDisciplineDtoAllByDescription(String descr) {
-        List<Discipline> disciplines = schoolService.searchAllDisciplinesByDescription(descr);
-        List<DisciplineDto> memberDtos =
-                (List<DisciplineDto>) ModelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(3));
-
-        return memberDtos;
+        return impl.searchAllDisciplinesByDescription(descr);
     }
 }

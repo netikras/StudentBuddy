@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer;
 
 import com.netikras.studies.studentbuddy.api.user.mgmt.generated.AdminPersonApiProducer;
+import com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured.AdminPersonProducerImpl;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -21,39 +22,26 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
 public class AdminPersonProducer extends AdminPersonApiProducer {
 
     @Resource
-    private PersonService personService;
+    private AdminPersonProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = PERSON, action = PURGE)
     protected void onPurgePersonDto(String id) {
-        personService.purgePerson(id);
+        impl.purgePerson(id);
     }
 
     @Override
-    @Authorizable(resource = PERSON, action = CREATE)
     protected PersonDto onCreatePersonDto(PersonDto personDto) {
-        Person person = ModelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
-        if (person != null) person.setId(null);
-        person = personService.createPerson(person);
-        personDto = ModelMapper.transform(person, new PersonDto());
-
-        return personDto;
+        return impl.createPerson(personDto);
     }
 
     @Override
-    @Authorizable(resource = PERSON, action = DELETE)
     protected void onDeletePersonDto(String id) {
-        personService.deletePerson(id);
+        impl.deletePerson(id);
     }
 
     @Override
-    @Authorizable(resource = PERSON, action = MODIFY)
     protected PersonDto onUpdatePersonDto(PersonDto personDto) {
-        Person person = ModelMapper.apply(new Person(), personDto);
-        person = personService.updatePerson(person);
-        personDto = ModelMapper.transform(person, new PersonDto());
-
-        return personDto;
+        return impl.updatePerson(personDto);
     }
 }

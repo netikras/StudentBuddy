@@ -1,16 +1,10 @@
 package com.netikras.studies.studentbuddy.api.config;
 
-import com.netikras.studies.studentbuddy.api.aop.advices.AuthorizableActionsAdvice;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.tools.common.properties.PropertiesAssistant;
-import org.springframework.context.annotation.AdviceMode;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
@@ -51,11 +45,7 @@ public class ApiConfig {
 
     @Resource
     private Environment env;
-//
-//    @Bean
-//    public AuthorizableActionsAdvice aspectBeanAuthorization() {
-//        return new AuthorizableActionsAdvice();
-//    }
+
 
     @Bean(name = "configProperties")
     public PropertiesWrapper propertiesWrapper(Environment environment) {

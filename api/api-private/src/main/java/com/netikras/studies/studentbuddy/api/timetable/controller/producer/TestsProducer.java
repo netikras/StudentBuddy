@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.timetable.controller.producer;
 
 import com.netikras.studies.studentbuddy.api.timetable.controller.generated.TestsApiProducer;
+import com.netikras.studies.studentbuddy.api.timetable.controller.producer.impl.secured.TestsProducerImpl;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
@@ -28,127 +29,65 @@ import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 public class TestsProducer extends TestsApiProducer {
 
     @Resource
-    private LectureService lectureService;
+    private TestsProducerImpl impl;
 
 
     @Override
-    @Authorizable(resource = TEST, action = PURGE)
     protected void onPurgeDisciplineTestDto(String id) {
-        lectureService.purgeLectureTest(id);
+        impl.purgeDisciplineTest(id);
     }
 
     @Override
     @Authorizable(resource = TEST, action = CREATE)
     protected DisciplineTestDto onCreateDisciplineTestDto(DisciplineTestDto disciplineTestDto) {
-        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), disciplineTestDto, new MappingSettings().setForceUpdate(true));
-        if (test != null) test.setId(null);
-        test = lectureService.createTest(test);
-        disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
-
-        return disciplineTestDto;
+        return impl.createDisciplineTest(disciplineTestDto);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = GET)
     protected DisciplineTestDto onRetrieveDisciplineTestDto(String id) {
-        DisciplineTest test = lectureService.getTest(id);
-        DisciplineTestDto disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
-
-        return disciplineTestDto;
+        return impl.getDisciplineTest(id);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = MODIFY)
     protected DisciplineTestDto onUpdateDisciplineTestDto(DisciplineTestDto item) {
-        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), item);
-        test = lectureService.updateTest(test);
-        DisciplineTestDto disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
-
-        return disciplineTestDto;
+        return impl.updateDisciplineTest(item);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = DELETE)
     protected void onDeleteDisciplineTestDto(String id) {
-        lectureService.deleteTest(id);
+        impl.deleteDisciplineTest(id);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = CREATE)
     protected DisciplineTestDto onCreateDisciplineTestDtoNew(String dueLectureId, String description) {
-        Lecture lecture = lectureService.getLecture(dueLectureId);
-
-        if (lecture == null) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot create test for lecture")
-                    .setMessage2("Lecture with given ID does not exist")
-                    .setProbableCause("ID: " + dueLectureId)
-                    .setStatusCode(NOT_FOUND)
-                    ;
-        }
-
-        DisciplineTest test = new DisciplineTest();
-        test.setDiscipline(lecture.getDiscipline());
-        test.setLecture(lecture);
-        test.setStartsOn(lecture.getStartsOn());
-        test.setDescription(description);
-
-        test = lectureService.createTest(test);
-        DisciplineTestDto dto = ModelMapper.transform(test, new DisciplineTestDto());
-
-        return dto;
+        return impl.createDisciplineTestNew(dueLectureId, description);
     }
 
 
 
 
     @Override
-    @Authorizable(resource = TEST, action = GET)
     protected List<DisciplineTestDto> onGetDisciplineTestDtoAllForDisciplineInTimeframe(String disciplineId, long after, long before) {
-        Date afterDate = new Date(after);
-        Date beforeDate = new Date(before);
-        List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId, afterDate, beforeDate);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
-
-        return dtos;
+        return impl.getAllDisciplineTestsForDisciplineInTimeframe(disciplineId, after, before);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = GET)
     protected List<DisciplineTestDto> onGetDisciplineTestDtoAllForDiscipline(String disciplineId) {
-        List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
-
-        return dtos;
+        return impl.getAllDisciplineTestsForDiscipline(disciplineId);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = GET)
     protected List<DisciplineTestDto> onGetDisciplineTestDtoAllForGroupInTimeframe(String disciplineId, String groupId, long after, long before) {
-        Date afterDate = new Date(after);
-        Date beforeDate = new Date(before);
-        List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId, afterDate, beforeDate);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
-
-        return dtos;
+        return impl.getAllDisciplineTestsForGroupInTimeframe(disciplineId, groupId, after, before);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = GET)
     protected List<DisciplineTestDto> onGetDisciplineTestDtoAllForGroup(String disciplineId, String groupId) {
-        List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
-
-        return dtos;
+        return impl.getAllDisciplineTestsForGroup(disciplineId, groupId);
     }
 
     @Override
-    @Authorizable(resource = TEST, action = SEARCH)
     protected List<DisciplineTestDto> onSearchDisciplineTestDtoAllByDescription(String descr) {
-        List<DisciplineTest> tests = lectureService.searchAllTestsByDescription(descr);
-        List<DisciplineTestDto> testDtos =
-                (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class, new MappingSettings().setDepthMax(3));
-
-        return testDtos;
+        return impl.searchAllDisciplineTestsByDescription(descr);
     }
 }
