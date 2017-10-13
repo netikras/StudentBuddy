@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.tools.common.exception.FriendlyException;
+import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.properties.PropertiesAssistant;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -105,6 +106,11 @@ public class ApiConfig {
 
 
     @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
+    @Bean
     public AuthorizationFilter authorizationFilter() {
         return new AuthorizationFilter();
     }
@@ -138,7 +144,10 @@ public class ApiConfig {
         public PropertiesWrapper(Environment environment) {
             this.env = environment;
 
-            ((ConfigurableEnvironment)environment).getPropertySources().addFirst(new PropertiesPropertySource("init", loadInitProperties()));
+            Properties initProps = loadInitProperties();
+            if (initProps != null) {
+                ((ConfigurableEnvironment) environment).getPropertySources().addFirst(new PropertiesPropertySource("init", loadInitProperties()));
+            }
 
         }
 

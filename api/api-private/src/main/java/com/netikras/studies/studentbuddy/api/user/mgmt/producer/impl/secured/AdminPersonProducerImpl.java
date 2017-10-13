@@ -17,6 +17,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
 public class AdminPersonProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private PersonService personService;
 
 
@@ -27,10 +30,10 @@ public class AdminPersonProducerImpl {
 
     @Authorizable(resource = PERSON, action = CREATE)
     public PersonDto createPerson(PersonDto personDto) {
-        Person person = ModelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
+        Person person = modelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
         if (person != null) person.setId(null);
         person = personService.createPerson(person);
-        personDto = ModelMapper.transform(person, new PersonDto());
+        personDto = modelMapper.transform(person, new PersonDto());
 
         return personDto;
     }
@@ -42,9 +45,9 @@ public class AdminPersonProducerImpl {
 
     @Authorizable(resource = PERSON, action = MODIFY)
     public PersonDto updatePerson(PersonDto personDto) {
-        Person person = ModelMapper.apply(new Person(), personDto);
+        Person person = modelMapper.apply(new Person(), personDto);
         person = personService.updatePerson(person);
-        personDto = ModelMapper.transform(person, new PersonDto());
+        personDto = modelMapper.transform(person, new PersonDto());
 
         return personDto;
     }

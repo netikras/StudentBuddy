@@ -22,6 +22,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.*;
 public class LocationProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+    
+    @Resource
     private LocationService locationService;
 
     @Authorizable(resource = BUILDING, action = PURGE)
@@ -44,16 +47,16 @@ public class LocationProducerImpl {
     public BuildingDto getBuilding(String id) {
         Building building = locationService.getBuilding(id);
         if (building != null) building.getSections();
-        BuildingDto dto = ModelMapper.transform(building, new BuildingDto());
+        BuildingDto dto = modelMapper.transform(building, new BuildingDto());
         return dto;
     }
 
     @Authorizable(resource = BUILDING, action = CREATE)
     public BuildingDto createBuilding(BuildingDto buildingDto) {
-        Building building = ModelMapper.apply(new Building(), buildingDto, new MappingSettings().setForceUpdate(true));
+        Building building = modelMapper.apply(new Building(), buildingDto, new MappingSettings().setForceUpdate(true));
         if (building != null) building.setId(null);
         building = locationService.createBuilding(building);
-        BuildingDto dto = ModelMapper.transform(building, new BuildingDto());
+        BuildingDto dto = modelMapper.transform(building, new BuildingDto());
         return dto;
     }
 
@@ -64,25 +67,25 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = BUILDING, action = MODIFY)
     public BuildingDto updateBuilding(BuildingDto buildingDto) {
-        Building building = ModelMapper.apply(new Building(), buildingDto);
+        Building building = modelMapper.apply(new Building(), buildingDto);
         building = locationService.updateBuilding(building);
-        BuildingDto dto = ModelMapper.transform(building, new BuildingDto());
+        BuildingDto dto = modelMapper.transform(building, new BuildingDto());
         return dto;
     }
 
     @Authorizable(resource = BUILDING_SECTION, action = GET)
     public BuildingSectionDto getBuildingSection(String id) {
         BuildingSection buildingSection = locationService.getBuildingSection(id);
-        BuildingSectionDto dto = ModelMapper.transform(buildingSection, new BuildingSectionDto());
+        BuildingSectionDto dto = modelMapper.transform(buildingSection, new BuildingSectionDto());
         return dto;
     }
 
     @Authorizable(resource = BUILDING_SECTION, action = CREATE)
     public BuildingSectionDto createBuildingSection(BuildingSectionDto buildingSectionDto) {
-        BuildingSection buildingSection = ModelMapper.apply(new BuildingSection(), buildingSectionDto, new MappingSettings().setForceUpdate(true));
+        BuildingSection buildingSection = modelMapper.apply(new BuildingSection(), buildingSectionDto, new MappingSettings().setForceUpdate(true));
         if (buildingSection != null) buildingSection.setId(null);
         buildingSection = locationService.createBuildingSection(buildingSection);
-        BuildingSectionDto dto = ModelMapper.transform(buildingSection, new BuildingSectionDto());
+        BuildingSectionDto dto = modelMapper.transform(buildingSection, new BuildingSectionDto());
         return dto;
     }
 
@@ -93,25 +96,25 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = BUILDING_SECTION, action = MODIFY)
     public BuildingSectionDto updateBuildingSection(BuildingSectionDto buildingSectionDto) {
-        BuildingSection buildingSection = ModelMapper.apply(new BuildingSection(), buildingSectionDto);
+        BuildingSection buildingSection = modelMapper.apply(new BuildingSection(), buildingSectionDto);
         buildingSection = locationService.updateBuildingSection(buildingSection);
-        BuildingSectionDto dto = ModelMapper.transform(buildingSection, new BuildingSectionDto());
+        BuildingSectionDto dto = modelMapper.transform(buildingSection, new BuildingSectionDto());
         return dto;
     }
 
     @Authorizable(resource = ADDRESS, action = GET)
     public AddressDto getAddress(String id) {
         Address address = locationService.getAddress(id);
-        AddressDto dto = ModelMapper.transform(address, new AddressDto());
+        AddressDto dto = modelMapper.transform(address, new AddressDto());
         return dto;
     }
 
     @Authorizable(resource = ADDRESS, action = CREATE)
     public AddressDto createAddress(AddressDto addressDto) {
-        Address address = ModelMapper.apply(new Address(), addressDto, new MappingSettings().setForceUpdate(true));
+        Address address = modelMapper.apply(new Address(), addressDto, new MappingSettings().setForceUpdate(true));
         if (address != null) address.setId(null);
         address = locationService.createAddress(address);
-        AddressDto dto = ModelMapper.transform(address, new AddressDto());
+        AddressDto dto = modelMapper.transform(address, new AddressDto());
         return dto;
     }
 
@@ -122,23 +125,23 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = ADDRESS, action = MODIFY)
     public AddressDto updateAddress(AddressDto addressDto) {
-        Address address = ModelMapper.apply(new Address(), addressDto);
+        Address address = modelMapper.apply(new Address(), addressDto);
         address = locationService.updateAddress(address);
-        AddressDto dto = ModelMapper.transform(address, new AddressDto());
+        AddressDto dto = modelMapper.transform(address, new AddressDto());
         return dto;
     }
 
     @Authorizable(resource = BUILDING_SECTION, action = SEARCH)
     public List<BuildingSectionDto> searchAllBuildingSectionsByTitle(String title) {
         List<BuildingSection> rooms = locationService.searchAllSectionsByTitle(title);
-        List<BuildingSectionDto> dtos = (List<BuildingSectionDto>) ModelMapper.transformAll(rooms, BuildingSectionDto.class);
+        List<BuildingSectionDto> dtos = (List<BuildingSectionDto>) modelMapper.transformAll(rooms, BuildingSectionDto.class);
         return dtos;
     }
 
     @Authorizable(resource = BUILDING, action = SEARCH)
     public List<BuildingDto> searchAllBuildingsByTitle(String title) {
         List<Building> rooms = locationService.searchAllBuildingsByTitle(title);
-        List<BuildingDto> dtos = (List<BuildingDto>) ModelMapper.transformAll(rooms, BuildingDto.class);
+        List<BuildingDto> dtos = (List<BuildingDto>) modelMapper.transformAll(rooms, BuildingDto.class);
         return dtos;
     }
 }

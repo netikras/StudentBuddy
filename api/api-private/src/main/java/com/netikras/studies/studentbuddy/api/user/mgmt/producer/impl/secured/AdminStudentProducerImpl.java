@@ -22,6 +22,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.*;
 public class AdminStudentProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private StudentService studentService;
 
     @Resource
@@ -48,11 +51,11 @@ public class AdminStudentProducerImpl {
 
     @Authorizable(resource = STUDENT, action = CREATE)
     public StudentDto createStudent(StudentDto studentDto) {
-        Student student = ModelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
+        Student student = modelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
         if (student != null) student.setId(null);
 
         student = studentService.createStudent(student);
-        studentDto = ModelMapper.transform(student, new StudentDto());
+        studentDto = modelMapper.transform(student, new StudentDto());
 
         return studentDto;
     }
@@ -64,9 +67,9 @@ public class AdminStudentProducerImpl {
 
     @Authorizable(resource = STUDENT_GROUP, action = CREATE)
     public StudentsGroupDto createStudentsGroup(StudentsGroupDto groupDto) {
-        StudentsGroup group = ModelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
+        StudentsGroup group = modelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
         group = studentService.createStudentsGroup(group);
-        StudentsGroupDto dto = ModelMapper.transform(group, new StudentsGroupDto());
+        StudentsGroupDto dto = modelMapper.transform(group, new StudentsGroupDto());
         return dto;
     }
 
@@ -77,9 +80,9 @@ public class AdminStudentProducerImpl {
 
     @Authorizable(resource = GUEST, action = CREATE)
     public LectureGuestDto createLectureGuest(LectureGuestDto dto) {
-        LectureGuest guest = ModelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
+        LectureGuest guest = modelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
         guest = studentService.createLectureGuest(guest);
-        dto = ModelMapper.transform(guest, new LectureGuestDto());
+        dto = modelMapper.transform(guest, new LectureGuestDto());
 
         return dto;
     }
@@ -119,7 +122,7 @@ public class AdminStudentProducerImpl {
         Person person = personService.getPerson(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
+        LectureGuestDto dto = modelMapper.transform(guest, new LectureGuestDto());
 
         return dto;
     }
@@ -130,7 +133,7 @@ public class AdminStudentProducerImpl {
         Person person = personService.findPersonByIdentifier(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = ModelMapper.transform(guest, new LectureGuestDto());
+        LectureGuestDto dto = modelMapper.transform(guest, new LectureGuestDto());
 
         return dto;
     }

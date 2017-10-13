@@ -19,6 +19,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLI
 public class AdminLecturerProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private LecturerService lecturerService;
 
     @Resource
@@ -32,10 +35,10 @@ public class AdminLecturerProducerImpl {
 
     @Authorizable(resource = DISCIPLINE, action = CREATE)
     public LecturerDto createLecturer(LecturerDto dto) {
-        Lecturer lecturer = ModelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
+        Lecturer lecturer = modelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
         if (lecturer != null) lecturer.setId(null);
         lecturer = lecturerService.createLecturer(lecturer);
-        dto = ModelMapper.transform(lecturer, new LecturerDto());
+        dto = modelMapper.transform(lecturer, new LecturerDto());
 
         return dto;
     }

@@ -32,6 +32,9 @@ public class UserProducerImpl {
 
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private UserService userService;
 
     @Resource
@@ -44,11 +47,11 @@ public class UserProducerImpl {
     @Transactional
     @Authorizable(resource = USER, action = Action.MODIFY)
     public UserDto updateUser(UserDto item) {
-        User user = ModelMapper.apply(new User(), item);
+        User user = modelMapper.apply(new User(), item);
         user.setId(item.getId());
         user = userService.updateUser(user);
 
-        item = ModelMapper.transform(user, new UserDto());
+        item = modelMapper.transform(user, new UserDto());
 
         return item;
     }
@@ -61,9 +64,9 @@ public class UserProducerImpl {
 
     @Authorizable(resource = USER, action = Action.CREATE)
     public UserDto createUser(UserDto item) {
-        User user = ModelMapper.apply(new User(), item, new MappingSettings().setForceUpdate(true));
+        User user = modelMapper.apply(new User(), item, new MappingSettings().setForceUpdate(true));
         user = userService.createUser(user);
-        item = ModelMapper.transform(user, new UserDto());
+        item = modelMapper.transform(user, new UserDto());
         return item;
     }
 
@@ -72,7 +75,7 @@ public class UserProducerImpl {
     public UserDto getUser(String id) {
         UserDto dto;
         User user = userService.findUser(id);
-        dto = ModelMapper.transform(user, new UserDto());
+        dto = modelMapper.transform(user, new UserDto());
         return dto;
     }
 
@@ -86,7 +89,7 @@ public class UserProducerImpl {
         }
 
         User user = userService.login(auth);
-        UserDto dto = ModelMapper.transform(user, new UserDto());
+        UserDto dto = modelMapper.transform(user, new UserDto());
 
         if (user == null) {
             throw new StudBudUncheckedException()
@@ -137,7 +140,7 @@ public class UserProducerImpl {
         List<ResourceActionLink> rolePermissions = userService.getPermissions(userId);
 
         List<RolePermissionDto> permissions =
-                (List<RolePermissionDto>) ModelMapper.transformAll(rolePermissions, RolePermissionDto.class, new MappingSettings().setDepthMax(3));
+                (List<RolePermissionDto>) modelMapper.transformAll(rolePermissions, RolePermissionDto.class, new MappingSettings().setDepthMax(3));
 
 
         return permissions;
@@ -154,7 +157,7 @@ public class UserProducerImpl {
     public UserDto getUserByName(String name) {
         UserDto dto;
         User user = userService.findUserByName(name);
-        dto = ModelMapper.transform(user, new UserDto());
+        dto = modelMapper.transform(user, new UserDto());
         return dto;
     }
 
@@ -163,7 +166,7 @@ public class UserProducerImpl {
     public UserDto getUserByPerson(String userId) {
         UserDto dto;
         User user = userService.findUserByPerson(userId);
-        dto = ModelMapper.transform(user, new UserDto());
+        dto = modelMapper.transform(user, new UserDto());
         return dto;
     }
 
@@ -175,7 +178,7 @@ public class UserProducerImpl {
     public List<UserDto> searchUsersByUsername(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByUsername(query);
-        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
 
@@ -184,7 +187,7 @@ public class UserProducerImpl {
     public List<UserDto> searchUsersByFirstName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByFirstName(query);
-        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
 
@@ -194,7 +197,7 @@ public class UserProducerImpl {
     public List<UserDto> searchUsersByLastName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByLastName(query);
-        dtos = (List<UserDto>) ModelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
         return dtos;
     }
     

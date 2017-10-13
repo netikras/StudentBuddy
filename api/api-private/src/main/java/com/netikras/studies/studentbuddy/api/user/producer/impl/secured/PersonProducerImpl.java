@@ -18,13 +18,16 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
 public class PersonProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private PersonService personService;
 
 
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPerson(String id) {
         Person person = personService.getPerson(id);
-        PersonDto personDto = ModelMapper.transform(person, new PersonDto());
+        PersonDto personDto = modelMapper.transform(person, new PersonDto());
 
         return personDto;
     }
@@ -32,7 +35,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPersonByCode(String code) {
         Person person = personService.findPersonByPersonalCode(code);
-        PersonDto personDto = ModelMapper.transform(person, new PersonDto());
+        PersonDto personDto = modelMapper.transform(person, new PersonDto());
 
         return personDto;
     }
@@ -40,7 +43,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPersonByIdentifier(String id) {
         Person person = personService.findPersonByIdentifier(id);
-        PersonDto personDto = ModelMapper.transform(person, new PersonDto());
+        PersonDto personDto = modelMapper.transform(person, new PersonDto());
 
         return personDto;
     }
@@ -48,7 +51,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET_ALL)
     public List<PersonDto> getAllPeople() {
         List<Person> people = personService.findAll();
-        List<PersonDto> peopleDtos = (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class);
+        List<PersonDto> peopleDtos = (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class);
 
         return peopleDtos;
     }
@@ -56,7 +59,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET_ALL)
     public List<PersonDto> getAllPeopleByFirstName(String firstName) {
         List<Person> people = personService.findByFirstName(firstName);
-        List<PersonDto> peopleDtos = (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class);
+        List<PersonDto> peopleDtos = (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class);
 
         return peopleDtos;
     }
@@ -64,7 +67,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET_ALL)
     public List<PersonDto> getAllPeopleByLastName(String lastName) {
         List<Person> people = personService.findByLastName(lastName);
-        List<PersonDto> peopleDtos = (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class);
+        List<PersonDto> peopleDtos = (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class);
 
         return peopleDtos;
     }
@@ -72,7 +75,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET)
     public List<PersonDto> getAllPeopleByFirstAndLastName(String firstName, String lastName) {
         List<Person> people = personService.findByFirstAndLastName(firstName, lastName);
-        List<PersonDto> peopleDtos = (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class);
+        List<PersonDto> peopleDtos = (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class);
 
         return peopleDtos;
     }
@@ -81,7 +84,7 @@ public class PersonProducerImpl {
     public List<PersonDto> searchAllPeopleByFirstName(String fname) {
         List<Person> people = personService.searchAllByFirstName(fname);
         List<PersonDto> personDtos =
-                (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
+                (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
 
         return personDtos;
     }
@@ -90,7 +93,7 @@ public class PersonProducerImpl {
     public List<PersonDto> searchAllPeopleByLastName(String lname) {
         List<Person> people = personService.searchAllByLastName(lname);
         List<PersonDto> personDtos =
-                (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
+                (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
 
         return personDtos;
     }
@@ -99,7 +102,7 @@ public class PersonProducerImpl {
     public List<PersonDto> searchAllPeopleByPersonalCode(String code) {
         List<Person> people = personService.searchAllByPersonalCode(code);
         List<PersonDto> personDtos =
-                (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
+                (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
 
         return personDtos;
     }
@@ -108,7 +111,7 @@ public class PersonProducerImpl {
     public List<PersonDto> searchAllPeopleByIdentifier(String id) {
         List<Person> people = personService.searchAllByIdentification(id);
         List<PersonDto> personDtos =
-                (List<PersonDto>) ModelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
+                (List<PersonDto>) modelMapper.transformAll(people, PersonDto.class, new MappingSettings().setDepthMax(3));
 
         return personDtos;
     }

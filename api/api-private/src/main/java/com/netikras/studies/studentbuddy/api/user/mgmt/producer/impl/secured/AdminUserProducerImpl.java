@@ -18,6 +18,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.USER;
 public class AdminUserProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private UserService userService;
 
 
@@ -28,10 +31,10 @@ public class AdminUserProducerImpl {
 
     @Authorizable(resource = USER, action = Action.CREATE)
     public UserDto createUser(UserDto userDto) {
-        User user = ModelMapper.apply(new User(), userDto, new MappingSettings().setForceUpdate(true));
+        User user = modelMapper.apply(new User(), userDto, new MappingSettings().setForceUpdate(true));
         if (user != null) user.setId(null);
         user = userService.createUser(user);
-        userDto = ModelMapper.transform(user, new UserDto());
+        userDto = modelMapper.transform(user, new UserDto());
 
         return userDto;
     }

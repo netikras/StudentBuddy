@@ -22,6 +22,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.*;
 public class FloorProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private FloorService floorService;
 
     @Authorizable(resource = FLOOR, action = PURGE)
@@ -41,9 +44,9 @@ public class FloorProducerImpl {
 
     @Authorizable(resource = FLOOR, action = MODIFY)
     public BuildingFloorDto updateBuildingFloor(BuildingFloorDto buildingFloorDto) {
-        BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto);
+        BuildingFloor buildingFloor = modelMapper.apply(new BuildingFloor(), buildingFloorDto);
         buildingFloor = floorService.updateFloor(buildingFloor);
-        BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
+        BuildingFloorDto dto = modelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
 
@@ -55,24 +58,24 @@ public class FloorProducerImpl {
     @Authorizable(resource = FLOOR, action = GET)
     public BuildingFloorDto getBuildingFloor(String id) {
         BuildingFloor buildingFloor = floorService.getFloor(id);
-        BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
+        BuildingFloorDto dto = modelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
 
     @Authorizable(resource = FLOOR, action = CREATE)
     public BuildingFloorDto createBuildingFloor(BuildingFloorDto buildingFloorDto) {
-        BuildingFloor buildingFloor = ModelMapper.apply(new BuildingFloor(), buildingFloorDto, new MappingSettings().setForceUpdate(true));
+        BuildingFloor buildingFloor = modelMapper.apply(new BuildingFloor(), buildingFloorDto, new MappingSettings().setForceUpdate(true));
         if (buildingFloor != null) buildingFloor.setId(null);
         buildingFloor = floorService.createFloor(buildingFloor);
-        BuildingFloorDto dto = ModelMapper.transform(buildingFloor, new BuildingFloorDto());
+        BuildingFloorDto dto = modelMapper.transform(buildingFloor, new BuildingFloorDto());
         return dto;
     }
 
     @Authorizable(resource = FLOOR_MAP, action = MODIFY)
     public FloorLayoutDto updateFloorLayout(FloorLayoutDto floorLayoutDto) {
-        FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto);
+        FloorLayout floorLayout = modelMapper.apply(new FloorLayout(), floorLayoutDto);
         floorLayout = floorService.updateFloorLayout(floorLayout);
-        FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
+        FloorLayoutDto dto = modelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
 
@@ -84,24 +87,24 @@ public class FloorProducerImpl {
     @Authorizable(resource = FLOOR_MAP, action = GET)
     public FloorLayoutDto getFloorLayout(String id) {
         FloorLayout floorLayout = floorService.getFloorLayout(id);
-        FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
+        FloorLayoutDto dto = modelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
 
     @Authorizable(resource = FLOOR_MAP, action = CREATE)
     public FloorLayoutDto createFloorLayout(FloorLayoutDto floorLayoutDto) {
-        FloorLayout floorLayout = ModelMapper.apply(new FloorLayout(), floorLayoutDto, new MappingSettings().setForceUpdate(true));
+        FloorLayout floorLayout = modelMapper.apply(new FloorLayout(), floorLayoutDto, new MappingSettings().setForceUpdate(true));
         if (floorLayout != null) floorLayout.setId(null);
         floorLayout = floorService.createFloorLayout(floorLayout);
-        FloorLayoutDto dto = ModelMapper.transform(floorLayout, new FloorLayoutDto());
+        FloorLayoutDto dto = modelMapper.transform(floorLayout, new FloorLayoutDto());
         return dto;
     }
 
     @Authorizable(resource = ROOM, action = MODIFY)
     public LectureRoomDto updateLectureRoom(LectureRoomDto lectureRoomDto) {
-        LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto);
+        LectureRoom lectureRoom = modelMapper.apply(new LectureRoom(), lectureRoomDto);
         lectureRoom = floorService.updateRoom(lectureRoom);
-        LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
+        LectureRoomDto dto = modelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
 
@@ -113,37 +116,37 @@ public class FloorProducerImpl {
     @Authorizable(resource = ROOM, action = GET)
     public LectureRoomDto getLectureRoom(String id) {
         LectureRoom lectureRoom = floorService.getRoom(id);
-        LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
+        LectureRoomDto dto = modelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
 
     @Authorizable(resource = ROOM, action = CREATE)
     public LectureRoomDto createLectureRoom(LectureRoomDto lectureRoomDto) {
-        LectureRoom lectureRoom = ModelMapper.apply(new LectureRoom(), lectureRoomDto, new MappingSettings().setForceUpdate(true));
+        LectureRoom lectureRoom = modelMapper.apply(new LectureRoom(), lectureRoomDto, new MappingSettings().setForceUpdate(true));
         if (lectureRoom != null) lectureRoom.setId(null);
         lectureRoom = floorService.createRoom(lectureRoom);
-        LectureRoomDto dto = ModelMapper.transform(lectureRoom, new LectureRoomDto());
+        LectureRoomDto dto = modelMapper.transform(lectureRoom, new LectureRoomDto());
         return dto;
     }
 
     @Authorizable(resource = FLOOR, action = SEARCH)
     public List<BuildingFloorDto> searchAllBuildingFloorsByTitle(String title) {
         List<BuildingFloor> buildingFloors = floorService.searchAllByTitle(title);
-        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) ModelMapper.transformAll(buildingFloors, BuildingFloorDto.class);
+        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) modelMapper.transformAll(buildingFloors, BuildingFloorDto.class);
         return dtos;
     }
 
     @Authorizable(resource = ROOM, action = SEARCH)
     public List<LectureRoomDto> searchAllLectureRoomsByTitle(String title) {
         List<LectureRoom> rooms = floorService.searchAllRoomsByTitle(title);
-        List<LectureRoomDto> dtos = (List<LectureRoomDto>) ModelMapper.transformAll(rooms, LectureRoomDto.class);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class);
         return dtos;
     }
 
     @Authorizable(resource = ROOM, action = SEARCH)
     public List<LectureRoomDto> searchAllLectureRoomsByNumber(String number) {
         List<LectureRoom> rooms = floorService.searchAllRoomsByNumber(number);
-        List<LectureRoomDto> dtos = (List<LectureRoomDto>) ModelMapper.transformAll(rooms, LectureRoomDto.class);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class);
         return dtos;
     }
 }

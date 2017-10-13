@@ -19,6 +19,9 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE;
 public class LecturesProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private LectureService lectureService;
 
 
@@ -36,25 +39,25 @@ public class LecturesProducerImpl {
 
     @Authorizable(resource = LECTURE, action = CREATE)
     public LectureDto createLecture(LectureDto lectureDto) {
-        Lecture lecture = ModelMapper.apply(new Lecture(), lectureDto, new MappingSettings().setForceUpdate(true));
+        Lecture lecture = modelMapper.apply(new Lecture(), lectureDto, new MappingSettings().setForceUpdate(true));
         if (lecture != null) lecture.setId(null);
         lecture = lectureService.createLecture(lecture);
-        lectureDto = ModelMapper.transform(lecture, new LectureDto());
+        lectureDto = modelMapper.transform(lecture, new LectureDto());
         return lectureDto;
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public LectureDto getLecture(String id) {
         Lecture lecture = lectureService.getLecture(id);
-        LectureDto lectureDto = ModelMapper.transform(lecture, new LectureDto());
+        LectureDto lectureDto = modelMapper.transform(lecture, new LectureDto());
         return lectureDto;
     }
 
     @Authorizable(resource = LECTURE, action = MODIFY)
     public LectureDto updateLecture(LectureDto lectureDto) {
-        Lecture lecture = ModelMapper.apply(new Lecture(), lectureDto);
+        Lecture lecture = modelMapper.apply(new Lecture(), lectureDto);
         lecture = lectureService.updateLecture(lecture);
-        lectureDto = ModelMapper.transform(lecture, new LectureDto());
+        lectureDto = modelMapper.transform(lecture, new LectureDto());
         return lectureDto;
     }
 
@@ -86,28 +89,28 @@ public class LecturesProducerImpl {
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByGroupIdStartingBetween(String groupId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForStudentsGroup(groupId, new Date(after), new Date(before));
-        List<LectureDto> lectureDtos = (List<LectureDto>) ModelMapper.transformAll(lectures, LectureDto.class);
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class);
         return lectureDtos;
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByStudentIdStartingBetween(String studentId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForGuest(studentId, new Date(after), new Date(before));
-        List<LectureDto> lectureDtos = (List<LectureDto>) ModelMapper.transformAll(lectures, LectureDto.class);
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class);
         return lectureDtos;
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByLecturerIdStartingBetween(String lecturerId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForLecturer(lecturerId, new Date(after), new Date(before));
-        List<LectureDto> lectureDtos = (List<LectureDto>) ModelMapper.transformAll(lectures, LectureDto.class);
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class);
         return lectureDtos;
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByRoomIdStartingBetween(String roomId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForRoom(roomId, new Date(after), new Date(before));
-        List<LectureDto> lectureDtos = (List<LectureDto>) ModelMapper.transformAll(lectures, LectureDto.class);
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class);
         return lectureDtos;
     }
 

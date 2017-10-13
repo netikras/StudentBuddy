@@ -22,6 +22,9 @@ import static com.netikras.tools.common.remote.http.HttpStatus.NOT_FOUND;
 public class TestsProducerImpl {
 
     @Resource
+    private ModelMapper modelMapper;
+
+    @Resource
     private LectureService lectureService;
 
 
@@ -32,10 +35,10 @@ public class TestsProducerImpl {
 
     @Authorizable(resource = TEST, action = CREATE)
     public DisciplineTestDto createDisciplineTest(DisciplineTestDto disciplineTestDto) {
-        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), disciplineTestDto, new MappingSettings().setForceUpdate(true));
+        DisciplineTest test = modelMapper.apply(new DisciplineTest(), disciplineTestDto, new MappingSettings().setForceUpdate(true));
         if (test != null) test.setId(null);
         test = lectureService.createTest(test);
-        disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
+        disciplineTestDto = modelMapper.transform(test, new DisciplineTestDto());
 
         return disciplineTestDto;
     }
@@ -43,16 +46,16 @@ public class TestsProducerImpl {
     @Authorizable(resource = TEST, action = GET)
     public DisciplineTestDto getDisciplineTest(String id) {
         DisciplineTest test = lectureService.getTest(id);
-        DisciplineTestDto disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
+        DisciplineTestDto disciplineTestDto = modelMapper.transform(test, new DisciplineTestDto());
 
         return disciplineTestDto;
     }
 
     @Authorizable(resource = TEST, action = MODIFY)
     public DisciplineTestDto updateDisciplineTest(DisciplineTestDto item) {
-        DisciplineTest test = ModelMapper.apply(new DisciplineTest(), item);
+        DisciplineTest test = modelMapper.apply(new DisciplineTest(), item);
         test = lectureService.updateTest(test);
-        DisciplineTestDto disciplineTestDto = ModelMapper.transform(test, new DisciplineTestDto());
+        DisciplineTestDto disciplineTestDto = modelMapper.transform(test, new DisciplineTestDto());
 
         return disciplineTestDto;
     }
@@ -82,7 +85,7 @@ public class TestsProducerImpl {
         test.setDescription(description);
 
         test = lectureService.createTest(test);
-        DisciplineTestDto dto = ModelMapper.transform(test, new DisciplineTestDto());
+        DisciplineTestDto dto = modelMapper.transform(test, new DisciplineTestDto());
 
         return dto;
     }
@@ -95,7 +98,7 @@ public class TestsProducerImpl {
         Date afterDate = new Date(after);
         Date beforeDate = new Date(before);
         List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId, afterDate, beforeDate);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) modelMapper.transformAll(tests, DisciplineTestDto.class);
 
         return dtos;
     }
@@ -103,7 +106,7 @@ public class TestsProducerImpl {
     @Authorizable(resource = TEST, action = GET)
     public List<DisciplineTestDto> getAllDisciplineTestsForDiscipline(String disciplineId) {
         List<DisciplineTest> tests = lectureService.getTestsForDiscipline(disciplineId);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) modelMapper.transformAll(tests, DisciplineTestDto.class);
 
         return dtos;
     }
@@ -113,7 +116,7 @@ public class TestsProducerImpl {
         Date afterDate = new Date(after);
         Date beforeDate = new Date(before);
         List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId, afterDate, beforeDate);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) modelMapper.transformAll(tests, DisciplineTestDto.class);
 
         return dtos;
     }
@@ -121,7 +124,7 @@ public class TestsProducerImpl {
     @Authorizable(resource = TEST, action = GET)
     public List<DisciplineTestDto> getAllDisciplineTestsForGroup(String disciplineId, String groupId) {
         List<DisciplineTest> tests = lectureService.getTestsForDisciplineAndGroup(disciplineId, groupId);
-        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class);
+        List<DisciplineTestDto> dtos = (List<DisciplineTestDto>) modelMapper.transformAll(tests, DisciplineTestDto.class);
 
         return dtos;
     }
@@ -130,7 +133,7 @@ public class TestsProducerImpl {
     public List<DisciplineTestDto> searchAllDisciplineTestsByDescription(String descr) {
         List<DisciplineTest> tests = lectureService.searchAllTestsByDescription(descr);
         List<DisciplineTestDto> testDtos =
-                (List<DisciplineTestDto>) ModelMapper.transformAll(tests, DisciplineTestDto.class, new MappingSettings().setDepthMax(3));
+                (List<DisciplineTestDto>) modelMapper.transformAll(tests, DisciplineTestDto.class, new MappingSettings().setDepthMax(3));
 
         return testDtos;
     }
