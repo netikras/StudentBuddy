@@ -1,12 +1,10 @@
 package com.netikras.studies.studentbuddy.api.config;
 
-import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
-import javax.servlet.Filter;
 import java.util.EnumSet;
 
 

@@ -54,20 +54,18 @@ public abstract class AdminStudentApi {
     );
 
 
-    @RestEndpoint(url = "/guest/person/id/{personId}/lecture/{lectureId}", method = HttpMethod.POST, dtoType = LectureGuestDto.class, action = "createByPersonId")
+    @RestEndpoint(url = "/guest/person/id/{personId}/lecture/{lectureId}", method = HttpMethod.POST, dtoType = LectureGuestDto.class,
+            action = "createByPersonId")
     public abstract LectureGuestDto createGuest(
             @MethodParam(type = Type.URL, name = "personId") String personId,
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId
     );
 
 
-    @RestEndpoint(url = "/guest/person/id2/{personId}/lecture/{lectureId}", method = HttpMethod.POST, dtoType = LectureGuestDto.class, action = "createByPersonIdentifier")
+    @RestEndpoint(url = "/guest/person/id2/{personId}/lecture/{lectureId}", method = HttpMethod.POST, dtoType = LectureGuestDto.class,
+            action = "createByPersonIdentifier")
     public abstract LectureGuestDto createGuestByPersonIdentifier(
             @MethodParam(type = Type.URL, name = "personId") String personId,
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId
     );
-
-
-
-
 }

@@ -108,9 +108,8 @@ public class ResourceRepoProvider {
     }
 
     public Class getTypeForResource(String resourceName) {
-        JpaRepo repo = getRepoForResource(resourceName);
-        if (repo != null) {
-            Class repoClass = repo.getClass();
+        Class repoClass = RESOURCE_REPO_CLASS_MAP.get(com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(resourceName.toUpperCase()));
+        if (repoClass != null) {
             for (Entry<Class, Class<? extends JpaRepo>> classClassEntry : MODEL_REPO_CLASS_MAP.entrySet()) {
                 if (classClassEntry.getValue().equals(repoClass)) {
                     return classClassEntry.getKey();

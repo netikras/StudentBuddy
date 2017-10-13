@@ -3,10 +3,14 @@ package com.netikras.studies.studentbuddy.api.config;
 import com.netikras.studies.studentbuddy.api.filters.AuthorizationFilter;
 import com.netikras.studies.studentbuddy.commons.P;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
+import com.netikras.tools.common.exception.FriendlyException;
 import com.netikras.tools.common.properties.PropertiesAssistant;
 import org.springframework.context.annotation.*;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -44,7 +48,7 @@ public class ApiConfig {
 
 
     @Resource
-    private Environment env;
+    private ConfigurableEnvironment env;
 
 
     @Bean(name = "configProperties")
@@ -54,9 +58,7 @@ public class ApiConfig {
 
     @Bean(destroyMethod = "")
     public DataSource dataSource(PropertiesWrapper propsw) {
-        JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
-        dsLookup.setResourceRef(true);
-        DataSource dataSource = dsLookup.getDataSource(propsw.getValue("db.jndi.name", ""));
+        DataSource dataSource = resolveDataSource(propsw);
         return dataSource;
 //        return new EmbeddedDatabaseBuilder().setType(H2).setName("studbuddb").build();
     }
@@ -107,6 +109,25 @@ public class ApiConfig {
         return new AuthorizationFilter();
     }
 
+    private DataSource resolveDataSource(PropertiesWrapper propsw) {
+        DataSource dataSource = null;
+
+        try {
+            JndiDataSourceLookup dsLookup = new JndiDataSourceLookup();
+            dsLookup.setResourceRef(true);
+            dataSource = dsLookup.getDataSource(propsw.getValue("db.jndi.name", ""));
+        } catch (Exception e) {
+            System.out.println("Data source lookup for JNDI failed");
+            DriverManagerDataSource ds = new DriverManagerDataSource();
+            ds.setDriverClassName(propsw.getValue("db.driver", ""));
+            ds.setUrl(propsw.getValue("db.jdbc.url", ""));
+            ds.setUsername(propsw.getValue("db.username", ""));
+            ds.setPassword(propsw.getValue("db.password", ""));
+            dataSource = ds;
+        }
+
+        return dataSource;
+    }
 
     class PropertiesWrapper {
 
@@ -116,16 +137,33 @@ public class ApiConfig {
 
         public PropertiesWrapper(Environment environment) {
             this.env = environment;
+
+            ((ConfigurableEnvironment)environment).getPropertySources().addFirst(new PropertiesPropertySource("init", loadInitProperties()));
+
         }
 
         public PropertiesWrapper(Properties properties) {
             this.props = properties;
+            Properties initProperties = loadInitProperties();
+            if (initProperties != null) {
+                this.props = PropertiesAssistant.merge(properties, initProperties);
+            }
+
         }
 
+        public Properties loadInitProperties() {
+            try {
+                Properties initPropsSource = null;
+                Properties initProperties = PropertiesAssistant.loadInitProperties(initPropsSource, "sb");
+                return initProperties;
+            } catch (FriendlyException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
         public String getValue(String name, String defaultValue) {
             String value = null;
-
             if (env != null) {
                 value = env.getProperty(name, defaultValue);
             } else if (props != null) {

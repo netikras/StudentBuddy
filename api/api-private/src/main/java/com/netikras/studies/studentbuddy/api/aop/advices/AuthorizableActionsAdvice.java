@@ -102,7 +102,10 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
 
         String resourceId = null;
 
-        Class resourceType = repoProvider.getTypeForResource(resource.name());
+        Class<?> resourceType = repoProvider.getTypeForResource(resource.name());
+        if (resourceType == null) {
+            return resourceId;
+        }
         if (!isNullOrEmpty(joinPoint.getArgs())) {
             for (Object arg : joinPoint.getArgs()) {
                 if (arg != null && resourceType.isAssignableFrom(arg.getClass())) {

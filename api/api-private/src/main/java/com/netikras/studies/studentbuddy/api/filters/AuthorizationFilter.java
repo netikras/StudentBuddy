@@ -2,6 +2,7 @@ package com.netikras.studies.studentbuddy.api.filters;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.slf4j.Logger;
@@ -73,6 +74,8 @@ public class AuthorizationFilter implements Filter {
         if (isAimingToLogin((HttpServletRequest) request)) {
             requestContext.destroy();
 
+            User user = requestContext.getUser();
+
             requestContext.setUser(systemService.getGuestUser());
             requestContext.setRequest((HttpServletRequest) request);
             requestContext.setResponse((HttpServletResponse) response);
@@ -81,11 +84,15 @@ public class AuthorizationFilter implements Filter {
             chain.doFilter(request, response);
 
             if (requestContext.getUser() != null) {
-                requestContext.getSession()
-                        .setMaxInactiveInterval(systemService.getSettingValue(SysProp.SESSION_TIMEOUT));
+                requestContext.getSession().setMaxInactiveInterval(systemService.getSettingValue(SysProp.SESSION_TIMEOUT));
+            } else {
+                if (systemService.getSettingValue(SysProp.FAILED_LOGIN_KEEP_USER)) {
+                    requestContext.setUser(user);
+                }
             }
         } else if (loggedIn) {
             logger.info("Requester's session validated. Proceeding with the request.");
+            requestContext.getSession().setMaxInactiveInterval(systemService.getSettingValue(SysProp.SESSION_TIMEOUT));
             chain.doFilter(request, response);
         } else {
 

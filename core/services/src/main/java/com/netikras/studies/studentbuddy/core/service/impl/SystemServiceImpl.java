@@ -21,6 +21,8 @@ import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.remote.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,8 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class SystemServiceImpl implements SystemService {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
     private SettingsDao settingsDao;
@@ -371,11 +375,20 @@ public class SystemServiceImpl implements SystemService {
     @Transactional
     public boolean isUserAllowedToPerformAction(User user, String resourceName, String resourceId, String actionName) {
         if (user == null) return false;
-        if ("system".equals(user.getName())) return true;
-        if (isNullOrEmpty(user.getRoles())) return false;
+        if ("system".equals(user.getName())) {
+            logAccessAllowed(user.getName(), actionName, resourceName, resourceId, "-", "-");
+            return true;
+        }
+        if (isNullOrEmpty(user.getRoles())) {
+            logAccessDenied(user.getName(), actionName, resourceName, resourceId, "user has no roles assigned");
+            return false;
+        }
 
         List<ResourceActionLink> actionPermissions = getPermissionsForResource(resourceName, actionName);
-        if (isNullOrEmpty(actionPermissions)) return false;
+        if (isNullOrEmpty(actionPermissions)) {
+            logAccessDenied(user.getName(), actionName, resourceName, resourceId, "there are no roles granting needed access for resource");
+            return false;
+        }
 
 
         if (!isNullOrEmpty(resourceId)) {
@@ -395,18 +408,36 @@ public class SystemServiceImpl implements SystemService {
                 if (userRole.getRole().equals(permissions.getRole())) {
                     if (permissions.isStrict()) {
                         if (areEqual(permissions.getEntityId(), resourceId)) {
+                            logAccessAllowed(user.getName(), actionName, resourceName, resourceId, userRole.getRole().getName(), permissions.getId());
                             return true;
                         }
                     } else {
+                        logAccessAllowed(user.getName(), actionName, resourceName, resourceId, userRole.getRole().getName(), permissions.getId());
                         return true;
                     }
                 }
             }
-
         }
+
+        logAccessDenied(user.getName(), actionName, resourceName, resourceId, "allowing access rule not found");
         return false;
     }
 
+    private void logAccessAllowed(String userName, String actionName, String resourceName, String resourceId, String roleName, String permissionsId) {
+        logger.debug(String.format(
+                "Allowing user %s to perform action %s on resource %s with id %s. Access granted as per role %s permission %s",
+                userName, actionName, resourceName, resourceId, roleName, permissionsId
+                )
+        );
+    }
+
+    private void logAccessDenied(String userName, String actionName, String resourceName, String resourceId, String reason) {
+        logger.debug(String.format(
+                "Denying user %s from performing action %s on resource %s with id %s. Reason: %s",
+                userName, actionName, resourceName, resourceId, reason
+                )
+        );
+    }
 
     @Override
     public SystemSetting getSetting(String id) {

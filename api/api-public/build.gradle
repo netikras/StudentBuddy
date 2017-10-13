@@ -3,3 +3,10 @@ apply from: "$rootProject.rootDir/conf/global.gradle"
 loadDep "commons"
 
 loadProj ":core:datamodel:data-public"
+
+def mainProjects = [":core:datamodel:data-public", ":api:api-public"]
+
+jar {
+    dependsOn = mainProjects.collect{it + ":compileJava"}
+    from files(mainProjects.collect{project(it).sourceSets.main.output})
+}

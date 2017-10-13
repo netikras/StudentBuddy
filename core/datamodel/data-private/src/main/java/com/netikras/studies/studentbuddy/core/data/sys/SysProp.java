@@ -17,6 +17,12 @@ public interface SysProp {
      */
     BooleanProperty SESSION_SUSPEND = new BooleanProperty("session.suspend", false);
 
+    /**
+     * If user John is logged in to the system and attempts to login as another user and fails John will not be <br/>
+     * logged out if this value is set to 'true'
+     */
+    BooleanProperty FAILED_LOGIN_KEEP_USER = new BooleanProperty("session.login.failed.keepuser", true);
+
 
 
 
