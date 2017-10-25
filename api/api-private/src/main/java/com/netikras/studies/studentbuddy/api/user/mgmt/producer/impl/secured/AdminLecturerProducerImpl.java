@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
@@ -20,6 +21,8 @@ public class AdminLecturerProducerImpl {
 
     @Resource
     private ModelMapper modelMapper;
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Resource
     private LecturerService lecturerService;
@@ -38,7 +41,7 @@ public class AdminLecturerProducerImpl {
         Lecturer lecturer = modelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
         if (lecturer != null) lecturer.setId(null);
         lecturer = lecturerService.createLecturer(lecturer);
-        dto = modelMapper.transform(lecturer, new LecturerDto());
+        dto = (LecturerDto) dtoMapper.toDto(lecturer, 3);
 
         return dto;
     }

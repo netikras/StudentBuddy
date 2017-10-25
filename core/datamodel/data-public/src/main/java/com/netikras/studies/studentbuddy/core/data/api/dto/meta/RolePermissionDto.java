@@ -1,8 +1,10 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.meta;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
 import java.util.Date;
 
-public class RolePermissionDto {
+public class RolePermissionDto extends AbstractDto {
 
     private String id;
     private Date createdOn;

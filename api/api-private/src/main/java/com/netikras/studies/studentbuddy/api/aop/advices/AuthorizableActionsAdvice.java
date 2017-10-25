@@ -20,12 +20,14 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import javax.persistence.Id;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
+import static com.netikras.tools.common.security.IntegrityUtils.calculateMac;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 /**
@@ -107,6 +109,8 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
             return resourceId;
         }
         if (!isNullOrEmpty(joinPoint.getArgs())) {
+            Class idType = getIdType(resourceType);
+
             for (Object arg : joinPoint.getArgs()) {
                 if (arg != null && resourceType.isAssignableFrom(arg.getClass())) {
 
@@ -117,11 +121,26 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                } else if (idType != null && idType.isAssignableFrom(arg.getClass())) {
+                    return "" + arg;
                 }
             }
         }
 
         return resourceId;
+    }
+
+    private Class getIdType(Class claxx) {
+        if (claxx == null) {
+            return null;
+        }
+
+        for (Field field : claxx.getDeclaredFields()) {
+            if (field.getAnnotation(Id.class) != null) {
+                return field.getType();
+            }
+        }
+        return null;
     }
 
     private Field getField(Class clazz, String fieldName) throws Exception {

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -22,11 +23,13 @@ public class LecturerProducerImpl {
     
     @Resource
     private LecturerService lecturerService;
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Authorizable(resource = LECTURER, action = GET)
     public LecturerDto getLecturer(String id) {
         Lecturer lecturer = lecturerService.getLecturer(id);
-        LecturerDto dto = modelMapper.transform(lecturer, new LecturerDto());
+        LecturerDto dto = (LecturerDto) dtoMapper.toDto(lecturer, 3);
 
         return dto;
     }
@@ -35,7 +38,7 @@ public class LecturerProducerImpl {
     public LecturerDto updateLecturer(LecturerDto dto) {
         Lecturer lecturer = modelMapper.apply(new Lecturer(), dto);
         lecturer = lecturerService.updateLecturer(lecturer);
-        dto = modelMapper.transform(lecturer, new LecturerDto());
+        dto = (LecturerDto) dtoMapper.toDto(lecturer, 3);
 
         return dto;
     }

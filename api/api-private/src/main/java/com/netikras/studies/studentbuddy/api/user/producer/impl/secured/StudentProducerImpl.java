@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -27,11 +28,14 @@ public class StudentProducerImpl {
     @Resource
     private StudentService studentService;
 
+    @Resource
+    private DtoMapper dtoMapper;
+
     @Authorizable(resource = STUDENT, action = MODIFY)
     public StudentDto updateStudent(StudentDto studentDto) {
         Student student = modelMapper.apply(new Student(), studentDto);
         student = studentService.updateStudent(student);
-        studentDto = modelMapper.transform(student, new StudentDto());
+        studentDto = (StudentDto) dtoMapper.toDto(student, 3);
 
         return studentDto;
     }
@@ -39,7 +43,7 @@ public class StudentProducerImpl {
     @Authorizable(resource = STUDENT, action = GET)
     public StudentDto getStudent(String id) {
         Student student = studentService.getStudent(id);
-        StudentDto studentDto = modelMapper.transform(student, new StudentDto());
+        StudentDto studentDto = (StudentDto) dtoMapper.toDto(student, 3);
 
         return studentDto;
     }
@@ -47,7 +51,7 @@ public class StudentProducerImpl {
     @Authorizable(resource = STUDENT_GROUP, action = GET)
     public StudentsGroupDto getStudentsGroup(String id) {
         StudentsGroup group = studentService.getStudentsGroup(id);
-        StudentsGroupDto dto = modelMapper.transform(group, new StudentsGroupDto());
+        StudentsGroupDto dto = (StudentsGroupDto) dtoMapper.toDto(group, 3);
         return dto;
     }
 
@@ -55,7 +59,7 @@ public class StudentProducerImpl {
     public LectureGuestDto updateLectureGuest(LectureGuestDto dto) {
         LectureGuest guest = modelMapper.apply(new LectureGuest(), dto);
         guest = studentService.updateLectureGuest(guest);
-        dto = modelMapper.transform(guest, new LectureGuestDto());
+        dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);;
 
         return dto;
     }
@@ -63,7 +67,7 @@ public class StudentProducerImpl {
     @Authorizable(resource = GUEST, action = GET)
     public LectureGuestDto getLectureGuest(String id) {
         LectureGuest guest = studentService.getLectureGuest(id);
-        LectureGuestDto dto = modelMapper.transform(guest, new LectureGuestDto());
+        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);;
 
         return dto;
     }
@@ -80,7 +84,7 @@ public class StudentProducerImpl {
     @Authorizable(resource = STUDENT_GROUP, action = GET)
     public StudentsGroupDto getStudentsGroupByTitle(String title) {
         StudentsGroup group = studentService.getStudentsGroupByTitle(title);
-        StudentsGroupDto dto = modelMapper.transform(group, new StudentsGroupDto(), new MappingSettings().setDepthMax(3));
+        StudentsGroupDto dto = (StudentsGroupDto) dtoMapper.toDto(group, 3);;
         return dto;
     }
 

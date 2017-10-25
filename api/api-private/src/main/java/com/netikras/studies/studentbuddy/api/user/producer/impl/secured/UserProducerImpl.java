@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.api.sys.producer.AdminProducer;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
@@ -43,6 +44,8 @@ public class UserProducerImpl {
     @Resource
     private AdminProducer adminProducer;
 
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Transactional
     @Authorizable(resource = USER, action = Action.MODIFY)
@@ -51,7 +54,7 @@ public class UserProducerImpl {
         user.setId(item.getId());
         user = userService.updateUser(user);
 
-        item = modelMapper.transform(user, new UserDto());
+        item = (UserDto) dtoMapper.toDto(user, 3);
 
         return item;
     }
@@ -66,7 +69,7 @@ public class UserProducerImpl {
     public UserDto createUser(UserDto item) {
         User user = modelMapper.apply(new User(), item, new MappingSettings().setForceUpdate(true));
         user = userService.createUser(user);
-        item = modelMapper.transform(user, new UserDto());
+        item = (UserDto) dtoMapper.toDto(user, 3);
         return item;
     }
 
@@ -75,7 +78,7 @@ public class UserProducerImpl {
     public UserDto getUser(String id) {
         UserDto dto;
         User user = userService.findUser(id);
-        dto = modelMapper.transform(user, new UserDto());
+        dto = (UserDto) dtoMapper.toDto(user, 3);
         return dto;
     }
 
@@ -89,7 +92,7 @@ public class UserProducerImpl {
         }
 
         User user = userService.login(auth);
-        UserDto dto = modelMapper.transform(user, new UserDto());
+        UserDto dto = (UserDto) dtoMapper.toDto(user, 3);
 
         if (user == null) {
             throw new StudBudUncheckedException()
@@ -157,7 +160,7 @@ public class UserProducerImpl {
     public UserDto getUserByName(String name) {
         UserDto dto;
         User user = userService.findUserByName(name);
-        dto = modelMapper.transform(user, new UserDto());
+        dto = (UserDto) dtoMapper.toDto(user, 3);
         return dto;
     }
 
@@ -166,7 +169,7 @@ public class UserProducerImpl {
     public UserDto getUserByPerson(String userId) {
         UserDto dto;
         User user = userService.findUserByPerson(userId);
-        dto = modelMapper.transform(user, new UserDto());
+        dto = (UserDto) dtoMapper.toDto(user, 3);
         return dto;
     }
 

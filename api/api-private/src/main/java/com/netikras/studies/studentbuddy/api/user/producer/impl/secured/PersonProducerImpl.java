@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -23,11 +24,13 @@ public class PersonProducerImpl {
     @Resource
     private PersonService personService;
 
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPerson(String id) {
         Person person = personService.getPerson(id);
-        PersonDto personDto = modelMapper.transform(person, new PersonDto());
+        PersonDto personDto = (PersonDto) dtoMapper.toDto(person, 3);
 
         return personDto;
     }
@@ -35,7 +38,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPersonByCode(String code) {
         Person person = personService.findPersonByPersonalCode(code);
-        PersonDto personDto = modelMapper.transform(person, new PersonDto());
+        PersonDto personDto = (PersonDto) dtoMapper.toDto(person, 3);
 
         return personDto;
     }
@@ -43,7 +46,7 @@ public class PersonProducerImpl {
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPersonByIdentifier(String id) {
         Person person = personService.findPersonByIdentifier(id);
-        PersonDto personDto = modelMapper.transform(person, new PersonDto());
+        PersonDto personDto = (PersonDto) dtoMapper.toDto(person, 3);
 
         return personDto;
     }

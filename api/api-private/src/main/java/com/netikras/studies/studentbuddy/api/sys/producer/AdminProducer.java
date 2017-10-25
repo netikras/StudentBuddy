@@ -2,10 +2,14 @@ package com.netikras.studies.studentbuddy.api.sys.producer;
 
 import com.netikras.studies.studentbuddy.api.sys.generated.AdminApiProducer;
 import com.netikras.studies.studentbuddy.api.sys.producer.impl.secured.AdminProducerImpl;
+import com.netikras.studies.studentbuddy.core.data.api.dao.RoleDao;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
+import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
@@ -29,6 +33,8 @@ public class AdminProducer extends AdminApiProducer {
 
     @Resource
     private AdminProducerImpl impl;
+    @Resource
+    private ModelMapper modelMapper;
 
 
 
@@ -73,7 +79,43 @@ public class AdminProducer extends AdminApiProducer {
     }
 
 
+    @Override
+    protected void onDeleteRolePermissionDto(String roleName, String resourceName, String actionName, String resourceId) {
+        impl.deleteRolePermission(roleName, resourceName,actionName, resourceId);
+    }
 
+
+    @Override
+    protected RolePermissionDto onCreateRolePermissionDto(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
+        return impl.createRolePermission(roleName, resourceName, actionName, resourceId, strict);
+    }
+
+
+    @Override
+    protected List<PasswordRequirementDto> onGetPasswordRequirementDtoAllStored() {
+        return impl.getAllStoredPasswordRequirements();
+    }
+
+    @Override
+    protected void onDeleteRoleDto(String id) {
+        impl.deleteRoleById(id);
+    }
+
+
+    @Override
+    protected RoleDto onCreateRoleDto(String name) {
+        return impl.createRole(name);
+    }
+
+    @Override
+    protected RoleDto onRetrieveRoleDto(String id) {
+        return impl.getRoleById(id);
+    }
+
+    @Override
+    protected List<RoleDto> onGetRoleDtoAll() {
+        return impl.getAllRoles();
+    }
 
     @Override
     public List<SystemSettingDto> onGetSystemSettingDtoAllStored() {
@@ -114,5 +156,10 @@ public class AdminProducer extends AdminApiProducer {
     @Override
     public void onDeleteSystemSettingDtoStoredByName(String name) {
         impl.deleteStoredSystemSettingByName(name);
+    }
+
+    @Override
+    protected void onRefreshVoidLiveRolePermissions() {
+        impl.refreshLiveRolePermissions();
     }
 }

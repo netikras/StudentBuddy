@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -21,6 +22,8 @@ public class AdminPersonProducerImpl {
 
     @Resource
     private PersonService personService;
+    @Resource
+    private DtoMapper dtoMapper;
 
 
     @Authorizable(resource = PERSON, action = PURGE)
@@ -33,7 +36,7 @@ public class AdminPersonProducerImpl {
         Person person = modelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
         if (person != null) person.setId(null);
         person = personService.createPerson(person);
-        personDto = modelMapper.transform(person, new PersonDto());
+        personDto = (PersonDto) dtoMapper.toDto(person, 3);
 
         return personDto;
     }
@@ -47,7 +50,7 @@ public class AdminPersonProducerImpl {
     public PersonDto updatePerson(PersonDto personDto) {
         Person person = modelMapper.apply(new Person(), personDto);
         person = personService.updatePerson(person);
-        personDto = modelMapper.transform(person, new PersonDto());
+        personDto = (PersonDto) dtoMapper.toDto(person, 3);
 
         return personDto;
     }

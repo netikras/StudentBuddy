@@ -2,7 +2,7 @@ package com.netikras.studies.studentbuddy.core.data.api.dto;
 
 import java.util.Date;
 
-public class PersonDto {
+public class PersonDto extends AbstractDto {
 
     private String id;
     private Date createdOn;

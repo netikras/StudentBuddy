@@ -23,5 +23,7 @@ public interface UserDao extends JpaRepo<User> {
 
     List<User> findAllByPerson_LastNameLikeIgnoreCase(String person_lastName);
 
+    List<User> findAllByRoles_Role_NameContaining(String roleName);
+
     User findByAlias(String alias);
 }

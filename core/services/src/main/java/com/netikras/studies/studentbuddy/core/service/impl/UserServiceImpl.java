@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private SystemValidator systemValidator;
 
     @Override
+    @Transactional
     public User login(AuthenticationDetail auth) {
         if (auth == null) return null;
 
@@ -59,12 +60,16 @@ public class UserServiceImpl implements UserService {
             if (password != null && !password.isEmpty()) {
                 password = hashPassword(password);
                 user = userDao.findByNameAndPasswordHash(username, password);
+                if (user != null) {
+                    user.getPerson();
+                }
             }
         } // else // other methods mot implemented
         return user;
     }
 
     @Override
+    @Transactional
     public User createUser(User user) {
         if (user == null) return null;
         ErrorsCollection errors = systemValidator.validatePassword(user.getPassword(), null);
@@ -81,7 +86,9 @@ public class UserServiceImpl implements UserService {
                     .setStatusCode(BAD_REQUEST)
                     ;
         }
-        return userDao.save(user);
+        user = userDao.save(user);
+        user.getPerson();
+        return user;
     }
 
     @Override
@@ -96,7 +103,9 @@ public class UserServiceImpl implements UserService {
                     .setStatusCode(HttpStatus.NOT_FOUND);
         }
         oldUser.setName(user.getName());
-        return userDao.save(oldUser);
+        oldUser = userDao.save(oldUser);
+        oldUser.getPerson();
+        return oldUser;
     }
 
     @Override
@@ -127,8 +136,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User findUser(String id) {
-        return userDao.findOne(id);
+        User user = userDao.findOne(id);
+        user.getPerson();
+        return user;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.location;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
 import java.util.Arrays;
 import java.util.Date;
 
-public class FloorLayoutDto {
+public class FloorLayoutDto extends AbstractDto {
 
     private String id;
     private Date updatedOn;

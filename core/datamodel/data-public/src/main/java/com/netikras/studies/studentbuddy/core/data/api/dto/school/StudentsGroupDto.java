@@ -1,10 +1,12 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StudentsGroupDto {
+public class StudentsGroupDto extends AbstractDto {
 
     private String id;
     private Date createdOn;

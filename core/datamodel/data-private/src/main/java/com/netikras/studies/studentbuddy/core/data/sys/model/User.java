@@ -19,8 +19,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Entity
 @Table(name = "user")
@@ -61,13 +65,13 @@ public class User {
     private String password;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "user")
-    @ModelTransform(dtoFieldName = "roles", dtoUpdatable = false, dtoValueExtractField = "name")
+    @ModelTransform(dtoFieldName = "roles", dtoUpdatable = false, dtoValueExtractField = "role.name")
     private List<UserRole> roles;
 
     /**
      * No person == virtual user. Like SYSTEM
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "person_id")
     @ModelTransform(dtoUpdatable = false)
     private Person person;
@@ -122,6 +126,52 @@ public class User {
 
     public List<UserRole> getRoles() {
         return roles;
+    }
+
+    public void addRole(UserRole role) {
+        if (getRoles() == null) {
+            setRoles(new ArrayList<>());
+        }
+        getRoles().add(role);
+    }
+
+    public void removeRole(String roleName) {
+        if (isNullOrEmpty(getRoles())) {
+            return;
+        }
+
+        if (roleName == null) {
+            return;
+        }
+
+        for (Iterator<UserRole> iterator = getRoles().iterator(); iterator.hasNext();) {
+            UserRole userRole = iterator.next();
+            if (userRole.getRole() != null
+                    && userRole.getRole().getName() != null
+                    && userRole.getRole().getName().equalsIgnoreCase(roleName)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    public boolean hasRole(String roleName) {
+        if (isNullOrEmpty(getRoles())) {
+            return false;
+        }
+
+        if (roleName == null) {
+            return false;
+        }
+
+        for (UserRole userRole : getRoles()) {
+            if (userRole.getRole() != null
+                    && userRole.getRole().getName() != null
+                    && userRole.getRole().getName().equalsIgnoreCase(roleName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setRoles(List<UserRole> roles) {

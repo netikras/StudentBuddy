@@ -22,8 +22,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import static com.netikras.tools.common.security.IntegrityUtils.areEqual;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Entity
@@ -47,8 +49,8 @@ public class Role {
     @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "author_id", nullable = true)
     @ModelTransform(dtoFieldName = "author", dtoUpdatable = false)
     private Person createdBy;
 
@@ -103,11 +105,67 @@ public class Role {
             setPermissions(permissions);
         }
         permissions.add(permission);
+        permission.setRole(this);
         return permissions;
     }
 
-    public List<ResourceActionLink> addPermission(Resource resource, Action action, String resourceId) {
-        return addPermission(new ResourceActionLink(resource, action, resourceId));
+    public List<ResourceActionLink> addPermission(Resource resource, Action action, String resourceId, Boolean strict) {
+        return addPermission(new ResourceActionLink(resource, action, resourceId, strict));
+    }
+
+    public void removePermission(Resource resource, Action action, String resourceId) {
+        removePermission(resource.name(), action.name(), resourceId);
+    }
+
+    public void removePermission(String resourceName, String actionName, String resourceId) {
+        if (isNullOrEmpty(getPermissions())) {
+            return;
+        }
+
+        resourceName = resourceName.toUpperCase();
+        actionName = actionName.toUpperCase();
+
+        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext();) {
+            ResourceActionLink link = iterator.next();
+            if (link.getResource() != null
+                    && link.getResource().name().equals(resourceName)
+                    && link.getAction() != null
+                    && link.getAction().name().equals(actionName)) {
+
+                if (areEqual(resourceId, link.getEntityId())) {
+                    iterator.remove();
+                }
+
+            }
+        }
+    }
+
+    public ResourceActionLink getPermission(String resourceName, String actionName, String resourceId) {
+        if (isNullOrEmpty(getPermissions())) {
+            return null;
+        }
+
+        resourceName = resourceName.toUpperCase();
+        actionName = actionName.toUpperCase();
+
+        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext();) {
+            ResourceActionLink link = iterator.next();
+            if (link.getResource() != null
+                    && link.getResource().name().equals(resourceName)
+                    && link.getAction() != null
+                    && link.getAction().name().equals(actionName)) {
+
+                if (areEqual(resourceId, link.getEntityId())) {
+                    return link;
+                }
+
+            }
+        }
+        return null;
+    }
+
+    public boolean hasPermission(String resourceName, String actionName, String resourceId) {
+        return getPermission(resourceName, actionName, resourceId) != null;
     }
 
     @Override

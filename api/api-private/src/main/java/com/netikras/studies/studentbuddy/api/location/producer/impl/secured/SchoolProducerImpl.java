@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.api.location.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
+import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDepartmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.*;
 import com.netikras.studies.studentbuddy.core.data.api.model.*;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -19,9 +21,12 @@ public class SchoolProducerImpl {
 
     @Resource
     private ModelMapper modelMapper;
-    
+
     @Resource
     private SchoolService schoolService;
+
+    @Resource
+    private DtoMapper dtoMapper;
 
 
     @Authorizable(resource = SCHOOL, action = PURGE)
@@ -58,7 +63,7 @@ public class SchoolProducerImpl {
     public SchoolDto updateSchool(SchoolDto schoolDto) {
         School school = modelMapper.apply(new School(), schoolDto);
         school = schoolService.updateSchool(school);
-        schoolDto = modelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
+        schoolDto = (SchoolDto) dtoMapper.toDto(school, 3);
 
         return schoolDto;
     }
@@ -68,7 +73,7 @@ public class SchoolProducerImpl {
         School school = modelMapper.apply(new School(), schoolDto, new MappingSettings().setForceUpdate(true));
         if (school != null) school.setId(null);
         school = schoolService.createSchool(school);
-        schoolDto = modelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
+        schoolDto = (SchoolDto) dtoMapper.toDto(school, 3);
 
         return schoolDto;
     }
@@ -77,7 +82,7 @@ public class SchoolProducerImpl {
     public SchoolDto getSchool(String id) {
         School school = schoolService.getSchool(id);
         if (school != null) school.getDepartments();
-        SchoolDto schoolDto = modelMapper.transform(school, new SchoolDto(), new MappingSettings().setDepthMax(3));
+        SchoolDto schoolDto = (SchoolDto) dtoMapper.toDto(school, 3);
         return schoolDto;
     }
 
@@ -90,7 +95,7 @@ public class SchoolProducerImpl {
     public SchoolDepartmentDto updateSchoolDepartment(SchoolDepartmentDto departmentDto) {
         SchoolDepartment department = modelMapper.apply(new SchoolDepartment(), departmentDto);
         department = schoolService.updateSchoolDepartment(department);
-        departmentDto = modelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
+        departmentDto = (SchoolDepartmentDto) dtoMapper.toDto(department, 3);
 
         return departmentDto;
     }
@@ -100,7 +105,7 @@ public class SchoolProducerImpl {
         SchoolDepartment department = modelMapper.apply(new SchoolDepartment(), departmentDto, new MappingSettings().setForceUpdate(true));
         if (department != null) department.setId(null);
         department = schoolService.createSchoolDepartment(department);
-        departmentDto = modelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
+        departmentDto = (SchoolDepartmentDto) dtoMapper.toDto(department, 3);
 
         return departmentDto;
     }
@@ -111,7 +116,7 @@ public class SchoolProducerImpl {
         if (department != null) {
             department.getBuildings();
         }
-        SchoolDepartmentDto departmentDto = modelMapper.transform(department, new SchoolDepartmentDto(), new MappingSettings().setDepthMax(3));
+        SchoolDepartmentDto departmentDto = (SchoolDepartmentDto) dtoMapper.toDto(department, 3);
 
         return departmentDto;
     }
@@ -125,7 +130,7 @@ public class SchoolProducerImpl {
     public DisciplineDto updateDiscipline(DisciplineDto disciplineDto) {
         Discipline discipline = modelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
         discipline = schoolService.updateDiscipline(discipline);
-        disciplineDto = modelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        disciplineDto = (DisciplineDto) dtoMapper.toDto(discipline, 3);
         return disciplineDto;
     }
 
@@ -134,14 +139,14 @@ public class SchoolProducerImpl {
         Discipline discipline = modelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
         if (discipline != null) discipline.setId(null);
         discipline = schoolService.createDiscipline(discipline);
-        disciplineDto = modelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        disciplineDto = (DisciplineDto) dtoMapper.toDto(discipline, 3);
         return disciplineDto;
     }
 
     @Authorizable(resource = DISCIPLINE, action = GET)
     public DisciplineDto getDiscipline(String id) {
         Discipline discipline = schoolService.getDiscipline(id);
-        DisciplineDto disciplineDto = modelMapper.transform(discipline, new DisciplineDto(), new MappingSettings().setDepthMax(2));
+        DisciplineDto disciplineDto = (DisciplineDto) dtoMapper.toDto(discipline, 3);
         return disciplineDto;
     }
 
@@ -150,7 +155,7 @@ public class SchoolProducerImpl {
     public CourseDto createCourse(CourseDto item) {
         Course course = modelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
         course = schoolService.createCourse(course);
-        return modelMapper.transform(course, new CourseDto());
+        return (CourseDto) dtoMapper.toDto(course, 3);
     }
 
     @Authorizable(resource = COURSE, action = DELETE)
@@ -162,13 +167,13 @@ public class SchoolProducerImpl {
     public CourseDto updateCourse(CourseDto item) {
         Course course = modelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
         course = schoolService.updateCourse(course);
-        return modelMapper.transform(course, new CourseDto());
+        return (CourseDto) dtoMapper.toDto(course, 3);
     }
 
     @Authorizable(resource = COURSE, action = GET)
     public CourseDto getCourse(String id) {
         Course course = schoolService.getCourse(id);
-        return modelMapper.transform(course, new CourseDto());
+        return (CourseDto) dtoMapper.toDto(course, 3);
     }
 
     @Authorizable(resource = COURSE, action = GET_ALL)
@@ -203,13 +208,13 @@ public class SchoolProducerImpl {
     @Authorizable(resource = COURSE, action = MODIFY)
     public CourseDto assignCourseLecture(String courseId, String lectureId) {
         Course course = schoolService.assignCourseLecture(courseId, lectureId);
-        return modelMapper.transform(course, new CourseDto());
+        return (CourseDto) dtoMapper.toDto(course, 3);
     }
 
     @Authorizable(resource = COURSE, action = MODIFY)
     public CourseDto unassignCourseLecture(String courseId, String lectureId) {
         Course course = schoolService.unassignCourseLecture(courseId, lectureId);
-        return modelMapper.transform(course, new CourseDto());
+        return (CourseDto) dtoMapper.toDto(course, 3);
     }
 
     @Authorizable(resource = PERSONNEL, action = DELETE)
@@ -221,7 +226,7 @@ public class SchoolProducerImpl {
     public PersonnelMemberDto updatePersonnelMember(PersonnelMemberDto personnelMemberDto) {
         PersonnelMember personnelMember = modelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
         personnelMember = schoolService.updatePersonnelMember(personnelMember);
-        personnelMemberDto = modelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        personnelMemberDto = (PersonnelMemberDto) dtoMapper.toDto(personnelMember, 3);
         return personnelMemberDto;
     }
 
@@ -230,14 +235,14 @@ public class SchoolProducerImpl {
         PersonnelMember personnelMember = modelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
         if (personnelMember != null) personnelMember.setId(null);
         personnelMember = schoolService.createPersonnelMember(personnelMember);
-        personnelMemberDto = modelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        personnelMemberDto = (PersonnelMemberDto) dtoMapper.toDto(personnelMember, 3);
         return personnelMemberDto;
     }
 
     @Authorizable(resource = PERSONNEL, action = GET)
     public PersonnelMemberDto getPersonnelMember(String id) {
         PersonnelMember personnelMember = schoolService.getPersonnelMember(id);
-        PersonnelMemberDto personnelMemberDto = modelMapper.transform(personnelMember, new PersonnelMemberDto(), new MappingSettings().setDepthMax(2));
+        PersonnelMemberDto personnelMemberDto = (PersonnelMemberDto) dtoMapper.toDto(personnelMember, 3);
         return personnelMemberDto;
     }
 
@@ -342,4 +347,5 @@ public class SchoolProducerImpl {
 
         return memberDtos;
     }
+
 }

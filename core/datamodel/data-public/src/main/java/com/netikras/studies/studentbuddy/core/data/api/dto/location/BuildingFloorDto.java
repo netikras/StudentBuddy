@@ -1,8 +1,10 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.location;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
 import java.util.List;
 
-public class BuildingFloorDto {
+public class BuildingFloorDto extends AbstractDto {
 
     private String id;
     private String number;

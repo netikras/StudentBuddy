@@ -4,6 +4,7 @@ import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,7 +35,7 @@ public class UserRole {
     @ModelTransform(dtoFieldName = "createdOn", dtoUpdatable = false)
     private Date createdOn;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "granted_by_id")
     @ModelTransform(dtoFieldName = "grantedBy", dtoUpdatable = false)
     private User grantedBy;
@@ -44,7 +45,7 @@ public class UserRole {
     @ModelTransform(dtoFieldName = "user", dtoUpdatable = false, dtoValueExtractField = "name")
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
     @JoinColumn(name = "role_id")
     @ModelTransform(dtoFieldName = "role", dtoUpdatable = false)
     private Role role;

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * A student or any other person not belonging to an assigned student-group and not a teacher
  */
-public class LectureGuestDto {
+public class LectureGuestDto extends AbstractDto {
 
     private String id;
     private Date createdOn;

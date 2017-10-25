@@ -1,8 +1,10 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
 import java.util.Date;
 
-public class AssignmentDto {
+public class AssignmentDto extends AbstractDto {
 
     private String id;
     private DisciplineDto discipline;

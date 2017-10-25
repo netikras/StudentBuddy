@@ -1,6 +1,8 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.location;
 
-public class AddressDto {
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+
+public class AddressDto extends AbstractDto {
 
     private String id;
     private String country;

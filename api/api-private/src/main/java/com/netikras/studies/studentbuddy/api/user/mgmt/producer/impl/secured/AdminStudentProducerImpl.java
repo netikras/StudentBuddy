@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.user.mgmt.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
@@ -32,6 +33,8 @@ public class AdminStudentProducerImpl {
 
     @Resource
     private LectureService lectureService;
+    @Resource
+    private DtoMapper dtoMapper;
 
 
     @Authorizable(resource = STUDENT, action = PURGE)
@@ -55,7 +58,7 @@ public class AdminStudentProducerImpl {
         if (student != null) student.setId(null);
 
         student = studentService.createStudent(student);
-        studentDto = modelMapper.transform(student, new StudentDto());
+        studentDto = (StudentDto) dtoMapper.toDto(student, 3);
 
         return studentDto;
     }
@@ -69,7 +72,7 @@ public class AdminStudentProducerImpl {
     public StudentsGroupDto createStudentsGroup(StudentsGroupDto groupDto) {
         StudentsGroup group = modelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
         group = studentService.createStudentsGroup(group);
-        StudentsGroupDto dto = modelMapper.transform(group, new StudentsGroupDto());
+        StudentsGroupDto dto = (StudentsGroupDto) dtoMapper.toDto(group, 3);
         return dto;
     }
 
@@ -82,7 +85,7 @@ public class AdminStudentProducerImpl {
     public LectureGuestDto createLectureGuest(LectureGuestDto dto) {
         LectureGuest guest = modelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
         guest = studentService.createLectureGuest(guest);
-        dto = modelMapper.transform(guest, new LectureGuestDto());
+        dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
 
         return dto;
     }
@@ -122,7 +125,7 @@ public class AdminStudentProducerImpl {
         Person person = personService.getPerson(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = modelMapper.transform(guest, new LectureGuestDto());
+        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
 
         return dto;
     }
@@ -133,7 +136,7 @@ public class AdminStudentProducerImpl {
         Person person = personService.findPersonByIdentifier(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = modelMapper.transform(guest, new LectureGuestDto());
+        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
 
         return dto;
     }

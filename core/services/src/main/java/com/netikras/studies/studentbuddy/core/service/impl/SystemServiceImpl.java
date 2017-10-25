@@ -405,7 +405,7 @@ public class SystemServiceImpl implements SystemService {
 
         for (ResourceActionLink permissions : actionPermissions) {
             for (UserRole userRole : user.getRoles()) {
-                if (userRole.getRole().equals(permissions.getRole())) {
+                if (userRole.getRole().getName().equals(permissions.getRole().getName())) {
                     if (permissions.isStrict()) {
                         if (areEqual(permissions.getEntityId(), resourceId)) {
                             logAccessAllowed(user.getName(), actionName, resourceName, resourceId, userRole.getRole().getName(), permissions.getId());

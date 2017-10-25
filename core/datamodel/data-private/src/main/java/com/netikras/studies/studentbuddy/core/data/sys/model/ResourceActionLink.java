@@ -71,6 +71,15 @@ public class ResourceActionLink {
         this.entityId = entityId;
     }
 
+    public ResourceActionLink(Resource resource, Action action, String entityId, Boolean strict) {
+        this.resource = resource;
+        this.action = action;
+        this.entityId = entityId;
+        if (strict != null) {
+            this.strict = strict;
+        }
+    }
+
     public boolean isLike(ResourceActionLink otherLnk) {
         return otherLnk != null
                 && getResource().equals(otherLnk.getResource())

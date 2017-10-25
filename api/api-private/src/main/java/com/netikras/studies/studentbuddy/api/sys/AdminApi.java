@@ -1,9 +1,12 @@
 package com.netikras.studies.studentbuddy.api.sys;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
+import com.netikras.tools.common.remote.http.rest.auto.CrudMethod;
+import com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.RestApiLocation;
@@ -18,7 +21,7 @@ import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/admin", cruds = {
         @GenerateCrud(dtoType = SystemSettingDto.class, url = "/settings/stored"),
         @GenerateCrud(dtoType = PasswordRequirementDto.class, url = "/pwreq/stored"),
-        @GenerateCrud(dtoType = RolePermissionDto.class, url = "/role/permission")
+        @GenerateCrud(dtoType = RoleDto.class, url = "/role", methods = {CrudMethod.RETRIEVE, CrudMethod.DELETE}, extend = ExtendedMethod.GET_ALL)
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")
 public abstract class AdminApi {
@@ -62,5 +65,30 @@ public abstract class AdminApi {
 
     @RestEndpoint(url = "/settings/refresh", method = HttpMethod.PUT, dtoType = SystemSettingDto.class, action = "refreshLive")
     public abstract void refreshSystemSettings();
+
+    @RestEndpoint(url = "/role/permission/{roleName}/{resourceName}/{actionName}/{resourceId}", method = HttpMethod.POST, dtoType = RolePermissionDto.class, action = "create")
+    public abstract RolePermissionDto createRolePermission(
+            @MethodParam(type = Type.URL, name = "roleName") String roleName,
+            @MethodParam(type = Type.URL, name = "resourceName") String resourceName,
+            @MethodParam(type = Type.URL, name = "actionName") String actionName,
+            @MethodParam(type = Type.URL, name = "resourceId") String resourceId,
+            @MethodParam(type = Type.REQUEST, name = "strict", required = false) Boolean strict
+    );
+
+    @RestEndpoint(url = "/role/permission/{roleName}/{resourceName}/{actionName}/{resourceId}", method = HttpMethod.DELETE, dtoType = RolePermissionDto.class, action = "delete")
+    public abstract void deleteRolePermission(
+            @MethodParam(type = Type.URL, name = "roleName") String roleName,
+            @MethodParam(type = Type.URL, name = "resourceName") String resourceName,
+            @MethodParam(type = Type.URL, name = "actionName") String actionName,
+            @MethodParam(type = Type.URL, name = "resourceId") String resourceId
+    );
+
+    @RestEndpoint(url = "/role/permission/refresh", method = HttpMethod.POST, action = "refreshLiveRolePermissions")
+    public abstract void refreshLiveRolePermissions();
+
+    @RestEndpoint(url = "/role/{roleName}", method = HttpMethod.POST, dtoType = RoleDto.class, action = "create")
+    public abstract RoleDto createRole(
+            @MethodParam(type = Type.URL, name = "roleName") String roleName
+    );
 
 }

@@ -97,6 +97,7 @@ public class HttpThreadContext extends ThreadContext {
     }
 
     public void setUser(User user) {
+        addValue("user", user);
         this.user = user;
     }
 
@@ -121,6 +122,7 @@ public class HttpThreadContext extends ThreadContext {
 
     public void removeUser() {
         if (getSession() != null) {
+            removeValue("user");
             getSession().removeAttribute("user");
         }
     }

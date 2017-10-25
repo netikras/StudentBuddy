@@ -1,11 +1,13 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.meta;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class TagDto {
+public class TagDto extends AbstractDto {
 
     private String id;
     private Date createdOn;

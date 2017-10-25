@@ -1,9 +1,34 @@
 package com.netikras.studies.studentbuddy.core.data.api.dao;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.TagDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
-import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Course;
@@ -37,6 +62,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ADDRESS;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ASSIGNMENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING_SECTION;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.COURSE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR_MAP;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURER;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSONNEL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROLE_PERMISSIONS;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROOM;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL_DEPARTMENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_PWREQ;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_SETTING;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.TEST;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.USER;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 
@@ -48,67 +97,89 @@ public class ResourceRepoProvider {
 
 
     private static final Map<com.netikras.studies.studentbuddy.core.data.meta.Resource, Class<? extends JpaRepo>> RESOURCE_REPO_CLASS_MAP;
+    private static final Map<Class, Class<? extends JpaRepo>> MODEL_REPO_CLASS_MAP;
+    private static final Map<Class, Class> MODEL_DTO_TYPE_MAP;
 
     static {
+        MODEL_DTO_TYPE_MAP = new HashMap<>();
+        MODEL_REPO_CLASS_MAP = new HashMap<>();
         RESOURCE_REPO_CLASS_MAP = new HashMap<>();
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE, LectureDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ASSIGNMENT, AssignmentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON, PersonDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP, StudentsGroupDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.TEST, DisciplineTestDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT, StudentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.USER, UserDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST, LectureGuestDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURER, LecturerDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ADDRESS, AddressDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING, BuildingDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.BUILDING_SECTION, BuildingSectionDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR, FloorDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.FLOOR_MAP, FloorLayoutDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.ROOM, LectureRoomDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE, DisciplineDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSONNEL, PersonnelDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL, SchoolDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL_DEPARTMENT, SchoolDepartmentDao.class);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.NOTIFICATION, null);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM, null);
-        RESOURCE_REPO_CLASS_MAP.put(com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM, null);
+
+        addMapping(ASSIGNMENT, Assignment.class, AssignmentDao.class, AssignmentDto.class);
+        addMapping(TEST, DisciplineTest.class, DisciplineTestDao.class, DisciplineTestDto.class);
+        addMapping(PERSON, Person.class, PersonDao.class, PersonDto.class);
+        addMapping(USER, User.class, UserDao.class, UserDto.class);
+        addMapping(STUDENT_GROUP, StudentsGroup.class, StudentsGroupDao.class, StudentsGroupDto.class);
+        addMapping(STUDENT, Student.class, StudentDao.class, StudentDto.class);
+        addMapping(LECTURER, Lecturer.class, LecturerDao.class, LecturerDto.class);
+        addMapping(GUEST, LectureGuest.class, LectureGuestDao.class, LectureGuestDto.class);
+
+        addMapping(LECTURE, Lecture.class, LectureDao.class, LectureDto.class);
+        addMapping(COURSE, Course.class, CourseDao.class, CourseDto.class);
+        addMapping(DISCIPLINE, Discipline.class, DisciplineDao.class, DisciplineDto.class);
+        addMapping(SCHOOL_DEPARTMENT, SchoolDepartment.class, SchoolDepartmentDao.class, SchoolDepartmentDto.class);
+        addMapping(SCHOOL, School.class, SchoolDao.class, SchoolDto.class);
+
+        addMapping(PERSONNEL, PersonnelMember.class, PersonnelDao.class, PersonnelMemberDto.class);
+
+        addMapping(ADDRESS, Address.class, AddressDao.class, AddressDto.class);
+        addMapping(BUILDING, Building.class, BuildingDao.class, BuildingDto.class);
+        addMapping(BUILDING_SECTION, BuildingSection.class, BuildingSectionDao.class, BuildingSectionDto.class);
+        addMapping(FLOOR, FloorDao.class, FloorDao.class, BuildingFloorDto.class);
+        addMapping(FLOOR_MAP, FloorLayout.class, FloorLayoutDao.class, FloorLayoutDto.class);
+        addMapping(ROOM, LectureRoom.class, LectureRoomDao.class, LectureRoomDto.class);
+
+        addMapping(Comment.class, CommentDao.class, CommentDto.class);
+        addMapping(Tag.class, TagDao.class, TagDto.class);
+
+        addMapping(Role.class, RoleDao.class, RoleDto.class);
+        addMapping(ROLE_PERMISSIONS, ResourceActionLink.class, RolePermissionDao.class, RolePermissionDto.class);
+
+        addMapping(SYSTEM_SETTING, SystemSetting.class, SettingsDao.class, SystemSettingDto.class);
+        addMapping(SYSTEM_PWREQ, PasswordRequirement.class, PasswordRequirementsDao.class, PasswordRequirementDto.class);
     }
 
-    private static final Map<Class, Class<? extends JpaRepo>> MODEL_REPO_CLASS_MAP;
+    private static final void addMapping(com.netikras.studies.studentbuddy.core.data.meta.Resource resource, Class modelType, Class daoType, Class dtoType) {
+        RESOURCE_REPO_CLASS_MAP.put(resource, daoType);
+        MODEL_REPO_CLASS_MAP.put(modelType, daoType);
+        MODEL_DTO_TYPE_MAP.put(modelType, dtoType);
+    }
 
-    static {
-        MODEL_REPO_CLASS_MAP = new HashMap<>();
-        MODEL_REPO_CLASS_MAP.put(Lecture.class, LectureDao.class);
-        MODEL_REPO_CLASS_MAP.put(Assignment.class, AssignmentDao.class);
-        MODEL_REPO_CLASS_MAP.put(Person.class, PersonDao.class);
-        MODEL_REPO_CLASS_MAP.put(StudentsGroup.class, StudentsGroupDao.class);
-        MODEL_REPO_CLASS_MAP.put(DisciplineTest.class, DisciplineTestDao.class);
-        MODEL_REPO_CLASS_MAP.put(Student.class, StudentDao.class);
-        MODEL_REPO_CLASS_MAP.put(User.class, UserDao.class);
-        MODEL_REPO_CLASS_MAP.put(LectureGuest.class, LectureGuestDao.class);
-        MODEL_REPO_CLASS_MAP.put(Lecturer.class, LecturerDao.class);
-        MODEL_REPO_CLASS_MAP.put(Address.class, AddressDao.class);
-        MODEL_REPO_CLASS_MAP.put(Building.class, BuildingDao.class);
-        MODEL_REPO_CLASS_MAP.put(BuildingSection.class, BuildingSectionDao.class);
-        MODEL_REPO_CLASS_MAP.put(BuildingFloor.class, FloorDao.class);
-        MODEL_REPO_CLASS_MAP.put(FloorLayout.class, FloorLayoutDao.class);
-        MODEL_REPO_CLASS_MAP.put(LectureRoom.class, LectureRoomDao.class);
-        MODEL_REPO_CLASS_MAP.put(Discipline.class, DisciplineDao.class);
-        MODEL_REPO_CLASS_MAP.put(PersonnelMember.class, PersonnelDao.class);
-        MODEL_REPO_CLASS_MAP.put(School.class, SchoolDao.class);
-        MODEL_REPO_CLASS_MAP.put(SchoolDepartment.class, SchoolDepartmentDao.class);
-        MODEL_REPO_CLASS_MAP.put(Tag.class, TagDao.class);
-        MODEL_REPO_CLASS_MAP.put(Role.class, RoleDao.class);
-        MODEL_REPO_CLASS_MAP.put(Course.class, CourseDao.class);
-        MODEL_REPO_CLASS_MAP.put(ResourceActionLink.class, RolePermissionDao.class);
-        MODEL_REPO_CLASS_MAP.put(Comment.class, CommentDao.class);
-        MODEL_REPO_CLASS_MAP.put(SystemSetting.class, SettingsDao.class);
-        MODEL_REPO_CLASS_MAP.put(PasswordRequirement.class, PasswordRequirementsDao.class);
+    private static final void addMapping(Class modelType, Class daoType, Class dtoType) {
+        MODEL_REPO_CLASS_MAP.put(modelType, daoType);
+        MODEL_DTO_TYPE_MAP.put(modelType, dtoType);
+    }
+
+
+    public Class getDtoTypeForResource(String resourceName) {
+        if (isNullOrEmpty(resourceName)) {
+            return null;
+        }
+        resourceName = resourceName.toUpperCase();
+        return getDtoTypeForModel(getTypeForResource(resourceName));
+    }
+
+    public Class getDtoTypeForModel(Class modelType) {
+        if (modelType == null) {
+            return null;
+        }
+        return MODEL_DTO_TYPE_MAP.get(modelType);
+    }
+
+    public Class getModelTypeForDto(Class dtoType) {
+        if (dtoType == null) {
+            return null;
+        }
+        for (Entry<Class, Class> entry : MODEL_DTO_TYPE_MAP.entrySet()) {
+            if (entry.getValue().isAssignableFrom(dtoType)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     public Class getTypeForResource(String resourceName) {
-        Class repoClass = RESOURCE_REPO_CLASS_MAP.get(com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(resourceName.toUpperCase()));
+        Class repoClass = RESOURCE_REPO_CLASS_MAP.get(valueOf(resourceName.toUpperCase()));
         if (repoClass != null) {
             for (Entry<Class, Class<? extends JpaRepo>> classClassEntry : MODEL_REPO_CLASS_MAP.entrySet()) {
                 if (classClassEntry.getValue().equals(repoClass)) {
@@ -130,7 +201,7 @@ public class ResourceRepoProvider {
 
     public JpaRepo getRepoForResource(String resourceName) {
         if (isNullOrEmpty(resourceName)) return null;
-        return getRepoForResource(com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(resourceName.toUpperCase()));
+        return getRepoForResource(valueOf(resourceName.toUpperCase()));
     }
 
     public JpaRepo getRepoForModel(Object model) {

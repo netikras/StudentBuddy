@@ -1,10 +1,15 @@
 package com.netikras.studies.studentbuddy.api.sys.producer.impl.secured;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.data.sys.model.PasswordRequirement;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
+import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
+import com.netikras.studies.studentbuddy.core.service.PermissionsService;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
@@ -14,6 +19,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.*;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROLE_PERMISSIONS;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_PWREQ;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_SETTING;
 
@@ -25,6 +31,9 @@ public class AdminProducerImpl {
 
     @Resource
     private SystemService systemService;
+
+    @Resource
+    private PermissionsService permissionsService;
 
 
 
@@ -140,5 +149,64 @@ public class AdminProducerImpl {
     @Authorizable(resource = SYSTEM_SETTING, action = DELETE)
     public void deleteStoredSystemSettingByName(String name) {
         systemService.deleteSystemSettingByName(name);
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = DELETE)
+    public void deleteRolePermission(String roleName, String resourceName, String actionName, String resourceId) {
+        permissionsService.removeRolePermission(roleName, resourceName, actionName, resourceId);
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = GET_ALL)
+    public List<RoleDto> getAllRoles() {
+        List<Role> roles = permissionsService.getAllRoles();
+        List<RoleDto> roleDtos = (List<RoleDto>) modelMapper.transformAll(roles, RoleDto.class);
+        return roleDtos;
+    }
+
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = CREATE)
+    public RolePermissionDto createRolePermission(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
+        Role role = permissionsService.addRolePermission(roleName, resourceName, actionName, resourceId, strict);
+        ResourceActionLink link = role.getPermission(resourceName, actionName, resourceId);
+        RolePermissionDto permissionDto = modelMapper.transform(link, new RolePermissionDto());
+        return permissionDto;
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = DELETE)
+    public void deleteRoleById(String id) {
+        permissionsService.deleteRoleById(id);
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = CREATE)
+    public RoleDto createRole(String name) {
+        Role role = permissionsService.createRole(name);
+        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        return dto;
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = GET)
+    public RoleDto getRoleById(String id) {
+        Role role = permissionsService.getRoleById(id);
+        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        return dto;
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = GET)
+    public RoleDto getRoleByName(String name) {
+        Role role = permissionsService.getRoleByName(name);
+        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        return dto;
+    }
+
+    @Authorizable(resource = SYSTEM_PWREQ, action = GET_ALL)
+    public List<PasswordRequirementDto> getAllStoredPasswordRequirements() {
+        List<PasswordRequirement> requirements = systemService.getPasswordRequirements();
+        List<PasswordRequirementDto> dtos = (List<PasswordRequirementDto>) modelMapper.transformAll(requirements, PasswordRequirementDto.class);
+        return dtos;
+    }
+
+
+    public void refreshLiveRolePermissions() {
+        systemService.refreshRolesPermissions();
     }
 }

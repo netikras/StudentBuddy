@@ -37,4 +37,14 @@ public class AdminUserProducer extends AdminUserApiProducer {
     protected void onDeleteUserDto(String id) {
         impl.deleteUser(id);
     }
+
+    @Override
+    protected UserDto onAssignUserDtoRoleByName(String id, String rolename) {
+        return impl.assignUserRoleByName(id, rolename);
+    }
+
+    @Override
+    protected UserDto onUnassignUserDtoRoleByName(String id, String rolename) {
+        return impl.unassignUserRoleByName(id, rolename);
+    }
 }
