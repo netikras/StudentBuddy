@@ -51,7 +51,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Around("com.netikras.studies.studentbuddy.api.aop.pointcuts.AuthorizableActions.authorizableMethods(authorizable)")
-    public Object performAction(ProceedingJoinPoint joinPoint, Authorizable authorizable) {
+    public Object performAction(ProceedingJoinPoint joinPoint, Authorizable authorizable) throws Throwable {
 
         Object result = null;
 
@@ -83,7 +83,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
             logger.debug("Resource access not authorized");
             throw new StudBudUncheckedException()
                     .setMessage1("Unable to perform action " + action)
-                    .setMessage2("User is not authorized")
+                    .setMessage2("User is not " + (user.getName().equals("guest") ? "logged in (currently a guest)" : "authorized"))
                     .setProbableCause("Resource: " + resource)
                     .setStatusCode(HttpStatus.UNAUTHORIZED)
                     ;
@@ -94,6 +94,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
             result = joinPoint.proceed();
         } catch (Throwable throwable) {
             throwable.printStackTrace();
+            throw throwable; // let Spring's @ControllerAdvice catch and rephrase those exceptions to a user-friendly response
         } finally {
 
         }

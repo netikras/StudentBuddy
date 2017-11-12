@@ -18,6 +18,7 @@ import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -29,8 +30,6 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Component
 public class UserProducerImpl {
-
-
 
     @Resource
     private ModelMapper modelMapper;
