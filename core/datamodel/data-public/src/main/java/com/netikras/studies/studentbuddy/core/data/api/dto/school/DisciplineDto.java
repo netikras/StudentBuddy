@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.core.data.api.dto.school;
 import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
 
 import java.util.Date;
+import java.util.List;
 
 public class DisciplineDto extends AbstractDto {
 
@@ -11,7 +12,7 @@ public class DisciplineDto extends AbstractDto {
     private String title;
     private String description;
     private SchoolDto school;
-    private CourseDto course;
+    private List<CourseDto> courses;
 
     public String getId() {
         return id;
@@ -53,12 +54,12 @@ public class DisciplineDto extends AbstractDto {
         this.school = school;
     }
 
-    public CourseDto getCourse() {
-        return course;
+    public List<CourseDto> getCourses() {
+        return courses;
     }
 
-    public void setCourse(CourseDto course) {
-        this.course = course;
+    public void setCourses(List<CourseDto> courses) {
+        this.courses = courses;
     }
 
     @Override
@@ -69,7 +70,7 @@ public class DisciplineDto extends AbstractDto {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", school=" + school +
-                ", course=" + course +
+                ", courses=" + courses +
                 '}';
     }
 }

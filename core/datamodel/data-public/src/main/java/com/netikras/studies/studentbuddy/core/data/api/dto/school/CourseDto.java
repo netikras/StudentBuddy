@@ -14,6 +14,7 @@ public class CourseDto extends AbstractDto {
     private String title;
     private DisciplineDto discipline;
     private List<LectureDto> lectures;
+    private List<LecturerDto> lecturers;
     private StudentsGroupDto group;
 
     public String getId() {
@@ -82,7 +83,13 @@ public class CourseDto extends AbstractDto {
         return lectureDtos;
     }
 
+    public List<LecturerDto> getLecturers() {
+        return lecturers;
+    }
 
+    public void setLecturers(List<LecturerDto> lecturers) {
+        this.lecturers = lecturers;
+    }
 
     @Override
     public String toString() {

@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -29,7 +31,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "lecture")
-public class Lecture {
+public class Lecture implements Commentable, Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

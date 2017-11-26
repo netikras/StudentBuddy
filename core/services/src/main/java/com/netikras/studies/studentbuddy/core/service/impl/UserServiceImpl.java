@@ -139,7 +139,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User findUser(String id) {
         User user = userDao.findOne(id);
-        user.getPerson();
+        if (user != null) {
+            user.getPerson();
+        }
         return user;
     }
 

@@ -2,7 +2,10 @@ package com.netikras.studies.studentbuddy.core.service;
 
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
+import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface CommentsService {
@@ -10,6 +13,12 @@ public interface CommentsService {
     Comment getComment(String id);
 
     List<Comment> findComments(String entityName, String entityId);
+
+    <T extends Commentable & Identifiable> T assignComments(T item);
+
+    <T extends Commentable & Identifiable> Collection<T> assignComments(Collection<T> items);
+
+    List<Comment> findComments(Class entity, String entityId);
 
     void deleteComment(String id);
 

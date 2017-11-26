@@ -151,6 +151,28 @@ public class ResourceRepoProvider {
     }
 
 
+    public String getResourceNameForModel(Class modelType) {
+        com.netikras.studies.studentbuddy.core.data.meta.Resource resource = getResourceForModel(modelType);
+        if (resource != null) {
+            return resource.name();
+        }
+        return "";
+    }
+
+    public com.netikras.studies.studentbuddy.core.data.meta.Resource getResourceForModel(Class modelType) {
+        JpaRepo repo = getRepoForModel(modelType);
+        if (repo == null) {
+            return null;
+        }
+        for (Entry<com.netikras.studies.studentbuddy.core.data.meta.Resource, Class<? extends JpaRepo>> entry : RESOURCE_REPO_CLASS_MAP.entrySet()) {
+            if (entry.getValue().equals(repo)) {
+                return entry.getKey();
+            }
+        }
+
+        return null;
+    }
+
     public Class getDtoTypeForResource(String resourceName) {
         if (isNullOrEmpty(resourceName)) {
             return null;

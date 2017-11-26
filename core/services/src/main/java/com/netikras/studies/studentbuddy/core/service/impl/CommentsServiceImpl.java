@@ -2,10 +2,13 @@ package com.netikras.studies.studentbuddy.core.service.impl;
 
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dao.CommentDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
 import com.netikras.studies.studentbuddy.core.data.api.dao.TagDao;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.CommentTag;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
+import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.studies.studentbuddy.core.validator.CommentValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -13,9 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
@@ -25,6 +30,8 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Resource
     private TagDao tagDao;
+    @Resource
+    private ResourceRepoProvider repoProvider;
 
 
     @Resource
@@ -38,6 +45,71 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public List<Comment> findComments(String entityName, String entityId) {
         return commentDao.findByEntityTypeAndEntityId(entityName, entityId);
+    }
+
+    @Override
+    @Transactional
+    public <T extends Commentable & Identifiable> T assignComments(T item) {
+
+        if (item == null) {
+            return null;
+        }
+
+        if (isNullOrEmpty(item.getId())) {
+            return item;
+        }
+
+        String entityType = repoProvider.getResourceNameForModel(item.getClass());
+        return assignComments(item, entityType);
+    }
+
+    @Override
+    @Transactional
+    public <T extends Commentable & Identifiable> Collection<T> assignComments(Collection<T> items) {
+        if (isNullOrEmpty(items)) {
+            return items;
+        }
+
+        String entityType = null;
+
+        for (T item : items) {
+            if (entityType == null) {
+                entityType = repoProvider.getResourceNameForModel(item.getClass());
+                if (isNullOrEmpty(entityType)) {
+                    continue;
+                }
+            }
+
+            if (isNullOrEmpty(item.getId())) {
+                continue;
+            }
+
+            assignComments(item, entityType);
+        }
+
+        return items;
+    }
+
+    private  <T extends Commentable & Identifiable> T assignComments(T item, String entityType) {
+        List<Comment> comments = commentDao.findByEntityTypeAndEntityId(entityType, item.getId());
+        item.setComments(comments);
+        return item;
+    }
+
+    @Override
+    public List<Comment> findComments(Class entity, String entityId) {
+        if (entity == null) {
+            return null;
+        }
+
+        com.netikras.studies.studentbuddy.core.data.meta.Resource resource = null;
+
+        try {
+            resource = repoProvider.getResourceForModel(entity);
+        } catch (Exception e) {
+            return null;
+        }
+        return commentDao.findByEntityTypeAndEntityId(resource.name(), entityId);
     }
 
     @Override

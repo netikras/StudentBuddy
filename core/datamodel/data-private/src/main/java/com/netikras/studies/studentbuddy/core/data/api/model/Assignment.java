@@ -1,5 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,14 +17,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by netikras on 17.6.21.
  */
 @Entity
 @Table(name = "assignment")
-public class Assignment {
+public class Assignment implements Commentable, Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -60,6 +64,9 @@ public class Assignment {
     @Temporal(TemporalType.TIMESTAMP)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "due")
     private Date dueDate;
+
+    @Transient
+    private List<Comment> comments;
 
     public String getId() {
         return id;
@@ -128,5 +135,15 @@ public class Assignment {
                 ", updatedOn=" + updatedOn +
                 ", dueDate=" + dueDate +
                 '}';
+    }
+
+    @Override
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    @Override
+    public List<Comment> getComments() {
+        return comments;
     }
 }

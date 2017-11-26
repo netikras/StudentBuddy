@@ -1,0 +1,92 @@
+#!/bin/bash
+
+. lib/config
+
+s_login() {
+    local username="${1:?Username missing}";
+    local password="${2:?Password missing}"
+    
+    sl_curl "${URL_API}/user/login?username=${username}&password=${password}" -X POST
+}
+
+s_logout() {
+    sb_curl POST "/user/logout"
+}
+
+getUserById() {
+    local id=${1:?Missing user ID}
+
+    sb_curl GET "/user/id/${id}"
+    return $?
+}
+
+getUserByName() {
+    local name=${1:?Missing name}
+
+    sb_curl GET "/user/name/${name}"
+    return $?
+}
+
+
+createUser() {
+    local name=${1:?username missing}
+    local password=${2:?password missing}
+    local personId=${3:?person id missing}
+    local roles=${4}
+
+    local user=$(mkjsonobj "name:${name}" "password:${password}" "person:$(mkjsonobj "id:${personId}")" "roles:$(mkjsonarr ${roles})")
+    sb_curl POST "/mgmt/person/" -d "${user}"
+    return $?
+}
+
+
+deleteUser() {
+    local id=${1:?Missing user id}
+
+    sb_curl DELETE "/mgmt/user/id/${id}"
+    return $?
+}
+
+
+purgeUser() {
+    local id=${1:?Missing user id}
+
+    sb_curl DELETE "/mgmt/user/purge/id/${id}"
+    return $?
+}
+
+
+
+changeUserPassword() {
+    local userId=${1:?Missing user id}
+    local pswd=${2:?Missing new pswd}
+
+    sb_curl PUT "/user/${userId}/password" -d "password=${pswd}"
+    return $?
+}
+
+
+
+####################
+
+
+searchUserByUsername() {
+    local name=${1:?Missing username}
+
+    sb_curl GET "/user/search/username/${name}"
+    return $?
+}
+
+searchUserByFirstName() {
+    local name=${1:?Missing first name}
+
+    sb_curl GET "/user/search/fname/${name}"
+    return $?
+}
+
+searchUserByLastName() {
+    local name=${1:?Missing last name}
+
+    sb_curl GET "/user/search/lname/${name}"
+    return $?
+}

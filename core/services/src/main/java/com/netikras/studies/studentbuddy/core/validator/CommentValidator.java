@@ -11,6 +11,8 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,8 @@ import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Component
 public class CommentValidator {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Resource
     private ResourceRepoProvider repositories;
@@ -83,8 +87,10 @@ public class CommentValidator {
                 com.netikras.studies.studentbuddy.core.data.meta.Resource entityType =
                         com.netikras.studies.studentbuddy.core.data.meta.Resource.valueOf(comment.getEntityType().toUpperCase());
                 JpaRepo repo = repositories.getRepoForResource(entityType);
-                if (repo == null)
+                if (repo == null) {
+                    logger.warn("Repo not found for entity [{}]", entityType);
                     throw new Exception("Cannot find repository for entity type");
+                }
                 Object entity = repo.findOne(comment.getEntityId());
                 if (entity == null) {
                     errors.add(new ValidationError()
@@ -123,12 +129,11 @@ public class CommentValidator {
         }
 
 
-
         return errors;
     }
 
 
-        @Transactional
+    @Transactional
     public ErrorsCollection validateForAssignment(Tag tag, Comment comment, ErrorsCollection errors) {
         errors = ensure(errors);
 

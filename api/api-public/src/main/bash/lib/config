@@ -1,0 +1,76 @@
+
+COOKIEFILE="/tmp/stubu.cookie"
+
+URL_API="http://localhost:8080/stubu/api"
+
+alias s_curl="curl -L -k -b \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## service
+alias sl_curl="curl -L -k -c \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## login
+
+sb_curl() {
+    local method="${1:?HTTP method missing}"
+    shift;
+    local endpoint="${1:?Endpoint missing}"
+    shift;
+
+    local result=$(s_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" ${@});
+    local status=$(echo "${result}" | tail -1);
+    local code=$(echo "${status}" | sed -e 's/^.*: //g')
+    echo "${result}" | sed -e 's/^status\[.*\]: [0-9]*$//g'
+
+    echo "${status}" >&2
+
+    [[ ${code:-600} -ge 400 ]] && return 1 || return 0
+}
+
+mkjsonarr() {
+    local arr="[";
+    local first=true
+    for elem in "${@}" ; do
+        [[ ${first} = false ]] && {
+            arr="${arr},";
+        } || {
+            first=false
+        }
+
+        arr="${arr}\"${elem}\""
+    done;
+
+    echo "${arr}]"
+}
+
+mkjsonobj() {
+    local json="{";
+    local first=true
+    local key;
+    local value;
+
+    for elem in "${@}" ; do
+    
+        key="${elem%%:*}"
+        value="${elem#*:}"
+        [ -z "${value}" ] && {
+            value="null";
+        } || {
+            { [[ "${value}" =~ ^\[.*\]$ ]] || [[ "${value}" =~ ^\{.*\}$ ]] ; } && {
+                :;
+            } || {
+                value="\"${value}\"";
+            }
+        }
+
+        key="\"${key}\"";
+
+        [[ ${first} = false ]] && {
+            key=",${key}"
+        } || {
+            first=false
+        }
+    
+        json="${json}${key}:${value}"
+    done; 
+    
+    json="${json}}"
+
+    echo "${json}"
+}
+
