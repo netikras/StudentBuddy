@@ -48,13 +48,13 @@ public abstract class SchoolApi {
             @MethodParam(type = Type.URL, name = "id") String id
     );
 
-    @RestEndpoint(url = "/course/{courseId}/lecture/{lectureId}", method = HttpMethod.PUT, dtoType = CourseDto.class, action = "assignLecture")
+    @RestEndpoint(url = "/course/id/{courseId}/lecture/id/{lectureId}", method = HttpMethod.PUT, dtoType = CourseDto.class, action = "assignLecture")
     public abstract CourseDto assignCourseLecture(
             @MethodParam(type = Type.URL, name = "courseId") String courseId,
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId
     );
 
-    @RestEndpoint(url = "/course/{courseId}/lecture/{lectureId}", method = HttpMethod.DELETE, dtoType = CourseDto.class, action = "unassignLecture")
+    @RestEndpoint(url = "/course/id/{courseId}/lecture/id/{lectureId}", method = HttpMethod.DELETE, dtoType = CourseDto.class, action = "unassignLecture")
     public abstract CourseDto unassignCourseLecture(
             @MethodParam(type = Type.URL, name = "courseId") String courseId,
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId

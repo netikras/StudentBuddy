@@ -1,0 +1,367 @@
+#!/bin/bash
+
+. lib/config
+
+getSchoolById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/id/${id}"
+    return $?
+}
+
+createSchool() {
+    local title=${1:?Title missing}
+    local departments=$(optional "${2}")
+
+    local school=$(mkjsonobj "title:${title}" "departments=$(mkjsonarr ${departments})")
+
+    sb_curl POST "/school/" -d "${school}"
+    return $?
+}
+
+updateSchool() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local departments=$(optional "${2}")
+
+    local school=$(mkjsonobj "id:${id}" "title:${title}" "departments=$(mkjsonarr ${departments})")
+
+    sb_curl PUT "/school/" -d "${school}"
+    return $?
+}
+
+deleteSchool() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/id/${id}"
+    return $?
+}
+
+purgeSchool() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/purge/id/${id}"
+    return $?
+}
+
+getAllSchools() {
+    sb_curl GET "/school/all"
+    return $?
+}
+
+
+
+getDepartmentById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/department/id/${id}"
+    return $?
+}
+
+createDepartment() {
+    local school=${1:?School missing}
+    local title=${2:?Title missing}
+    local buildings=$(optional "${3}")
+
+    local department=$(mkjsonobj "school:${school}" "title:${title}" "buildings:$(mkjsonarr ${buildings})")
+
+    sb_curl POST "/school/department/" -d "${department}"
+    return $?
+}
+
+updateDepartment() {
+    local id=${1:?ID missing}; shift
+    local school=${1:?School missing}
+    local title=${2:?Title missing}
+    local buildings=$(optional "${3}")
+
+    local department=$(mkjsonobj "school:${school}" "title:${title}" "buildings:$(mkjsonarr ${buildings})")
+
+    sb_curl POST "/school/department/" -d "${department}"
+    return $?
+}
+
+deleteDepartment() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/department/id/${id}"
+    return $?
+}
+
+purgeDepartment() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/department/purge/id/${id}"
+    return $?
+}
+
+
+
+
+getDisciplineById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/department/id/${id}"
+    return $?
+}
+
+createDiscipline() {
+    local title=${1:?Title missing}
+    local description=${2:?Description missing}
+    local school=${3:?School missing}
+    local courses=$(optional "${4}")
+
+    local discipline=$(mkjsonobj "title:${title}" "description:${description}" "school:${school}" "courses:$(mkjsonarr ${courses})")
+
+    sb_curl POST "/school/discipline/" -d "${discipline}"
+    return $?
+}
+
+updateDiscipline() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local description=${2:?Description missing}
+    local school=${3:?School missing}
+    local courses=$(optional "${4}")
+
+    local discipline=$(mkjsonobj "id:${id}" "title:${title}" "description:${description}" "school:${school}" "courses:$(mkjsonarr ${courses})")
+
+    sb_curl PUT "/school/discipline/" -d "${discipline}"
+    return $?
+}
+
+deleteDiscipline() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/discipline/id/${id}"
+    return $?
+}
+
+purgeDiscipline() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/discipline/purge/id/${id}"
+    return $?
+}
+
+
+
+getCourseById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/course/id/${id}"
+    return $?
+}
+
+createCourse() {
+    local title=${1:?Title missing}
+    local discipline=${2:?Discipline missing}
+    local group=${3:?Group missing}
+    local lectures=$(optional "${4}")
+    local lecturers=$(optional "${5}")
+
+    local course=$(mkjsonobj "title:${title}" "discipline:${discipline}" "group:${group}" "lectures:${lectures}" "lecturers:${lecturers}")
+
+    sb_curl POST "/school/course/" -d "${course}"
+    return $?
+}
+
+updateCourse() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local discipline=${2:?Discipline missing}
+    local group=${3:?Group missing}
+    local lectures=$(optional "${4}")
+    local lecturers=$(optional "${5}")
+
+    local course=$(mkjsonobj "id:${id}" "title:${title}" "discipline:${discipline}" "group:${group}" "lectures:${lectures}" "lecturers:${lecturers}")
+
+    sb_curl PUT "/school/course/" -d "${course}"
+    return $?
+}
+
+deleteCourse() {
+    local id=${1:?ID missing};
+
+    sb_curl DELETE "/school/course/id/${id}"
+    return $?
+}
+
+purgeCourse() {
+    local id=${1:?ID missing};
+
+    sb_curl DELETE "/school/course/purge/id/${id}"
+    return $?
+}
+
+
+
+
+getPersonnelMemberById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/personnel/id/${id}"
+    return $?
+}
+
+createPersonnelMember() {
+    local title=${1:?Title missing}
+    local person=${2:?Person missing}
+    local school=${3:?School missing}
+
+    local member=$(mkjsonobj "title:${title}" "person:${person}" "school:${school}")
+
+    sb_curl POST "/school/personnel/" -d "${member}"
+    return $?
+}
+
+updatePersonnelMember() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local person=${2:?Person missing}
+    local school=${3:?School missing}
+
+    local member=$(mkjsonobj "title:${title}" "person:${person}" "school:${school}")
+
+    sb_curl POST "/school/personnel/" -d "${member}"
+    return $?
+}
+
+deletePersonnelMember() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/personnel/id/${id}"
+    return $?
+}
+
+purgePersonnelMember() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/school/personnel/purge/id/${id}"
+    return $?
+}
+
+
+
+
+
+
+#####################
+
+getAllDisciplinesBySchoolId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/id/${id}/discipline"
+    return $?
+}
+
+getAllCoursesBySchoolId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/id/${id}/course"
+    return $?
+}
+
+getAllPersonnelMembersBySchoolId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/id/${id}/personnel"
+    return $?
+}
+
+searchAllSchoolsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/school/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+assignCourseLectureById() {
+    local courseId=${1:?Course ID missing}
+    local lectureId=${2:?Lecture ID missing}
+
+    sb_curl PUT "/school/course/id/${courseId}/lecture/id/${lectureId}"
+    return $?
+}
+
+unassignCourseLectureById() {
+    local courseId=${1:?Course ID missing}
+    local lectureId=${2:?Lecture ID missing}
+
+    sb_curl DELETE "/school/course/id/${courseId}/lecture/id/${lectureId}"
+    return $?
+}
+
+
+getAllCoursesByDisciplineId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/discipline/id/${id}/course"
+    return $?
+}
+
+
+
+
+searchAllCoursesByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/school/course/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllDepartmentsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/school/department/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllPersonnelMembersByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/school/personnel/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllPersonnelMembersByFirstName() {
+    local name=${1:?First name missing}
+
+    sb_curl GET "/school/personnel/search/fname/$(urlencode "${name}")"
+    return $?
+}
+
+searchAllPersonnelMembersByLastName() {
+    local name=${1:?Last name missing}
+
+    sb_curl GET "/school/personnel/search/lname/$(urlencode "${name}")"
+    return $?
+}
+
+searchAllPersonnelMembersByPersonalCode() {
+    local code=${1:?Codemissing}
+
+    sb_curl GET "/school/personnel/search/code/$(urlencode "${code}")"
+    return $?
+}
+
+searchAllPersonnelMembersByIdentifier() {
+    local id2=${1:?Identifier missing}
+
+    sb_curl GET "/school/personnel/search/id2/$(urlencode "${id2}")"
+    return $?
+}
+
+searchAllDisciplinesByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/school/discipline/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllDisciplinesByDescription() {
+    local descr=${1:?Description missing}
+
+    sb_curl GET "/school/discipline/search/descr/$(urlencode "${descr}")"
+    return $?
+}

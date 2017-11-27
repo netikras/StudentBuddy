@@ -62,7 +62,7 @@ public abstract class LecturesApi {
     );
 
 
-    @RestEndpoint(url = "/group/id/{groupId}/starts/between/{timeUnits}/{value}",
+    @RestEndpoint(url = "/group/id/{groupId}/starts/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByGroupIdStartingBetween")
     public abstract List<LectureDto> getLecturesByGroupStartingBetween(
             @MethodParam(type = Type.URL, name = "groupId") String groupId,
@@ -71,7 +71,7 @@ public abstract class LecturesApi {
     );
 
 
-    @RestEndpoint(url = "/student/id/{studentId}/starts/between/{timeUnits}/{value}",
+    @RestEndpoint(url = "/student/id/{studentId}/starts/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByStudentIdStartingBetween")
     public abstract List<LectureDto> getLecturesByStudentStartingBetween(
             @MethodParam(type = Type.URL, name = "studentId") String studentId,
@@ -80,7 +80,7 @@ public abstract class LecturesApi {
     );
 
 
-    @RestEndpoint(url = "/lecturer/id/{lecturerId}/starts/between/{timeUnits}/{value}",
+    @RestEndpoint(url = "/lecturer/id/{lecturerId}/starts/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByLecturerIdStartingBetween")
     public abstract List<LectureDto> getLecturesByLecturerStartingBetween(
             @MethodParam(type = Type.URL, name = "lecturerId") String lecturerId,
@@ -89,7 +89,7 @@ public abstract class LecturesApi {
     );
 
 
-    @RestEndpoint(url = "/room/id/{roomId}/starts/between/{timeUnits}/{value}",
+    @RestEndpoint(url = "/room/id/{roomId}/starts/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByRoomIdStartingBetween")
     public abstract List<LectureDto> getLecturesByRoomStartingBetween(
             @MethodParam(type = Type.URL, name = "roomId") String roomId,

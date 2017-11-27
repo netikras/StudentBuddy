@@ -1,0 +1,173 @@
+#!/bin/bash
+
+. lib/config
+
+
+getStudentById() {
+    local id=${1:?ID missing}
+    
+    sb_curl GET "/student/id/${id}"
+    return $?
+}
+
+getAllStudentsByPersonId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/student/person/id/${id}"
+    return $?
+}
+
+getAllStudentsByGroupId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/student/all/group/id/${id}"
+    return $?
+}
+
+createStudent() {
+    local person=${1:?Person missing}
+    local group=${2:?Group missing}
+    local school=${3:?School missing}
+    local department=${4:?Department missing}
+
+    local student=$(mkjsonobj "person:${person}" "school:${school}" "department:${department}" "group:${group}")
+
+    sb_curl PUT "/student/" -d "${student}"
+    return $?
+}
+
+updateStudent() {
+    local id=${1:?ID missing}
+    local person=${2:?Person missing}
+    local group=${3:?Group missing}
+    local school=${4:?School missing}
+    local department=${5:?Department missing}
+
+    local student=$(mkjsonobj "id:${id}" "person:${person}" "school:${school}" "department:${department}" "group:${group}")
+
+    sb_curl PUT "/student/" -d "${student}"
+    return $?
+}
+
+deleteStudent() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/id/${id}"
+    return $?
+}
+
+purgeStudent() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/purge/id/${id}"
+    return $?
+}
+
+
+
+
+### GROUP ###
+
+getGroupById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/student/group/id/${id}"
+    return $?
+}
+
+getGroupByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/student/group/title/${title}"
+    return $?
+}
+
+getAllGroups() {
+    sb_curl GET "/student/group/all"
+    return $?
+}
+
+createGroup() {
+    local title=${1:?Title missing}
+    local email=${2:?Email missing}
+    local school=${3:?School missing}
+
+    local group=$(mkjsonobj "title:${title}" "email:${email}" "school:${school}")
+
+    sb_curl POST "/student/group/" -d "${group}"
+    return $?
+}
+
+updateGroup() {
+    local id=${1:?ID missing}
+    local title=${2:?Title missing}
+    local email=${3:?Email missing}
+    local school=${4:?School missing}
+
+    local group=$(mkjsonobj "id:${id}" "title:${title}" "email:${email}" "school:${school}")
+
+    sb_curl POST "/student/group/" -d "${group}"
+    return $?
+}
+
+deleteGroup() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/group/id/${id}"
+    return $?
+}
+
+purgeGroup() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/group/purge/id/${id}"
+    return $?
+}
+
+
+
+### GUEST ###
+
+getGuestById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/student/guest/id/${id}"
+    return $?
+}
+
+createGuest() {
+    local lecture=${1:?Lecture missing}
+    local person=${2:?Person missing}
+
+    local guest=$(mkjsonobj "lecture:${lecture}" "person:${person}")
+    sb_curl POST "/student/guest/" -d "${guest}"
+    return $?
+}
+
+updateGuest() {
+    local id=${1:?ID missing}
+    local lecture=${2:?Lecture missing}
+    local person=${3:?Person missing}
+
+    local guest=$(mkjsonobj "id:${id}" "lecture:${lecture}" "person:${person}")
+    sb_curl PUT "/student/guest/" -d "${guest}"
+    return $?
+}
+
+deleteGuest() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/guest/id/${id}"
+    return $?
+}
+
+purgeGuest() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/student/guest/purge/id/${id}"
+    return $?
+}
+
+
+
+

@@ -1,0 +1,130 @@
+#!/bin/bash
+
+. lib/config
+
+getAssignmentById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/assignment/id/${id}"
+    return $?
+}
+
+
+getAllAssignmentsByLectureId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/assignment/lecture/id/${id}"
+    return $?
+}
+
+createAssignmentForLecture() {
+    local id=${1:?ID missing}
+    local description=${2:?Description missing}
+
+    sb_curl POST "/assignment/lecture/id/${id}" -d "${description}"
+    return $?
+}
+
+createAssignment() {
+    local discipline=${1:?Discipline missing}
+    local descr=${2:?Desciption missing}
+    local due=${3:?Due timestamp missing}
+
+    due=$(adjustTimestamp "${due}")
+
+    local assignment=$(mkjsonobj "discipline:${discipline}" "description:${descr}" "due:${due}")
+
+    sb_curl POST "/assignment/" -d "${assignment}"
+    return $?
+}
+
+updateAssignment() {
+    local id=${1:?ID missing}; shift
+    local discipline=${1:?Discipline missing}
+    local descr=${2:?Desciption missing}
+    local due=${3:?Due timestamp missing}
+
+    due=$(adjustTimestamp "${due}")
+
+    local assignment=$(mkjsonobj "id:${id}" "discipline:${discipline}" "description:${descr}" "due:${due}")
+
+    sb_curl PUT "/assignment/" -d "${assignment}"
+    return $?
+}
+
+deleteAssignment() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/assignment/id/${id}"
+    return $?
+}
+
+purgeAssignment() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/assignment/purge/id/${id}"
+    return $?
+}
+
+getAllAssignmentsByDisciplineIdDueBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/discipline/id/${id}/due/between/${after}/${before}"
+    return $?
+}
+
+getAllAssignmentsByGroupIdDueBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/group/id/${id}/due/between/${after}/${before}"
+    return $?
+}
+
+getAllAssignmentsByStudentIdDueBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/student/id/${id}/due/between/${after}/${before}"
+    return $?
+}
+
+getAllAssignmentsByDisciplineIdAndGroupIdDueBetween() {
+    local disciplineId=${1:?Discipline ID missing}; shift
+    local groupId=${1:?Group ID missing};
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/discipline/id/${disciplineId}/group/id/${groupId}/due/between/${after}/${before}"
+    return $?
+}
+
+getAllAssignmentsByDisciplineIdAndStudentIdDueBetween() {
+    local disciplineId=${1:?Discipline ID missing}; shift
+    local studentId=${1:?Student ID missing};
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/discipline/id/${disciplineId}/student/id/${studentId}/due/between/${after}/${before}"
+    return $?
+}
+

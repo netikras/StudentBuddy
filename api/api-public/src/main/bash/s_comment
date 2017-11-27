@@ -1,0 +1,121 @@
+#!/bin/bash
+
+. lib/config
+
+
+getCommentById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/comment/id/${id}"
+    return $?
+}
+
+createComment() {
+    local title=${1:?Title missing}
+    local text=${3:?Text missing}
+    local entityType=${3:?Entity type missing}
+    local entityId=${4:?Entity ID missing}
+    local author=${5:?Author missing}
+    local category=$(optional "${6}")
+    local tags=$(optional "${7}")
+
+    local comment=$(mkjsonobj "title:${title}" "text:${text}" "entityType:${entityType}" "entityId:${entityId}" "author:${author}" "category:${category}" "tags:$(mkjsonarr ${tags})")
+
+    sb_curl POST "/comment/" -d "${comment}"
+    return $?
+}
+
+updateComment() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local text=${3:?Text missing}
+    local entityType=${3:?Entity type missing}
+    local entityId=${4:?Entity ID missing}
+    local author=${5:?Author missing}
+    local category=$(optional "${6}")
+    local tags=$(optional "${7}")
+
+    local comment=$(mkjsonobj "id:${id}" "title:${title}" "text:${text}" "entityType:${entityType}" "entityId:${entityId}" "author:${author}" "category:${category}" "tags:$(mkjsonarr ${tags})")
+
+    sb_curl PUT "/comment/" -d "${comment}"
+    return $?
+}
+
+deleteComment() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/comment/id/${id}"
+    return $?
+}
+
+
+
+
+createCommentForEntity() {
+    local type=${1:?Type missing}
+    local id=${2:?ID missing}
+    local comment=${3:?Comment missing}
+
+    sb_curl POST "/comment/type/${type}/id/${id}" -d "${comment}"
+    return $?
+}
+
+getAllCommentsForEntity() {
+    local type=${1:?Type missing}
+    local id=${2}
+
+    local url="/comment/type/${type}/id/${id}"
+
+    [ -z "${id}" ] && {
+        url="/comment/type/${type}"
+    }
+
+    sb_curl GET "${url}"
+    return $?
+}
+
+deleteAllCommentsForEntity() {
+    local type=${1:?Type missing}
+    local id=${2}
+
+    local url="/comment/type/${type}/id/${id}"
+
+    [ -z "${id}" ] && {
+        url="/comment/type/${type}"
+    }
+
+    sb_curl DELETE "${url}"
+    return $?
+}
+
+getAllCommentsByTagValue() {
+    local tag=${1:?Tag missing}
+    local pagesz=$(optional "${2}")
+    local pageno=$(optional "${3}")
+
+    sb_curl GET "/comment/tag/value/$(urlencode "${tag}")"
+    return $?
+}
+
+getAllCommentsByTagId() {
+    local id=${1:?ID missing}
+    local pagesz=$(optional "${2}")
+    local pageno=$(optional "${3}")
+
+    sb_curl GET "/comment/tag/id/${id}"
+    return $?
+}
+
+getAllCommentsByAuthor() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/comment/author/id/${id}"
+    return $?
+}
+
+deleteAllCommentsByAuthor() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/comment/author/id/${id}"
+    return $?
+}

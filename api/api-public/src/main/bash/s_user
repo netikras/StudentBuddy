@@ -73,20 +73,20 @@ changeUserPassword() {
 searchUserByUsername() {
     local name=${1:?Missing username}
 
-    sb_curl GET "/user/search/username/${name}"
+    sb_curl GET "/user/search/username/$(urlencode "${name}")"
     return $?
 }
 
 searchUserByFirstName() {
     local name=${1:?Missing first name}
 
-    sb_curl GET "/user/search/fname/${name}"
+    sb_curl GET "/user/search/fname/$(urlencode "${name}")"
     return $?
 }
 
 searchUserByLastName() {
     local name=${1:?Missing last name}
 
-    sb_curl GET "/user/search/lname/${name}"
+    sb_curl GET "/user/search/lname/$(urlencode "${name}")"
     return $?
 }

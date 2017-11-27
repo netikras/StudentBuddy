@@ -51,7 +51,7 @@ public abstract class PersonApi {
     public abstract List<PersonDto> searchAllByPersonalCode(@MethodParam(type = Type.URL, name = "code") String codeSubstring);
 
     @RestEndpoint(url = "/search/id2/{identifier}", method = HttpMethod.GET, dtoType = PersonDto.class)
-    public abstract List<PersonDto> searchAllByIdentifier(@MethodParam(type = Type.URL, name = "id") String id);
+    public abstract List<PersonDto> searchAllByIdentifier(@MethodParam(type = Type.URL, name = "identifier") String id);
 
 
 

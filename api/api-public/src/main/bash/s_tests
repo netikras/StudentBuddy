@@ -1,0 +1,110 @@
+#!/bin/bash
+
+. lib/config
+
+getTestById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/test/id/${id}";
+    return $?
+}
+
+
+getAllTestsByDisciplineIdInTimeframe() {
+    local id=${1:?ID missing}
+    local after=${2:?AFTER time bound missing}
+    local before=${3:?BEFORE time bound missing}
+
+    after=$(adjustTimestamp "${after}");
+    before=$(adjustTimestamp "${before}");
+
+    sb_curl GET "/test/all/discipline/id/${id}/timeframe/${after}/${before}";
+    return $?
+}
+
+getAllTestsByDisciplineId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/test/all/discipline/id/${id}";
+    return $?
+}
+
+getAllTestsByGroupIdAndDisciplineIdInTimeframe() {
+    local groupId=${1:?Group ID missing}
+    local disciplineId=${2:?Discipline ID missing}
+	local after=${3:?AFTER time bound missing}
+    local before=${4:?BEFORE time bound missing}
+
+    after=$(adjustTimestamp "${after}");
+    before=$(adjustTimestamp "${before}");
+
+    sb_curl GET "/test/all/discipline/id/${id}/group/id/${id}/timeframe/after/${after}/before/${before}"
+    return $?
+}
+
+getAllTestsByGroupIdAndDisciplineId() {
+    local groupId=${1:?Group ID missing}
+    local disciplineId=${2:?Discipline ID missing}
+
+    sb_curl GET "/test/all/discipline/id/${id}/group/id/${id}"
+    return $?
+}
+
+createTest() {
+    local lecture=${1:?Lecture missing}
+    local discipline=${2:?Discipline missing}
+    local description=${3:?Description missing}
+    local exam=${4:-false}
+
+    local testjson=$(mkjsonobj "lecture:${lecture}" "discipline:${discipline}" "description:${description}" "exam:${exam}")
+
+    sb_curl POST "/test/" -d "${testjson}"
+    return $?
+}
+
+updateTest() {
+    local id=${1:?Missing id}
+    local lecture=${2:?Lecture missing}
+    local discipline=${3:?Discipline missing}
+    local description=${4:?Description missing}
+    local exam=${5:-false}
+
+    local testjson=$(mkjsonobj "id:${id}" "lecture:${lecture}" "discipline:${discipline}" "description:${description}" "exam:${exam}")
+
+    sb_curl PUT "/test/" -d "${testjson}"
+    return $?
+}
+
+deleteTest() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/test/id/${id}"
+    return $?
+}
+
+purgeTest() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/test/purge/id/${id}"
+    return $?
+}
+
+
+
+
+
+
+
+#############################
+
+searchAllTestsByDescription() {
+    local descr=${1:?Description missing}
+
+    sb_curl GET "/test/search/description/$(urlencode "${descr}")"
+    return $?
+}
+
+
+
+
+

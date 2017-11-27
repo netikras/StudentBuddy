@@ -22,7 +22,7 @@ import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PUR
 public abstract class AssignmentApi {
 
 
-    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/{after}/{before}",
+    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByDisciplineId")
     public abstract List<AssignmentDto> getAllForDisciplineId(
             @MethodParam(type = Type.URL, name = "disciplineId") String disciplineId,
@@ -31,7 +31,7 @@ public abstract class AssignmentApi {
     );
 
 
-    @RestEndpoint(url = "/all/group/id/{groupId}/{after}/{before}",
+    @RestEndpoint(url = "/all/group/id/{groupId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByGroupId")
     public abstract List<AssignmentDto> getAllForGroupId(
             @MethodParam(type = Type.URL, name = "groupId") String groupId,
@@ -40,7 +40,7 @@ public abstract class AssignmentApi {
     );
 
 
-    @RestEndpoint(url = "/all/student/id/{studentId}/{after}/{before}",
+    @RestEndpoint(url = "/all/student/id/{studentId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByStudentId")
     public abstract List<AssignmentDto> getAllForStudentId(
             @MethodParam(type = Type.URL, name = "studentId") String studentId,
@@ -49,7 +49,7 @@ public abstract class AssignmentApi {
     );
 
 
-    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/group/id/{groupId}/{after}/{before}",
+    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/group/id/{groupId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByDisciplineIdAndGroupId")
     public abstract List<AssignmentDto> getAllForDisciplineIdAndGroupId(
             @MethodParam(type = Type.URL, name = "disciplineId") String disciplineId,
@@ -59,7 +59,7 @@ public abstract class AssignmentApi {
     );
 
 
-    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/student/id/{studentId}/{after}/{before}",
+    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/student/id/{studentId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByDisciplineIdAndStudentId")
     public abstract List<AssignmentDto> getAllForDisciplineIdAndStudentId(
             @MethodParam(type = Type.URL, name = "disciplineId") String disciplineId,

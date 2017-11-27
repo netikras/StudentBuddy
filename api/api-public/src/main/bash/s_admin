@@ -1,0 +1,185 @@
+#!/bin/bash
+
+. lib/config
+
+
+getStoredSettingById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/admin/settings/stored/id/${id}"
+    return $?
+}
+
+createStoredSetting() {
+    local name=${1:?Setting name missing}
+    local value=${2:?Setting value missing}
+
+    local setting=$(mkjsonobj "name:${name}" "value:${value}")
+
+    sb_curl POST "/admin/settings/stored/" -d "${setting}"
+    return $?
+}
+
+updateStoredSetting() {
+    local id=${1:?ID missing}; shift
+    local name=${1:?Setting name missing}
+    local value=${2:?Setting value missing}
+
+    local setting=$(mkjsonobj "id:${id}" "name:${name}" "value:${value}")
+
+    sb_curl PUT "/admin/settings/stored/" -d "${setting}"
+    return $?
+}
+
+deleteStoredSetting() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/admin/settings/stored/id/${id}"
+    return $?
+}
+
+getAllStoredSettings() {
+    sb_curl GET "/admin/settings/stored"
+    return $?
+}
+
+getAllLiveSettings() {
+    sb_curl GET "/admin/settings/live"
+    return $?
+}
+
+getStoredSettingByName() {
+    local name=${1:?Name missing}
+
+    sb_curl GET "/admin/settings/stored/name/${name}"
+    return $?
+}
+
+getLiveSettingByName() {
+    local name=${1:?Name missing}
+
+    sb_curl GET "/admin/settings/live/name/${name}"
+    return $?
+}
+
+refreshSettings() {
+    sb_curl PUT "/admin/settings/refresh"
+    return $?
+}
+
+
+
+getStoredPasswordRequirementById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/admin/pwreq/stored/id/${id}"
+    return $?
+}
+
+createStoredPasswordRequirement() {
+    local title=${1:?Title missing}
+    local enabled=$(optional "${2}" "true")
+    local whitelist=$(optional "${3}")
+    local blacklist=$(optional "${4}")
+    local countMin=$(optional "${5}" "0")
+    local countMax=$(optional "${6}")
+    local message=${7:?Message missing}
+
+    local requirement=$(mkjsonobj "title:${title}" "enabled:${enabled}" "whitelist:${whitelist}" "blacklist:${blacklist}" "countMin:${countMin}" "countMax:${countMax}" "message:${message}")
+
+    sb_curl POST "/admin/pwreq/stored/" -d "${requirement}"
+    return $?
+}
+
+updateStoredPasswordRequirement() {
+    local id=${1:?ID missing} ; shift
+    local title=${1:?Title missing}
+    local enabled=$(optional "${2}" "true")
+    local whitelist=$(optional "${3}")
+    local blacklist=$(optional "${4}")
+    local countMin=$(optional "${5}" "0")
+    local countMax=$(optional "${6}")
+    local message=${7:?Message missing}
+
+    local requirement=$(mkjsonobj "id:${id}" "title:${title}" "enabled:${enabled}" "whitelist:${whitelist}" "blacklist:${blacklist}" "countMin:${countMin}" "countMax:${countMax}" "message:${message}")
+
+    sb_curl POST "/admin/pwreq/stored/" -d "${requirement}"
+    return $?
+}
+
+deleteStoredPasswordRequirement() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/admin/pwreq/stored/id/${id}"
+    return $?
+}
+
+getAllStoredPasswordRequirements() {
+    sb_curl GET "/admin/pwreq/stored"
+    return $?
+}
+
+getAllLivePasswordRequirements() {
+    sb_curl GET "/admin/pwreq/live"
+    return $?
+}
+
+
+refreshPasswordRequirements() {
+    sb_curl PUT "/admin/pwreq/refresh"
+    return $?
+}
+
+
+
+getRoleById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/admin/role/id/${id}"
+    return $?
+}
+
+deleteRole() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/admin/role/id/${id}"
+    return $?
+}
+
+getAllRoles() {
+    sb_curl GET "/admin/role/all"
+    return $?
+}
+
+createRolePermission() {
+    local roleName=${1:?Name missing}
+    local resource=${2:?Resource missing}
+    local action=${3:?Action missing}
+    local resourceId=$(optional "${4}" "none")
+    local strict=$(optional "${5}" "true")
+
+    sb_curl POST "/admin/role/permission/${roleName}/${resource}/${action}/${resourceId}" -d "strict=${strict}"
+    return $?
+}
+
+deleteRolePermission() {
+    local roleName=${1:?Name missing}
+    local resource=${2:?Resource missing}
+    local action=${3:?Action missing}
+    local resourceId=$(optional "${4}" "none")
+
+    sb_curl DELETE "/admin/role/permission/${roleName}/${resource}/${action}/${resourceId}"
+    return $?
+}
+
+refreshRolePermissions() {
+    sb_curl POST "/admin/role/permission/refresh"
+    return $?
+}
+
+createRoleByName() {
+    local name=${1:?Name missing}
+
+    sb_curl POST "/admin/role/name/${name}"
+    return $?
+}

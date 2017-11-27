@@ -1,0 +1,128 @@
+#!/bin/bash
+
+. lib/config
+
+getPersonById() {
+    local id=${1:?Person ID missing}
+
+    sb_curl GET "/person/id/${id}"
+    return $?
+}
+
+getPersonByIdentifier() {
+    local id2=${1:?Identifier missing}
+
+    sb_curl GET "/person/id2/${id2}"
+    return $?
+}
+
+getPersonByCode() {
+    local code=${1:?Person code missing}
+
+    sb_curl GET "/person/code/${code}"
+    return $?
+}
+
+getAllPerson() {
+    sb_curl GET "/person/all"
+    return $?
+}
+
+getAllPersonByFirstName() {
+    local name=${1:?First name missing}
+
+    sb_curl GET "/person/all/fname/${name}"
+    return $?
+}
+
+getAllPersonByLastName() {
+    local name=${1:?Last name missing}
+
+    sb_curl GET "/person/all/lname/${name}"
+    return $?
+}
+
+getAllByFirstAndLastName() {
+    local fname=${1:?First name missing}
+    local lname=${2:?Last name missing}
+
+    sb_curl GET "/person/all/fname/${fname}/lname/${lname}"
+    return $?
+}
+
+createPerson() {
+    local fname=${1:?First name missing}
+    local lname=${2:?Last name missing}
+    local code=${3:?Code missing}
+    local id2=${4:?Identificator missing}
+    local email=$(optional "${5}")
+    local phone=$(optional "${6}")
+
+    local person=$(mkjsonobj "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
+
+    sb_curl POST "/person/" -d "${person}"
+}
+
+updatePerson() {
+    local id=${1:?ID missing}
+    local fname=${2:?First name missing}
+    local lname=${3:?Last name missing}
+    local code=${4:?Code missing}
+    local id2=${5:?Identificator missing}
+    local email=$(optional "${6}")
+    local phone=$(optional "${7}")
+
+    local person=$(mkjsonobj "id:${id}" "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
+
+    sb_curl POST "/person/" -d "${person}"
+}
+
+deletePerson() {
+    local id=${1:?ID missing}
+    
+    sb_curl DELETE "/person/id/${id}"
+    return $?
+}
+
+purgePerson() {
+    local id=${1:?ID missing}
+    
+    sb_curl DELETE "/person/purge/id/${id}"
+    return $?
+}
+
+
+
+##########################
+
+searchPersonByFirstName() {
+    local name=${1:?First name missing}
+
+    sb_curl GET "/person/search/fname/$(urlencode "${name}")"
+    return $?
+}
+
+searchPersonByLastName() {
+    local name=${1:?Last name missing}
+
+    sb_curl GET "/person/search/lname/$(urlencode "${name}")"
+    return $?
+}
+
+
+searchPersonByCode() {
+    local code=${1:?Code missing}
+
+    sb_curl GET "/person/search/code/$(urlencode "${code}")"
+    return $?
+}
+
+searchPersonByIdentifier() {
+    local id2=${1:?Identifier missing}
+
+    sb_curl GET "/person/search/id2/$(urlencode "${id2}")"
+    return $?
+}
+
+
+

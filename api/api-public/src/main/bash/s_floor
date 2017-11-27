@@ -1,0 +1,179 @@
+#!/bin/bash
+
+
+. lib/config
+
+
+getFloorById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/id/${id}"
+    return $?
+}
+
+createFloor() {
+    local number=${1:?Number missing}
+    local title=$(optional "${2}")
+    local building=${3:?Building missing}
+    local section=$(optional "${4}")
+    local rooms=$(optional "${5}")
+    local layouts=$(optional "${6}")
+
+    local floor=$(mkjsonobj "number:${number}" "title:${title}" "building:${building}" "buildingSection:${section}" "lectureRooms:$(mkjsonarr ${rooms})" "layouts:$(mkjsonarr ${layouts})")
+
+    sb_curl POST "/floor/" -d "${floor}"
+    return $?
+}
+
+updateFloor() {
+    local id=${1:?ID missing}; shift
+    local number=${1:?Number missing}
+    local title=$(optional "${2}")
+    local building=${3:?Building missing}
+    local section=$(optional "${4}")
+    local rooms=$(optional "${5}")
+    local layouts=$(optional "${6}")
+
+    local floor=$(mkjsonobj "id:${id}" "number:${number}" "title:${title}" "building:${building}" "buildingSection:${section}" "lectureRooms:$(mkjsonarr ${rooms})" "layouts:$(mkjsonarr ${layouts})")
+
+    sb_curl PUT "/floor/" -d "${floor}"
+    return $?
+}
+
+deleteFloor() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/id/${id}"
+    return $?
+}
+
+purgeFloor() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/purge/id/${id}"
+    return $?
+}
+
+
+
+
+
+getFloorLayoutById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/layout/id/${id}"
+    return $?
+}
+
+createFloorLayout() {
+    local title=${1:?Title missing}
+    local floor=${2:?Floor missing}
+    local map=${3:?Map missing}
+    local active=$(optional "${4}" "true")
+
+    local layout=$(mkjsonobj "title:${title}" "floor:${floor}" "floorMap:${map}" "active:${active}")
+
+    sb_curl POST "/floor/layout/" -d "${layout}"
+    return $?
+}
+
+updateFloorLayout() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local floor=${2:?Floor missing}
+    local map=${3:?Map missing}
+    local active=$(optional "${4}" "true")
+
+    local layout=$(mkjsonobj "id:${id}" "title:${title}" "floor:${floor}" "floorMap:${map}" "active:${active}")
+
+    sb_curl PUT "/floor/layout/" -d "${layout}"
+    return $?
+}
+
+deleteFloorLayout() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/layout/id/${id}"
+    return $?
+}
+
+purgeFloorLayout() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/layout/purge/id/${id}"
+    return $?
+}
+
+
+
+
+getRoomById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/room/id/${id}"
+    return $?
+}
+
+createRoom() {
+    local number=${1:?Number missing}
+    local title=$(optional "${2}")
+    local school=${3:?School missing}
+    local floor=${4:?Floor missing}
+
+    local room=$(mkjsonobj "number:${number}" "title:${title}" "school:${school}" "floor:${floor}")
+
+    sb_curl POST "/floor/room/" -d "${room}"
+    return $?
+}
+
+updateRoom() {
+    local id=${1:?ID missing}
+    local number=${1:?Number missing}
+    local title=$(optional "${2}")
+    local school=${3:?School missing}
+    local floor=${4:?Floor missing}
+
+    local room=$(mkjsonobj "id:${id}" "number:${number}" "title:${title}" "school:${school}" "floor:${floor}")
+
+    sb_curl PUT "/floor/room/" -d "${room}"
+    return $?
+}
+
+deleteRoom() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/room/id/${id}"
+    return $?
+}
+
+purgeRoom() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/floor/room/purge/id/${id}"
+    return $?
+}
+
+
+
+###########################
+
+searchAllFloorsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/floor/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllRoomsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/floor/room/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllRoomsByNumber() {
+    local number=${1:?Number missing}
+
+    sb_curl GET "/floor/room/search/number/$(urlencode "${number}")"
+    return $?
+}

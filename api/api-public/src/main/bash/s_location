@@ -1,0 +1,170 @@
+#!/bin/bash
+
+. lib/config
+
+
+getBuildingById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/building/id/${id}"
+    return $?
+}
+
+createBuilding() {
+    local title=${1:?Title missing}
+    local address=${2:?Address missing}
+    local sections=$(optional "${3}")
+
+    local building=$(mkjsonobj "title:${title}" "address:${address}" "buildingSections:$(mkjsonarr ${sections})")
+
+    sb_curl POST "/location/building/" -d "${building}"
+    return $?
+}
+
+updateBuilding() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local address=${2:?Address missing}
+    local sections=$(optional "${3}")
+
+    local building=$(mkjsonobj "id:${id}" "title:${title}" "address:${address}" "buildingSections:$(mkjsonarr ${sections})")
+
+    sb_curl PUT "/location/building/" -d "${building}"
+    return $?
+}
+
+deleteBuilding() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/building/id/${id}"
+    return $?
+}
+
+purgeBuilding() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/building/purge/id/${id}"
+    return $?
+}
+
+
+
+
+
+getBuildingSectionById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/building/section/id/${id}"
+    return $?
+}
+
+createBuildingSection() {
+    local title=${1:?Title missing}
+    local address=${2:?Address missing}
+    local building=${3:?Building missing}
+    local floors=$(optional "${4}")
+
+    local section=$(mkjsonobj "title:${title}" "address:${address}" building:${building} "floors:$(mkjsonarr ${floors})")
+
+    sb_curl POST "/location/building/section/" -d "${section}"
+    return $?
+}
+
+updateBuildingSection() {
+    local id=${1:?ID missing}; shift
+    local title=${1:?Title missing}
+    local address=${2:?Address missing}
+    local building=${3:?Building missing}
+    local floors=$(optional "${4}")
+
+    local section=$(mkjsonobj "id:${id}" "title:${title}" "address:${address}" "building:${building}" "floors:$(mkjsonarr ${floors})")
+
+    sb_curl PUT "/location/building/section/" -d "${section}"
+    return $?
+}
+
+deleteBuildingSection() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/building/section/id/${id}"
+    return $?
+}
+
+purgeBuildingSection() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/building/section/purge/id/${id}"
+    return $?
+}
+
+
+
+
+
+getAddressById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/address/id/${id}"
+    return $?
+}
+
+createAddress() {
+    local country=${1:?Country missing}
+    local city=${2:?City missing}
+    local street=${3:?Street missing}
+    local buildingNo=${4:?Building number missing}
+    local postalCode=$(optional "${5}")
+    local longitude=$(optional "${6}")
+    local latitude=$(optional "${7}")
+
+    local address=$(mkjsonobj "country:${country}" "city:${city}" "street:${street}" "buildingNo:${buildingNo}" "postalCode:${postalCode}" "longitude:${longitude}" "latitude:${latitude}")
+
+    sb_curl POST "/location/address/" -d "${address}"
+    return $?
+}
+
+updateAddress() {
+    local id=${1:?ID missing}; shift
+    local country=${1:?Country missing}
+    local city=${2:?City missing}
+    local street=${3:?Street missing}
+    local buildingNo=${4:?Building number missing}
+    local postalCode=$(optional "${5}")
+    local longitude=$(optional "${6}")
+    local latitude=$(optional "${7}")
+
+    local address=$(mkjsonobj "id:${id}" "country:${country}" "city:${city}" "street:${street}" "buildingNo:${buildingNo}" "postalCode:${postalCode}" "longitude:${longitude}" "latitude:${latitude}")
+
+    sb_curl PUT "/location/address/" -d "${address}"
+    return $?
+}
+
+deleteAddress() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/address/id/${id}"
+    return $?
+}
+
+purgeAddress() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/location/address/purge/id/${id}"
+    return $?
+}
+
+
+
+searchAllBuildingsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/location/building/search/title/$(urlencode "${title}")"
+    return $?
+}
+
+searchAllBuildingSectionsByTitle() {
+    local title=${1:?Title missing}
+
+    sb_curl GET "/location/building/section/search/title/$(urlencode "${title}")"
+    return $?
+}

@@ -1,0 +1,109 @@
+#!/bin/bash
+
+
+. lib/config
+
+
+getLecturerById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/lecturer/id/${id}"
+    return $?
+}
+
+getLecturerByDisciplineId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/lecturer/discipline/id/${id}"
+    return $?
+}
+
+getLecturerByPersonId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/lecturer/person/id/${id}"
+    return $?
+}
+
+createLecturer() {
+    local person=${1:?Person missing}
+    local degree=${2:?Degree missing}
+    local school=${3:?School missing}
+
+    local lecturer=$(mkjsonobj "person:${person}" "degree:${degree}" "school:${school}")
+
+    sb_curl POST "/mgmt/lecturer/" -d "${lecturer}"
+    return $?
+}
+
+updateLecturer() {
+    local id=${1:?ID missing}
+    local person=${2:?Person missing}
+    local degree=${3:?Degree missing}
+    local school=${4:?School missing}
+
+    local lecturer=$(mkjsonobj "id:${id}" "person:${person}" "degree:${degree}" "school:${school}")
+
+    sb_curl PUT "/lecturer/" -d "${lecturer}"
+    return $?
+}
+
+deleteLecturer() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/mgmt/lecturer/id/${id}"
+    return $?
+}
+
+purgeLecturer() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/mgmt/lecturer/purge/id/${id}"
+    return $?
+}
+
+assignLecturerToDiscipline() {
+    local lecturerId=${1:?Lecturer ID missing}
+    local disciplineId=${2:?Discipline ID missing}
+
+    sb_curl PUT "/mgmt/lecturer/assign/${lecturerId}/discipline/${disciplineId}"
+    return $?
+}
+
+unassignLecturerFromDiscipline() {
+    local lecturerId=${1:?Lecturer ID missing}
+    local disciplineId=${2:?Discipline ID missing}
+
+    sb_curl PUT "/mgmt/lecturer/unassign/${lecturerId}/discipline/${disciplineId}"
+    return $?
+}
+
+
+
+####################
+
+
+searchAllLecturersByDegree() {
+    local degree="${1:?Degree missing}"
+
+    sb_curl GET "/lecturer/search/degree/$(urlencode "${degree}")"
+    return $?
+}
+
+searchAllLecturersByFirstName() {
+    local fname="${1:?First name missing}"
+
+    sb_curl GET "/lecturer/search/fname/$(urlencode "${fname}")"
+    return $?
+}
+
+searchAllLecturersByLastName() {
+    local lname="${1:?Last name missing}"
+
+    sb_curl GET "/lecturer/search/lname/$(urlencode "${lname}")"
+    return $?
+}
+
+
+
+

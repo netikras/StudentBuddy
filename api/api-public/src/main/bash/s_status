@@ -1,0 +1,23 @@
+#!/bin/bash
+
+. lib/config
+
+getEcho() {
+    local message=${1:?Message missing}
+
+    sb_curl GET "/status/test/echo/$(urlencode "${message}")"
+    return $?
+}
+
+
+getAllResources() {
+    sb_curl GET "/status/test/dto/structure"
+    return $?
+}
+
+getResourceDtoStructure() {
+    local resource=${1:?Resource missing}
+
+    sb_curl GET "/status/test/dto/structure/${resource}"
+    return $?
+}

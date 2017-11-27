@@ -43,7 +43,7 @@ public abstract class TestsApi {
     );
 
 
-    @RestEndpoint(url = "/all/discipline/id/{id}/group/id/{id}/timeframe/{after}/{before}",
+    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/group/id/{groupId}/timeframe/{after}/{before}",
             method = HttpMethod.GET, dtoType = DisciplineTestDto.class, action = "getAllForGroupInTimeframe")
     public abstract List<DisciplineTestDto> getAllForDisciplineAndGroup(
             @MethodParam(type = Type.URL, name = "disciplineId") String disciplineId,
@@ -54,7 +54,7 @@ public abstract class TestsApi {
 
 
 
-    @RestEndpoint(url = "/all/discipline/id/{id}/group/id/{id}",
+    @RestEndpoint(url = "/all/discipline/id/{disciplineId}/group/id/{groupId}",
             method = HttpMethod.GET, dtoType = DisciplineTestDto.class, action = "getAllForGroup")
     public abstract List<DisciplineTestDto> getForDiscipline(
             @MethodParam(type = Type.URL, name = "disciplineId") String disciplineId,

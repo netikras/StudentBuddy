@@ -1,0 +1,176 @@
+#!/bin/bash
+
+. lib/config
+
+getLectureById() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/lectures/id/${id}"
+    return $?
+}
+
+createLecture() {
+    local discipline=${1:?Discipline missing}
+    local course=${2:?Course missing}
+    local startsOn=${3:?Start time missing}
+    local endsOn=$(optional "${4}" "")
+    local room=${5:?Room missing}
+    local group=${6:?Group missing}
+    local lecturer=${7:?Lecturer missing}
+    local visitors=$(optional "${8}")
+    local assignments=$(optional "${9}"); shift
+    local tests=$(optional "${9}")
+
+    startsOn=$(adjustTimestamp "${startsOn}")
+    endsOn=$(adjustTimestamp "${endsOn}")
+
+    local lecture=$(mkjsonobj "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
+
+    sb_curl POST "/lectures/" -d "${lecture}"
+    retrn $?
+}
+
+updateLecture() {
+    local id=${1:?ID missing}; shift
+    local discipline=${1:?Discipline missing}
+    local course=${2:?Course missing}
+    local startsOn=${3:?Start time missing}
+    local endsOn=$(optional "${4}" "")
+    local room=${5:?Room missing}
+    local group=${6:?Group missing}
+    local lecturer=${7:?Lecturer missing}
+    local visitors=$(optional "${8}")
+    local assignments=$(optional "${9}"); shift
+    local tests=$(optional "${9}")
+
+    startsOn=$(adjustTimestamp "${startsOn}")
+    endsOn=$(adjustTimestamp "${endsOn}")
+
+    local lecture=$(mkjsonobj "id:${id}" "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
+
+    sb_curl POST "/lectures/" -d "${lecture}"
+    return $?
+}
+
+deleteLecture() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/lectures/id/${id}"
+    return $?
+}
+
+purgeLecture() {
+    local id=${1:?ID missing}
+
+    sb_curl DELETE "/lectures/purge/id/${id}"
+    return $?
+}
+
+
+
+getAllLecturesByGroupIdStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+    }
+
+    sb_curl GET "/lectures/group/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getAllLecturesByStudentIdStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+    }
+
+    sb_curl GET "/lectures/student/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getAllLecturesByLecturerIdStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+    }
+
+    sb_curl GET "/lectures/lecturer/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getAllLecturesByRoomIdStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+    }
+
+    sb_curl GET "/lectures/room/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+
+
+
+getAllLecturesByGroupIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/group/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesByStudentIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/student/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesByLecturerIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/lecturer/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesByRoomIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/room/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+
+
+
