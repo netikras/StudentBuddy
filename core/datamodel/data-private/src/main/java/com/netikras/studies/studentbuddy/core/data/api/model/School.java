@@ -50,10 +50,10 @@ public class School {
 
 
     @Column(name = "title", nullable = false)
-    @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
-    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "school", orphanRemoval = true, cascade = {}, fetch = FetchType.EAGER)
     @Fetch(SUBSELECT)
     @ModelTransform(dtoFieldName = "departments", dtoUpdatable = false)
     private List<SchoolDepartment> departments;

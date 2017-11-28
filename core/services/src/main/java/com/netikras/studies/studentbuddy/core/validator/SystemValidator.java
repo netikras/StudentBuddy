@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.core.validator;
 
-import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidationResult;
 import com.netikras.studies.studentbuddy.core.data.meta.PasswordValidator;
 import com.netikras.studies.studentbuddy.core.data.sys.dao.SettingsDao;
@@ -13,7 +12,6 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
-import com.netikras.tools.common.security.ThreadContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

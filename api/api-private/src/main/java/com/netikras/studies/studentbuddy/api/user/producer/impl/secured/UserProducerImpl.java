@@ -12,6 +12,7 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.studies.studentbuddy.core.service.UserService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.AuthenticationDetail;
@@ -45,11 +46,13 @@ public class UserProducerImpl {
 
     @Resource
     private DtoMapper dtoMapper;
+    @Resource
+    private EntityProvider entityProvider;
 
     @Transactional
     @Authorizable(resource = USER, action = Action.MODIFY)
     public UserDto updateUser(UserDto item) {
-        User user = modelMapper.apply(new User(), item);
+        User user = modelMapper.apply(entityProvider.fetch(item), item);
         user.setId(item.getId());
         user = userService.updateUser(user);
 

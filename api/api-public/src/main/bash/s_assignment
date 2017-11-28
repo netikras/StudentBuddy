@@ -30,6 +30,7 @@ createAssignment() {
     local descr=${2:?Desciption missing}
     local due=${3:?Due timestamp missing}
 
+    discipline=$(mkjsonobj "${discipline}")
     due=$(adjustTimestamp "${due}")
 
     local assignment=$(mkjsonobj "discipline:${discipline}" "description:${descr}" "due:${due}")
@@ -44,6 +45,7 @@ updateAssignment() {
     local descr=${2:?Desciption missing}
     local due=${3:?Due timestamp missing}
 
+    discipline=$(mkjsonobj "${discipline}")
     due=$(adjustTimestamp "${due}")
 
     local assignment=$(mkjsonobj "id:${id}" "discipline:${discipline}" "description:${descr}" "due:${due}")

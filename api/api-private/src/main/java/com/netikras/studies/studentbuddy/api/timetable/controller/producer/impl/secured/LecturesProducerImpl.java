@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,8 @@ public class LecturesProducerImpl {
 
     @Resource
     private LectureService lectureService;
-
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Authorizable(resource = LECTURE, action = PURGE)
@@ -55,7 +57,7 @@ public class LecturesProducerImpl {
 
     @Authorizable(resource = LECTURE, action = MODIFY)
     public LectureDto updateLecture(LectureDto lectureDto) {
-        Lecture lecture = modelMapper.apply(new Lecture(), lectureDto);
+        Lecture lecture = modelMapper.apply(entityProvider.fetch(lectureDto), lectureDto);
         lecture = lectureService.updateLecture(lecture);
         lectureDto = modelMapper.transform(lecture, new LectureDto());
         return lectureDto;

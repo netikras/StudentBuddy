@@ -68,4 +68,6 @@ public interface StudentService {
     List<LectureGuest> searchAllGuestsByFirstName(String query);
 
     List<LectureGuest> searchAllGuestsByLastName(String query);
+
+    StudentsGroup updateGroup(StudentsGroup group);
 }

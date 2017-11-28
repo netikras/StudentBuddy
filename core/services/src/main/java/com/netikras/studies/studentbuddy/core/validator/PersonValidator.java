@@ -7,10 +7,12 @@ import com.netikras.studies.studentbuddy.core.data.api.dao.PersonDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.StudentsGroupDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
+import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.tools.common.exception.ErrorsCollection;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.CONFLICT;
@@ -44,7 +47,8 @@ public class PersonValidator {
     private LectureGuestDao guestDao;
     @Resource
     private LectureDao lectureDao;
-
+    @Resource
+    private EntityProvider entityProvider;
 
     @Transactional
     public ErrorsCollection validateForCreation(Person person, ErrorsCollection errors) {
@@ -83,6 +87,7 @@ public class PersonValidator {
             );
         }
 
+        person.setId(null);
         return errors;
     }
 
@@ -98,7 +103,7 @@ public class PersonValidator {
             return errors;
         }
         if (student.getGroup() != null) {
-            StudentsGroup group = fetchGroup(student.getGroup());
+            StudentsGroup group = entityProvider.fetch(student.getGroup());
             if (group == null) {
                 errors.add(new ValidationError()
                         .setSuggestion("Group must have either a valid ID or Title or both")
@@ -111,7 +116,7 @@ public class PersonValidator {
             }
         }
 
-        Person person = fetchPerson(student.getPerson());
+        Person person = entityProvider.fetch(student.getPerson());
         if (person == null) {
             errors.add(new ValidationError()
                     .setSuggestion("All students must be based on an existing person. Either refer to an already existing person " +
@@ -131,9 +136,12 @@ public class PersonValidator {
                         .setStatus(CONFLICT.getCode())
                 );
             }
-
         }
 
+        student.setSchool(entityProvider.fetch(student.getSchool()));
+        student.setDepartment(entityProvider.fetch(student.getDepartment()));
+
+        student.setId(null);
         return errors;
     }
 
@@ -163,6 +171,36 @@ public class PersonValidator {
                         .setStatus(CONFLICT.getCode())
                 );
             }
+        }
+
+        group.setSchool(entityProvider.fetch(group.getSchool()));
+
+        group.setId(null);
+        return errors;
+    }
+
+
+    @Transactional
+    public ErrorsCollection validateForUpdate(StudentsGroup group, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (group == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Only existing groups can be updated")
+                    .setMessage1("Group is not supplied")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        group.setSchool(entityProvider.fetch(group.getSchool()));
+
+        if (group.getSchool() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("All groups must be linked to some school")
+                    .setMessage1("School is not provided")
+                    .setStatus(NOT_FOUND.getCode())
+            );
         }
 
         return errors;

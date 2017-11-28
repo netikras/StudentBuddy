@@ -42,7 +42,7 @@ getAllPersonByLastName() {
     return $?
 }
 
-getAllByFirstAndLastName() {
+getAllPersonByFirstAndLastName() {
     local fname=${1:?First name missing}
     local lname=${2:?Last name missing}
 
@@ -60,7 +60,8 @@ createPerson() {
 
     local person=$(mkjsonobj "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
 
-    sb_curl POST "/person/" -d "${person}"
+    sb_curl POST "/mgmt/person/" -d "${person}"
+    return $?
 }
 
 updatePerson() {
@@ -74,20 +75,21 @@ updatePerson() {
 
     local person=$(mkjsonobj "id:${id}" "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
 
-    sb_curl POST "/person/" -d "${person}"
+    sb_curl PUT "/person/" -d "${person}"
+    return $?
 }
 
 deletePerson() {
     local id=${1:?ID missing}
     
-    sb_curl DELETE "/person/id/${id}"
+    sb_curl DELETE "/mgmt/person/id/${id}"
     return $?
 }
 
 purgePerson() {
     local id=${1:?ID missing}
     
-    sb_curl DELETE "/person/purge/id/${id}"
+    sb_curl DELETE "/mgmt/person/purge/id/${id}"
     return $?
 }
 

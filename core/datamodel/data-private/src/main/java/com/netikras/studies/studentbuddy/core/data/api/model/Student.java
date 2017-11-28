@@ -49,7 +49,7 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "group_id")
-    @ModelTransform(dtoFieldName = "group", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "group")
     private StudentsGroup group;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -59,7 +59,7 @@ public class Student {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.REFRESH})
     @JoinColumn(name = "department_id")
-    @ModelTransform(dtoFieldName = "department", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "department")
     private SchoolDepartment department;
 
     public String getId() {

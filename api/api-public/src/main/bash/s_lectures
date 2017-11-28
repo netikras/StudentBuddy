@@ -11,7 +11,7 @@ getLectureById() {
 
 createLecture() {
     local discipline=${1:?Discipline missing}
-    local course=${2:?Course missing}
+    local course=$(optional "${2}")
     local startsOn=${3:?Start time missing}
     local endsOn=$(optional "${4}" "")
     local room=${5:?Room missing}
@@ -23,6 +23,14 @@ createLecture() {
 
     startsOn=$(adjustTimestamp "${startsOn}")
     endsOn=$(adjustTimestamp "${endsOn}")
+
+    room=$(mkjsonobj "${room}")
+    group=$(mkjsonobj "${group}")
+    lecturer=$(mkjsonobj "${lecturer}")
+    [ -n "${course}" ] && course=$(mkjsonobj "${course}")
+    [ -n "${visitors}" ] && visitors=$(mkjsonobjarr ${visitors})
+    [ -n "${assignments}" ] && assignments=$(mkjsonobjarr ${assignments})
+    [ -n "${tests}" ] && tests=$(mkjsonobjarr ${tests})
 
     local lecture=$(mkjsonobj "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
 
@@ -33,7 +41,7 @@ createLecture() {
 updateLecture() {
     local id=${1:?ID missing}; shift
     local discipline=${1:?Discipline missing}
-    local course=${2:?Course missing}
+    local course=$(optional "${2}")
     local startsOn=${3:?Start time missing}
     local endsOn=$(optional "${4}" "")
     local room=${5:?Room missing}
@@ -45,6 +53,15 @@ updateLecture() {
 
     startsOn=$(adjustTimestamp "${startsOn}")
     endsOn=$(adjustTimestamp "${endsOn}")
+
+    course=$(mkjsonobj "${course}")
+    room=$(mkjsonobj "${room}")
+    group=$(mkjsonobj "${group}")
+    lecturer=$(mkjsonobj "${lecturer}")
+    [ -n "${course}" ] && course=$(mkjsonobj "${course}")
+    [ -n "${visitors}" ] && visitors=$(mkjsonobjarr ${visitors})
+    [ -n "${assignments}" ] && assignments=$(mkjsonobjarr ${assignments})
+    [ -n "${tests}" ] && tests=$(mkjsonobjarr ${tests})
 
     local lecture=$(mkjsonobj "id:${id}" "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
 

@@ -5,7 +5,9 @@ import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LecturerDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.PersonnelDao;
+import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
 import com.netikras.studies.studentbuddy.core.data.api.dao.SchoolDao;
+import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineLecturer;
@@ -18,10 +20,12 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Student;
 import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
+import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
@@ -49,6 +53,12 @@ public class SchoolValidator {
     private CourseDao courseDao;
     @Resource
     private LectureValidator lectureValidator;
+    @Resource
+    private ResourceRepoProvider repoProvider;
+    @Resource
+    private EntityProvider entityProvider;
+    @Resource
+    private ModelMapper modelMapper;
 
 
     @Transactional
@@ -100,6 +110,26 @@ public class SchoolValidator {
 
         department.setSchool(fetch(department.getSchool()));
 
+        if (!isNullOrEmpty(department.getBuildings())) {
+            List<Building> buildings = new ArrayList<>(department.getBuildings().size());
+            for (Building building : department.getBuildings()) {
+                if (building == null) {
+                    continue;
+                }
+
+                if (!isNullOrEmpty(building.getId())) {
+                    building = entityProvider.fetch(building);
+                    if (building != null) {
+                        buildings.add(building);
+                    }
+                } else {
+                    buildings.add(building);
+                }
+            }
+
+            department.setBuildings(buildings);
+        }
+
         if (department.getSchool() == null) {
             errors.add(new ValidationError()
                     .setSuggestion("New department must be linked to an already existing school")
@@ -109,6 +139,23 @@ public class SchoolValidator {
         }
 
         department.setId(null);
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForUpdate(SchoolDepartment department, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (department == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot update a non-existing school department")
+                    .setMessage1("Department is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+
         return errors;
     }
 
@@ -217,7 +264,7 @@ public class SchoolValidator {
             return errors;
         }
 
-        discipline.setSchool(fetch(discipline.getSchool()));
+        discipline.setSchool(entityProvider.fetch(discipline.getSchool()));
 
         if (discipline.getSchool() == null) {
             errors.add(new ValidationError()
@@ -237,6 +284,33 @@ public class SchoolValidator {
 
 
         discipline.setId(null);
+        return errors;
+    }
+
+    @Transactional
+    public ErrorsCollection validateForUpdate(Discipline discipline, ErrorsCollection errors) {
+        errors = ensure(errors);
+
+        if (discipline == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Cannot update a non-existing discipline")
+                    .setMessage1("Discipline is not given")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
+        discipline.setSchool(entityProvider.fetch(discipline.getSchool()));
+
+        if (discipline.getSchool() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Discipline must be always linked to a school")
+                    .setMessage1("School missing")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+            return errors;
+        }
+
         return errors;
     }
 

@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,8 @@ public class TestsProducerImpl {
 
     @Resource
     private LectureService lectureService;
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Authorizable(resource = TEST, action = PURGE)
@@ -53,7 +56,7 @@ public class TestsProducerImpl {
 
     @Authorizable(resource = TEST, action = MODIFY)
     public DisciplineTestDto updateDisciplineTest(DisciplineTestDto item) {
-        DisciplineTest test = modelMapper.apply(new DisciplineTest(), item);
+        DisciplineTest test = modelMapper.apply(entityProvider.fetch(item), item);
         test = lectureService.updateTest(test);
         DisciplineTestDto disciplineTestDto = modelMapper.transform(test, new DisciplineTestDto());
 

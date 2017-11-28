@@ -8,6 +8,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LocationService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,8 @@ public class LocationProducerImpl {
     
     @Resource
     private LocationService locationService;
+    @Resource
+    private EntityProvider entityProvider;
 
     @Authorizable(resource = BUILDING, action = PURGE)
     public void purgeBuilding(String id) {
@@ -67,7 +70,7 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = BUILDING, action = MODIFY)
     public BuildingDto updateBuilding(BuildingDto buildingDto) {
-        Building building = modelMapper.apply(new Building(), buildingDto);
+        Building building = modelMapper.apply(entityProvider.fetch(buildingDto), buildingDto, new MappingSettings().setForceUpdate(true));
         building = locationService.updateBuilding(building);
         BuildingDto dto = modelMapper.transform(building, new BuildingDto());
         return dto;
@@ -96,7 +99,7 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = BUILDING_SECTION, action = MODIFY)
     public BuildingSectionDto updateBuildingSection(BuildingSectionDto buildingSectionDto) {
-        BuildingSection buildingSection = modelMapper.apply(new BuildingSection(), buildingSectionDto);
+        BuildingSection buildingSection = modelMapper.apply(entityProvider.fetch(buildingSectionDto), buildingSectionDto);
         buildingSection = locationService.updateBuildingSection(buildingSection);
         BuildingSectionDto dto = modelMapper.transform(buildingSection, new BuildingSectionDto());
         return dto;
@@ -125,7 +128,7 @@ public class LocationProducerImpl {
 
     @Authorizable(resource = ADDRESS, action = MODIFY)
     public AddressDto updateAddress(AddressDto addressDto) {
-        Address address = modelMapper.apply(new Address(), addressDto);
+        Address address = modelMapper.apply(entityProvider.fetch(addressDto), addressDto);
         address = locationService.updateAddress(address);
         AddressDto dto = modelMapper.transform(address, new AddressDto());
         return dto;

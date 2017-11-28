@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.*;
 import com.netikras.studies.studentbuddy.core.data.api.model.*;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.SchoolService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,8 @@ public class SchoolProducerImpl {
 
     @Resource
     private DtoMapper dtoMapper;
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Authorizable(resource = SCHOOL, action = PURGE)
@@ -61,7 +64,7 @@ public class SchoolProducerImpl {
 
     @Authorizable(resource = SCHOOL, action = MODIFY)
     public SchoolDto updateSchool(SchoolDto schoolDto) {
-        School school = modelMapper.apply(new School(), schoolDto);
+        School school = modelMapper.apply(entityProvider.fetch(schoolDto), schoolDto);
         school = schoolService.updateSchool(school);
         schoolDto = (SchoolDto) dtoMapper.toDto(school, 3);
 
@@ -93,7 +96,7 @@ public class SchoolProducerImpl {
 
     @Authorizable(resource = SCHOOL_DEPARTMENT, action = MODIFY)
     public SchoolDepartmentDto updateSchoolDepartment(SchoolDepartmentDto departmentDto) {
-        SchoolDepartment department = modelMapper.apply(new SchoolDepartment(), departmentDto);
+        SchoolDepartment department = modelMapper.apply(entityProvider.fetch(departmentDto), departmentDto);
         department = schoolService.updateSchoolDepartment(department);
         departmentDto = (SchoolDepartmentDto) dtoMapper.toDto(department, 3);
 
@@ -128,7 +131,7 @@ public class SchoolProducerImpl {
 
     @Authorizable(resource = DISCIPLINE, action = MODIFY)
     public DisciplineDto updateDiscipline(DisciplineDto disciplineDto) {
-        Discipline discipline = modelMapper.apply(new Discipline(), disciplineDto, new MappingSettings().setForceUpdate(true));
+        Discipline discipline = modelMapper.apply(entityProvider.fetch(disciplineDto), disciplineDto);
         discipline = schoolService.updateDiscipline(discipline);
         disciplineDto = (DisciplineDto) dtoMapper.toDto(discipline, 3);
         return disciplineDto;
@@ -165,7 +168,7 @@ public class SchoolProducerImpl {
 
     @Authorizable(resource = COURSE, action = MODIFY)
     public CourseDto updateCourse(CourseDto item) {
-        Course course = modelMapper.apply(new Course(), item, new MappingSettings().setForceUpdate(true));
+        Course course = modelMapper.apply(entityProvider.fetch(item), item);
         course = schoolService.updateCourse(course);
         return (CourseDto) dtoMapper.toDto(course, 3);
     }
@@ -179,7 +182,7 @@ public class SchoolProducerImpl {
     @Authorizable(resource = COURSE, action = GET_ALL)
     public List<CourseDto> getAllCourses() {
         List<Course> courses = schoolService.getAllCourses();
-        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class);
+        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
     }
 
     @Authorizable(resource = COURSE, action = PURGE)
@@ -190,19 +193,19 @@ public class SchoolProducerImpl {
     @Authorizable(resource = COURSE, action = GET_ALL)
     public List<CourseDto> getAllCoursesBySchoolId(String id) {
         List<Course> courses = schoolService.getAllCoursesBySchool(id);
-        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class);
+        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
     }
 
     @Authorizable(resource = COURSE, action = GET_ALL)
     public List<CourseDto> getAllCoursesByDisciplineId(String id) {
         List<Course> courses = schoolService.getAllCoursesByDiscipline(id);
-        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class);
+        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
     }
 
     @Authorizable(resource = COURSE, action = SEARCH)
     public List<CourseDto> searchAllCoursesByTitle(String title) {
         List<Course> courses = schoolService.searchAllCoursesByTitle(title);
-        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class);
+        return (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
     }
 
     @Authorizable(resource = COURSE, action = MODIFY)
@@ -224,7 +227,7 @@ public class SchoolProducerImpl {
 
     @Authorizable(resource = PERSONNEL, action = MODIFY)
     public PersonnelMemberDto updatePersonnelMember(PersonnelMemberDto personnelMemberDto) {
-        PersonnelMember personnelMember = modelMapper.apply(new PersonnelMember(), personnelMemberDto, new MappingSettings().setForceUpdate(true));
+        PersonnelMember personnelMember = modelMapper.apply(entityProvider.fetch(personnelMemberDto), personnelMemberDto);
         personnelMember = schoolService.updatePersonnelMember(personnelMember);
         personnelMemberDto = (PersonnelMemberDto) dtoMapper.toDto(personnelMember, 3);
         return personnelMemberDto;

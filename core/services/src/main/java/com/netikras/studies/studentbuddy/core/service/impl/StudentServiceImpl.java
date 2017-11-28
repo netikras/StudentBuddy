@@ -227,6 +227,23 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
+    public StudentsGroup updateGroup(StudentsGroup group) {
+        ErrorsCollection errors = personValidator.validateForUpdate(group, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot delete group")
+                    .setMessage2("Validation errors: " + errors.size())
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
+
+        group = groupDao.save(group);
+        return group;
+    }
+
+    @Override
+    @Transactional
     public void deleteStudentsGroup(String groupId) {
         StudentsGroup group = groupDao.findOne(groupId);
         ErrorsCollection errors = personValidator.validateForRemoval(group, null);

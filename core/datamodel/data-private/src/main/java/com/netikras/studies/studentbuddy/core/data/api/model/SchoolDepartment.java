@@ -45,15 +45,15 @@ public class SchoolDepartment {
     private Date updatedOn;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @ModelTransform(dtoFieldName = "school", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "school")
     private School school;
 
     @Column(name = "title", nullable = false)
     @ModelTransform(dtoFieldName = "title")
     private String title;
 
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "department")
-    @ModelTransform(dtoFieldName = "buildings", dtoUpdatable = false)
+    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "department")
+    @ModelTransform(dtoFieldName = "buildings")
     private List<Building> buildings;
 
 

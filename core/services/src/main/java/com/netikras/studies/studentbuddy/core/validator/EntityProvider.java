@@ -3,12 +3,39 @@ package com.netikras.studies.studentbuddy.core.validator;
 import com.netikras.studies.studentbuddy.core.data.api.dao.JpaRepo;
 import com.netikras.studies.studentbuddy.core.data.api.dao.ResourceRepoProvider;
 import com.netikras.studies.studentbuddy.core.data.api.dao.RoleDao;
+import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.AddressDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingFloorDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.BuildingSectionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.FloorLayoutDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.location.LectureRoomDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.SystemSettingDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.TagDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineTestDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.LecturerDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
+import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.FloorLayout;
@@ -29,11 +56,13 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.tools.common.model.mapper.MappingSettings;
+import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-
 import java.lang.reflect.Field;
 
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
@@ -43,7 +72,43 @@ public class EntityProvider {
 
     @Resource
     private ResourceRepoProvider repositories;
+    @Resource
+    private ModelMapper modelMapper;
 
+    private MappingSettings mappingSettings;
+
+    @PostConstruct
+    public void init() {
+        mappingSettings = new MappingSettings()
+                .setDepthMax(1)
+                .setForceUpdate(true);
+    }
+
+
+    public Course fetch(CourseDto item) {
+        return fetch(modelMapper.apply(new Course(), item, mappingSettings));
+    }
+
+    @Transactional
+    public Course fetch(Course item) {
+        Course existing = null;
+
+        if (item == null) return existing;
+
+        JpaRepo<Course> repo = repositories.getRepoForModel(item.getClass());
+        if (repo == null) return existing;
+
+        if (!isNullOrEmpty(item.getId())) {
+            existing = repo.findOne(item.getId());
+        }
+
+        return existing;
+    }
+
+
+    public Lecture fetch(LectureDto item) {
+        return fetch(modelMapper.apply(new Lecture(), item, mappingSettings));
+    }
 
     @Transactional
     public Lecture fetch(Lecture item) {
@@ -59,6 +124,10 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+    public Assignment fetch(AssignmentDto item) {
+        return fetch(modelMapper.apply(new Assignment(), item, mappingSettings));
     }
 
     @Transactional
@@ -77,6 +146,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public Person fetch(PersonDto item) {
+        return fetch(modelMapper.apply(new Person(), item, mappingSettings));
+    }
+
     @Transactional
     public Person fetch(Person item) {
         Person existing = null;
@@ -91,6 +165,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public StudentsGroup fetch(StudentsGroupDto item) {
+        return fetch(modelMapper.apply(new StudentsGroup(), item, mappingSettings));
     }
 
     @Transactional
@@ -109,6 +188,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public DisciplineTest fetch(DisciplineTestDto item) {
+        return fetch(modelMapper.apply(new DisciplineTest(), item, mappingSettings));
+    }
+
     @Transactional
     public DisciplineTest fetch(DisciplineTest item) {
         DisciplineTest existing = null;
@@ -125,6 +209,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public Student fetch(StudentDto item) {
+        return fetch(modelMapper.apply(new Student(), item, mappingSettings));
+    }
+
     @Transactional
     public Student fetch(Student item) {
         Student existing = null;
@@ -139,6 +228,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public User fetch(UserDto item) {
+        return fetch(modelMapper.apply(new User(), item, mappingSettings));
     }
 
     @Transactional
@@ -162,6 +256,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public LectureGuest fetch(LectureGuestDto item) {
+        return fetch(modelMapper.apply(new LectureGuest(), item, mappingSettings));
+    }
+
     @Transactional
     public LectureGuest fetch(LectureGuest item) {
         LectureGuest existing = null;
@@ -176,6 +275,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public Lecturer fetch(LecturerDto item) {
+        return fetch(modelMapper.apply(new Lecturer(), item, mappingSettings));
     }
 
     @Transactional
@@ -194,6 +298,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public Address fetch(AddressDto item) {
+        return fetch(modelMapper.apply(new Address(), item, mappingSettings));
+    }
+
     @Transactional
     public Address fetch(Address item) {
         Address existing = null;
@@ -208,6 +317,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public Building fetch(BuildingDto item) {
+        return fetch(modelMapper.apply(new Building(), item, mappingSettings));
     }
 
     @Transactional
@@ -226,6 +340,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public BuildingSection fetch(BuildingSectionDto item) {
+        return fetch(modelMapper.apply(new BuildingSection(), item, mappingSettings));
+    }
+
     @Transactional
     public BuildingSection fetch(BuildingSection item) {
         BuildingSection existing = null;
@@ -240,6 +359,10 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+    public BuildingFloor fetch(BuildingFloorDto item) {
+        return fetch(modelMapper.apply(new BuildingFloor(), item, mappingSettings));
     }
 
     @Transactional
@@ -258,6 +381,10 @@ public class EntityProvider {
         return existing;
     }
 
+    public FloorLayout fetch(FloorLayoutDto item) {
+        return fetch(modelMapper.apply(new FloorLayout(), item, mappingSettings));
+    }
+
     @Transactional
     public FloorLayout fetch(FloorLayout item) {
         FloorLayout existing = null;
@@ -272,6 +399,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public LectureRoom fetch(LectureRoomDto item) {
+        return fetch(modelMapper.apply(new LectureRoom(), item, mappingSettings));
     }
 
     @Transactional
@@ -290,6 +422,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public Discipline fetch(DisciplineDto item) {
+        return fetch(modelMapper.apply(new Discipline(), item, mappingSettings));
+    }
+
     @Transactional
     public Discipline fetch(Discipline item) {
         Discipline existing = null;
@@ -304,6 +441,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public PersonnelMember fetch(PersonnelMemberDto item) {
+        return fetch(modelMapper.apply(new PersonnelMember(), item, mappingSettings));
     }
 
     @Transactional
@@ -322,6 +464,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public School fetch(SchoolDto item) {
+        return fetch(modelMapper.apply(new School(), item, mappingSettings));
+    }
+
     @Transactional
     public School fetch(School item) {
         School existing = null;
@@ -336,6 +483,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public SchoolDepartment fetch(SchoolDepartmentDto item) {
+        return fetch(modelMapper.apply(new SchoolDepartment(), item, mappingSettings));
     }
 
     @Transactional
@@ -354,6 +506,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public Tag fetch(TagDto item) {
+        return fetch(modelMapper.apply(new Tag(), item, mappingSettings));
+    }
+
     @Transactional
     public Tag fetch(Tag item) {
         Tag existing = null;
@@ -368,6 +525,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public Role fetch(RoleDto item) {
+        return fetch(modelMapper.apply(new Role(), item, mappingSettings));
     }
 
     @Transactional
@@ -391,6 +553,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public ResourceActionLink fetch(RolePermissionDto item) {
+        return fetch(modelMapper.apply(new ResourceActionLink(), item, mappingSettings));
+    }
+
     @Transactional
     public ResourceActionLink fetch(ResourceActionLink item) {
         ResourceActionLink existing = null;
@@ -405,6 +572,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public Comment fetch(CommentDto item) {
+        return fetch(modelMapper.apply(new Comment(), item, mappingSettings));
     }
 
     @Transactional
@@ -423,6 +595,11 @@ public class EntityProvider {
         return existing;
     }
 
+
+    public SystemSetting fetch(SystemSettingDto item) {
+        return fetch(modelMapper.apply(new SystemSetting(), item, mappingSettings));
+    }
+
     @Transactional
     public SystemSetting fetch(SystemSetting item) {
         SystemSetting existing = null;
@@ -437,6 +614,11 @@ public class EntityProvider {
         }
 
         return existing;
+    }
+
+
+    public PasswordRequirement fetch(PasswordRequirementDto item) {
+        return fetch(modelMapper.apply(new PasswordRequirement(), item, mappingSettings));
     }
 
     @Transactional
@@ -454,33 +636,5 @@ public class EntityProvider {
 
         return existing;
     }
-
-
-    public <T> void prepForUpdate(T original, T updated) {
-        if (original == null) return;
-        if (updated == null) return;
-
-        for (Field field : original.getClass().getDeclaredFields()) {
-            Class ftype = field.getType();
-
-            if (ftype.isPrimitive()
-                    || String.class == ftype
-                    || Enum.class == ftype
-                    || Boolean.class == ftype
-                    || Character.class == ftype
-                    || Number.class == ftype
-                    ) {
-                continue;
-            }
-            try {
-                field.setAccessible(true);
-                field.set(updated, field.get(original));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-
 
 }

@@ -5,6 +5,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.PersonDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,8 @@ public class PersonProducerImpl {
 
     @Resource
     private DtoMapper dtoMapper;
+    @Resource
+    private EntityProvider entityProvider;
 
     @Authorizable(resource = PERSON, action = GET)
     public PersonDto getPerson(String id) {

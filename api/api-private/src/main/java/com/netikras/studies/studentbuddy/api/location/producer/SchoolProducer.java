@@ -83,7 +83,7 @@ public class SchoolProducer extends SchoolApiProducer {
 
     @Override
     protected void onDeleteSchoolDepartmentDto(String id) {
-        impl.deleteSchool(id);
+        impl.deleteSchoolDepartment(id);
     }
 
     @Override

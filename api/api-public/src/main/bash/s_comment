@@ -12,13 +12,14 @@ getCommentById() {
 
 createComment() {
     local title=${1:?Title missing}
-    local text=${3:?Text missing}
+    local text=${2:?Text missing}
     local entityType=${3:?Entity type missing}
     local entityId=${4:?Entity ID missing}
     local author=${5:?Author missing}
     local category=$(optional "${6}")
     local tags=$(optional "${7}")
 
+    author=$(mkjsonobj "${author}")
     local comment=$(mkjsonobj "title:${title}" "text:${text}" "entityType:${entityType}" "entityId:${entityId}" "author:${author}" "category:${category}" "tags:$(mkjsonarr ${tags})")
 
     sb_curl POST "/comment/" -d "${comment}"
@@ -28,13 +29,14 @@ createComment() {
 updateComment() {
     local id=${1:?ID missing}; shift
     local title=${1:?Title missing}
-    local text=${3:?Text missing}
+    local text=${2:?Text missing}
     local entityType=${3:?Entity type missing}
     local entityId=${4:?Entity ID missing}
     local author=${5:?Author missing}
     local category=$(optional "${6}")
     local tags=$(optional "${7}")
 
+    author=$(mkjsonobj "${author}")
     local comment=$(mkjsonobj "id:${id}" "title:${title}" "text:${text}" "entityType:${entityType}" "entityId:${entityId}" "author:${author}" "category:${category}" "tags:$(mkjsonarr ${tags})")
 
     sb_curl PUT "/comment/" -d "${comment}"
@@ -55,6 +57,8 @@ createCommentForEntity() {
     local type=${1:?Type missing}
     local id=${2:?ID missing}
     local comment=${3:?Comment missing}
+
+    comment=$(mkjsonobj "${comment}")
 
     sb_curl POST "/comment/type/${type}/id/${id}" -d "${comment}"
     return $?

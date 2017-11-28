@@ -65,7 +65,20 @@ public class LocationValidator {
         }
 
 
-        validateForCreation(building.getAddress(), errors);
+        if (building.getAddress() != null && !isNullOrEmpty(building.getAddress().getId())) {
+            building.setAddress(entityProvider.fetch(building.getAddress()));
+        }
+        if (building.getDepartment() != null) {
+            building.setDepartment(entityProvider.fetch(building.getDepartment()));
+        }
+
+        if (building.getAddress() == null) {
+            errors.add(new ValidationError()
+                    .setSuggestion("Building must have a valid address")
+                    .setMessage1("Building address missing")
+                    .setStatus(NOT_FOUND.getCode())
+            );
+        }
 
         SchoolDepartment department = building.getDepartment();
 
@@ -119,7 +132,15 @@ public class LocationValidator {
                     .setStatus(NOT_FOUND.getCode())
             );
         } else {
-            entityProvider.prepForUpdate(existing, building);
+            if (building.getDepartment() != null) {
+                building.setDepartment(entityProvider.fetch(building.getDepartment()));
+            }
+
+//            entityProvider.prepForUpdate(existing, building);
+        }
+
+        if (building.getAddress() != null && !isNullOrEmpty(building.getAddress().getId())) {
+            building.setAddress(entityProvider.fetch(building.getAddress()));
         }
 
         return errors;

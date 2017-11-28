@@ -46,7 +46,7 @@ public class StudentsGroup {
     private Date updatedOn;
 
     @Column(name = "title", nullable = false, unique = true)
-    @ModelTransform(dtoFieldName = "title", dtoUpdatable = false)
+    @ModelTransform(dtoFieldName = "title")
     private String title;
 
     @Column(name = "email")

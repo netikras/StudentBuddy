@@ -18,7 +18,7 @@ import static com.netikras.studies.studentbuddy.api.config.Initializer.API_URL;
 
 @RestApiTemplate(baseUrlPrefix = API_URL, baseUrl = "/student", cruds = {
         @GenerateCrud(dtoType = StudentDto.class, methods = {CrudMethod.RETRIEVE, CrudMethod.UPDATE}),
-        @GenerateCrud(dtoType = StudentsGroupDto.class, methods = {CrudMethod.RETRIEVE}, url = "/group"),
+        @GenerateCrud(dtoType = StudentsGroupDto.class, methods = {CrudMethod.RETRIEVE, CrudMethod.UPDATE}, url = "/group"),
         @GenerateCrud(dtoType = LectureGuestDto.class, methods = {CrudMethod.RETRIEVE, CrudMethod.UPDATE}, url = "/guest"),
 })
 @RestApiLocation(producer = "../api-private", consumer = "../api-public", constants = "../api-public")

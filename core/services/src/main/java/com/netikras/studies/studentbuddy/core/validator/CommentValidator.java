@@ -40,6 +40,8 @@ public class CommentValidator {
 
     @Resource
     private TagDao tagDao;
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Transactional
@@ -55,7 +57,7 @@ public class CommentValidator {
             return errors;
         }
 
-        comment.setAuthor(fetch(comment.getAuthor()));
+        comment.setAuthor(entityProvider.fetch(comment.getAuthor()));
         if (!isNullOrEmpty(comment.getTags())) {
             for (Iterator<CommentTag> iterator = comment.getTags().iterator(); iterator.hasNext(); ) {
                 CommentTag commentTag = iterator.next();
@@ -64,9 +66,11 @@ public class CommentValidator {
                     continue;
                 }
                 if (commentTag.getTag() != null) {
-                    Tag tag = fetch(commentTag.getTag());
+                    commentTag.setComment(comment);
+
+                    Tag tag = entityProvider.fetch(commentTag.getTag());
                     if (tag == null) {
-                        commentTag.getTag().setId(null); // keep the value -- new tag should be created
+                        commentTag.getTag().setId(null); //– keep the value -- new tag should be created
                     } else {
                         commentTag.setTag(tag);
                     }

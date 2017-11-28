@@ -49,7 +49,7 @@ public class Building {
     private Date updatedOn;
 
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne(optional = false, fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     @ModelTransform(dtoUpdatable = false)
     private Address address;
@@ -60,14 +60,15 @@ public class Building {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
+    @ModelTransform
     private SchoolDepartment department;
 
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "building")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "building")
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSections")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<BuildingSection> sections;
 
-    @OneToMany(fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "building")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "building")
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "floors")
     @Fetch(value = FetchMode.SUBSELECT)
     private List<BuildingFloor> floors;

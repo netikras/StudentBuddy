@@ -81,12 +81,6 @@ public class LocationServiceImpl implements LocationService {
                     ;
         }
 
-        Address address = building.getAddress();
-        if (address != null) {
-            address = createAddress(address);
-            building.setAddress(address);
-        }
-
         building = buildingDao.save(building);
 
         if (!isNullOrEmpty(floors)) {

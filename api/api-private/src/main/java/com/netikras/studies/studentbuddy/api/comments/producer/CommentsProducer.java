@@ -12,10 +12,12 @@ import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
+import com.netikras.tools.common.security.ThreadContext;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -40,6 +42,8 @@ public class CommentsProducer extends CommentsApiProducer {
 
     @Resource
     private SystemService systemService;
+    @Resource
+    EntityProvider entityProvider;
 
 
     @Override
@@ -56,10 +60,12 @@ public class CommentsProducer extends CommentsApiProducer {
 
         throwIfActionNotAllowedForComment(comment, COMMENT_CREATE);
 
-        Person author = modelMapper.apply(new Person(), commentDto.getAuthor());
-        author.setId(commentDto.getAuthor().getId()); // throw NPE if author is not supplied!
+        if (comment.getAuthor() == null) {
+            comment.setAuthor(HttpThreadContext.current().getUser().getPerson());
+        } else {
+            comment.setAuthor(entityProvider.fetch(commentDto.getAuthor()));
+        }
 
-        comment.setAuthor(author);
         comment.setEntityType(commentDto.getEntityType());
         comment.setEntityId(commentDto.getEntityId());
 
@@ -71,7 +77,7 @@ public class CommentsProducer extends CommentsApiProducer {
 
     @Override
     protected CommentDto onUpdateCommentDto(CommentDto commentDto) {
-        Comment comment = modelMapper.apply(new Comment(), commentDto);
+        Comment comment = modelMapper.apply(entityProvider.fetch(commentDto), commentDto);
 
         throwIfActionNotAllowedForComment(comment, COMMENT_MODIFY);
 
@@ -121,9 +127,16 @@ public class CommentsProducer extends CommentsApiProducer {
     @Override
     @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_CREATE)
     protected CommentDto onCreateCommentDtoNewForType(String typeName, String typeId, CommentDto commentDto) {
-        Comment comment = modelMapper.apply(new Comment(), commentDto);
+        Comment comment = modelMapper.apply(new Comment(), commentDto, new MappingSettings().setForceUpdate(true));
         comment.setEntityType(typeName);
         comment.setEntityId(typeId);
+
+        if (comment.getAuthor() == null) {
+            comment.setAuthor(HttpThreadContext.current().getUser().getPerson());
+        } else {
+            comment.setAuthor(entityProvider.fetch(commentDto.getAuthor()));
+        }
+
 
         comment = commentsService.createComment(comment);
         commentDto = modelMapper.transform(comment, new CommentDto());

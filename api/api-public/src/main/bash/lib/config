@@ -17,7 +17,7 @@ sb_curl() {
     local endpoint="${1:?Endpoint missing}"
     shift;
 
-    local result=$(s_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" ${@});
+    local result=$(s_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" "${@}");
     local status=$(echo "${result}" | tail -1);
     local code=$(echo "${status}" | sed -e 's/^.*: //g')
 
@@ -39,11 +39,38 @@ mkjsonarr() {
             first=false
         }
 
-        arr="${arr}\"${elem}\""
+        [[ "${elem}" =~ ^\{.*\}$ ]] && {
+            arr="${arr}${elem}"
+        } || {
+            arr="${arr}\"${elem}\""
+        }
     done;
 
     echo "${arr}]"
 }
+
+
+# Make an array of JSON objects.
+# Objects are to contain a single key-value pair
+# E.g.: mkjsonobjarr "username:andhop0402" "username:mickeythemouse"
+mkjsonobjarr() {
+    local arr="[";
+    local first=true
+    for elem in "${@}" ; do
+        [ -z "${elem}" ] && continue;
+
+        [[ ${first} = false ]] && {
+            arr="${arr},";
+        } || {
+            first=false
+        }
+
+        arr="${arr}$(mkjsonobj "${elem}")"
+    done;
+
+    echo "${arr}]"
+}
+
 
 mkjsonobj() {
     local json="{";
@@ -51,32 +78,37 @@ mkjsonobj() {
     local key;
     local value;
 
-    for elem in "${@}" ; do
-    
-        key="${elem%%:*}"
-        value="${elem#*:}"
-        [ -z "${value}" ] && {
-            value="null";
-        } || {
-            { [[ "${value}" =~ ^\[.*\]$ ]] || [[ "${value}" =~ ^\{.*\}$ ]] ; } && {
-                :;
+    { [[ ${#@} -eq 1 ]] && [[ "${1}" =~ ^\{.*\}$ ]] ; } && {
+        json=${1}
+    } || {
+        for elem in "${@}" ; do
+
+            key="${elem%%:*}"
+            value="${elem#*:}"
+            [ -z "${value}" ] && {
+                value="null";
             } || {
-                value="\"${value}\"";
+                { [[ "${value}" =~ ^\[.*\]$ ]] || [[ "${value}" =~ ^\{.*\}$ ]] ; } && {
+                    :;
+                } || {
+                    value="\"${value}\"";
+                }
             }
-        }
 
-        key="\"${key}\"";
+            key="\"${key}\"";
 
-        [[ ${first} = false ]] && {
-            key=",${key}"
-        } || {
-            first=false
-        }
-    
-        json="${json}${key}:${value}"
-    done; 
-    
-    json="${json}}"
+            [[ ${first} = false ]] && {
+                key=",${key}"
+            } || {
+                first=false
+            }
+#            echo "Appending value: [${value}]" >&2
+
+            json="${json}${key}:${value}"
+        done;
+
+        json="${json}}"
+    }
 
     echo "${json}"
 }
@@ -88,7 +120,7 @@ optional() {
 
     { [ -z "${value}" ] || [ "${value}" = "-" ] ; } && {
         value=${def}
-    }   
+    }
     echo "${value}"
 }
 

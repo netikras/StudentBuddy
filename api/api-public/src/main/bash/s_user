@@ -31,11 +31,25 @@ getUserByName() {
 createUser() {
     local name=${1:?username missing}
     local password=${2:?password missing}
-    local personId=${3:?person id missing}
-    local roles=${4}
+    local person=${3:?person missing}
+    local roles=$(optional "${4}")
 
-    local user=$(mkjsonobj "name:${name}" "password:${password}" "person:$(mkjsonobj "id:${personId}")" "roles:$(mkjsonarr ${roles})")
-    sb_curl POST "/mgmt/person/" -d "${user}"
+    person=$(mkjsonobj "${person}")
+    local user=$(mkjsonobj "name:${name}" "password:${password}" "person:${person}" "roles:$(mkjsonarr ${roles})")
+    sb_curl POST "/mgmt/user/" -d "${user}"
+    return $?
+}
+
+updateUser() {
+    local id=${1:?ID missing}; shift
+    local name=${1:?username missing}
+    local password=${2:?password missing}
+    local person=${3:?person missing}
+    local roles=$(optional "${4}")
+
+    person=$(mkjsonobj "${person}")
+    local user=$(mkjsonobj "id:${id}" "name:${name}" "password:${password}" "person:${person}" "roles:$(mkjsonarr ${roles})")
+    sb_curl POST "/user/" -d "${user}"
     return $?
 }
 

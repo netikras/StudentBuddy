@@ -18,7 +18,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Entity
-@Table(name = "discipline_lecturer")
+@Table(name = "course_lecturer")
 public class CourseLecturer {
 
     @Id

@@ -30,6 +30,8 @@ createLecturer() {
     local degree=${2:?Degree missing}
     local school=${3:?School missing}
 
+    person=$(mkjsonobj "${person}")
+    school=$(mkjsonobj "${school}")
     local lecturer=$(mkjsonobj "person:${person}" "degree:${degree}" "school:${school}")
 
     sb_curl POST "/mgmt/lecturer/" -d "${lecturer}"
@@ -42,6 +44,8 @@ updateLecturer() {
     local degree=${3:?Degree missing}
     local school=${4:?School missing}
 
+    person=$(mkjsonobj "${person}")
+    school=$(mkjsonobj "${school}")
     local lecturer=$(mkjsonobj "id:${id}" "person:${person}" "degree:${degree}" "school:${school}")
 
     sb_curl PUT "/lecturer/" -d "${lecturer}"

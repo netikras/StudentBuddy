@@ -282,6 +282,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public SchoolDepartment createSchoolDepartment(SchoolDepartment department) {
         ErrorsCollection errors = schoolValidator.validateForCreation(department, null);
         if (!errors.isEmpty()) {
@@ -390,6 +391,16 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public Discipline createDiscipline(Discipline discipline) {
+        ErrorsCollection errors = schoolValidator.validateForCreation(discipline, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot create discipline")
+                    .setMessage2("Validation errors: " + errors.size())
+//                    .setProbableCause()
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return disciplineDao.save(discipline);
     }
 
@@ -400,6 +411,16 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public Discipline updateDiscipline(Discipline discipline) {
+        ErrorsCollection errors = schoolValidator.validateForUpdate(discipline, null);
+        if (!errors.isEmpty()) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot update discipline")
+                    .setMessage2("Validation errors: " + errors.size())
+//                    .setProbableCause()
+                    .setErrors(errors)
+                    .setStatusCode(BAD_REQUEST)
+                    ;
+        }
         return disciplineDao.save(discipline);
     }
 

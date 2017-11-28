@@ -37,6 +37,11 @@ public class StudentProducer extends StudentApiProducer {
     }
 
     @Override
+    protected StudentsGroupDto onUpdateStudentsGroupDto(StudentsGroupDto item) {
+        return impl.updateGroup(item);
+    }
+
+    @Override
     protected StudentsGroupDto onRetrieveStudentsGroupDto(String id) {
         return impl.getStudentsGroup(id);
     }

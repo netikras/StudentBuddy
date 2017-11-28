@@ -32,13 +32,13 @@ getAllTestsByDisciplineId() {
 getAllTestsByGroupIdAndDisciplineIdInTimeframe() {
     local groupId=${1:?Group ID missing}
     local disciplineId=${2:?Discipline ID missing}
-	local after=${3:?AFTER time bound missing}
+    local after=${3:?AFTER time bound missing}
     local before=${4:?BEFORE time bound missing}
 
     after=$(adjustTimestamp "${after}");
     before=$(adjustTimestamp "${before}");
 
-    sb_curl GET "/test/all/discipline/id/${id}/group/id/${id}/timeframe/after/${after}/before/${before}"
+    sb_curl GET "/test/all/discipline/id/${disciplineId}/group/id/${groupId}/timeframe/after/${after}/before/${before}"
     return $?
 }
 
@@ -46,7 +46,7 @@ getAllTestsByGroupIdAndDisciplineId() {
     local groupId=${1:?Group ID missing}
     local disciplineId=${2:?Discipline ID missing}
 
-    sb_curl GET "/test/all/discipline/id/${id}/group/id/${id}"
+    sb_curl GET "/test/all/discipline/id/${disciplineId}/group/id/${groupId}"
     return $?
 }
 
@@ -56,6 +56,8 @@ createTest() {
     local description=${3:?Description missing}
     local exam=${4:-false}
 
+    lecture=$(mkjsonobj "${lecture}")
+    discipline=$(mkjsonobj "${discipline}")
     local testjson=$(mkjsonobj "lecture:${lecture}" "discipline:${discipline}" "description:${description}" "exam:${exam}")
 
     sb_curl POST "/test/" -d "${testjson}"
@@ -69,6 +71,8 @@ updateTest() {
     local description=${4:?Description missing}
     local exam=${5:-false}
 
+    lecture=$(mkjsonobj "${lecture}")
+    discipline=$(mkjsonobj "${discipline}")
     local testjson=$(mkjsonobj "id:${id}" "lecture:${lecture}" "discipline:${discipline}" "description:${description}" "exam:${exam}")
 
     sb_curl PUT "/test/" -d "${testjson}"

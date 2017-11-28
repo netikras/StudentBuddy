@@ -11,6 +11,7 @@ import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.SystemSetting;
 import com.netikras.studies.studentbuddy.core.service.PermissionsService;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,8 @@ public class AdminProducerImpl {
 
     @Resource
     private PermissionsService permissionsService;
+    @Resource
+    private EntityProvider entityProvider;
 
 
 
@@ -54,7 +57,7 @@ public class AdminProducerImpl {
 
     @Authorizable(resource = SYSTEM_SETTING, action = MODIFY)
     public SystemSettingDto updateSystemSetting(SystemSettingDto item) {
-        SystemSetting setting = modelMapper.apply(new SystemSetting(), item);
+        SystemSetting setting = modelMapper.apply(entityProvider.fetch(item), item);
         setting = systemService.updateSystemSetting(setting);
         item = modelMapper.transform(setting, new SystemSettingDto());
         return item;
@@ -83,7 +86,7 @@ public class AdminProducerImpl {
 
     @Authorizable(resource = SYSTEM_PWREQ, action = MODIFY)
     public PasswordRequirementDto updatePasswordRequirement(PasswordRequirementDto item) {
-        PasswordRequirement requirement = modelMapper.apply(new PasswordRequirement(), item);
+        PasswordRequirement requirement = modelMapper.apply(entityProvider.fetch(item), item);
         requirement = systemService.updatePasswordRequirement(requirement);
         item = modelMapper.transform(requirement, new PasswordRequirementDto());
         return item;

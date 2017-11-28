@@ -19,6 +19,11 @@ createFloor() {
     local rooms=$(optional "${5}")
     local layouts=$(optional "${6}")
 
+    building=$(mkjsonobj "${building}")
+    [ -n "${section}" ] && section=$(mkjsonobj "${section}")
+    [ -n "${rooms}" ] && rooms=$(mkjsonobjarr ${rooms})
+    [ -n "${layouts}" ] && layouts=$(mkjsonobjarr ${layouts})
+
     local floor=$(mkjsonobj "number:${number}" "title:${title}" "building:${building}" "buildingSection:${section}" "lectureRooms:$(mkjsonarr ${rooms})" "layouts:$(mkjsonarr ${layouts})")
 
     sb_curl POST "/floor/" -d "${floor}"
@@ -33,6 +38,11 @@ updateFloor() {
     local section=$(optional "${4}")
     local rooms=$(optional "${5}")
     local layouts=$(optional "${6}")
+
+    building=$(mkjsonobj "${building}")
+    [ -n "${section}" ] && section=$(mkjsonobj "${section}")
+    [ -n "${rooms}" ] && rooms=$(mkjsonobjarr ${rooms})
+    [ -n "${layouts}" ] && layouts=$(mkjsonobjarr ${layouts})
 
     local floor=$(mkjsonobj "id:${id}" "number:${number}" "title:${title}" "building:${building}" "buildingSection:${section}" "lectureRooms:$(mkjsonarr ${rooms})" "layouts:$(mkjsonarr ${layouts})")
 
@@ -71,6 +81,7 @@ createFloorLayout() {
     local map=${3:?Map missing}
     local active=$(optional "${4}" "true")
 
+    floor=$(mkjsonobj "${floor}")
     local layout=$(mkjsonobj "title:${title}" "floor:${floor}" "floorMap:${map}" "active:${active}")
 
     sb_curl POST "/floor/layout/" -d "${layout}"
@@ -84,6 +95,7 @@ updateFloorLayout() {
     local map=${3:?Map missing}
     local active=$(optional "${4}" "true")
 
+    floor=$(mkjsonobj "${floor}")
     local layout=$(mkjsonobj "id:${id}" "title:${title}" "floor:${floor}" "floorMap:${map}" "active:${active}")
 
     sb_curl PUT "/floor/layout/" -d "${layout}"
@@ -120,6 +132,8 @@ createRoom() {
     local school=${3:?School missing}
     local floor=${4:?Floor missing}
 
+    floor=$(mkjsonobj "${floor}")
+    school=$(mkjsonobj "${school}")
     local room=$(mkjsonobj "number:${number}" "title:${title}" "school:${school}" "floor:${floor}")
 
     sb_curl POST "/floor/room/" -d "${room}"
@@ -133,6 +147,8 @@ updateRoom() {
     local school=${3:?School missing}
     local floor=${4:?Floor missing}
 
+    floor=$(mkjsonobj "${floor}")
+    school=$(mkjsonobj "${school}")
     local room=$(mkjsonobj "id:${id}" "number:${number}" "title:${title}" "school:${school}" "floor:${floor}")
 
     sb_curl PUT "/floor/room/" -d "${room}"

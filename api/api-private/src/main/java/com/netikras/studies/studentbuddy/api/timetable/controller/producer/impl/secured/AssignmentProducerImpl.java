@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import com.netikras.tools.common.remote.http.HttpStatus;
@@ -26,6 +27,8 @@ public class AssignmentProducerImpl {
 
     @Resource
     private LectureService lectureService;
+    @Resource
+    private EntityProvider entityProvider;
 
 
     @Authorizable(resource = ASSIGNMENT, action = PURGE)
@@ -35,7 +38,7 @@ public class AssignmentProducerImpl {
 
     @Authorizable(resource = ASSIGNMENT, action = MODIFY)
     public AssignmentDto updateAssignment(AssignmentDto dto) {
-        Assignment assignment = modelMapper.apply(new Assignment(), dto);
+        Assignment assignment = modelMapper.apply(entityProvider.fetch(dto), dto);
         assignment = lectureService.updateAssignment(assignment);
         dto = modelMapper.transform(assignment, new AssignmentDto());
 

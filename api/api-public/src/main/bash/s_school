@@ -13,7 +13,8 @@ createSchool() {
     local title=${1:?Title missing}
     local departments=$(optional "${2}")
 
-    local school=$(mkjsonobj "title:${title}" "departments=$(mkjsonarr ${departments})")
+    [ -n "${departments}" ] && departments=$(mkjsonobjarr ${departments})
+    local school=$(mkjsonobj "title:${title}" "departments:${departments}")
 
     sb_curl POST "/school/" -d "${school}"
     return $?
@@ -24,7 +25,8 @@ updateSchool() {
     local title=${1:?Title missing}
     local departments=$(optional "${2}")
 
-    local school=$(mkjsonobj "id:${id}" "title:${title}" "departments=$(mkjsonarr ${departments})")
+    [ -n "${departments}" ] && departments=$(mkjsonobjarr ${departments})
+    local school=$(mkjsonobj "id:${id}" "title:${title}" "departments:${departments}")
 
     sb_curl PUT "/school/" -d "${school}"
     return $?
@@ -63,7 +65,9 @@ createDepartment() {
     local title=${2:?Title missing}
     local buildings=$(optional "${3}")
 
-    local department=$(mkjsonobj "school:${school}" "title:${title}" "buildings:$(mkjsonarr ${buildings})")
+    school=$(mkjsonobj "${school}")
+    [ -n "${buildings}" ] && buildings=$(mkjsonobjarr ${buildings})
+    local department=$(mkjsonobj "school:${school}" "title:${title}" "buildings:${buildings}")
 
     sb_curl POST "/school/department/" -d "${department}"
     return $?
@@ -75,9 +79,11 @@ updateDepartment() {
     local title=${2:?Title missing}
     local buildings=$(optional "${3}")
 
-    local department=$(mkjsonobj "school:${school}" "title:${title}" "buildings:$(mkjsonarr ${buildings})")
+    school=$(mkjsonobj "${school}")
+    [ -n "${buildings}" ] && buildings=$(mkjsonobjarr ${buildings})
+    local department=$(mkjsonobj "id:${id}" "school:${school}" "title:${title}" "buildings:${buildings}")
 
-    sb_curl POST "/school/department/" -d "${department}"
+    sb_curl PUT "/school/department/" -d "${department}"
     return $?
 }
 
@@ -111,6 +117,8 @@ createDiscipline() {
     local school=${3:?School missing}
     local courses=$(optional "${4}")
 
+    school=$(mkjsonobj "${school}")
+    [ -n "${courses}" ] && courses=$(mkjsonobjarr ${courses})
     local discipline=$(mkjsonobj "title:${title}" "description:${description}" "school:${school}" "courses:$(mkjsonarr ${courses})")
 
     sb_curl POST "/school/discipline/" -d "${discipline}"
@@ -124,6 +132,8 @@ updateDiscipline() {
     local school=${3:?School missing}
     local courses=$(optional "${4}")
 
+    school=$(mkjsonobj "${school}")
+    [ -n "${courses}" ] && courses=$(mkjsonobjarr ${courses})
     local discipline=$(mkjsonobj "id:${id}" "title:${title}" "description:${description}" "school:${school}" "courses:$(mkjsonarr ${courses})")
 
     sb_curl PUT "/school/discipline/" -d "${discipline}"
@@ -160,6 +170,11 @@ createCourse() {
     local lectures=$(optional "${4}")
     local lecturers=$(optional "${5}")
 
+    discipline=$(mkjsonobj "${discipline}")
+    group=$(mkjsonobj "${group}")
+    [ -n "${lectures}" ] && lectures=$(mkjsonobjarr ${lectures})
+    [ -n "${lecturers}" ] && lecturers=$(mkjsonobjarr ${lecturers})
+
     local course=$(mkjsonobj "title:${title}" "discipline:${discipline}" "group:${group}" "lectures:${lectures}" "lecturers:${lecturers}")
 
     sb_curl POST "/school/course/" -d "${course}"
@@ -173,6 +188,11 @@ updateCourse() {
     local group=${3:?Group missing}
     local lectures=$(optional "${4}")
     local lecturers=$(optional "${5}")
+
+    discipline=$(mkjsonobj "${discipline}")
+    group=$(mkjsonobj "${group}")
+    [ -n "${lectures}" ] && lectures=$(mkjsonobjarr ${lectures})
+    [ -n "${lecturers}" ] && lecturers=$(mkjsonobjarr ${lecturers})
 
     local course=$(mkjsonobj "id:${id}" "title:${title}" "discipline:${discipline}" "group:${group}" "lectures:${lectures}" "lecturers:${lecturers}")
 
@@ -209,6 +229,8 @@ createPersonnelMember() {
     local person=${2:?Person missing}
     local school=${3:?School missing}
 
+    person=$(mkjsonobj "${person}")
+    school=$(mkjsonobj "${school}")
     local member=$(mkjsonobj "title:${title}" "person:${person}" "school:${school}")
 
     sb_curl POST "/school/personnel/" -d "${member}"
@@ -221,6 +243,8 @@ updatePersonnelMember() {
     local person=${2:?Person missing}
     local school=${3:?School missing}
 
+    person=$(mkjsonobj "${person}")
+    school=$(mkjsonobj "${school}")
     local member=$(mkjsonobj "title:${title}" "person:${person}" "school:${school}")
 
     sb_curl POST "/school/personnel/" -d "${member}"

@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.dto.location;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.AbstractDto;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,8 @@ public class BuildingDto extends AbstractDto {
     private AddressDto address;
     private String title;
     private List<BuildingSectionDto> buildingSections;
+    private SchoolDepartmentDto department;
+    private List<BuildingFloorDto> floors;
 
     public String getId() {
         return id;
@@ -53,6 +56,22 @@ public class BuildingDto extends AbstractDto {
         this.buildingSections = buildingSections;
     }
 
+    public SchoolDepartmentDto getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(SchoolDepartmentDto department) {
+        this.department = department;
+    }
+
+    public List<BuildingFloorDto> getFloors() {
+        return floors;
+    }
+
+    public void setFloors(List<BuildingFloorDto> floors) {
+        this.floors = floors;
+    }
+
     @Override
     public String toString() {
         return "BuildingDto{" +
@@ -61,6 +80,8 @@ public class BuildingDto extends AbstractDto {
                 ", address=" + address +
                 ", title='" + title + '\'' +
                 ", buildingSections=" + buildingSections +
+                ", department=" + department +
+                ", floors=" + floors +
                 '}';
     }
 }

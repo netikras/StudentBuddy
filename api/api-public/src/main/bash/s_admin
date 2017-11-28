@@ -103,7 +103,7 @@ updateStoredPasswordRequirement() {
 
     local requirement=$(mkjsonobj "id:${id}" "title:${title}" "enabled:${enabled}" "whitelist:${whitelist}" "blacklist:${blacklist}" "countMin:${countMin}" "countMax:${countMax}" "message:${message}")
 
-    sb_curl POST "/admin/pwreq/stored/" -d "${requirement}"
+    sb_curl PUT "/admin/pwreq/stored/" -d "${requirement}"
     return $?
 }
 
