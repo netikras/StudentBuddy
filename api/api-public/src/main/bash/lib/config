@@ -1,15 +1,31 @@
 #!/bin/bash
 
 
-COOKIEFILE="/tmp/stubu.cookie"
+COOKIEFILE="${COOKIEFILE:-/tmp/stubu.cookie}"
 
 URL_API="http://localhost:8080/stubu/api"
 
-alias s_curl="curl -L -k -b \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## service
-alias sl_curl="curl -L -k -c \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## login
+alias _s_curl="curl -L -k -b \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## service
+alias _sl_curl="curl -L -k -c \"${COOKIEFILE}\" -H'Accept:application/json' -H'Content-type:application/json' -s " ## login
 
-_OK=1
-_NOK=0
+_OK=0
+_NOK=1
+
+sl_curl() {
+    local method="${1:?HTTP method missing}"
+    shift;
+    local endpoint="${1:?Endpoint missing}"
+    shift;
+
+    local result=$(_sl_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" "${@}");
+    local status=$(echo "${result}" | tail -1);
+    local code=$(echo "${status}" | sed -e 's/^.*: //g')
+
+    echo "${result}" | sed -e 's/^status\[.*\]: [0-9]*$//g'
+    echo "${status}" >&2
+
+    { [[ ${code:-600} -ge 400 ]] || [[ ${code:-000} -lt 100 ]] ; } && return ${_NOK} || return ${_OK}
+}
 
 sb_curl() {
     local method="${1:?HTTP method missing}"
@@ -17,14 +33,14 @@ sb_curl() {
     local endpoint="${1:?Endpoint missing}"
     shift;
 
-    local result=$(s_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" "${@}");
+    local result=$(_s_curl "${URL_API}${endpoint}" -w "\nstatus[${endpoint}]: %{http_code}" -X "${method}" "${@}");
     local status=$(echo "${result}" | tail -1);
     local code=$(echo "${status}" | sed -e 's/^.*: //g')
 
     echo "${result}" | sed -e 's/^status\[.*\]: [0-9]*$//g'
     echo "${status}" >&2
 
-    { [[ ${code:-600} -ge 400 ]] || [[ ${code:-000} -lt 100 ]] ; } && return ${_OK} || return ${_NOK}
+    { [[ ${code:-600} -ge 400 ]] || [[ ${code:-000} -lt 100 ]] ; } && return ${_NOK} || return ${_OK}
 }
 
 mkjsonarr() {

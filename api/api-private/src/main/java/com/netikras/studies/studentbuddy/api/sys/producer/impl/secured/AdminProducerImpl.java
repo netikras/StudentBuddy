@@ -155,8 +155,13 @@ public class AdminProducerImpl {
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = DELETE)
-    public void deleteRolePermission(String roleName, String resourceName, String actionName, String resourceId) {
-        permissionsService.removeRolePermission(roleName, resourceName, actionName, resourceId);
+    public void deleteRolePermission(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
+        permissionsService.removeRolePermission(roleName, resourceName, actionName, resourceId, strict);
+    }
+
+    @Authorizable(resource = ROLE_PERMISSIONS, action = DELETE)
+    public void deleteRolePermission(String roleName, String permissionId) {
+        permissionsService.removeRolePermission(roleName, permissionId);
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = GET_ALL)

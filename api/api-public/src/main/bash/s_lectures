@@ -11,7 +11,8 @@ getLectureById() {
 
 createLecture() {
     local discipline=${1:?Discipline missing}
-    local course=$(optional "${2}")
+    local course=${2:?Course missing}
+    #local course=$(optional "${2}")
     local startsOn=${3:?Start time missing}
     local endsOn=$(optional "${4}" "")
     local room=${5:?Room missing}
@@ -24,36 +25,7 @@ createLecture() {
     startsOn=$(adjustTimestamp "${startsOn}")
     endsOn=$(adjustTimestamp "${endsOn}")
 
-    room=$(mkjsonobj "${room}")
-    group=$(mkjsonobj "${group}")
-    lecturer=$(mkjsonobj "${lecturer}")
-    [ -n "${course}" ] && course=$(mkjsonobj "${course}")
-    [ -n "${visitors}" ] && visitors=$(mkjsonobjarr ${visitors})
-    [ -n "${assignments}" ] && assignments=$(mkjsonobjarr ${assignments})
-    [ -n "${tests}" ] && tests=$(mkjsonobjarr ${tests})
-
-    local lecture=$(mkjsonobj "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
-
-    sb_curl POST "/lectures/" -d "${lecture}"
-    retrn $?
-}
-
-updateLecture() {
-    local id=${1:?ID missing}; shift
-    local discipline=${1:?Discipline missing}
-    local course=$(optional "${2}")
-    local startsOn=${3:?Start time missing}
-    local endsOn=$(optional "${4}" "")
-    local room=${5:?Room missing}
-    local group=${6:?Group missing}
-    local lecturer=${7:?Lecturer missing}
-    local visitors=$(optional "${8}")
-    local assignments=$(optional "${9}"); shift
-    local tests=$(optional "${9}")
-
-    startsOn=$(adjustTimestamp "${startsOn}")
-    endsOn=$(adjustTimestamp "${endsOn}")
-
+    discipline=$(mkjsonobj "${discipline}")
     course=$(mkjsonobj "${course}")
     room=$(mkjsonobj "${room}")
     group=$(mkjsonobj "${group}")
@@ -63,9 +35,42 @@ updateLecture() {
     [ -n "${assignments}" ] && assignments=$(mkjsonobjarr ${assignments})
     [ -n "${tests}" ] && tests=$(mkjsonobjarr ${tests})
 
-    local lecture=$(mkjsonobj "id:${id}" "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "group:${group}" "lecturer:${lecturer}" "visitors:$(mkjsonarr "${visitors}")" "assignments:$(mkjsonarr "${assignments}")" "tests:$(mkjsonarr "${tests}")")
+    local lecture=$(mkjsonobj "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "studentsGroup:${group}" "lecturer:${lecturer}" "visitors:${visitors}" "assignments:${assignments}" "tests:${tests}")
 
     sb_curl POST "/lectures/" -d "${lecture}"
+    return $?
+}
+
+updateLecture() {
+    local id=${1:?ID missing}; shift
+    local discipline=${1:?Discipline missing}
+    local course=${2:?Course missing}
+    #local course=$(optional "${2}")
+    local startsOn=${3:?Start time missing}
+    local endsOn=$(optional "${4}" "")
+    local room=${5:?Room missing}
+    local group=${6:?Group missing}
+    local lecturer=${7:?Lecturer missing}
+    local visitors=$(optional "${8}")
+    local assignments=$(optional "${9}"); shift
+    local tests=$(optional "${9}")
+
+    startsOn=$(adjustTimestamp "${startsOn}")
+    endsOn=$(adjustTimestamp "${endsOn}")
+
+    discipline=$(mkjsonobj "${discipline}")
+    course=$(mkjsonobj "${course}")
+    room=$(mkjsonobj "${room}")
+    group=$(mkjsonobj "${group}")
+    lecturer=$(mkjsonobj "${lecturer}")
+    [ -n "${course}" ] && course=$(mkjsonobj "${course}")
+    [ -n "${visitors}" ] && visitors=$(mkjsonobjarr ${visitors})
+    [ -n "${assignments}" ] && assignments=$(mkjsonobjarr ${assignments})
+    [ -n "${tests}" ] && tests=$(mkjsonobjarr ${tests})
+
+    local lecture=$(mkjsonobj "id:${id}" "discipline:${discipline}" "course:${course}" "startsOn:${startsOn}" "endsOn:${endsOn}" "room:${room}" "studentsGroup:${group}" "lecturer:${lecturer}" "visitors:${visitors}" "assignments:${assignments}" "tests:${tests}")
+
+    sb_curl PUT "/lectures/" -d "${lecture}"
     return $?
 }
 
@@ -92,6 +97,7 @@ getAllLecturesByGroupIdStartingIn() {
 
     validateTimeUnit "${timeunit}" || {
         echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
     }
 
     sb_curl GET "/lectures/group/id/${id}/starts/in/${timeunit}/${timevalue}"
@@ -105,6 +111,7 @@ getAllLecturesByStudentIdStartingIn() {
 
     validateTimeUnit "${timeunit}" || {
         echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
     }
 
     sb_curl GET "/lectures/student/id/${id}/starts/in/${timeunit}/${timevalue}"
@@ -118,6 +125,7 @@ getAllLecturesByLecturerIdStartingIn() {
 
     validateTimeUnit "${timeunit}" || {
         echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
     }
 
     sb_curl GET "/lectures/lecturer/id/${id}/starts/in/${timeunit}/${timevalue}"
@@ -131,6 +139,7 @@ getAllLecturesByRoomIdStartingIn() {
 
     validateTimeUnit "${timeunit}" || {
         echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
     }
 
     sb_curl GET "/lectures/room/id/${id}/starts/in/${timeunit}/${timevalue}"

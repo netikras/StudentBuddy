@@ -189,3 +189,59 @@ purgeGuest() {
 
 
 
+#####################
+
+addStudentToGroup() {
+    local groupId=${1:?Group ID missing}
+    local studentId=${2:?Student ID missing}
+
+    sb_curl PUT "/mgmt/student/group/${groupId}/student/${studentId}"
+    return $?
+}
+
+addStudentsToGroup() {
+    local groupId=${1:?Group ID missing}
+    local studentIds=${2:?Student IDs missing}
+
+    studentIds=$(mkjsonarr ${studentIds})
+
+    sb_curl PUT "/mgmt/student/group/${groupId}/students" -d "${studentIds}"
+    return $?
+}
+
+removeStudentFromGroup() {
+    local groupId=${1:?Group ID missing}
+    local studentId=${2:?Student ID missing}
+
+    sb_curl DELETE "/mgmt/student/group/${groupId}/student/${studentId}"
+    return $?
+}
+
+removeStudentsToGroup() {
+    local groupId=${1:?Group ID missing}
+    local studentIds=${2:?Student IDs missing}
+
+    studentIds=$(mkjsonarr ${studentIds})
+
+    sb_curl DELETE "/mgmt/student/group/${groupId}/students" -d "${studentIds}"
+    return $?
+}
+
+createGuestForLectureByPersonId() {
+    local lectureId=${1:?Lecture ID missing}
+    local personId=${2:?Person ID missing}
+
+    sb_curl POST "/mgmt/student/guest/person/id/${personId}/lecture/${lectureId}"
+    return $?
+}
+
+createGuestForLectureByPersonIdentifier() {
+    local lectureId=${1:?Lecture ID missing}
+    local personId2=${2:?Person ID missing}
+
+    sb_curl POST "/mgmt/student/guest/person/id2/${personId2}/lecture/${lectureId}"
+    return $?
+}
+
+
+

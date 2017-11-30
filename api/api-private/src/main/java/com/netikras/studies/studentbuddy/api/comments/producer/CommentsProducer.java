@@ -30,6 +30,7 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_MO
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
 import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @RestController
 public class CommentsProducer extends CommentsApiProducer {
@@ -95,37 +96,46 @@ public class CommentsProducer extends CommentsApiProducer {
     }
 
     @Override
-    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_GET)
     protected List<CommentDto> onGetCommentDtoForType(String typeName, String typeId) {
         List<Comment> comments = commentsService.findComments(typeName, typeId);
+        if (!isNullOrEmpty(comments)) {
+            comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_GET));
+        }
         List<CommentDto> commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
     }
 
     @Override
-    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_GET)
     protected List<CommentDto> onGetCommentDtoAllForType(String typeName) {
         List<Comment> comments = commentsService.findCommentsByType(typeName);
+        if (!isNullOrEmpty(comments)) {
+            comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_GET));
+        }
         List<CommentDto> commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
 
         return commentDtos;
     }
 
     @Override
-    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_DELETE)
     protected void onDeleteCommentDtoForType(String typeName, String typeId) {
+        List<Comment> comments = commentsService.findComments(typeName, typeId);
+        if (!isNullOrEmpty(comments)) {
+            comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_DELETE));
+        }
         commentsService.deleteCommentByType(typeName, typeId);
     }
 
     @Override
-    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_DELETE)
     protected void onDeleteCommentDtoAllForType(String typeName) {
+        List<Comment> comments = commentsService.findCommentsByType(typeName);
+        if (!isNullOrEmpty(comments)) {
+            comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_DELETE));
+        }
         commentsService.deleteCommentsByType(typeName);
     }
 
     @Override
-    @Authorizable(resource = _PARAM, resourceParam = "typeName", action = COMMENT_CREATE)
     protected CommentDto onCreateCommentDtoNewForType(String typeName, String typeId, CommentDto commentDto) {
         Comment comment = modelMapper.apply(new Comment(), commentDto, new MappingSettings().setForceUpdate(true));
         comment.setEntityType(typeName);
@@ -137,6 +147,7 @@ public class CommentsProducer extends CommentsApiProducer {
             comment.setAuthor(entityProvider.fetch(commentDto.getAuthor()));
         }
 
+        throwIfActionNotAllowedForComment(comment, COMMENT_CREATE);
 
         comment = commentsService.createComment(comment);
         commentDto = modelMapper.transform(comment, new CommentDto());

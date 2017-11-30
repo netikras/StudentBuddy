@@ -26,10 +26,10 @@ import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PUR
 public abstract class AdminStudentApi {
 
 
-    @RestEndpoint(url = "/add/group/{groupId}/students/{studentIds}", method = HttpMethod.PUT, dtoType = StudentDto.class)
+    @RestEndpoint(url = "/group/{groupId}/students", method = HttpMethod.PUT, dtoType = StudentDto.class)
     public abstract void addAllToGroup(
             @MethodParam(type = Type.URL, name = "groupId") String groupId,
-            @MethodParam(type = Type.URL, name = "studentIds") List<String> studentIds
+            @MethodParam(type = Type.BODY, name = "studentIds") List<String> studentIds
     );
 
 

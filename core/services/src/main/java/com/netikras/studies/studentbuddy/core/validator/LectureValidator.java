@@ -46,6 +46,8 @@ public class LectureValidator {
     private DisciplineTestDao testDao;
     @Resource
     private AssignmentDao assignmentDao;
+    @Resource
+    private EntityProvider entityProvider;
 
     @Transactional
     public ErrorsCollection validateForCreation(Lecture lecture, ErrorsCollection errors) {
@@ -99,7 +101,7 @@ public class LectureValidator {
             }
         }
 
-        lecture.setRoom(fetch(lecture.getRoom()));
+        lecture.setRoom(entityProvider.fetch(lecture.getRoom()));
         if (lecture.getRoom() == null) {
             errors.add(new ValidationError()
                     .setSuggestion("Lecture must be linked to an existing room it will take place in")
@@ -108,7 +110,7 @@ public class LectureValidator {
             );
         }
 
-        lecture.setDiscipline(fetch(lecture.getDiscipline()));
+        lecture.setDiscipline(entityProvider.fetch(lecture.getDiscipline()));
         if (lecture.getDiscipline() == null) {
             errors.add(new ValidationError()
                     .setSuggestion("Lecture must be linked to an existing discipline")
@@ -117,7 +119,7 @@ public class LectureValidator {
             );
         }
 
-        lecture.setLecturer(fetch(lecture.getLecturer()));
+        lecture.setLecturer(entityProvider.fetch(lecture.getLecturer()));
         if (lecture.getLecturer() == null) {
             errors.add(new ValidationError()
                     .setSuggestion("Lecture must be linked to an existing lecturer")
@@ -126,7 +128,7 @@ public class LectureValidator {
             );
         }
 
-        lecture.setStudentsGroup(fetch(lecture.getStudentsGroup()));
+        lecture.setStudentsGroup(entityProvider.fetch(lecture.getStudentsGroup()));
         if (lecture.getStudentsGroup() == null) {
             errors.add(new ValidationError()
                     .setSuggestion("Lecture must be linked to an existing students group that is to be attending that lecture")
@@ -160,8 +162,8 @@ public class LectureValidator {
             );
         }
 
-        test.setDiscipline(fetch(test.getDiscipline()));
-        test.setLecture(fetch(test.getLecture()));
+        test.setDiscipline(entityProvider.fetch(test.getDiscipline()));
+        test.setLecture(entityProvider.fetch(test.getLecture()));
 
         if (test.getDiscipline() == null) {
             errors.add(new ValidationError()
@@ -215,8 +217,8 @@ public class LectureValidator {
             );
         }
 
-        assignment.setLecture(fetch(assignment.getLecture()));
-        assignment.setDiscipline(fetch(assignment.getDiscipline()));
+        assignment.setLecture(entityProvider.fetch(assignment.getLecture()));
+        assignment.setDiscipline(entityProvider.fetch(assignment.getDiscipline()));
 
         if (assignment.getLecture() == null) {
             if (assignment.getDueDate() == null) {

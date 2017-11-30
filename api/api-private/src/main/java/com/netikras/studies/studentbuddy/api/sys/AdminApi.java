@@ -80,8 +80,14 @@ public abstract class AdminApi {
             @MethodParam(type = Type.URL, name = "roleName") String roleName,
             @MethodParam(type = Type.URL, name = "resourceName") String resourceName,
             @MethodParam(type = Type.URL, name = "actionName") String actionName,
-            @MethodParam(type = Type.URL, name = "resourceId") String resourceId
+            @MethodParam(type = Type.URL, name = "resourceId") String resourceId,
+            @MethodParam(type = Type.REQUEST, name = "strict") Boolean strict
     );
+
+    @RestEndpoint(url = "/role/name/{roleName}/permission/id/{id}", method = HttpMethod.DELETE, dtoType = RolePermissionDto.class, action = "deleteById")
+    public abstract void deleteRolePermissionById(
+            @MethodParam(type = Type.URL, name = "roleName") String roleName,
+            @MethodParam(type = Type.URL, name = "id")String id);
 
     @RestEndpoint(url = "/role/permission/refresh", method = HttpMethod.POST, action = "refreshLiveRolePermissions")
     public abstract void refreshLiveRolePermissions();

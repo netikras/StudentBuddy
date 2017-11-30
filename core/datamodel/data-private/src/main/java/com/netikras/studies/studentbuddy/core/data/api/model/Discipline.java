@@ -62,7 +62,7 @@ public class Discipline {
     @ModelTransform
     private String description;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "discipline", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<DisciplineLecturer> lecturers;
 

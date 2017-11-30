@@ -3,6 +3,7 @@ package com.netikras.studies.studentbuddy.core.service;
 import com.netikras.studies.studentbuddy.core.data.meta.Action;
 import com.netikras.studies.studentbuddy.core.data.sys.model.Role;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,9 +23,11 @@ public interface PermissionsService {
 
     Role addRolePermission(Role role, com.netikras.studies.studentbuddy.core.data.meta.Resource resource, Action action, String resourceId, Boolean strict);
 
-    Role removeRolePermission(String roleName, String resourceName, String actionName, String resourceId);
+    Role removeRolePermission(String roleName, String resourceName, String actionName, String resourceId, Boolean strict);
 
-    Role removeRolePermission(Role role, String resourceName, String actionName, String resourceId);
+    Role removeRolePermission(Role role, String resourceName, String actionName, String resourceId, Boolean strict);
+
+    Role removeRolePermission(String rolename, String permissionId);
 
     List<Role> getAllRoles();
 

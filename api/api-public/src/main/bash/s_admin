@@ -158,7 +158,7 @@ createRolePermission() {
     local resourceId=$(optional "${4}" "none")
     local strict=$(optional "${5}" "true")
 
-    sb_curl POST "/admin/role/permission/${roleName}/${resource}/${action}/${resourceId}" -d "strict=${strict}"
+    sb_curl POST "/admin/role/permission/${roleName}/${resource}/${action}/${resourceId}?strict=${strict}"
     return $?
 }
 
@@ -169,6 +169,14 @@ deleteRolePermission() {
     local resourceId=$(optional "${4}" "none")
 
     sb_curl DELETE "/admin/role/permission/${roleName}/${resource}/${action}/${resourceId}"
+    return $?
+}
+
+deleteRolePermissionById() {
+    local roleName=${1:?Role name missing}
+    local id=${2:?Permission ID missing}
+
+    sb_curl DELETE "/admin/role/name/${roleName}/permission/id/${id}"
     return $?
 }
 

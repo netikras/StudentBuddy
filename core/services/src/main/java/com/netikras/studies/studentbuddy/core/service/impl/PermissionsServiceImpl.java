@@ -121,15 +121,23 @@ public class PermissionsServiceImpl implements PermissionsService {
 
     @Override
     @Transactional
-    public Role removeRolePermission(String roleName, String resourceName, String actionName, String resourceId) {
+    public Role removeRolePermission(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
         Role role = roleDao.findByName(roleName);
-        return removeRolePermission(role, resourceName, actionName, resourceId);
+        return removeRolePermission(role, resourceName, actionName, resourceId, strict);
     }
 
     @Override
     @Transactional
-    public Role removeRolePermission(Role role, String resourceName, String actionName, String resourceId) {
-        role.removePermission(resourceName, actionName, resourceId);
+    public Role removeRolePermission(Role role, String resourceName, String actionName, String resourceId, Boolean strict) {
+        role.removePermission(resourceName, actionName, resourceId, strict);
+        return roleDao.save(role);
+    }
+
+    @Override
+    @Transactional
+    public Role removeRolePermission(String rolename, String permissionId) {
+        Role role = getRoleByName(rolename);
+        role.removePermissionById(permissionId);
         return roleDao.save(role);
     }
 

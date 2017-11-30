@@ -4,13 +4,25 @@
 
 s_login() {
     local username="${1:?Username missing}";
-    local password="${2:?Password missing}"
+    local password="${2}"
+
+    [ -z "${password}" ] && {
+        read -s -p "Password: " password;
+        echo;
+    }
     
-    sl_curl "${URL_API}/user/login?username=${username}&password=${password}" -X POST
+    #sl_curl "${URL_API}/user/login?username=${username}&password=${password}" -X POST
+    sl_curl POST "/user/login?username=${username}&password=${password}"
 }
 
 s_logout() {
     sb_curl POST "/user/logout"
+    return $?
+}
+
+getCurrentUser() {
+    sb_curl GET "/user/current"
+    return $?
 }
 
 getUserById() {
@@ -24,6 +36,13 @@ getUserByName() {
     local name=${1:?Missing name}
 
     sb_curl GET "/user/name/${name}"
+    return $?
+}
+
+getUserByPersonId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/user/person/id/${id}"
     return $?
 }
 
@@ -79,6 +98,31 @@ changeUserPassword() {
     return $?
 }
 
+
+
+####################
+
+assignUserRoleByName() {
+    local id=${1:?ID missing}
+    local role=${2:?Role missing}
+
+    sb_curl PUT "/mgmt/user/id/${id}/role/name/${role}"
+    return $?
+}
+
+unassignUserRoleByName() {
+    local id=${1:?ID missing}
+    local role=${2:?Role missing}
+
+    sb_curl DELETE "/mgmt/user/id/${id}/role/name/${role}"
+    return $?
+}
+
+getUserPermissions() {
+    local id=${1:--}
+    sb_curl GET "/user/id/${id}/permissions"
+    return $?
+}
 
 
 ####################

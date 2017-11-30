@@ -69,6 +69,11 @@ public class UserProducer extends UserApiProducer {
         return impl.getUserByPerson(userId);
     }
 
+    @Override
+    protected UserDto onGetUserDtoCurrent() {
+        return impl.getCurrentUser();
+    }
+
 
     // search
 

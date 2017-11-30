@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
+import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,8 @@ public class AuthorizationFilter implements Filter {
 
     @Resource
     private ServletContext servletContext;
+    @Resource
+    private EntityProvider entityProvider;
 
     @Resource
     private ApplicationContext applicationContext;
@@ -69,12 +72,25 @@ public class AuthorizationFilter implements Filter {
 
         loggedIn = isLoggedIn();
 
-        logger.debug("User {} approaching by the URL: {}. loggedIn={}", requestContext.getUser(), ((HttpServletRequest) request).getRequestURI(), loggedIn);
+        User user = requestContext.getUser();
+        if (user != null) {
+            User updatedUser = entityProvider.fetch(user);
+            if (updatedUser != null) {
+                if (!user.equals(updatedUser)) {
+                    logger.debug("Updating session user {} to {}", user, updatedUser);
+                    user = updatedUser;
+                    requestContext.setUser(user);
+                }
+            } else {
+                logger.warn("Whoopsie.. Could not fetch user from DB: {}. Not updating session with nil", user);
+            }
+
+        }
+
+        logger.debug("User {} approaching by the URL: {}. loggedIn={}", user, ((HttpServletRequest) request).getRequestURI(), loggedIn);
 
         if (isAimingToLogin((HttpServletRequest) request)) {
             requestContext.destroy();
-
-            User user = requestContext.getUser();
 
             requestContext.setUser(systemService.getGuestUser());
             requestContext.setRequest((HttpServletRequest) request);

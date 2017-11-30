@@ -84,6 +84,10 @@ public class UserProducerImpl {
         return dto;
     }
 
+    public UserDto getCurrentUser() {
+        return (UserDto) dtoMapper.toDto(HttpThreadContext.current().getUser(), 3);
+    }
+
 
     
     public UserDto loginUser(String username, String password, AuthenticationDetail auth) {

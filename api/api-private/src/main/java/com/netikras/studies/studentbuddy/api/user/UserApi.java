@@ -36,9 +36,12 @@ public abstract class UserApi {
     @RestEndpoint(dtoType = UserDto.class, url = "/logout", method = HttpMethod.POST)
     public abstract void logout();
 
+    @RestEndpoint(dtoType = UserDto.class, url = "/current", method = HttpMethod.GET)
+    public abstract UserDto getCurrent();
 
-    @RestEndpoint(dtoType = RolePermissionDto.class, url = "/permissions", method = HttpMethod.GET)
-    public abstract List<RolePermissionDto> getPermittedActions(String id);
+
+    @RestEndpoint(dtoType = RolePermissionDto.class, url = "/id/{id}/permissions", method = HttpMethod.GET)
+    public abstract List<RolePermissionDto> getPermittedActions(@MethodParam(type = Type.URL, name = "id") String id);
 
 
     @RestEndpoint(dtoType = UserDto.class, url = "/id/{id}/password", method = HttpMethod.PUT)

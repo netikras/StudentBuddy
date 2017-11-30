@@ -98,12 +98,7 @@ public class StudentServiceImpl implements StudentService {
     public void purgeStudent(String id) {
         Student student = getStudent(id);
         if (student == null) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot purge student")
-                    .setMessage2("Student not found")
-                    .setProbableCause(id)
-                    .setStatusCode(NOT_FOUND)
-                    ;
+            return;
         }
 
         studentDao.delete(id);
@@ -264,12 +259,7 @@ public class StudentServiceImpl implements StudentService {
     public void purgeStudentsGroup(String groupId) {
         StudentsGroup group = getStudentsGroup(groupId);
         if (group == null) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot purge group")
-                    .setMessage2("Group not found")
-                    .setProbableCause(groupId)
-                    .setStatusCode(NOT_FOUND)
-                    ;
+            return;
         }
 
         List<Student> students = group.getMembers();
@@ -339,12 +329,7 @@ public class StudentServiceImpl implements StudentService {
     public void purgeLectureGuest(String id) {
         LectureGuest guest = getLectureGuest(id);
         if (guest == null) {
-            throw new StudBudUncheckedException()
-                    .setMessage1("Cannot purge guest")
-                    .setMessage2("Guest not found")
-                    .setProbableCause(id)
-                    .setStatusCode(NOT_FOUND)
-                    ;
+            return;
         }
 
         lectureGuestDao.delete(guest);

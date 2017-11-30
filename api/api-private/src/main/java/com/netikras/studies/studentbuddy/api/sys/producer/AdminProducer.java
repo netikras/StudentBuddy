@@ -80,8 +80,13 @@ public class AdminProducer extends AdminApiProducer {
 
 
     @Override
-    protected void onDeleteRolePermissionDto(String roleName, String resourceName, String actionName, String resourceId) {
-        impl.deleteRolePermission(roleName, resourceName,actionName, resourceId);
+    protected void onDeleteRolePermissionDtoById(String roleName, String permissionId) {
+        impl.deleteRolePermission(roleName, permissionId);
+    }
+
+    @Override
+    protected void onDeleteRolePermissionDto(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
+        impl.deleteRolePermission(roleName, resourceName,actionName, resourceId, strict);
     }
 
 

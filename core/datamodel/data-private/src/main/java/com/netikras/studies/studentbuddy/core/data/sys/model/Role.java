@@ -113,11 +113,21 @@ public class Role {
         return addPermission(new ResourceActionLink(resource, action, resourceId, strict));
     }
 
-    public void removePermission(Resource resource, Action action, String resourceId) {
-        removePermission(resource.name(), action.name(), resourceId);
+    public void removePermissionById(String permissionId) {
+        if (isNullOrEmpty(getPermissions())) {
+            return;
+        }
+
+        getPermissions().removeIf(link -> link.getResource() != null
+                && link.getId() != null
+                && link.getId().equals(permissionId));
     }
 
-    public void removePermission(String resourceName, String actionName, String resourceId) {
+    public void removePermission(Resource resource, Action action, String resourceId, Boolean strict) {
+        removePermission(resource.name(), action.name(), resourceId, strict);
+    }
+
+    public void removePermission(String resourceName, String actionName, String resourceId, Boolean strict) {
         if (isNullOrEmpty(getPermissions())) {
             return;
         }
@@ -125,14 +135,14 @@ public class Role {
         resourceName = resourceName.toUpperCase();
         actionName = actionName.toUpperCase();
 
-        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext();) {
+        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext(); ) {
             ResourceActionLink link = iterator.next();
             if (link.getResource() != null
                     && link.getResource().name().equals(resourceName)
                     && link.getAction() != null
                     && link.getAction().name().equals(actionName)) {
 
-                if (areEqual(resourceId, link.getEntityId())) {
+                if (areEqual(resourceId, link.getEntityId()) && link.isStrict() == strict) {
                     iterator.remove();
                 }
 
@@ -148,7 +158,7 @@ public class Role {
         resourceName = resourceName.toUpperCase();
         actionName = actionName.toUpperCase();
 
-        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext();) {
+        for (Iterator<ResourceActionLink> iterator = getPermissions().iterator(); iterator.hasNext(); ) {
             ResourceActionLink link = iterator.next();
             if (link.getResource() != null
                     && link.getResource().name().equals(resourceName)

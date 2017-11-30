@@ -389,16 +389,19 @@ public class LectureServiceImpl implements LectureService {
         if (!isNullOrEmpty(lecture.getPendingAssignments())) {
             lecture.getPendingAssignments().forEach(
                     assignment -> purgeLectureAssignment(assignment.getId()));
+            lecture.getPendingAssignments().clear();
         }
 
         if (!isNullOrEmpty(lecture.getPendingTests())) {
             lecture.getPendingTests().forEach(
                     test -> purgeLectureTest(test.getId()));
+            lecture.getPendingTests().clear();
         }
 
         if (!isNullOrEmpty(lecture.getLectureGuests())) {
             lecture.getLectureGuests().forEach(
                     guest -> studentService.purgeLectureGuest(guest.getId()));
+            lecture.getLectureGuests().clear();
         }
 
         if (!isNullOrEmpty(lecture.getComments())) {

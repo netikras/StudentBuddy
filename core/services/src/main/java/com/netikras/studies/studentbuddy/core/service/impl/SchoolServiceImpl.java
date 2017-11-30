@@ -218,13 +218,15 @@ public class SchoolServiceImpl implements SchoolService {
                 courseLecturer.getLecturer().setCourseLecturers(null);
                 lecturerService.updateLecturer(courseLecturer.getLecturer());
             }
+            course.getLecturers().clear();
         }
 
         if (!isNullOrEmpty(course.getLectures())) {
             for (Lecture lecture : course.getLectures()) {
                 lecture.setCourse(null);
-                lectureService.updateLecture(lecture);
+//                lectureService.updateLecture(lecture);
             }
+            course.getLectures().clear();
         }
 
         courseDao.delete(course.getId());
@@ -452,18 +454,26 @@ public class SchoolServiceImpl implements SchoolService {
             List<String> ids = new ArrayList<>();
             discipline.getLectures().forEach(lecture -> ids.add(lecture.getId()));
             lectureService.purgeLectures(ids);
+            discipline.getLectures().clear();
         }
 
         if (!isNullOrEmpty(discipline.getAssignments())) {
             discipline.getAssignments().forEach(assignment -> lectureService.purgeLectureAssignment(assignment.getId()));
+            discipline.getAssignments().clear();
         }
 
         if (!isNullOrEmpty(discipline.getTests())) {
             discipline.getTests().forEach(test -> lectureService.purgeLectureTest(test.getId()));
+            discipline.getTests().clear();
         }
 
         if (!isNullOrEmpty(discipline.getCourses())) {
             discipline.getCourses().forEach(course -> purgeCourse(course.getId()));
+            discipline.getCourses().clear();
+        }
+
+        if (discipline.getSchool() != null && !isNullOrEmpty(discipline.getSchool().getDisciplines())) {
+            discipline.getSchool().getDisciplines().removeIf(d -> id.equals(d.getId()));
         }
 
         disciplineDao.delete(id);

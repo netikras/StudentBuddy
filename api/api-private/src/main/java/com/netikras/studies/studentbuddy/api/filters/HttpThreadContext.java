@@ -13,7 +13,6 @@ public class HttpThreadContext extends ThreadContext {
 
 
     public HttpThreadContext() {
-        extras = new HashMap<>();
     }
 
     private HttpServletRequest request;
@@ -24,9 +23,10 @@ public class HttpThreadContext extends ThreadContext {
 
     private User user;
 
-    private Map<Object, Object> extras;
+//    private Map<Object, Object> extras;
 
     private static ThreadLocal<HttpThreadContext> context = null;
+    private ThreadContext globalContext = null;
 
     public static HttpThreadContext current() {
         if (context == null) {
@@ -34,8 +34,13 @@ public class HttpThreadContext extends ThreadContext {
         }
         if (context.get() == null) {
             context.set(new HttpThreadContext());
+            context.get().setGlobalContext(ThreadContext.current());
         }
         return context.get();
+    }
+
+    protected void setGlobalContext(ThreadContext global) {
+        globalContext = global;
     }
 
     @Override
@@ -44,33 +49,33 @@ public class HttpThreadContext extends ThreadContext {
         setRequest(null);
         setResponse(null);
         if (withExtras)
-            getExtras().clear();
+            globalContext.clear(true);
     }
 
-    public int persistExtrasToSession(boolean overwrite) {
-        if (getExtras() == null) return 0;
-        if (getSession() == null) return 0;
-        int total = 0;
-
-        for (Map.Entry<Object, Object> entry : getExtras().entrySet()) {
-            Object key = entry.getKey();
-            if (!String.class.isAssignableFrom(key.getClass())) continue;
-            if (getSession().getAttribute((String) key) != null && !overwrite) continue;
-
-            getSession().setAttribute((String) key, entry.getValue());
-            total++;
-        }
-
-        return total;
-    }
+//    public int persistExtrasToSession(boolean overwrite) {
+//        if (globalContext == null) return 0;
+//        if (getSession() == null) return 0;
+//        int total = 0;
+//
+//        for (Map.Entry<Object, Object> entry : getExtras().entrySet()) {
+//            Object key = entry.getKey();
+//            if (!String.class.isAssignableFrom(key.getClass())) continue;
+//            if (getSession().getAttribute((String) key) != null && !overwrite) continue;
+//
+//            getSession().setAttribute((String) key, entry.getValue());
+//            total++;
+//        }
+//
+//        return total;
+//    }
 
     public int persistExtraToSession(Object key, boolean overwrite) {
         if (key == null) return 0;
-        if (getExtras() == null) return 0;
+        if (globalContext == null) return 0;
         if (getSession() == null) return 0;
         if (!String.class.isAssignableFrom(key.getClass())) return 0;
 
-        Object value = getExtras().get(key);
+        Object value = getValue(key);
 
         if (getSession().getAttribute((String) key) != null && ! overwrite) return 0;
         getSession().setAttribute((String) key, value);
@@ -159,27 +164,27 @@ public class HttpThreadContext extends ThreadContext {
         this.session = session;
     }
 
-    public Map<Object, Object> getExtras() {
-        return extras;
-    }
+//    public Map<Object, Object> getExtras() {
+//        return extras;
+//    }
 
-    public void setExtras(Map<Object, Object> extras) {
-        this.extras = extras;
-    }
+//    public void setExtras(Map<Object, Object> extras) {
+//        this.extras = extras;
+//    }
 
     @Override
     public Object getValue(Object key) {
-        return getExtras().get(key);
+        return globalContext.getValue(key);
     }
 
     @Override
     public void removeValue(Object key) {
-        getExtras().remove(key);
+        globalContext.removeValue(key);
     }
 
     @Override
     public void addValue(Object key, Object value) {
-        getExtras().put(key, value);
+        globalContext.addValue(key, value);
     }
 
     @Override
@@ -189,7 +194,6 @@ public class HttpThreadContext extends ThreadContext {
                 ", response=" + response +
                 ", session=" + session +
                 ", user=" + user +
-                ", extras=" + extras +
                 '}';
     }
 }

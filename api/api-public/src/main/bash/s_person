@@ -58,7 +58,7 @@ createPerson() {
     local email=$(optional "${5}")
     local phone=$(optional "${6}")
 
-    local person=$(mkjsonobj "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
+    local person=$(mkjsonobj "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phoneNo:${phone}")
 
     sb_curl POST "/mgmt/person/" -d "${person}"
     return $?
@@ -73,9 +73,9 @@ updatePerson() {
     local email=$(optional "${6}")
     local phone=$(optional "${7}")
 
-    local person=$(mkjsonobj "id:${id}" "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phone:${phone}")
+    local person=$(mkjsonobj "id:${id}" "firstName:${fname}" "lastName:${lname}" "personalCode:${code}" "identification:${id2}" "email:${email}" "phoneNo:${phone}")
 
-    sb_curl PUT "/person/" -d "${person}"
+    sb_curl PUT "/mgmt/person/" -d "${person}"
     return $?
 }
 
