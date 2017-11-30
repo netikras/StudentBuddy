@@ -229,6 +229,10 @@ public class LocationServiceImpl implements LocationService {
             section.setFloors(null);
         }
 
+        if (section.getBuilding() != null && !isNullOrEmpty(section.getBuilding().getSections())) {
+            section.getBuilding().getSections().removeIf(s -> s != null && id.equals(s.getId()));
+        }
+
         buildingSectionDao.delete(section);
     }
 

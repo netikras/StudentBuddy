@@ -473,7 +473,7 @@ public class SchoolServiceImpl implements SchoolService {
         }
 
         if (discipline.getSchool() != null && !isNullOrEmpty(discipline.getSchool().getDisciplines())) {
-            discipline.getSchool().getDisciplines().removeIf(d -> id.equals(d.getId()));
+            discipline.getSchool().getDisciplines().removeIf(d -> d != null && id.equals(d.getId()));
         }
 
         disciplineDao.delete(id);

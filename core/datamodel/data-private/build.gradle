@@ -8,3 +8,36 @@ loadDep "commons"
 loadDep "testing"
 loadProj ':core:datamodel:data-public'
 loadProj ':commons'
+
+
+
+//https://dzone.com/articles/managing-your-database-with-liquibase-and-gradle
+
+apply plugin: 'liquibase'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.liquibase:liquibase-core:3.4.1'
+        classpath "org.liquibase:liquibase-gradle-plugin:1.1.1"
+        classpath 'mysql:mysql-connector-java:5.1.13'
+    }
+}
+def changeLog = "$projectDir/src/main/resources/db/changelog.xml"
+
+task 'db-dev'() {
+    doLast {
+        println "executing dev"
+        liquibase {
+            activities {
+                main {
+                    changeLogFile changeLog
+                    url 'jdbc:mysql://localhost/stubud'
+                    username 'stubud'
+                    password 'stubud'
+                }
+            }
+        }
+    }
+}

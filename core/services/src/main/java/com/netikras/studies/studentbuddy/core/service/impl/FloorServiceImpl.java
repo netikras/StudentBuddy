@@ -119,7 +119,17 @@ public class FloorServiceImpl implements FloorService {
         List<LectureRoom> rooms = floor.getRooms();
         if (!isNullOrEmpty(rooms)) {
             rooms.forEach(room -> purgeRoom(room.getId()));
+            rooms.clear();
         }
+
+        if (floor.getBuilding() != null && !isNullOrEmpty(floor.getBuilding().getFloors())) {
+            floor.getBuilding().getFloors().removeIf(f -> f != null && id.equals(f.getId()));
+        }
+
+        if (floor.getSection() != null && !isNullOrEmpty(floor.getSection().getFloors())) {
+            floor.getSection().getFloors().removeIf(f -> f != null && id.equals(f.getId()));
+        }
+
         floorDao.delete(floor);
     }
 
@@ -182,6 +192,11 @@ public class FloorServiceImpl implements FloorService {
             List<String> ids = new ArrayList<>();
             lectures.forEach(lecture -> ids.add(lecture.getId()));
             lectureService.purgeLectures(ids);
+            lectures.clear();
+        }
+
+        if (room.getFloor() != null && !isNullOrEmpty(room.getFloor().getRooms())) {
+            room.getFloor().getRooms().removeIf(r -> r != null && id.equals(r.getId()));
         }
 
         roomDao.delete(room);

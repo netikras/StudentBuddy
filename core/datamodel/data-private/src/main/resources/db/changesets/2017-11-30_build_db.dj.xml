@@ -1,0 +1,987 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="netikras (generated)" id="1512073645809-1">
+        <createTable tableName="ActionRequirement">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(255)"/>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="resource" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-2">
+        <createTable tableName="address">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="VARCHAR(255)"/>
+            <column name="longitude" type="VARCHAR(255)"/>
+            <column name="postal_code" type="VARCHAR(255)"/>
+            <column name="street" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-3">
+        <createTable tableName="assignment">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="description" type="LONGTEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="due_date" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="discipline_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecture_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-4">
+        <createTable tableName="building">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="address_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="department_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-5">
+        <createTable tableName="building_section">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="address_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="building_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-6">
+        <createTable tableName="comment">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)"/>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="entity_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="author_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-7">
+        <createTable tableName="comment_tag">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="comment_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-8">
+        <createTable tableName="course">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="discipline_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-9">
+        <createTable tableName="course_lecturer">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="course_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecturer_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-10">
+        <createTable tableName="department">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-11">
+        <createTable tableName="discipline">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="description" type="LONGTEXT"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-12">
+        <createTable tableName="discipline_lecturer">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="discipline_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecturer_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-13">
+        <createTable tableName="floor">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="building_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="building_sec_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-14">
+        <createTable tableName="floor_layout">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="active" type="BIT(1)"/>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="floorMap" type="LONGBLOB"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="floor_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-15">
+        <createTable tableName="lecture">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ends_on" type="datetime(6)"/>
+            <column name="starts_on" type="datetime(6)"/>
+            <column name="course_id" type="VARCHAR(255)"/>
+            <column name="discipline_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecturer_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="room_id" type="VARCHAR(255)"/>
+            <column name="studentsGroup_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-16">
+        <createTable tableName="lecture_guest">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="lecture_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="person_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-17">
+        <createTable tableName="lecture_room">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="number" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="floor_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-18">
+        <createTable tableName="lecturer">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="degree" type="VARCHAR(255)"/>
+            <column name="person_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-19">
+        <createTable tableName="password_requirement">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="whitelist" type="VARCHAR(255)"/>
+            <column name="count_max" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count_min" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="blacklist" type="VARCHAR(255)"/>
+            <column name="enabled" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="message" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-20">
+        <createTable tableName="person">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="id_code" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="personal_code" type="VARCHAR(255)"/>
+            <column name="phone_no" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-21">
+        <createTable tableName="personel_member">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="person_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-22">
+        <createTable tableName="resource_action">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(255)"/>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="entity_id" type="VARCHAR(255)"/>
+            <column name="resource" type="VARCHAR(255)"/>
+            <column name="strict" type="BIT(1)"/>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-23">
+        <createTable tableName="role">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="user" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-24">
+        <createTable tableName="school">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-25">
+        <createTable tableName="student">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="department_id" type="VARCHAR(255)"/>
+            <column name="group_id" type="VARCHAR(255)"/>
+            <column name="person_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-26">
+        <createTable tableName="students_group">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="school_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-27">
+        <createTable tableName="system_settings">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="value" type="VARCHAR(255)"/>
+            <column name="modified_by" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-28">
+        <createTable tableName="tags">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creator_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-29">
+        <createTable tableName="tests">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="exam" type="BIT(1)"/>
+            <column name="starts_on" type="datetime(6)"/>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="discipline_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lecture_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-30">
+        <createTable tableName="user">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="alias" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_on" type="datetime(6)"/>
+            <column name="person_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-31">
+        <createTable tableName="user_role">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_on" type="datetime(6)"/>
+            <column name="granted_by_id" type="VARCHAR(255)"/>
+            <column name="role_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-32">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="ActionRequirement"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-33">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="address"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-34">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="assignment"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-35">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="building"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-36">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="building_section"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-37">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="comment"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-38">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="comment_tag"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-39">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="course"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-40">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="course_lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-41">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="department"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-42">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-43">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="discipline_lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-44">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="floor"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-45">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="floor_layout"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-46">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="lecture"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-47">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="lecture_guest"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-48">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="lecture_room"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-49">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-50">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="password_requirement"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-51">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-52">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="personel_member"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-53">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="resource_action"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-54">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="role"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-55">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-56">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="student"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-57">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="students_group"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-58">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="system_settings"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-59">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="tags"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-60">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="tests"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-61">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-62">
+        <addPrimaryKey columnNames="id" constraintName="PRIMARY" tableName="user_role"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-63">
+        <addUniqueConstraint columnNames="title" constraintName="UK_4fa3p6fs7tyn4or08rjqstrgd" tableName="students_group"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-64">
+        <addUniqueConstraint columnNames="address_id" constraintName="UK_6yibafavog7iobs937fdlbcjw" tableName="building_section"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-65">
+        <addUniqueConstraint columnNames="address_id" constraintName="UK_bl7dql2b0i7gv5jjgdjj1o13d" tableName="building"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-66">
+        <addUniqueConstraint columnNames="value" constraintName="UK_f4mo64wpheix9qmfeln8lku8v" tableName="tags"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-67">
+        <addUniqueConstraint columnNames="personal_code" constraintName="UK_hn4qhp36nffexgwc5x3yhtkj7" tableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-68">
+        <addUniqueConstraint columnNames="name" constraintName="UK_i3a7rplyyse3vxiqahxj2ab6t" tableName="system_settings"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-69">
+        <addUniqueConstraint columnNames="alias" constraintName="UK_kawc06w0lnrdvuxw568clfaqa" tableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-70">
+        <addUniqueConstraint columnNames="title" constraintName="UK_msgoex7rold2eqqf1cllhk02i" tableName="course"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-71">
+        <addUniqueConstraint columnNames="id_code" constraintName="UK_otni49cmfhilu0y9kjugera7y" tableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-72">
+        <addUniqueConstraint columnNames="username" constraintName="UK_sb8bbouer5wak8vyiiy4pf2bx" tableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-73">
+        <addUniqueConstraint columnNames="user" constraintName="UK_svdv2jq4dkan56efhtqpl0wgw" tableName="role"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-74">
+        <createIndex indexName="FK19qnauly6mtf6gobrp7e0mudn" tableName="floor_layout">
+            <column name="floor_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-75">
+        <createIndex indexName="FK1vm0oqhk9viil6eocn49rj1l9" tableName="student">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-76">
+        <createIndex indexName="FK2krawd51yae8uh4s8eq8x6ou2" tableName="discipline_lecturer">
+            <column name="discipline_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-77">
+        <createIndex indexName="FK5cpsuc22wut0belcprhkwr3r1" tableName="lecture_room">
+            <column name="floor_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-78">
+        <createIndex indexName="FK66yj6h3rwnt91ryntwy8e0une" tableName="system_settings">
+            <column name="modified_by"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-79">
+        <createIndex indexName="FK678n1u6nugw2g9454y29juea9" tableName="course">
+            <column name="group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-80">
+        <createIndex indexName="FK67edb3cl06kb15qj1n2oaeo1l" tableName="course_lecturer">
+            <column name="course_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-81">
+        <createIndex indexName="FK71n9r7whn9165o3dx4aet6d40" tableName="discipline_lecturer">
+            <column name="lecturer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-82">
+        <createIndex indexName="FK73f1cwykrd2u0nsv0lu3j2ekg" tableName="students_group">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-83">
+        <createIndex indexName="FK859n2jvi8ivhui0rl0esws6o" tableName="user_role">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-84">
+        <createIndex indexName="FKa68196081fvovjhkek5m97n3y" tableName="user_role">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-85">
+        <createIndex indexName="FKacng5s1v5t94phpdiwqnoar0r" tableName="student">
+            <column name="group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-86">
+        <createIndex indexName="FKaetadasfwx5rhttp9q357mogm" tableName="resource_action">
+            <column name="role_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-87">
+        <createIndex indexName="FKbcymdcilftduuain7srespvkr" tableName="personel_member">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-88">
+        <createIndex indexName="FKbe4y1orhp1e3c8hckkx5p06xs" tableName="tags">
+            <column name="creator_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-89">
+        <createIndex indexName="FKbgc26h9m90gn1g2ytd3taouu6" tableName="role">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-90">
+        <createIndex indexName="FKc4s5983ch43bwhxlf6nuyv3go" tableName="tests">
+            <column name="discipline_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-91">
+        <createIndex indexName="FKceadnwsmasyc372kqqb2vfmmo" tableName="building">
+            <column name="department_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-92">
+        <createIndex indexName="FKcxxrf012ayv6f5fcl47h894nu" tableName="lecture">
+            <column name="room_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-93">
+        <createIndex indexName="FKduovqu36gas54s6a307bghwg0" tableName="course">
+            <column name="discipline_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-94">
+        <createIndex indexName="FKe9ci21nflp03e3g0tg8m7hxp6" tableName="course_lecturer">
+            <column name="lecturer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-95">
+        <createIndex indexName="FKegfb04ka80mp454hu2omu9had" tableName="floor">
+            <column name="building_sec_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-96">
+        <createIndex indexName="FKf1ovdlcps4hb9u53xxb0yjjfx" tableName="comment_tag">
+            <column name="tag_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-97">
+        <createIndex indexName="FKfvb11l7lpgqc6qdrg3bm24kr3" tableName="floor">
+            <column name="building_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-98">
+        <createIndex indexName="FKgptvdmo1py4aks3fckt1d4oh6" tableName="discipline">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-99">
+        <createIndex indexName="FKipi8j1hwsa9wf3s8p0o8db31l" tableName="personel_member">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-100">
+        <createIndex indexName="FKir5g7yucydevmmc84i788jp79" tableName="user">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-101">
+        <createIndex indexName="FKjoc9yetfohpygdvx5wv385vwb" tableName="lecture">
+            <column name="course_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-102">
+        <createIndex indexName="FKk266y4652y4vae1kd0j2y3hry" tableName="comment">
+            <column name="author_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-103">
+        <createIndex indexName="FKk7h24ysb4h4bqw8ormncohc8c" tableName="lecture_guest">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-104">
+        <createIndex indexName="FKka7o603vplvup6s8flgsq0akk" tableName="lecturer">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-105">
+        <createIndex indexName="FKkdr2ypoepvujtbttl2xqnajls" tableName="department">
+            <column name="school_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-106">
+        <createIndex indexName="FKkh3m8c2tq2tgrgma1iyn7tvmx" tableName="student">
+            <column name="department_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-107">
+        <createIndex indexName="FKm2h2ijh3349qwel478ln5rwhx" tableName="lecture">
+            <column name="lecturer_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-108">
+        <createIndex indexName="FKmhelvuo16lnoyu4m3e6is61j0" tableName="lecture">
+            <column name="studentsGroup_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-109">
+        <createIndex indexName="FKnwsufvlvlnsxqv60ltj06bbfx" tableName="student">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-110">
+        <createIndex indexName="FKprbfv334prvmu2ddhridlsq9v" tableName="lecturer">
+            <column name="person_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-111">
+        <createIndex indexName="FKq4rw7k04iem76w1v2nv06asgu" tableName="assignment">
+            <column name="discipline_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-112">
+        <createIndex indexName="FKqjev4s60l4pqbs3rnujofs39q" tableName="tests">
+            <column name="lecture_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-113">
+        <createIndex indexName="FKrluse8h6w6ysn2q9srey5hwha" tableName="comment_tag">
+            <column name="comment_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-114">
+        <createIndex indexName="FKromykixf2ie3x2a46ivr717ob" tableName="lecture_guest">
+            <column name="lecture_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-115">
+        <createIndex indexName="FKsljlp3vgeox5idf7yup4gg2bq" tableName="lecture">
+            <column name="discipline_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-116">
+        <createIndex indexName="FKt6gvvskpg6t6tbrtatq8su3u0" tableName="user_role">
+            <column name="granted_by_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-117">
+        <createIndex indexName="FKt7w7y8stlecmskq35ebqmhge2" tableName="assignment">
+            <column name="lecture_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-118">
+        <createIndex indexName="FKt8sdrttcdxbpme773brmvsisu" tableName="building_section">
+            <column name="building_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-119">
+        <addForeignKeyConstraint baseColumnNames="floor_id" baseTableName="floor_layout" constraintName="FK19qnauly6mtf6gobrp7e0mudn" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="floor"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-120">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="student" constraintName="FK1vm0oqhk9viil6eocn49rj1l9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-121">
+        <addForeignKeyConstraint baseColumnNames="discipline_id" baseTableName="discipline_lecturer" constraintName="FK2krawd51yae8uh4s8eq8x6ou2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-122">
+        <addForeignKeyConstraint baseColumnNames="floor_id" baseTableName="lecture_room" constraintName="FK5cpsuc22wut0belcprhkwr3r1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="floor"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-123">
+        <addForeignKeyConstraint baseColumnNames="modified_by" baseTableName="system_settings" constraintName="FK66yj6h3rwnt91ryntwy8e0une" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-124">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="course" constraintName="FK678n1u6nugw2g9454y29juea9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="students_group"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-125">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="course_lecturer" constraintName="FK67edb3cl06kb15qj1n2oaeo1l" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-126">
+        <addForeignKeyConstraint baseColumnNames="lecturer_id" baseTableName="discipline_lecturer" constraintName="FK71n9r7whn9165o3dx4aet6d40" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-127">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="students_group" constraintName="FK73f1cwykrd2u0nsv0lu3j2ekg" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-128">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_role" constraintName="FK859n2jvi8ivhui0rl0esws6o" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-129">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="user_role" constraintName="FKa68196081fvovjhkek5m97n3y" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="role"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-130">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="student" constraintName="FKacng5s1v5t94phpdiwqnoar0r" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="students_group"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-131">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="resource_action" constraintName="FKaetadasfwx5rhttp9q357mogm" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="role"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-132">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="personel_member" constraintName="FKbcymdcilftduuain7srespvkr" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-133">
+        <addForeignKeyConstraint baseColumnNames="creator_id" baseTableName="tags" constraintName="FKbe4y1orhp1e3c8hckkx5p06xs" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-134">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="role" constraintName="FKbgc26h9m90gn1g2ytd3taouu6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-135">
+        <addForeignKeyConstraint baseColumnNames="discipline_id" baseTableName="tests" constraintName="FKc4s5983ch43bwhxlf6nuyv3go" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-136">
+        <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="building" constraintName="FKceadnwsmasyc372kqqb2vfmmo" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="department"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-137">
+        <addForeignKeyConstraint baseColumnNames="room_id" baseTableName="lecture" constraintName="FKcxxrf012ayv6f5fcl47h894nu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecture_room"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-138">
+        <addForeignKeyConstraint baseColumnNames="discipline_id" baseTableName="course" constraintName="FKduovqu36gas54s6a307bghwg0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-139">
+        <addForeignKeyConstraint baseColumnNames="lecturer_id" baseTableName="course_lecturer" constraintName="FKe9ci21nflp03e3g0tg8m7hxp6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-140">
+        <addForeignKeyConstraint baseColumnNames="building_sec_id" baseTableName="floor" constraintName="FKegfb04ka80mp454hu2omu9had" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="building_section"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-141">
+        <addForeignKeyConstraint baseColumnNames="tag_id" baseTableName="comment_tag" constraintName="FKf1ovdlcps4hb9u53xxb0yjjfx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="tags"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-142">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="building" constraintName="FKf3ryyh4bd143l5b8stt65hwgr" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="address"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-143">
+        <addForeignKeyConstraint baseColumnNames="building_id" baseTableName="floor" constraintName="FKfvb11l7lpgqc6qdrg3bm24kr3" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="building"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-144">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="discipline" constraintName="FKgptvdmo1py4aks3fckt1d4oh6" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-145">
+        <addForeignKeyConstraint baseColumnNames="address_id" baseTableName="building_section" constraintName="FKhyo5obyliup2snn5j16hdcs0q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="address"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-146">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="personel_member" constraintName="FKipi8j1hwsa9wf3s8p0o8db31l" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-147">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="user" constraintName="FKir5g7yucydevmmc84i788jp79" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-148">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="lecture" constraintName="FKjoc9yetfohpygdvx5wv385vwb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="course"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-149">
+        <addForeignKeyConstraint baseColumnNames="author_id" baseTableName="comment" constraintName="FKk266y4652y4vae1kd0j2y3hry" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-150">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="lecture_guest" constraintName="FKk7h24ysb4h4bqw8ormncohc8c" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-151">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="lecturer" constraintName="FKka7o603vplvup6s8flgsq0akk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-152">
+        <addForeignKeyConstraint baseColumnNames="school_id" baseTableName="department" constraintName="FKkdr2ypoepvujtbttl2xqnajls" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="school"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-153">
+        <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="student" constraintName="FKkh3m8c2tq2tgrgma1iyn7tvmx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="department"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-154">
+        <addForeignKeyConstraint baseColumnNames="lecturer_id" baseTableName="lecture" constraintName="FKm2h2ijh3349qwel478ln5rwhx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecturer"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-155">
+        <addForeignKeyConstraint baseColumnNames="studentsGroup_id" baseTableName="lecture" constraintName="FKmhelvuo16lnoyu4m3e6is61j0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="students_group"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-156">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="student" constraintName="FKnwsufvlvlnsxqv60ltj06bbfx" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-157">
+        <addForeignKeyConstraint baseColumnNames="person_id" baseTableName="lecturer" constraintName="FKprbfv334prvmu2ddhridlsq9v" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="person"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-158">
+        <addForeignKeyConstraint baseColumnNames="discipline_id" baseTableName="assignment" constraintName="FKq4rw7k04iem76w1v2nv06asgu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-159">
+        <addForeignKeyConstraint baseColumnNames="lecture_id" baseTableName="tests" constraintName="FKqjev4s60l4pqbs3rnujofs39q" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecture"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-160">
+        <addForeignKeyConstraint baseColumnNames="comment_id" baseTableName="comment_tag" constraintName="FKrluse8h6w6ysn2q9srey5hwha" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="comment"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-161">
+        <addForeignKeyConstraint baseColumnNames="lecture_id" baseTableName="lecture_guest" constraintName="FKromykixf2ie3x2a46ivr717ob" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecture"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-162">
+        <addForeignKeyConstraint baseColumnNames="discipline_id" baseTableName="lecture" constraintName="FKsljlp3vgeox5idf7yup4gg2bq" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="discipline"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-163">
+        <addForeignKeyConstraint baseColumnNames="granted_by_id" baseTableName="user_role" constraintName="FKt6gvvskpg6t6tbrtatq8su3u0" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-164">
+        <addForeignKeyConstraint baseColumnNames="lecture_id" baseTableName="assignment" constraintName="FKt7w7y8stlecmskq35ebqmhge2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="lecture"/>
+    </changeSet>
+    <changeSet author="netikras (generated)" id="1512073645809-165">
+        <addForeignKeyConstraint baseColumnNames="building_id" baseTableName="building_section" constraintName="FKt8sdrttcdxbpme773brmvsisu" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="building"/>
+    </changeSet>
+</databaseChangeLog>
