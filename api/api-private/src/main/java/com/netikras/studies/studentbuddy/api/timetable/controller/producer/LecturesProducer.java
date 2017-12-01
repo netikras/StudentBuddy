@@ -92,4 +92,43 @@ public class LecturesProducer extends LecturesApiProducer {
     }
 
 
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByCourseIdStartingIn(String id, String timeUnits, long value) {
+        return impl.getAllLecturesByCourseIdStartingIn(id, timeUnits, value);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByBuildingIdStartingIn(String id, String timeUnits, long value) {
+        return impl.getAllLecturesByBuildingIdStartingIn(id, timeUnits, value);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllBySectionIdStartingIn(String id, String timeUnits, long value) {
+        return impl.getAllLecturesBySectionIdStartingIn(id, timeUnits, value);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByFloorIdStartingIn(String id, String timeUnits, long value) {
+        return impl.getAllLecturesByFloorIdStartingIn(id, timeUnits, value);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByCourseIdStartingBetween(String id, long after, long before) {
+        return impl.getAllLecturesByCourseIdStartingBetween(id, after, before);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByBuildingIdStartingBetween(String id, long after, long before) {
+        return impl.getAllLecturesByBuildingIdStartingBetween(id, after, before);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllBySectionIdStartingBetween(String id, long after, long before) {
+        return impl.getAllLecturesBySectionIdStartingBetween(id, after, before);
+    }
+
+    @Override
+    protected List<LectureDto> onGetLectureDtoAllByFloorIdStartingBetween(String id, long after, long before) {
+        return impl.getAllLecturesByFloorIdStartingBetween(id, after, before);
+    }
 }

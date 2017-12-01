@@ -4,6 +4,7 @@ import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedExcep
 import com.netikras.studies.studentbuddy.core.data.api.dao.AssignmentDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.DisciplineTestDao;
 import com.netikras.studies.studentbuddy.core.data.api.dao.LectureDao;
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
@@ -16,8 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
@@ -57,6 +61,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForDiscipline(String disciplineId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByDiscipline_IdAndStartsOnBetween(disciplineId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -64,6 +69,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForStudentsGroup(String groupId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures =  lectureDao.findAllByStudentsGroup_IdAndStartsOnBetween(groupId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -71,6 +77,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForLecturer(String lecturerId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByLecturer_IdAndStartsOnBetween(lecturerId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -78,6 +85,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForRoom(String roomId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByRoom_IdAndStartsOnBetween(roomId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -85,6 +93,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForStudentsGroupAndDiscipline(String groupId, String disciplineId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByStudentsGroup_IdAndDiscipline_IdAndStartsOnBetween(groupId, disciplineId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -92,6 +101,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForLecturerAndDiscipline(String lecturerId, String disciplineId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByLecturer_IdAndDiscipline_IdAndStartsOnBetween(lecturerId, disciplineId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -99,6 +109,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForRoomAndDiscipline(String roomId, String disciplineId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByRoom_IdAndDiscipline_IdAndStartsOnBetween(roomId, disciplineId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -106,13 +117,15 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
-    public List<Lecture> findLecturesForBuilding(String buildingId, Date startsAfter, Date startsBefore) {
+    @Transactional
+    public List<Lecture> findLecturesForBuildingStartingBetween(String buildingId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByRoom_Floor_Building_IdAndStartsOnBetween(buildingId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
         return lectures;
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForGuest(String guestId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByLectureGuests_IdAndStartsOnBetween(guestId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -120,12 +133,14 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Lecture> findLecturesForGuestAndDiscipline(String guestId, String disciplineId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByLectureGuests_IdAndDiscipline_IdAndStartsOnBetween(guestId, disciplineId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
         return lectures;
     }
 
+    @Transactional
     public List<Lecture> findLecturesForStudent(String studentId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByStudentsGroup_Members_IdAndStartsOnBetween(studentId, startsAfter, startsBefore);
         commentsService.assignComments(lectures);
@@ -133,6 +148,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Lecture createLecture(Lecture lecture) {
         ErrorsCollection errors = lectureValidator.validateForCreation(lecture, null);
         if (!errors.isEmpty()) {
@@ -147,6 +163,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public void createLectures(List<Lecture> lectures) {
         if (lectures == null) return;
 
@@ -191,11 +208,13 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public void deleteLecturesByDiscipline(String disciplineId) {
         lectureDao.deleteAllByDiscipline_Id(disciplineId);
     }
 
     @Override
+    @Transactional
     public Lecture updateLecture(Lecture lecture) {
         Lecture updated = lectureDao.save(lecture);
 
@@ -204,6 +223,7 @@ public class LectureServiceImpl implements LectureService {
 
 
     @Override
+    @Transactional
     public DisciplineTest createTest(DisciplineTest test) {
         ErrorsCollection errors = lectureValidator.validateForCreation(test, null);
         if (!errors.isEmpty()) {
@@ -218,6 +238,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public DisciplineTest updateTest(DisciplineTest test) {
         DisciplineTest updated = disciplineTestDao.save(test);
         commentsService.assignComments(updated);
@@ -225,6 +246,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public DisciplineTest getTest(String id) {
         DisciplineTest test = disciplineTestDao.findOne(id);
         commentsService.assignComments(test);
@@ -232,6 +254,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> getTestsForDiscipline(String disciplineId) {
         List<DisciplineTest> tests = disciplineTestDao.findAllByDiscipline_Id(disciplineId);
         commentsService.assignComments(tests);
@@ -239,13 +262,16 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> getTestsForDiscipline(String disciplineId, Date startsAfter, Date startsBefore) {
-        List<DisciplineTest> tests = disciplineTestDao.findAllByDiscipline_IdAndStartsOnBetween(disciplineId, startsAfter, startsBefore);
+        Set<DisciplineTest> tests = new HashSet<>(disciplineTestDao.findAllByDiscipline_IdAndStartsOnBetween(disciplineId, startsAfter, startsBefore));
+        tests.addAll(disciplineTestDao.findAllByDiscipline_IdAndLecture_StartsOnBetween(disciplineId, startsAfter, startsBefore));
         commentsService.assignComments(tests);
-        return tests;
+        return new ArrayList<>(tests);
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> getTestsForDisciplineAndGroup(String disciplineId, String groupId) {
         List<DisciplineTest> tests = disciplineTestDao.findAllByDiscipline_IdAndLecture_StudentsGroup_Id(disciplineId, groupId);
         commentsService.assignComments(tests);
@@ -253,33 +279,40 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> getTestsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore) {
-        List<DisciplineTest> tests = disciplineTestDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndStartsOnBetween(disciplineId, groupId, startsAfter, startsBefore);
+        Set<DisciplineTest> tests = new HashSet<>(disciplineTestDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndStartsOnBetween(disciplineId, groupId, startsAfter, startsBefore));
+        tests.addAll(disciplineTestDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndLecture_StartsOnBetween(disciplineId, groupId, startsAfter, startsBefore));
         commentsService.assignComments(tests);
-        return tests;
+        return new ArrayList<>(tests);
     }
 
     @Override
+    @Transactional
     public void deleteTest(String id) {
         disciplineTestDao.delete(id);
     }
 
     @Override
+    @Transactional
     public void deleteTestsByDiscipline(String disciplineId) {
         disciplineTestDao.deleteAllByDiscipline_Id(disciplineId);
     }
 
     @Override
+    @Transactional
     public void deleteTestsByGroup(String groupId) {
         disciplineTestDao.deleteAllByLecture_StudentsGroup_Id(groupId);
     }
 
     @Override
+    @Transactional
     public void deleteTestsByGroupAndDiscipline(String groupId, String disciplineId) {
         disciplineTestDao.deleteAllByLecture_StudentsGroup_IdAndDiscipline_Id(groupId, disciplineId);
     }
 
     @Override
+    @Transactional
     public Assignment createAssignment(Assignment assignment) {
         ErrorsCollection errors = lectureValidator.validateForCreation(assignment, null);
         if (!errors.isEmpty()) {
@@ -294,6 +327,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Assignment getAssignment(String id) {
         Assignment assignment = assignmentDao.findOne(id);
         commentsService.assignComments(assignment);
@@ -301,6 +335,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public Assignment updateAssignment(Assignment assignment) {
         Assignment updated = assignmentDao.save(assignment);
         commentsService.assignComments(updated);
@@ -308,11 +343,13 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public void deleteAssignment(String id) {
         assignmentDao.delete(id);
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForLecture(String id) {
         List<Assignment> assignments = assignmentDao.findAllByLecture_Id(id);
         commentsService.assignComments(assignments);
@@ -320,6 +357,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForDiscipline(String id, Date startsAfter, Date startsBefore) {
         List<Assignment> assignments = assignmentDao.findAllByDiscipline_IdAndDueDateBetween(id, startsAfter, startsBefore);
         commentsService.assignComments(assignments);
@@ -327,6 +365,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForGroup(String id, Date startsAfter, Date startsBefore) {
         List<Assignment> assignments = assignmentDao.findAllByLecture_StudentsGroup_IdAndDueDateBetween(id, startsAfter, startsBefore);
         commentsService.assignComments(assignments);
@@ -334,6 +373,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForStudent(String id, Date startsAfter, Date startsBefore) {
         List<Assignment> assignments = assignmentDao.findAllByLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(id, startsAfter, startsBefore);
         commentsService.assignComments(assignments);
@@ -341,6 +381,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForDisciplineAndGroup(String disciplineId, String groupId, Date startsAfter, Date startsBefore) {
         List<Assignment> assignments = assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndDueDateBetween(disciplineId, groupId, startsAfter, startsBefore);
         commentsService.assignComments(assignments);
@@ -348,6 +389,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<Assignment> getAllAssignmentsForDisciplineAndStudent(String disciplineId, String studentId, Date startsAfter, Date startsBefore) {
         List<Assignment> assignments = assignmentDao.findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(disciplineId, studentId, startsAfter, startsBefore);
         commentsService.assignComments(assignments);
@@ -355,6 +397,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> searchAllTestsByDescription(String query) {
         List<DisciplineTest> tests = disciplineTestDao.findAllByDescriptionLikeIgnoreCase(disciplineTestDao.wrapSearchString(query));
         commentsService.assignComments(tests);
@@ -362,6 +405,7 @@ public class LectureServiceImpl implements LectureService {
     }
 
     @Override
+    @Transactional
     public List<DisciplineTest> findAllTestsByDescription(String query) {
         List<DisciplineTest> tests = disciplineTestDao.findAllByDescriptionLikeIgnoreCase(disciplineTestDao.wrapSearchString(query));
         commentsService.assignComments(tests);
@@ -433,5 +477,60 @@ public class LectureServiceImpl implements LectureService {
 
         assignmentDao.delete(id);
     }
+
+    @Override
+    @Transactional
+    public List<DisciplineTest> getTestsForCourse(String id) {
+        return disciplineTestDao.findAllByLecture_Course_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<DisciplineTest> getTestsForCourseStartingBetween(String id, Date afterTimestamp, Date beforeTimestamp) {
+        Set<DisciplineTest> tests = new HashSet<>(disciplineTestDao.findAllByLecture_Course_Id_AndStartsOnBetween(id, afterTimestamp, beforeTimestamp));
+        tests.addAll(disciplineTestDao.findAllByLecture_Course_Id_AndLecture_StartsOnBetween(id, afterTimestamp, beforeTimestamp));
+//        commentsService.assignComments(tests);
+        return new ArrayList<>(tests);
+    }
+
+    @Override
+    @Transactional
+    public List<Lecture> findLecturesForFloorStartingBetween(String id, Date after, Date before) {
+        List<Lecture> lectures = lectureDao.findAllByRoom_Floor_IdAndStartsOnBetween(id, after, before);
+        commentsService.assignComments(lectures);
+        return lectures;
+    }
+
+    @Override
+    @Transactional
+    public List<Lecture> findLecturesForSectionStartingBetween(String id, Date after, Date before) {
+        List<Lecture> lectures = lectureDao.findAllByRoom_Floor_Section_IdAndStartsOnBetween(id, after, before);
+        commentsService.assignComments(lectures);
+        return lectures;
+    }
+
+    @Override
+    @Transactional
+    public List<Lecture> findLecturesForCourseStartingBetween(String id, Date after, Date before) {
+        List<Lecture> lectures = lectureDao.findAllByCourse_IdAndStartsOnBetween(id, after, before);
+        commentsService.assignComments(lectures);
+        return lectures;
+    }
+
+    @Override
+    @Transactional
+    public List<Assignment> getAllAssignmentsForCourseStartingBetween(String id, Date after, Date before) {
+        Set<Assignment> assignments = new HashSet<>(assignmentDao.findAllByLecture_Course_IdAndDueDateBetween(id, after, before));
+        assignments.addAll(assignmentDao.findAllByLecture_Course_IdAndLecture_StartsOnBetween(id, after, before));
+        commentsService.assignComments(assignments);
+        return new ArrayList<>(assignments);
+    }
+
+    @Override
+    @Transactional
+    public List<Assignment> getAllAssignmentsForCourse(String id) {
+        return assignmentDao.findAllByLecture_Course_Id(id);
+    }
+
 
 }

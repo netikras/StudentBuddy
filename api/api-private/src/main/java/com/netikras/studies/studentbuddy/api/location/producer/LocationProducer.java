@@ -110,6 +110,32 @@ public class LocationProducer extends LocationApiProducer {
         return impl.updateAddress(addressDto);
     }
 
+
+    @Override
+    protected List<BuildingDto> onGetBuildingDtoAll() {
+        return impl.getAllBuildings();
+    }
+
+    @Override
+    protected List<AddressDto> onGetAddressDtoAll() {
+        return impl.getAllAddresses();
+    }
+
+    @Override
+    protected List<BuildingSectionDto> onGetBuildingSectionDtoAllByBuildingId(String id) {
+        return impl.getSectionsByBuildingId(id);
+    }
+
+    @Override
+    protected BuildingDto onGetBuildingDtoByAddressId(String id) {
+        return impl.getBuildingByAddressId(id);
+    }
+
+    @Override
+    protected List<BuildingSectionDto> onGetBuildingSectionDtoAllByAddressId(String id) {
+        return impl.getSectionsByAddressId(id);
+    }
+
     @Override
     protected List<BuildingSectionDto> onSearchBuildingSectionDtoAllByTitle(String title) {
         return impl.searchAllBuildingSectionsByTitle(title);

@@ -26,6 +26,51 @@ import static com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod.PUR
 public abstract class FloorApi {
 
 
+    @RestEndpoint(url = "/building/id/{id}", method = HttpMethod.GET, dtoType = BuildingFloorDto.class, action = "getAllByBuildingId")
+    public abstract List<BuildingFloorDto> getAllFloorsByBuildingId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/building/section/id/{id}", method = HttpMethod.GET, dtoType = BuildingFloorDto.class, action = "getAllBySectionId")
+    public abstract List<BuildingFloorDto> getAllFloorsByBuildingSectionId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/room/floor/id/{id}", method = HttpMethod.GET, dtoType = LectureRoomDto.class, action = "getAllByFloorId")
+    public abstract List<LectureRoomDto> getAllRoomsByFloorId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/room/layout/id/{id}", method = HttpMethod.GET, dtoType = LectureRoomDto.class, action = "getAllByLayoutId")
+    public abstract List<LectureRoomDto> getAllRoomsByLayoutId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/room/building/id/{id}", method = HttpMethod.GET, dtoType = LectureRoomDto.class, action = "getAllByBuildingId")
+    public abstract List<LectureRoomDto> getAllRoomsByBuildingId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/room/building/section/id/{id}", method = HttpMethod.GET, dtoType = LectureRoomDto.class, action = "getAllBySectionId")
+    public abstract List<LectureRoomDto> getAllRoomsBySectionId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/layout/building/id/{id}", method = HttpMethod.GET, dtoType = FloorLayoutDto.class, action = "getAllLayoutsByBuildingId")
+    public abstract List<FloorLayoutDto> getAllLayoutsByBuildingId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/layout/floor/id/{id}", method = HttpMethod.GET, dtoType = FloorLayoutDto.class, action = "getAllLayoutsByFloorId")
+    public abstract List<FloorLayoutDto> getAllLayoutsByFloorId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/layout/building/section/id/{id}", method = HttpMethod.GET, dtoType = FloorLayoutDto.class, action = "getAllLayoutsBySectionId")
+    public abstract List<FloorLayoutDto> getAllLayoutsBySectionId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
     @RestEndpoint(url = "/title/{title}", method = HttpMethod.GET, dtoType = BuildingFloorDto.class, action = "searchAllByTitle")
     public abstract List<BuildingFloorDto> searchFloorsByTitle(
             @MethodParam(type = Type.URL, name = "title") String titleSubstring

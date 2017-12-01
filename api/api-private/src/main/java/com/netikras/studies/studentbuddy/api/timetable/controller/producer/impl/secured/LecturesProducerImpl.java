@@ -89,6 +89,26 @@ public class LecturesProducerImpl {
     }
 
     @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByCourseIdStartingIn(String id, String timeUnits, long value) {
+        return getAllLecturesByCourseIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByBuildingIdStartingIn(String id, String timeUnits, long value) {
+        return getAllLecturesByBuildingIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesBySectionIdStartingIn(String id, String timeUnits, long value) {
+        return getAllLecturesBySectionIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByFloorIdStartingIn(String id, String timeUnits, long value) {
+        return getAllLecturesByFloorIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByGroupIdStartingBetween(String groupId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForStudentsGroup(groupId, new Date(after), new Date(before));
         List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
@@ -112,6 +132,34 @@ public class LecturesProducerImpl {
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByRoomIdStartingBetween(String roomId, long after, long before) {
         List<Lecture> lectures = lectureService.findLecturesForRoom(roomId, new Date(after), new Date(before));
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
+        return lectureDtos;
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByCourseIdStartingBetween(String id, long after, long before) {
+        List<Lecture> lectures = lectureService.findLecturesForCourseStartingBetween(id, new Date(after), new Date(before));
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
+        return lectureDtos;
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByBuildingIdStartingBetween(String id, long after, long before) {
+        List<Lecture> lectures = lectureService.findLecturesForBuildingStartingBetween(id, new Date(after), new Date(before));
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
+        return lectureDtos;
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesBySectionIdStartingBetween(String id, long after, long before) {
+        List<Lecture> lectures = lectureService.findLecturesForSectionStartingBetween(id, new Date(after), new Date(before));
+        List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
+        return lectureDtos;
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByFloorIdStartingBetween(String id, long after, long before) {
+        List<Lecture> lectures = lectureService.findLecturesForFloorStartingBetween(id, new Date(after), new Date(before));
         List<LectureDto> lectureDtos = (List<LectureDto>) modelMapper.transformAll(lectures, LectureDto.class, new MappingSettings().setDepthMax(3));
         return lectureDtos;
     }

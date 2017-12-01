@@ -159,4 +159,28 @@ public class StudentProducerImpl {
 
         return guestDtos;
     }
+
+    @Authorizable(resource = GUEST, action = GET_ALL)
+    public List<LectureGuestDto> getAllGuestsByPerson(String id) {
+        List<LectureGuest> guests = studentService.getAllGuestsByPersonId(id);
+        List<LectureGuestDto> guestDtos =
+                (List<LectureGuestDto>) modelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
+        return guestDtos;
+    }
+
+    @Authorizable(resource = GUEST, action = GET_ALL)
+    public List<LectureGuestDto> getAllGuestsByDiscipline(String id) {
+        List<LectureGuest> guests = studentService.getAllGuestsByDisciplineId(id);
+        List<LectureGuestDto> guestDtos =
+                (List<LectureGuestDto>) modelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
+        return guestDtos;
+    }
+
+    @Authorizable(resource = GUEST, action = GET_ALL)
+    public List<LectureGuestDto> getAllGuestsByCourse(String id) {
+        List<LectureGuest> guests = studentService.getAllGuestsByCourseId(id);
+        List<LectureGuestDto> guestDtos =
+                (List<LectureGuestDto>) modelMapper.transformAll(guests, LectureGuestDto.class, new MappingSettings().setDepthMax(3));
+        return guestDtos;
+    }
 }

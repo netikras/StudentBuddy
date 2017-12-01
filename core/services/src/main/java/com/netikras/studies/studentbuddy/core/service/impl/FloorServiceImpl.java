@@ -40,6 +40,9 @@ public class FloorServiceImpl implements FloorService {
     @Resource
     private LocationValidator locationValidator;
 
+    @Resource
+    private LectureDao lectureDao;
+
 
     @Override
     public BuildingFloor getFloor(String id) {
@@ -134,11 +137,13 @@ public class FloorServiceImpl implements FloorService {
     }
 
     @Override
+    @Transactional
     public LectureRoom getRoom(String id) {
         return roomDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public LectureRoom updateRoom(LectureRoom lectureRoom) {
         return roomDao.save(lectureRoom);
     }
@@ -176,9 +181,6 @@ public class FloorServiceImpl implements FloorService {
         roomDao.delete(id);
     }
 
-    @Resource
-    private LectureDao lectureDao;
-
     @Override
     @Transactional
     public void purgeRoom(String id) {
@@ -203,11 +205,13 @@ public class FloorServiceImpl implements FloorService {
     }
 
     @Override
+    @Transactional
     public FloorLayout getFloorLayout(String id) {
         return floorLayoutDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public FloorLayout updateFloorLayout(FloorLayout floorLayout) {
         return floorLayoutDao.save(floorLayout);
     }
@@ -256,19 +260,76 @@ public class FloorServiceImpl implements FloorService {
         floorLayoutDao.delete(layout);
     }
 
+    @Override
+    @Transactional
+    public List<FloorLayout> getAllLayoutsByFloor(String id) {
+        return floorLayoutDao.findAllByFloor_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<FloorLayout> getAllLayoutsByBuildingSection(String id) {
+        return floorLayoutDao.findAllByFloor_Section_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<FloorLayout> getAllLayoutsByBuilding(String id) {
+        return floorLayoutDao.findAllByFloor_Building_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<BuildingFloor> getAllFloorsByBuildingSection(String id) {
+        return floorDao.findAllBySection_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<BuildingFloor> getAllFloorsByBuilding(String id) {
+        return floorDao.findAllByBuilding_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureRoom> getAllRoomsBySection(String id) {
+        return roomDao.findAllByFloor_Section_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureRoom> getAllRoomsByBuilding(String id) {
+        return roomDao.findAllByFloor_Building_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureRoom> getRoomsByLayout(String id) {
+        return roomDao.findAllByFloor_Layouts_IdContains(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureRoom> getRoomsByFloor(String id) {
+        return roomDao.findAllByFloor_Id(id);
+    }
+
     // search
 
     @Override
+    @Transactional
     public List<LectureRoom> searchAllRoomsByTitle(String query) {
         return roomDao.findAllByTitleLikeIgnoreCase(roomDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<LectureRoom> searchAllRoomsByNumber(String query) {
         return roomDao.findAllByNumberLikeIgnoreCase(roomDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<BuildingFloor> searchAllByTitle(String query) {
         return floorDao.findAllByTitleLikeIgnoreCase(floorDao.wrapSearchString(query));
     }

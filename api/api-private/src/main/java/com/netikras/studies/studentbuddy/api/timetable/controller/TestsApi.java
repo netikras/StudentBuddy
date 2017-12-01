@@ -42,6 +42,18 @@ public abstract class TestsApi {
             @MethodParam(type = Type.URL, name = "id") String disciplineId
     );
 
+    @RestEndpoint(url = "/all/course/id/{id}", method = HttpMethod.GET, dtoType = DisciplineTestDto.class, action = "getAllForCourse")
+    public abstract List<DisciplineTestDto> getForCourse(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/all/course/id/{id}/timeframe/{after}/{before}", method = HttpMethod.GET, dtoType = DisciplineTestDto.class, action = "getAllForCourseInTimeframe")
+    public abstract List<DisciplineTestDto> getForCourseInTimeframe(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
+
 
     @RestEndpoint(url = "/all/discipline/id/{disciplineId}/group/id/{groupId}/timeframe/{after}/{before}",
             method = HttpMethod.GET, dtoType = DisciplineTestDto.class, action = "getAllForGroupInTimeframe")

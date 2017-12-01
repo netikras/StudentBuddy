@@ -70,4 +70,10 @@ public interface StudentService {
     List<LectureGuest> searchAllGuestsByLastName(String query);
 
     StudentsGroup updateGroup(StudentsGroup group);
+
+    List<LectureGuest> getAllGuestsByPersonId(String id);
+
+    List<LectureGuest> getAllGuestsByDisciplineId(String id);
+
+    List<LectureGuest> getAllGuestsByCourseId(String id);
 }

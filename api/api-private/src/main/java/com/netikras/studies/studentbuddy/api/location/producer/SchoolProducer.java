@@ -7,32 +7,10 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.DisciplineDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.PersonnelMemberDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDepartmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.SchoolDto;
-import com.netikras.studies.studentbuddy.core.data.api.model.Course;
-import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
-import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
-import com.netikras.studies.studentbuddy.core.data.api.model.School;
-import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
-import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
-import com.netikras.studies.studentbuddy.core.service.SchoolService;
-import com.netikras.tools.common.model.mapper.MappingSettings;
-import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
-
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.SEARCH;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.COURSE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSONNEL;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SCHOOL_DEPARTMENT;
 
 @RestController
 public class SchoolProducer extends SchoolApiProducer {
@@ -200,6 +178,22 @@ public class SchoolProducer extends SchoolApiProducer {
     @Override
     protected List<SchoolDto> onGetSchoolDtoAll() {
         return impl.getAllSchools();
+    }
+
+
+    @Override
+    protected List<DisciplineDto> onGetDisciplineDtoAllByLecturerId(String id) {
+        return impl.getAllDisciplinesByLecturerId(id);
+    }
+
+    @Override
+    protected List<CourseDto> onGetCourseDtoAllByLecturerId(String id) {
+        return impl.getAllCoursesByLecturerId(id);
+    }
+
+    @Override
+    protected List<CourseDto> onGetCourseDtoAllByGroupId(String id) {
+        return impl.getCoursesByGroupId(id);
     }
 
     @Override

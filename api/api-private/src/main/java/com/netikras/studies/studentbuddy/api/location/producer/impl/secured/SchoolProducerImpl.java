@@ -336,19 +336,45 @@ public class SchoolProducerImpl {
     @Authorizable(resource = DISCIPLINE, action = SEARCH)
     public List<DisciplineDto> searchAllDisciplinesByTitle(String title) {
         List<Discipline> disciplines = schoolService.searchAllDisciplinesByTitle(title);
-        List<DisciplineDto> memberDtos =
+        List<DisciplineDto> disciplineDtos =
                 (List<DisciplineDto>) modelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(3));
 
-        return memberDtos;
+        return disciplineDtos;
     }
 
     @Authorizable(resource = DISCIPLINE, action = SEARCH)
     public List<DisciplineDto> searchAllDisciplinesByDescription(String descr) {
         List<Discipline> disciplines = schoolService.searchAllDisciplinesByDescription(descr);
-        List<DisciplineDto> memberDtos =
+        List<DisciplineDto> disciplineDtos =
                 (List<DisciplineDto>) modelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(3));
 
-        return memberDtos;
+        return disciplineDtos;
     }
 
+    @Authorizable(resource = DISCIPLINE, action = GET)
+    public List<DisciplineDto> getAllDisciplinesByLecturerId(String id) {
+        List<Discipline> disciplines = schoolService.getAllDisciplinesByLecturerId(id);
+        List<DisciplineDto> disciplineDtos =
+                (List<DisciplineDto>) modelMapper.transformAll(disciplines, DisciplineDto.class, new MappingSettings().setDepthMax(3));
+
+        return disciplineDtos;
+    }
+
+    @Authorizable(resource = DISCIPLINE, action = GET)
+    public List<CourseDto> getAllCoursesByLecturerId(String id) {
+        List<Course> courses = schoolService.getAllCoursesByLecturerId(id);
+        List<CourseDto> courseDtos =
+                (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
+
+        return courseDtos;
+    }
+
+    @Authorizable(resource = DISCIPLINE, action = GET)
+    public List<CourseDto> getCoursesByGroupId(String id) {
+        List<Course> courses = schoolService.getAllCoursesByGroupId(id);
+        List<CourseDto> courseDtos =
+                (List<CourseDto>) modelMapper.transformAll(courses, CourseDto.class, new MappingSettings().setDepthMax(3));
+
+        return courseDtos;
+    }
 }

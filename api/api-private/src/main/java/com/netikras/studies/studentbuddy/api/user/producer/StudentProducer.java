@@ -58,6 +58,21 @@ public class StudentProducer extends StudentApiProducer {
 
 
     @Override
+    protected List<LectureGuestDto> onGetLectureGuestDtoAllGuestsByCourse(String id) {
+        return impl.getAllGuestsByCourse(id);
+    }
+
+    @Override
+    protected List<LectureGuestDto> onGetLectureGuestDtoAllGuestsByDiscipline(String id) {
+        return impl.getAllGuestsByDiscipline(id);
+    }
+
+    @Override
+    protected List<LectureGuestDto> onGetLectureGuestDtoAllGuestsByPerson(String id) {
+        return impl.getAllGuestsByPerson(id);
+    }
+
+    @Override
     protected List<StudentDto> onGetStudentDtoAllByPersonId(String id) {
         return impl.getAllStudentsByPersonId(id);
     }

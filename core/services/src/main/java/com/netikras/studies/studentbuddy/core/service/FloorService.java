@@ -44,4 +44,22 @@ public interface FloorService {
     List<BuildingFloor> searchAllByTitle(String query);
 
     void purgeFloorLayout(String id);
+
+    List<FloorLayout> getAllLayoutsByFloor(String id);
+
+    List<FloorLayout> getAllLayoutsByBuildingSection(String id);
+
+    List<FloorLayout> getAllLayoutsByBuilding(String id);
+
+    List<BuildingFloor> getAllFloorsByBuildingSection(String id);
+
+    List<BuildingFloor> getAllFloorsByBuilding(String id);
+
+    List<LectureRoom> getAllRoomsBySection(String id);
+
+    List<LectureRoom> getAllRoomsByBuilding(String id);
+
+    List<LectureRoom> getRoomsByLayout(String id);
+
+    List<LectureRoom> getRoomsByFloor(String id);
 }

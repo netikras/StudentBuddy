@@ -40,7 +40,7 @@ public class AssignmentProducerImpl {
     public AssignmentDto updateAssignment(AssignmentDto dto) {
         Assignment assignment = modelMapper.apply(entityProvider.fetch(dto), dto);
         assignment = lectureService.updateAssignment(assignment);
-        dto = modelMapper.transform(assignment, new AssignmentDto());
+        dto = modelMapper.transform(assignment, new AssignmentDto(), new MappingSettings().setDepthMax(3));
 
         return dto;
     }
@@ -48,7 +48,7 @@ public class AssignmentProducerImpl {
     @Authorizable(resource = ASSIGNMENT, action = GET)
     public AssignmentDto getAssignment(String id) {
         Assignment assignment = lectureService.getAssignment(id);
-        AssignmentDto dto = modelMapper.transform(assignment, new AssignmentDto());
+        AssignmentDto dto = modelMapper.transform(assignment, new AssignmentDto(), new MappingSettings().setDepthMax(3));
         return dto;
     }
 
@@ -57,7 +57,7 @@ public class AssignmentProducerImpl {
         Assignment assignment = modelMapper.apply(new Assignment(), dto, new MappingSettings().setForceUpdate(true));
         if (assignment != null) assignment.setId(null);
         assignment = lectureService.createAssignment(assignment);
-        dto = modelMapper.transform(assignment, new AssignmentDto());
+        dto = modelMapper.transform(assignment, new AssignmentDto(), new MappingSettings().setDepthMax(3));
         return dto;
     }
 
@@ -69,21 +69,21 @@ public class AssignmentProducerImpl {
     @Authorizable(resource = ASSIGNMENT, action = GET)
     public List<AssignmentDto> getAllAssignmentsByDisciplineId(String disciplineId, long after, long before) {
         List<Assignment> assignments = lectureService.getAllAssignmentsForDiscipline(disciplineId, new Date(after), new Date(before));
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
     @Authorizable(resource = ASSIGNMENT, action = GET)
     public List<AssignmentDto> getAllAssignmentsByGroupId(String groupId, long after, long before) {
         List<Assignment> assignments = lectureService.getAllAssignmentsForGroup(groupId, new Date(after), new Date(before));
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
     @Authorizable(resource = ASSIGNMENT, action = GET)
     public List<AssignmentDto> getAllAssignmentsByStudentId(String studentId, long after, long before) {
         List<Assignment> assignments = lectureService.getAllAssignmentsForStudent(studentId, new Date(after), new Date(before));
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
@@ -91,7 +91,7 @@ public class AssignmentProducerImpl {
     public List<AssignmentDto> getAllAssignmentsByDisciplineIdAndGroupId(String disciplineId, String groupId, long after, long before) {
         List<Assignment> assignments =
                 lectureService.getAllAssignmentsForDisciplineAndGroup(disciplineId, groupId, new Date(after), new Date(before));
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
@@ -99,14 +99,14 @@ public class AssignmentProducerImpl {
     public List<AssignmentDto> getAllAssignmentsByDisciplineIdAndStudentId(String disciplineId, String studentId, long after, long before) {
         List<Assignment> assignments =
                 lectureService.getAllAssignmentsForDisciplineAndStudent(disciplineId, studentId, new Date(after), new Date(before));
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
     @Authorizable(resource = ASSIGNMENT, action = GET)
     public List<AssignmentDto> getAllAssignmentsByLectureId(String lectureId) {
         List<Assignment> assignments = lectureService.getAllAssignmentsForLecture(lectureId);
-        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
 
@@ -131,5 +131,19 @@ public class AssignmentProducerImpl {
         assignment = lectureService.createAssignment(assignment);
         AssignmentDto dto = modelMapper.transform(assignment, new AssignmentDto());
         return dto;
+    }
+
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAssignmentsByCourseId(String id) {
+        List<Assignment> assignments = lectureService.getAllAssignmentsForCourse(id);
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = ASSIGNMENT, action = GET)
+    public List<AssignmentDto> getAssignmentsByCourseIdStartingBetween(String id, long after, long before) {
+        List<Assignment> assignments =  lectureService.getAllAssignmentsForCourseStartingBetween(id, new Date(after), new Date(before));
+        List<AssignmentDto> dtos = (List<AssignmentDto>) modelMapper.transformAll(assignments, AssignmentDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
     }
 }

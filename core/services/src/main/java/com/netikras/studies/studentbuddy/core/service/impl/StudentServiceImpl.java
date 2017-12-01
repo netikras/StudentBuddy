@@ -154,11 +154,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public List<Student> searchAllStudentsByFirstName(String query) {
         return studentDao.findAllByPerson_FirstNameLikeIgnoreCase(studentDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<Student> searchAllStudentsByLastName(String query) {
         return studentDao.findAllByPerson_LastNameLikeIgnoreCase(studentDao.wrapSearchString(query));
     }
@@ -194,6 +196,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public List<StudentsGroup> searchAllGroupsByTitle(String query) {
         return groupDao.findAllByTitleLikeIgnoreCase(groupDao.wrapSearchString(query));
     }
@@ -235,6 +238,24 @@ public class StudentServiceImpl implements StudentService {
 
         group = groupDao.save(group);
         return group;
+    }
+
+    @Override
+    @Transactional
+    public List<LectureGuest> getAllGuestsByPersonId(String id) {
+        return lectureGuestDao.findAllByPerson_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureGuest> getAllGuestsByDisciplineId(String id) {
+        return lectureGuestDao.findAllByLecture_Discipline_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<LectureGuest> getAllGuestsByCourseId(String id) {
+        return lectureGuestDao.findAllByLecture_Course_Id(id);
     }
 
     @Override
@@ -336,11 +357,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @Transactional
     public List<LectureGuest> searchAllGuestsByFirstName(String query) {
         return lectureGuestDao.findAllByPerson_FirstNameLikeIgnoreCase(lectureGuestDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<LectureGuest> searchAllGuestsByLastName(String query) {
         return lectureGuestDao.findAllByPerson_LastNameLikeIgnoreCase(lectureGuestDao.wrapSearchString(query));
     }

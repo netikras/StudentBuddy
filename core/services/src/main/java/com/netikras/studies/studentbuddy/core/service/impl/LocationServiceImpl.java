@@ -43,11 +43,13 @@ public class LocationServiceImpl implements LocationService {
 
 
     @Override
+    @Transactional
     public Building getBuilding(String id) {
         return buildingDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public Building updateBuilding(Building building) {
         ErrorsCollection errors = locationValidator.validateForUpdate(building, null);
         if (!errors.isEmpty()) {
@@ -159,11 +161,13 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public BuildingSection getBuildingSection(String id) {
         return buildingSectionDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public BuildingSection updateBuildingSection(BuildingSection buildingSection) {
         return buildingSectionDao.save(buildingSection);
     }
@@ -236,17 +240,20 @@ public class LocationServiceImpl implements LocationService {
         buildingSectionDao.delete(section);
     }
 
-        @Override
+    @Override
+    @Transactional
     public Address getAddress(String id) {
         return addressDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public Address updateAddress(Address address) {
         return addressDao.save(address);
     }
 
     @Override
+    @Transactional
     public Address createAddress(Address address) {
         ErrorsCollection errors = locationValidator.validateForCreation(address, null);
         if (!errors.isEmpty()) {
@@ -300,13 +307,45 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @Transactional
     public List<Building> searchAllBuildingsByTitle(String query) {
         return buildingDao.findAllByTitleLikeIgnoreCase(buildingSectionDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<BuildingSection> searchAllSectionsByTitle(String query) {
         return buildingSectionDao.findAllByTitleLikeIgnoreCase(buildingSectionDao.wrapSearchString(query));
+    }
+
+    @Override
+    @Transactional
+    public List<Building> getAllBuildings() {
+        return buildingDao.findAll();
+    }
+
+    @Override
+    @Transactional
+    public List<Address> getAllAddresses() {
+        return addressDao.findAll();
+    }
+
+    @Override
+    @Transactional
+    public List<BuildingSection> getAllSectionsByBuildingId(String id) {
+        return buildingSectionDao.findAllByBuilding_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public Building getBuildingByAddressId(String id) {
+        return buildingDao.findByAddress_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<BuildingSection> getAllSectionsByAddressId(String id) {
+        return buildingSectionDao.findAllByAddress_Id(id);
     }
 
 }

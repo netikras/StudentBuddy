@@ -74,4 +74,14 @@ public class AssignmentProducer extends AssignmentApiProducer {
     protected AssignmentDto onCreateAssignmentDtoNew(String dueLectureId, String description) {
         return impl.createAssignmentNew(dueLectureId, description);
     }
+
+    @Override
+    protected List<AssignmentDto> onGetAssignmentDtoAllByCourseId(String id) {
+        return impl.getAssignmentsByCourseId(id);
+    }
+
+    @Override
+    protected List<AssignmentDto> onGetAssignmentDtoAllByCourseIdStartingBetween(String id, long after, long before) {
+        return impl.getAssignmentsByCourseIdStartingBetween(id, after, before);
+    }
 }

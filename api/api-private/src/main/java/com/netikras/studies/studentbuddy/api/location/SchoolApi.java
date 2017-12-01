@@ -43,6 +43,11 @@ public abstract class SchoolApi {
             @MethodParam(type = Type.URL, name = "id") String id
     );
 
+    @RestEndpoint(url = "/discipline/lecturer/id/{id}", method = HttpMethod.GET, dtoType = DisciplineDto.class, action = "getAllByLecturerId")
+    public abstract List<DisciplineDto> getAllDisciplinesByLecturerId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
     @RestEndpoint(url = "/id/{id}/course", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllBySchoolId")
     public abstract List<CourseDto> getAllCoursesBySchoolId(
             @MethodParam(type = Type.URL, name = "id") String id
@@ -68,6 +73,16 @@ public abstract class SchoolApi {
 
     @RestEndpoint(url = "/discipline/id/{id}/course", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllByDisciplineId")
     public abstract List<CourseDto> getAllCoursesByDisciplineId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/course/lecturer/id/{id}", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllByLecturerId")
+    public abstract List<CourseDto> getAllCoursesByLecturerId(
+            @MethodParam(type = Type.URL, name = "id") String id
+    );
+
+    @RestEndpoint(url = "/course/group/id/{id}", method = HttpMethod.GET, dtoType = CourseDto.class, action = "getAllByGroupId")
+    public abstract List<CourseDto> getAllCoursesByGroupId(
             @MethodParam(type = Type.URL, name = "id") String id
     );
 

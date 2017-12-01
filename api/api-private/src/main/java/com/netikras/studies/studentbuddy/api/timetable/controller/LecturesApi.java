@@ -26,6 +26,39 @@ public abstract class LecturesApi {
      * @param timeUnits Time units (ISO): M(onths), d(ays), H(ours), m(inutes), s(econds)
      * @param value     Time value
      */
+
+    @RestEndpoint(url = "/course/id/{id}/starts/in/{timeUnits}/{value}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByCourseIdStartingIn")
+    public abstract List<LectureDto> getLecturesByCourseStartingIn(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
+            @MethodParam(type = Type.URL, name = "value") long value
+    );
+
+    @RestEndpoint(url = "/building/id/{id}/starts/in/{timeUnits}/{value}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByBuildingIdStartingIn")
+    public abstract List<LectureDto> getLecturesByBuildingStartingIn(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
+            @MethodParam(type = Type.URL, name = "value") long value
+    );
+
+    @RestEndpoint(url = "/building/section/id/{id}/starts/in/{timeUnits}/{value}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllBySectionIdStartingIn")
+    public abstract List<LectureDto> getLecturesBySectionStartingIn(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
+            @MethodParam(type = Type.URL, name = "value") long value
+    );
+
+    @RestEndpoint(url = "/floor/id/{id}/starts/in/{timeUnits}/{value}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByFloorIdStartingIn")
+    public abstract List<LectureDto> getLecturesByFloorStartingIn(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
+            @MethodParam(type = Type.URL, name = "value") long value
+    );
+
     @RestEndpoint(url = "/group/id/{groupId}/starts/in/{timeUnits}/{value}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByGroupIdStartingIn")
     public abstract List<LectureDto> getLecturesByGroupStartingIn(
@@ -61,6 +94,39 @@ public abstract class LecturesApi {
             @MethodParam(type = Type.URL, name = "value") long value
     );
 
+
+
+    @RestEndpoint(url = "/course/id/{id}/starts/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByCourseIdStartingBetween")
+    public abstract List<LectureDto> getLecturesByCourseStartingBetween(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
+
+    @RestEndpoint(url = "/building/id/{id}/starts/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByBuildingIdStartingBetween")
+    public abstract List<LectureDto> getLecturesByBuildingStartingBetween(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
+
+    @RestEndpoint(url = "/building/section/id/{id}/starts/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllBySectionIdStartingBetween")
+    public abstract List<LectureDto> getLecturesBySectionStartingBetween(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
+
+    @RestEndpoint(url = "/floor/id/{id}/starts/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByFloorIdStartingBetween")
+    public abstract List<LectureDto> getLecturesByFloorStartingBetween(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
 
     @RestEndpoint(url = "/group/id/{groupId}/starts/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByGroupIdStartingBetween")

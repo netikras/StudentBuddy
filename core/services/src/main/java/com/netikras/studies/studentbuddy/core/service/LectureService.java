@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.service;
 
+import com.netikras.studies.studentbuddy.core.data.api.dto.school.AssignmentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.DisciplineTest;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
@@ -28,7 +29,7 @@ public interface LectureService {
 
     List<Lecture> findLecturesForRoomAndDiscipline(String roomId, String disciplineId, Date startsAfter, Date startsBefore);
 
-    List<Lecture> findLecturesForBuilding(String buildingId, Date startsAfter, Date startsBefore);
+    List<Lecture> findLecturesForBuildingStartingBetween(String buildingId, Date startsAfter, Date startsBefore);
 
     List<Lecture> findLecturesForGuest(String guestId, Date startsAfter, Date startsBefore);
 
@@ -109,4 +110,18 @@ public interface LectureService {
     void purgeLectureTest(String testId);
 
     void purgeLectureAssignment(String id);
+
+    List<DisciplineTest> getTestsForCourse(String id);
+
+    List<DisciplineTest> getTestsForCourseStartingBetween(String id, Date after, Date before);
+
+    List<Lecture> findLecturesForFloorStartingBetween(String id, Date after, Date before);
+
+    List<Lecture> findLecturesForSectionStartingBetween(String id, Date after, Date before);
+
+    List<Lecture> findLecturesForCourseStartingBetween(String id, Date after, Date before);
+
+    List<Assignment> getAllAssignmentsForCourseStartingBetween(String id, Date after, Date before);
+
+    List<Assignment> getAllAssignmentsForCourse(String id);
 }

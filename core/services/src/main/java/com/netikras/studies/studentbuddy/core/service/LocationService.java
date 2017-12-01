@@ -42,4 +42,14 @@ public interface LocationService {
     List<Building> searchAllBuildingsByTitle(String query);
 
     List<BuildingSection> searchAllSectionsByTitle(String query);
+
+    List<Building> getAllBuildings();
+
+    List<Address> getAllAddresses();
+
+    List<BuildingSection> getAllSectionsByBuildingId(String id);
+
+    Building getBuildingByAddressId(String id);
+
+    List<BuildingSection> getAllSectionsByAddressId(String id);
 }

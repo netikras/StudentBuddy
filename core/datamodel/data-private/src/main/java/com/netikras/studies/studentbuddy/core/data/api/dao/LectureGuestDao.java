@@ -12,4 +12,8 @@ public interface LectureGuestDao extends JpaRepo<LectureGuest> {
 
     List<LectureGuest> findAllByPerson_Id(String person_id);
 
+    List<LectureGuest> findAllByLecture_Discipline_Id(String lecture_discipline_id);
+
+    List<LectureGuest> findAllByLecture_Course_Id(String lecture_course_id);
+
 }

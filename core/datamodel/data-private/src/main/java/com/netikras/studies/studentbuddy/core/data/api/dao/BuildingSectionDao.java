@@ -16,5 +16,8 @@ public interface BuildingSectionDao extends JpaRepo<BuildingSection> {
 
     BuildingSection findByAddress_Id(String address_id);
 
+    List<BuildingSection> findAllByBuilding_Id(String building_id);
 
+
+    List<BuildingSection> findAllByAddress_Id(String id);
 }

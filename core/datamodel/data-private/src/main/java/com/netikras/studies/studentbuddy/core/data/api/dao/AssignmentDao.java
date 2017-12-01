@@ -15,15 +15,33 @@ public interface AssignmentDao extends JpaRepo<Assignment> {
 
     List<Assignment> findAllByLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(String studentId, Date after, Date before);
 
+    List<Assignment> findAllByLecture_StudentsGroup_Members_IdContainingAndLecture_StartsOnBetween(String studentId, Date after, Date before);
+
     List<Assignment> findAllByDiscipline_IdAndDueDateBetween(String discipline_id, Date after, Date before);
 
+    List<Assignment> findAllByDiscipline_IdAndLecture_StartsOnBetween(String discipline_id, Date after, Date before);
+
     List<Assignment> findAllByLecture_StudentsGroup_IdAndDueDateBetween(String lecture_studentsGroup_id, Date after, Date before);
+
+    List<Assignment> findAllByLecture_StudentsGroup_IdAndLecture_StartsOnBetween(String lecture_studentsGroup_id, Date after, Date before);
 
     List<Assignment> findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndDueDateBetween(String discipline_id, String lecture_studentsGroup_id,
                                                                                         Date after, Date before);
 
+    List<Assignment> findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndLecture_StartsOnBetween(String discipline_id, String lecture_studentsGroup_id,
+                                                                                                 Date after, Date before);
+
     List<Assignment> findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndDueDateBetween(String discipline_id, String studentId,
                                                                                                           Date after, Date before);
+
+    List<Assignment> findAllByDiscipline_IdAndLecture_StudentsGroup_Members_IdContainingAndLecture_StartsOnBetween(String discipline_id, String studentId,
+                                                                                                                   Date after, Date before);
+
+    List<Assignment> findAllByLecture_Course_Id(String lecture_course_id);
+
+    List<Assignment> findAllByLecture_Course_IdAndDueDateBetween(String lecture_course_id, Date after, Date before);
+
+    List<Assignment> findAllByLecture_Course_IdAndLecture_StartsOnBetween(String lecture_course_id, Date after, Date before);
 
     List<Assignment> findAllByDescriptionLikeIgnoreCase(String description);
 

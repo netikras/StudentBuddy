@@ -109,6 +109,51 @@ public class FloorProducer extends FloorApiProducer {
     }
 
     @Override
+    protected List<LectureRoomDto> onGetLectureRoomDtoAllByFloorId(String id) {
+        return impl.getRoomsByFloorId(id);
+    }
+
+    @Override
+    protected List<LectureRoomDto> onGetLectureRoomDtoAllByLayoutId(String id) {
+        return impl.getRoomsByLayoutId(id);
+    }
+
+    @Override
+    protected List<LectureRoomDto> onGetLectureRoomDtoAllByBuildingId(String id) {
+        return impl.getRoomsByBuildingId(id);
+    }
+
+    @Override
+    protected List<LectureRoomDto> onGetLectureRoomDtoAllBySectionId(String id) {
+        return impl.getRoomsBySectionId(id);
+    }
+
+    @Override
+    protected List<BuildingFloorDto> onGetBuildingFloorDtoAllByBuildingId(String id) {
+        return impl.getFloorsByBuildingId(id);
+    }
+
+    @Override
+    protected List<BuildingFloorDto> onGetBuildingFloorDtoAllBySectionId(String id) {
+        return impl.getFloorsBySectionId(id);
+    }
+
+    @Override
+    protected List<FloorLayoutDto> onGetFloorLayoutDtoAllLayoutsByFloorId(String id) {
+        return impl.getFloorLayoutsByFloorId(id);
+    }
+
+    @Override
+    protected List<FloorLayoutDto> onGetFloorLayoutDtoAllLayoutsByBuildingId(String id) {
+        return impl.getFloorLayoutsByBuildingId(id);
+    }
+
+    @Override
+    protected List<FloorLayoutDto> onGetFloorLayoutDtoAllLayoutsBySectionId(String id) {
+        return impl.getFloorLayoutsBySectionId(id);
+    }
+
+    @Override
     protected List<BuildingFloorDto> onSearchBuildingFloorDtoAllByTitle(String title) {
         return impl.searchAllBuildingFloorsByTitle(title);
     }

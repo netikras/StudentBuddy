@@ -15,4 +15,6 @@ public interface DisciplineDao extends JpaRepo<Discipline> {
 
     List<Discipline> findAllBySchool_Id(String school_id);
 
+    List<Discipline> findAllByLecturers_IdContains(String lecturerId);
+
 }

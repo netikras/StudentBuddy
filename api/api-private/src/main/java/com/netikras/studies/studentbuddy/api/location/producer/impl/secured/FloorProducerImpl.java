@@ -153,4 +153,67 @@ public class FloorProducerImpl {
         List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class, new MappingSettings().setDepthMax(3));
         return dtos;
     }
+
+    @Authorizable(resource = FLOOR_MAP, action = GET)
+    public List<FloorLayoutDto> getFloorLayoutsByFloorId(String id) {
+        List<FloorLayout> buildingFloors = floorService.getAllLayoutsByFloor(id);
+        List<FloorLayoutDto> dtos = (List<FloorLayoutDto>) modelMapper.transformAll(buildingFloors, FloorLayoutDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = FLOOR_MAP, action = GET)
+    public List<FloorLayoutDto> getFloorLayoutsBySectionId(String id) {
+        List<FloorLayout> buildingFloors = floorService.getAllLayoutsByBuildingSection(id);
+        List<FloorLayoutDto> dtos = (List<FloorLayoutDto>) modelMapper.transformAll(buildingFloors, FloorLayoutDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = FLOOR_MAP, action = GET)
+    public List<FloorLayoutDto> getFloorLayoutsByBuildingId(String id) {
+        List<FloorLayout> buildingFloors = floorService.getAllLayoutsByBuilding(id);
+        List<FloorLayoutDto> dtos = (List<FloorLayoutDto>) modelMapper.transformAll(buildingFloors, FloorLayoutDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = FLOOR, action = GET)
+    public List<BuildingFloorDto> getFloorsBySectionId(String id) {
+        List<BuildingFloor> buildingFloors = floorService.getAllFloorsByBuildingSection(id);
+        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) modelMapper.transformAll(buildingFloors, BuildingFloorDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = FLOOR, action = GET)
+    public List<BuildingFloorDto> getFloorsByBuildingId(String id) {
+        List<BuildingFloor> buildingFloors = floorService.getAllFloorsByBuilding(id);
+        List<BuildingFloorDto> dtos = (List<BuildingFloorDto>) modelMapper.transformAll(buildingFloors, BuildingFloorDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = ROOM, action = GET)
+    public List<LectureRoomDto> getRoomsBySectionId(String id) {
+        List<LectureRoom> rooms = floorService.getAllRoomsBySection(id);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = ROOM, action = GET)
+    public List<LectureRoomDto> getRoomsByBuildingId(String id) {
+        List<LectureRoom> rooms = floorService.getAllRoomsByBuilding(id);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = ROOM, action = GET)
+    public List<LectureRoomDto> getRoomsByLayoutId(String id) {
+        List<LectureRoom> rooms = floorService.getRoomsByLayout(id);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
+
+    @Authorizable(resource = ROOM, action = GET)
+    public List<LectureRoomDto> getRoomsByFloorId(String id) {
+        List<LectureRoom> rooms = floorService.getRoomsByFloor(id);
+        List<LectureRoomDto> dtos = (List<LectureRoomDto>) modelMapper.transformAll(rooms, LectureRoomDto.class, new MappingSettings().setDepthMax(3));
+        return dtos;
+    }
 }

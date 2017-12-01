@@ -93,16 +93,19 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public School getSchool(String id) {
         return schoolDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public School updateSchool(School school) {
         return schoolDao.save(school);
     }
 
     @Override
+    @Transactional
     public void deleteSchool(String id) {
         School school = getSchool(id);
         ErrorsCollection errors = schoolValidator.validateForRemoval(school, null);
@@ -162,21 +165,25 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public Course getCourse(String id) {
         return courseDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public List<Course> getAllCourses() {
         return courseDao.findAll();
     }
 
     @Override
+    @Transactional
     public List<Course> getAllCoursesByDiscipline(String disciplineId) {
         return courseDao.findAllByDiscipline_Id(disciplineId);
     }
 
     @Override
+    @Transactional
     public List<Course> getAllCoursesBySchool(String schoolId) {
         return courseDao.findAllByDiscipline_School_Id(schoolId);
     }
@@ -198,11 +205,13 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public Course updateCourse(Course course) {
         return courseDao.save(course);
     }
 
     @Override
+    @Transactional
     public void deleteCourse(String id) {
         courseDao.delete(id);
     }
@@ -299,16 +308,19 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public SchoolDepartment getSchoolDepartment(String id) {
         return departmentDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public SchoolDepartment updateSchoolDepartment(SchoolDepartment department) {
         return departmentDao.save(department);
     }
 
     @Override
+    @Transactional
     public void deleteSchoolDepartment(String id) {
         SchoolDepartment department = getSchoolDepartment(id);
         ErrorsCollection errors = schoolValidator.validateForRemoval(department, null);
@@ -336,6 +348,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public PersonnelMember createPersonnelMember(PersonnelMember member) {
         ErrorsCollection errors = schoolValidator.validateForCreation(member, null);
         if (!errors.isEmpty()) {
@@ -350,16 +363,19 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public PersonnelMember getPersonnelMember(String id) {
         return personnelDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public PersonnelMember updatePersonnelMember(PersonnelMember member) {
         return personnelDao.save(member);
     }
 
     @Override
+    @Transactional
     public void deletePersonnelMember(String id) {
         PersonnelMember personnelMember = getPersonnelMember(id);
         ErrorsCollection errors = schoolValidator.validateForRemoval(personnelMember, null);
@@ -387,11 +403,13 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> getAllPersonnelBySchool(String schoolId) {
         return personnelDao.findAllBySchool_Id(schoolId);
     }
 
     @Override
+    @Transactional
     public Discipline createDiscipline(Discipline discipline) {
         ErrorsCollection errors = schoolValidator.validateForCreation(discipline, null);
         if (!errors.isEmpty()) {
@@ -407,11 +425,13 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public Discipline getDiscipline(String id) {
         return disciplineDao.findOne(id);
     }
 
     @Override
+    @Transactional
     public Discipline updateDiscipline(Discipline discipline) {
         ErrorsCollection errors = schoolValidator.validateForUpdate(discipline, null);
         if (!errors.isEmpty()) {
@@ -427,6 +447,7 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public void deleteDiscipline(String id) {
         Discipline discipline = getDiscipline(id);
         ErrorsCollection errors = schoolValidator.validateForRemoval(discipline, null);
@@ -480,11 +501,13 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
+    @Transactional
     public List<Discipline> getAllDisciplinesBySchoolId(String id) {
         return disciplineDao.findAllBySchool_Id(id);
     }
 
     @Override
+    @Transactional
     public List<School> getAllSchools() {
         return schoolDao.findAll();
     }
@@ -494,62 +517,92 @@ public class SchoolServiceImpl implements SchoolService {
 
 
     @Override
+    @Transactional
     public List<School> searchAllSchoolsByTitle(String query) {
         return schoolDao.findAllByTitleLikeIgnoreCase(schoolDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<SchoolDepartment> searchAllDepartmentsByTitle(String query) {
         return departmentDao.findAllByTitleLikeIgnoreCase(schoolDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> searchAllPersonnelByTitle(String query) {
         return personnelDao.findAllByTitleLikeIgnoreCase(personnelDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> getAllPersonnelByTitle(String title) {
         return personnelDao.findAllByTitle(title);
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> getAllPersonnelByPerson(String personId) {
         return personnelDao.findAllByPerson_Id(personId);
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> searchAllPersonnelByFirstName(String query) {
         return personnelDao.findAllByPerson_FirstNameLikeIgnoreCase(personnelDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> searchAllPersonnelByLastName(String query) {
         return personnelDao.findAllByPerson_LastNameLikeIgnoreCase(personnelDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> searchAllPersonnelByIdentifier(String identifier) {
         return personnelDao.findAllByPerson_IdentificationIgnoreCase(personnelDao.wrapSearchString(identifier));
     }
 
     @Override
+    @Transactional
     public List<PersonnelMember> searchAllPersonnelByPersonalCode(String code) {
         return personnelDao.findAllByPerson_PersonalCodeLikeIgnoreCase(personnelDao.wrapSearchString(code));
     }
 
     @Override
+    @Transactional
     public List<Discipline> searchAllDisciplinesByTitle(String query) {
         return disciplineDao.findAllByTitleLikeIgnoreCase(disciplineDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<Discipline> searchAllDisciplinesByDescription(String query) {
         return disciplineDao.findAllByDescriptionLikeIgnoreCase(disciplineDao.wrapSearchString(query));
     }
 
     @Override
+    @Transactional
     public List<Course> searchAllCoursesByTitle(String query) {
         return courseDao.findAllByTitleLikeIgnoreCase(courseDao.wrapSearchString(query));
+    }
+
+    @Override
+    @Transactional
+    public List<Course> getAllCoursesByGroupId(String id) {
+        return courseDao.findAllByGroup_Id(id);
+    }
+
+    @Override
+    @Transactional
+    public List<Course> getAllCoursesByLecturerId(String id) {
+        return courseDao.findAllByLecturers_IdContains(id);
+    }
+
+    @Override
+    @Transactional
+    public List<Discipline> getAllDisciplinesByLecturerId(String id) {
+        return disciplineDao.findAllByLecturers_IdContains(id);
     }
 }

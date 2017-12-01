@@ -33,6 +33,15 @@ public abstract class StudentApi {
     @RestEndpoint(url = "/group/all", method = HttpMethod.GET, dtoType = StudentsGroupDto.class)
     public abstract List<StudentsGroupDto> getAll();
 
+    @RestEndpoint(url = "/guest/course/id/{id}", method = HttpMethod.GET, dtoType = LectureGuestDto.class)
+    public abstract List<LectureGuestDto> getAllGuestsByCourse(@MethodParam(type = Type.URL, name = "id") String id);
+
+    @RestEndpoint(url = "/guest/discipline/id/{id}", method = HttpMethod.GET, dtoType = LectureGuestDto.class)
+    public abstract List<LectureGuestDto> getAllGuestsByDiscipline(@MethodParam(type = Type.URL, name = "id") String id);
+
+    @RestEndpoint(url = "/guest/person/id/{id}", method = HttpMethod.GET, dtoType = LectureGuestDto.class)
+    public abstract List<LectureGuestDto> getAllGuestsByPerson(@MethodParam(type = Type.URL, name = "id") String id);
+
 
     @RestEndpoint(url = "/all/group/id/{id}", method = HttpMethod.GET, dtoType = StudentDto.class)
     public abstract List<StudentDto> getAllByGroup(@MethodParam(type = Type.URL, name = "id") String groupId);

@@ -16,4 +16,12 @@ public interface LectureRoomDao extends JpaRepo<LectureRoom> {
 
     LectureRoom findLectureRoomByTitleAndNumberAndFloor_NumberAndFloor_Building_Id(String title, String number, int floor_number, String floor_building_id);
 
+    List<LectureRoom> findAllByFloor_Building_Id(String floor_building_id);
+
+    List<LectureRoom> findAllByFloor_Section_Id(String floor_section_id);
+
+    List<LectureRoom> findAllByFloor_Id(String floor_id);
+
+    List<LectureRoom> findAllByFloor_Layouts_IdContains(String id);
+
 }

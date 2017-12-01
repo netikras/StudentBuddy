@@ -16,4 +16,7 @@ public interface CourseDao extends JpaRepo<Course> {
 
     List<Course> findAllByTitleLikeIgnoreCase(String title);
 
+    List<Course> findAllByGroup_Id(String group_id);
+
+    List<Course> findAllByLecturers_IdContains(String lecturerId);
 }

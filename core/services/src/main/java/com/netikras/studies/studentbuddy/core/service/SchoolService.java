@@ -103,4 +103,10 @@ public interface SchoolService {
     List<Discipline> getAllDisciplinesBySchoolId(String id);
 
     List<Course> searchAllCoursesByTitle(String query);
+
+    List<Course> getAllCoursesByGroupId(String id);
+
+    List<Course> getAllCoursesByLecturerId(String id);
+
+    List<Discipline> getAllDisciplinesByLecturerId(String id);
 }

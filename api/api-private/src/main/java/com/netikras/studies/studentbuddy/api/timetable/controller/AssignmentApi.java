@@ -30,6 +30,14 @@ public abstract class AssignmentApi {
             @MethodParam(type = Type.URL, name = "before") long before
     );
 
+    @RestEndpoint(url = "/all/course/id/{id}/due/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByCourseIdStartingBetween")
+    public abstract List<AssignmentDto> getAllForCourseIdStartingBetween(
+            @MethodParam(type = Type.URL, name = "id") String id,
+            @MethodParam(type = Type.URL, name = "after") long after,
+            @MethodParam(type = Type.URL, name = "before") long before
+    );
+
 
     @RestEndpoint(url = "/all/group/id/{groupId}/due/between/{after}/{before}",
             method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByGroupId")
@@ -72,6 +80,11 @@ public abstract class AssignmentApi {
     @RestEndpoint(url = "/all/lecture/id/{lectureId}", method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByLectureId")
     public abstract List<AssignmentDto> getAllForLectureId(
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId
+    );
+
+    @RestEndpoint(url = "/all/course/id/{id}", method = HttpMethod.GET, dtoType = AssignmentDto.class, action = "getAllByCourseId")
+    public abstract List<AssignmentDto> getAllForCourseId(
+            @MethodParam(type = Type.URL, name = "id") String id
     );
 
 

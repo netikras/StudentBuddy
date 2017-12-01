@@ -39,6 +39,12 @@ public interface LectureDao extends JpaRepo<Lecture> {
 
     List<Lecture> findAllByRoom_Floor_Building_IdAndStartsOnBetween(String room_floor_building_id, Date startsAfter, Date startsBefore);
 
+    List<Lecture> findAllByRoom_Floor_IdAndStartsOnBetween(String room_floor_id, Date after, Date before);
+
+    List<Lecture> findAllByRoom_Floor_Section_IdAndStartsOnBetween(String room_floor_section_id, Date after, Date before);
+
+    List<Lecture> findAllByCourse_IdAndStartsOnBetween(String course_id, Date startsOn, Date startsOn2);
+
     List<Lecture> findAllByLectureGuests_IdAndStartsOnBetween(String guest_id, Date startsAfter, Date startsBefore);
 
     List<Lecture> findAllByLectureGuests_IdAndDiscipline_IdAndStartsOnBetween(String guest_id, String discipline_id, Date startsAfter, Date startsBefore);

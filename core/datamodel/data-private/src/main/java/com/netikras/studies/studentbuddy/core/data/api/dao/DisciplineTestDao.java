@@ -11,11 +11,21 @@ public interface DisciplineTestDao extends JpaRepo<DisciplineTest> {
 
     List<DisciplineTest> findAllByDiscipline_Id(String discipline_id);
 
+    List<DisciplineTest> findAllByLecture_Course_Id(String lecture_course_id);
+
+    List<DisciplineTest> findAllByLecture_Course_Id_AndStartsOnBetween(String lecture_course_id, Date startsAfter, Date startsBefore);
+
+    List<DisciplineTest> findAllByLecture_Course_Id_AndLecture_StartsOnBetween(String lecture_course_id, Date startsAfter, Date startsBefore);
+
     List<DisciplineTest> findAllByDiscipline_IdAndStartsOnBetween(String discipline_id, Date startsAfter, Date startsBefore);
+
+    List<DisciplineTest> findAllByDiscipline_IdAndLecture_StartsOnBetween(String discipline_id, Date startsAfter, Date startsBefore);
 
     List<DisciplineTest> findAllByDiscipline_IdAndLecture_StudentsGroup_Id(String discipline_id, String lecture_studentsGroup_id);
 
     List<DisciplineTest> findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndStartsOnBetween(String discipline_id, String lecture_studentsGroup_id, Date startsAfter, Date startsBefore);
+
+    List<DisciplineTest> findAllByDiscipline_IdAndLecture_StudentsGroup_IdAndLecture_StartsOnBetween(String discipline_id, String lecture_studentsGroup_id, Date startsAfter, Date startsBefore);
 
     void deleteAllByDiscipline_Id(String discipline_id);
 
