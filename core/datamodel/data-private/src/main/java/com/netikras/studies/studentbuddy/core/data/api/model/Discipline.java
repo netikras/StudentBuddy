@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "discipline")
-public class Discipline {
+public class Discipline implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

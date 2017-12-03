@@ -146,6 +146,62 @@ getAllLecturesByRoomIdStartingIn() {
     return $?
 }
 
+getLecturesByCourseStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
+    }
+
+    sb_curl GET "/lectures/course/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getLecturesByBuildingStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
+    }
+
+    sb_curl GET "/lectures/building/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getLecturesBySectionStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
+    }
+
+    sb_curl GET "/lectures/building/section/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
+getLecturesByFloorStartingIn() {
+    local id=${1:?ID missing}
+    local timevalue=${2:?Missing time value}
+    local timeunit=${3:?Missing time unit}
+
+    validateTimeUnit "${timeunit}" || {
+        echo "Time unit ${timeunit} is invalid" >&2
+        return ${_NOK};
+    }
+
+    sb_curl GET "/lectures/floor/id/${id}/starts/in/${timeunit}/${timevalue}"
+    return $?
+}
+
 
 
 
@@ -197,6 +253,51 @@ getAllLecturesByRoomIdStartingBetween() {
     return $?
 }
 
+getAllLecturesByCourseIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
 
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
 
+    sb_curl GET "/lectures/course/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesByBuildingIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/building/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesBySectionIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/building/section/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
+
+getAllLecturesByFloorIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/lectures/floor/id/${id}/starts/between/${after}/${before}"
+    return $?
+}
 

@@ -156,6 +156,16 @@ public class SchoolProducer extends SchoolApiProducer {
     }
 
     @Override
+    protected CourseDto onAssignCourseDtoLecturer(String courseId, String lecturerId) {
+        return impl.assignCourseLecturer(courseId, lecturerId);
+    }
+
+    @Override
+    protected CourseDto onUnassignCourseDtoLecturer(String courseId, String lecturerId) {
+        return impl.unassignCourseLecturer(courseId, lecturerId);
+    }
+
+    @Override
     protected void onDeletePersonnelMemberDto(String id) {
         impl.deletePersonnelMember(id);
     }

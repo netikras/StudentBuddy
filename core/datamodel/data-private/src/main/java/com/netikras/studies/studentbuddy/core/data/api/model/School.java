@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
@@ -28,7 +29,7 @@ import static org.hibernate.annotations.FetchMode.SUBSELECT;
  */
 @Entity
 @Table(name = "school")
-public class School {
+public class School implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

@@ -65,6 +65,18 @@ public abstract class SchoolApi {
             @MethodParam(type = Type.URL, name = "lectureId") String lectureId
     );
 
+    @RestEndpoint(url = "/course/id/{courseId}/lecturer/id/{lecturerId}", method = HttpMethod.PUT, dtoType = CourseDto.class, action = "assignLecturer")
+    public abstract CourseDto assignCourseLecturer(
+            @MethodParam(type = Type.URL, name = "courseId") String courseId,
+            @MethodParam(type = Type.URL, name = "lecturerId") String lecturerId
+    );
+
+    @RestEndpoint(url = "/course/id/{courseId}/lecturer/id/{lecturerId}", method = HttpMethod.DELETE, dtoType = CourseDto.class, action = "unassignLecturer")
+    public abstract CourseDto unassignCourseLecturer(
+            @MethodParam(type = Type.URL, name = "courseId") String courseId,
+            @MethodParam(type = Type.URL, name = "lecturerId") String lecturerId
+    );
+
 
     @RestEndpoint(url = "/id/{id}/personnel", method = HttpMethod.GET, dtoType = PersonnelMemberDto.class, action = "searchAllBySchoolId")
     public abstract List<PersonnelMemberDto> getAllPersonnelBySchoolId(

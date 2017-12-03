@@ -10,10 +10,14 @@ import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.*;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.DISCIPLINE;
 
 @Component
@@ -37,12 +41,12 @@ public class AdminLecturerProducerImpl {
     }
 
     @Authorizable(resource = DISCIPLINE, action = CREATE)
+    @Transactional
     public LecturerDto createLecturer(LecturerDto dto) {
         Lecturer lecturer = modelMapper.apply(new Lecturer(), dto, new MappingSettings().setForceUpdate(true));
         if (lecturer != null) lecturer.setId(null);
         lecturer = lecturerService.createLecturer(lecturer);
-        dto = (LecturerDto) dtoMapper.toDto(lecturer, 3);
-
+        dto = (LecturerDto) dtoMapper.toDto(lecturer);
         return dto;
     }
 

@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.core.service;
 
-import com.netikras.studies.studentbuddy.core.data.api.dto.school.CourseDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
@@ -109,4 +108,8 @@ public interface SchoolService {
     List<Course> getAllCoursesByLecturerId(String id);
 
     List<Discipline> getAllDisciplinesByLecturerId(String id);
+
+    Course assignCourseLecturer(String courseId, String lecturerId);
+
+    Course unassignCourseLecturer(String courseId, String lecturerId);
 }

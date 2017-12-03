@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,11 +21,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Entity
 @Table(name = "course")
-public class Course {
+public class Course implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -54,7 +58,7 @@ public class Course {
     @ModelTransform(dtoUpdatable = false)
     private Discipline discipline;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = {CascadeType.ALL})
     @ModelTransform(dtoUpdatable = false)
     private List<CourseLecturer> lecturers;
 
@@ -113,6 +117,57 @@ public class Course {
 
     public void setLecturers(List<CourseLecturer> lecturers) {
         this.lecturers = lecturers;
+    }
+
+    public boolean addLecturer(Lecturer lecturer) {
+
+        if (lecturer == null || hasLecturer(lecturer.getId())) {
+            return false;
+        }
+
+        List<CourseLecturer> lecturersList = getLecturers();
+        if (lecturersList == null) {
+            lecturersList = new ArrayList<>();
+            setLecturers(lecturersList);
+        }
+
+        CourseLecturer courseLecturer = new CourseLecturer();
+        courseLecturer.setCourse(this);
+        courseLecturer.setLecturer(lecturer);
+
+        lecturersList.add(courseLecturer);
+        return true;
+    }
+
+    public boolean removeLecturer(Lecturer lecturer) {
+        if (lecturer == null
+                || isNullOrEmpty(getLecturers())
+                || !hasLecturer(lecturer.getId())) {
+            return false;
+        }
+
+        for (Iterator<CourseLecturer> iterator = getLecturers().iterator(); iterator.hasNext();) {
+            CourseLecturer courseLecturer = iterator.next();
+            if (courseLecturer != null && courseLecturer.getLecturer() != null) {
+                if (courseLecturer.getLecturer().equals(lecturer) || (!isNullOrEmpty(lecturer.getId()) && lecturer.getId().equals(courseLecturer.getLecturer().getId()))) {
+                    iterator.remove();
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasLecturer(String id) {
+        if (!isNullOrEmpty(id) && !isNullOrEmpty(getLecturers())) {
+            for (CourseLecturer courseLecturer : getLecturers()) {
+                if (courseLecturer.getLecturer() != null && id.equals(courseLecturer.getLecturer().getId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public StudentsGroup getGroup() {

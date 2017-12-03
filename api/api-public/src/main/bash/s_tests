@@ -9,6 +9,25 @@ getTestById() {
     return $?
 }
 
+getAllTestsByCourseId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/test/all/course/id/${id}"
+    return $?
+}
+
+getAllTestsByCourseInTimeframe() {
+    local id=${1:?ID missing}
+    local after=${2:?AFTER time bound missing}
+    local before=${3:?BEFORE time bound missing}
+
+    after=$(adjustTimestamp "${after}");
+    before=$(adjustTimestamp "${before}");
+
+    sb_curl GET "/test/all/course/id/${id}/timeframe/${after}/${before}";
+    return $?
+}
+
 
 getAllTestsByDisciplineIdInTimeframe() {
     local id=${1:?ID missing}

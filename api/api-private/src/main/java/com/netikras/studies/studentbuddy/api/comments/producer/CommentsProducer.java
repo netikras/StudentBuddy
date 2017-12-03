@@ -2,13 +2,13 @@ package com.netikras.studies.studentbuddy.api.comments.producer;
 
 import com.netikras.studies.studentbuddy.api.comments.generated.CommentsApiProducer;
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.commons.model.PagedResults;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.Action;
-import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
@@ -17,7 +17,7 @@ import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
-import com.netikras.tools.common.security.ThreadContext;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -28,7 +28,6 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_DE
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_GET;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_MODIFY;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource._PARAM;
 import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -37,6 +36,8 @@ public class CommentsProducer extends CommentsApiProducer {
 
     @Resource
     private ModelMapper modelMapper;
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Resource
     private CommentsService commentsService;
@@ -48,14 +49,16 @@ public class CommentsProducer extends CommentsApiProducer {
 
 
     @Override
+    @Transactional
     protected CommentDto onRetrieveCommentDto(String id) {
         Comment comment = commentsService.getComment(id);
         throwIfActionNotAllowedForComment(comment, COMMENT_GET);
-        CommentDto commentDto = modelMapper.transform(comment, new CommentDto());
+        CommentDto commentDto = (CommentDto) dtoMapper.toDto(comment);
         return commentDto;
     }
 
     @Override
+    @Transactional
     protected CommentDto onCreateCommentDto(CommentDto commentDto) {
         Comment comment = modelMapper.apply(new Comment(), commentDto, new MappingSettings().setForceUpdate(true));
 
@@ -71,12 +74,13 @@ public class CommentsProducer extends CommentsApiProducer {
         comment.setEntityId(commentDto.getEntityId());
 
         comment = commentsService.createComment(comment);
-        modelMapper.transform(comment, commentDto);
+        CommentDto dto = (CommentDto) dtoMapper.toDto(comment);
 
-        return commentDto;
+        return dto;
     }
 
     @Override
+    @Transactional
     protected CommentDto onUpdateCommentDto(CommentDto commentDto) {
         Comment comment = modelMapper.apply(entityProvider.fetch(commentDto), commentDto);
 
@@ -84,35 +88,38 @@ public class CommentsProducer extends CommentsApiProducer {
 
         comment = modelMapper.apply(comment, commentDto);
         comment = commentsService.updateComment(comment);
-        commentDto = modelMapper.transform(comment, new CommentDto());
+        CommentDto dto = (CommentDto) dtoMapper.toDto(comment);
 
-        return commentDto;
+        return dto;
     }
 
     @Override
+    @Transactional
     protected void onDeleteCommentDto(String id) {
         throwIfActionNotAllowedForCommentId(id, COMMENT_DELETE);
         commentsService.deleteComment(id);
     }
 
     @Override
+    @Transactional
     protected List<CommentDto> onGetCommentDtoForType(String typeName, String typeId) {
         List<Comment> comments = commentsService.findComments(typeName, typeId);
         if (!isNullOrEmpty(comments)) {
             comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_GET));
         }
-        List<CommentDto> commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
+        List<CommentDto> commentDtos = (List<CommentDto>) dtoMapper.toDtos(comments);
 
         return commentDtos;
     }
 
     @Override
+    @Transactional
     protected List<CommentDto> onGetCommentDtoAllForType(String typeName) {
         List<Comment> comments = commentsService.findCommentsByType(typeName);
         if (!isNullOrEmpty(comments)) {
             comments.forEach(c -> throwIfActionNotAllowedForComment(c, COMMENT_GET));
         }
-        List<CommentDto> commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
+        List<CommentDto> commentDtos = (List<CommentDto>) dtoMapper.toDtos(comments);
 
         return commentDtos;
     }
@@ -136,6 +143,7 @@ public class CommentsProducer extends CommentsApiProducer {
     }
 
     @Override
+    @Transactional
     protected CommentDto onCreateCommentDtoNewForType(String typeName, String typeId, CommentDto commentDto) {
         Comment comment = modelMapper.apply(new Comment(), commentDto, new MappingSettings().setForceUpdate(true));
         comment.setEntityType(typeName);
@@ -150,24 +158,26 @@ public class CommentsProducer extends CommentsApiProducer {
         throwIfActionNotAllowedForComment(comment, COMMENT_CREATE);
 
         comment = commentsService.createComment(comment);
-        commentDto = modelMapper.transform(comment, new CommentDto());
+        commentDto = (CommentDto) dtoMapper.toDto(comment);
 
         return commentDto;
     }
 
     @Override
+    @Transactional
     protected List<CommentDto> onGetCommentDtoByTagValue(String value, Long pageno, Long pagesz) {
         List<CommentDto> commentDtos;
 
         List<Comment> comments = commentsService.findCommentsByTagValue(value);
         ErrorsCollection errors = new ErrorsCollection();
         comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
-        commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
+        commentDtos = (List<CommentDto>) dtoMapper.toDtos(comments);
 
         return commentDtos;
     }
 
     @Override
+    @Transactional
     protected List<CommentDto> onGetCommentDtoByTagId(String id, Long pageno, Long pageSize) {
         PagedResults<Comment> results = new PagedResults<>(pageno, pageSize);
 
@@ -176,17 +186,18 @@ public class CommentsProducer extends CommentsApiProducer {
         List<Comment> comments = commentsService.findCommentsByTagId(id);
         ErrorsCollection errors = new ErrorsCollection();
         comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
-        commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
+        commentDtos = (List<CommentDto>) dtoMapper.toDtos(commentDtos);
 
         return commentDtos;
     }
 
     @Override
+    @Transactional
     protected List<CommentDto> onGetCommentDtoAllByPerson(String id) {
         List<Comment> comments = commentsService.findCommentsByPerson(id);
         ErrorsCollection errors = new ErrorsCollection();
         comments.removeIf(comment -> !isUserAllowedTo(comment.getEntityType(), COMMENT_GET, errors));
-        List<CommentDto> commentDtos = (List<CommentDto>) modelMapper.transformAll(comments, CommentDto.class);
+        List<CommentDto> commentDtos = (List<CommentDto>) dtoMapper.toDtos(comments);
 
         return commentDtos;
     }
@@ -201,8 +212,6 @@ public class CommentsProducer extends CommentsApiProducer {
             commentsService.deleteComment(comment.getId());
         }
     }
-
-
 
 
     public boolean isUserAllowedTo(String entity, Action action, ErrorsCollection errors) {

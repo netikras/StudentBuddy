@@ -13,6 +13,7 @@ s_login() {
     
     #sl_curl "${URL_API}/user/login?username=${username}&password=${password}" -X POST
     sl_curl POST "/user/login?username=${username}&password=${password}"
+    return $?
 }
 
 s_logout() {

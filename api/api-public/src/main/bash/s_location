@@ -10,6 +10,11 @@ getBuildingById() {
     return $?
 }
 
+getAllBuildings() {
+    sb_curl GET "/location/building/all"
+    return $?
+}
+
 createBuilding() {
     local title=${1:?Title missing}
     local address=${2:?Address missing}
@@ -50,6 +55,13 @@ purgeBuilding() {
     local id=${1:?ID missing}
 
     sb_curl DELETE "/location/building/purge/id/${id}"
+    return $?
+}
+
+getBuildingByAddressId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/address/id/${id}/building"
     return $?
 }
 
@@ -111,6 +123,19 @@ purgeBuildingSection() {
     return $?
 }
 
+getAllBuildingSectionsByAddressId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/address/id/${id}/building/section"
+    return $?
+}
+
+getAllSectionsByBuildingId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/location/building/id/${id}/section"
+}
+
 
 
 
@@ -119,6 +144,11 @@ getAddressById() {
     local id=${1:?ID missing}
 
     sb_curl GET "/location/address/id/${id}"
+    return $?
+}
+
+getAllAddresses() {
+    sb_curl GET "/location/address/all"
     return $?
 }
 

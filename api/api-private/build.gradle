@@ -35,6 +35,8 @@ task buildWar(type: War, dependsOn: []) {
 }
 
 
+def warname = "stubu"
+
 task deployLocal(type: Copy, dependsOn: ['buildWar']) {
     description = "Deploys the module to local web-container"
     mustRunAfter "undeployLocal"
@@ -44,6 +46,10 @@ task deployLocal(type: Copy, dependsOn: ['buildWar']) {
     from "${buildDir}/libs/"
     into "${tomcatHomeLocal}/webapps"
     include "*.war"
+    print "Predicted filename: " + project.name + "-" + project.version + ".war"
+    rename {String fileName ->
+        fileName.replace(project.name + "-" + project.version + ".war", warname + ".war")
+    }
 
     doLast {
         println "Deploying application locally"
@@ -54,7 +60,6 @@ task undeployLocal(type: Delete) {
     description = "Undeploys module from the local web-container"
 
 //    def warname = "${project.name}"
-    def warname = "stubu"
 
     doLast {
         println "Undeploying application locally"

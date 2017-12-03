@@ -4,7 +4,11 @@ import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureGuestDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupDto;
-import com.netikras.studies.studentbuddy.core.data.api.model.*;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.data.api.model.LectureGuest;
+import com.netikras.studies.studentbuddy.core.data.api.model.Person;
+import com.netikras.studies.studentbuddy.core.data.api.model.Student;
+import com.netikras.studies.studentbuddy.core.data.api.model.StudentsGroup;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
 import com.netikras.studies.studentbuddy.core.service.LectureService;
 import com.netikras.studies.studentbuddy.core.service.PersonService;
@@ -12,12 +16,18 @@ import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.*;
-import static com.netikras.studies.studentbuddy.core.data.meta.Resource.*;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.GUEST;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT;
+import static com.netikras.studies.studentbuddy.core.data.meta.Resource.STUDENT_GROUP;
 
 @Component
 public class AdminStudentProducerImpl {
@@ -53,12 +63,13 @@ public class AdminStudentProducerImpl {
     }
 
     @Authorizable(resource = STUDENT, action = CREATE)
+    @Transactional
     public StudentDto createStudent(StudentDto studentDto) {
         Student student = modelMapper.apply(new Student(), studentDto, new MappingSettings().setForceUpdate(true));
         if (student != null) student.setId(null);
 
         student = studentService.createStudent(student);
-        studentDto = (StudentDto) dtoMapper.toDto(student, 3);
+        studentDto = (StudentDto) dtoMapper.toDto(student);
 
         return studentDto;
     }
@@ -69,10 +80,11 @@ public class AdminStudentProducerImpl {
     }
 
     @Authorizable(resource = STUDENT_GROUP, action = CREATE)
+    @Transactional
     public StudentsGroupDto createStudentsGroup(StudentsGroupDto groupDto) {
         StudentsGroup group = modelMapper.apply(new StudentsGroup(), groupDto, new MappingSettings().setForceUpdate(true));
         group = studentService.createStudentsGroup(group);
-        StudentsGroupDto dto = (StudentsGroupDto) dtoMapper.toDto(group, 3);
+        StudentsGroupDto dto = (StudentsGroupDto) dtoMapper.toDto(group);
         return dto;
     }
 
@@ -82,10 +94,11 @@ public class AdminStudentProducerImpl {
     }
 
     @Authorizable(resource = GUEST, action = CREATE)
+    @Transactional
     public LectureGuestDto createLectureGuest(LectureGuestDto dto) {
         LectureGuest guest = modelMapper.apply(new LectureGuest(), dto, new MappingSettings().setForceUpdate(true));
         guest = studentService.createLectureGuest(guest);
-        dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
+        dto = (LectureGuestDto) dtoMapper.toDto(guest);
 
         return dto;
     }
@@ -121,22 +134,24 @@ public class AdminStudentProducerImpl {
 
 
     @Authorizable(resource = GUEST, action = CREATE)
+    @Transactional
     public LectureGuestDto createLectureGuestsByPersonId(String personId, String lectureId) {
         Person person = personService.getPerson(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
+        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest);
 
         return dto;
     }
 
 
     @Authorizable(resource = GUEST, action = CREATE)
+    @Transactional
     public LectureGuestDto createLectureGuestByPersonIdentifier(String personId, String lectureId) {
         Person person = personService.findPersonByIdentifier(personId);
         Lecture lecture = lectureService.getLecture(lectureId);
         LectureGuest guest = studentService.createLectureGuest(person, lecture);
-        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest, 3);
+        LectureGuestDto dto = (LectureGuestDto) dtoMapper.toDto(guest);
 
         return dto;
     }

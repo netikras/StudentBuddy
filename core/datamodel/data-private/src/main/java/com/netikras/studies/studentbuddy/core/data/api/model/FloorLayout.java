@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
 import com.netikras.studies.studentbuddy.core.data.api.model.transformers.BlobToBytesTransformer;
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -24,7 +25,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "floor_layout")
-public class FloorLayout {
+public class FloorLayout implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

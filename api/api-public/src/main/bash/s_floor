@@ -170,6 +170,62 @@ purgeRoom() {
 }
 
 
+getAllFloorsByBuildingId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/building/id/${id}"
+    return $?
+}
+
+getAllFloorsByBuildingSectionId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/building/section/id/${id}"
+    return $?
+}
+
+getAllRoomsByFloorId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/room/floor/id/${id}"
+    return $?
+}
+
+getAllRoomsByLayoutId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/room/building/id/${id}"
+    return $?
+}
+
+getAllRoomsBySectionId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/room/building/section/id/${id}"
+    return $?
+}
+
+getAllLayoutsByBuildingId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/layout/building/id/${id}"
+    return $?
+}
+
+getAllLayoutsByFloorId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/layout/floor/id/${id}"
+    return $?
+}
+
+getAllLayoutsBySectionId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/floor/layout/building/section/id/${id}"
+    return $?
+}
+
 
 ###########################
 

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -15,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.Iterator;
 import java.util.List;
 
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 import static org.hibernate.annotations.FetchMode.SUBSELECT;
 
 /**
@@ -24,7 +27,7 @@ import static org.hibernate.annotations.FetchMode.SUBSELECT;
  */
 @Entity
 @Table(name = "lecturer")
-public class Lecturer {
+public class Lecturer implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)
@@ -116,6 +119,24 @@ public class Lecturer {
 
     public void setSchool(School school) {
         this.school = school;
+    }
+
+    public boolean removeCourse(Course course) {
+        if (course == null || isNullOrEmpty(getCourseLecturers())) {
+            return false;
+        }
+
+        for (Iterator<CourseLecturer> iterator = getCourseLecturers().iterator(); iterator.hasNext();) {
+            CourseLecturer courseLecturer = iterator.next();
+            if (courseLecturer != null && courseLecturer.getCourse() != null) {
+                if (course.equals(courseLecturer.getCourse()) || (!isNullOrEmpty(course.getId()) && course.getId().equals(courseLecturer.getCourse().getId()))) {
+                    iterator.remove();
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override

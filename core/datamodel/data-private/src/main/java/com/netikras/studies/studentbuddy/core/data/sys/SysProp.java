@@ -23,7 +23,10 @@ public interface SysProp {
      */
     BooleanProperty FAILED_LOGIN_KEEP_USER = new BooleanProperty("session.login.failed.keepuser", true);
 
-
+    /**
+     * Maximum depth of returned DTO structure mapped from model object.
+     */
+    IntProperty DTO_RETURN_DEPTH = new IntProperty("dto.return.depth", 2);
 
 
 

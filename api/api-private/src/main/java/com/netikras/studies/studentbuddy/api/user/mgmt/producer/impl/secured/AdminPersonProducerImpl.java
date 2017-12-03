@@ -9,10 +9,14 @@ import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.*;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.PERSON;
 
 @Component
@@ -35,12 +39,12 @@ public class AdminPersonProducerImpl {
     }
 
     @Authorizable(resource = PERSON, action = CREATE)
+    @Transactional
     public PersonDto createPerson(PersonDto personDto) {
         Person person = modelMapper.apply(new Person(), personDto, new MappingSettings().setForceUpdate(true));
         if (person != null) person.setId(null);
         person = personService.createPerson(person);
-        personDto = (PersonDto) dtoMapper.toDto(person, 3);
-
+        personDto = (PersonDto) dtoMapper.toDto(person);
         return personDto;
     }
 
@@ -50,11 +54,11 @@ public class AdminPersonProducerImpl {
     }
 
     @Authorizable(resource = PERSON, action = MODIFY)
+    @Transactional
     public PersonDto updatePerson(PersonDto personDto) {
         Person person = modelMapper.apply(entityProvider.fetch(personDto), personDto);
         person = personService.updatePerson(person);
-        personDto = (PersonDto) dtoMapper.toDto(person, 3);
-
+        personDto = (PersonDto) dtoMapper.toDto(person);
         return personDto;
     }
 }

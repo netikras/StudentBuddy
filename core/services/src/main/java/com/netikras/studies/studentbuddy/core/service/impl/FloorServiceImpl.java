@@ -306,6 +306,7 @@ public class FloorServiceImpl implements FloorService {
     @Transactional
     public List<LectureRoom> getRoomsByLayout(String id) {
         return roomDao.findAllByFloor_Layouts_IdContains(id);
+//        return null;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

@@ -243,5 +243,25 @@ createGuestForLectureByPersonIdentifier() {
     return $?
 }
 
+getAllGuestsByCourseId() {
+    local id=${1:?ID mmissing}
+
+    sb_curl GET "/student/guest/course/id/${id}"
+    return $?
+}
+
+getAllGuestsByDisciplineId() {
+    local id=${1:?ID mmissing}
+
+    sb_curl GET "/student/guest/discipline/id/${id}"
+    return $?
+}
+
+getAllGuestsByPersonId() {
+    local id=${1:?ID mmissing}
+
+    sb_curl GET "/student/guest/person/id/${id}"
+    return $?
+}
 
 

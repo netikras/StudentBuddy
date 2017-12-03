@@ -10,6 +10,7 @@ import com.netikras.studies.studentbuddy.core.data.api.model.Course;
 import com.netikras.studies.studentbuddy.core.data.api.model.CourseLecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.Discipline;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
+import com.netikras.studies.studentbuddy.core.data.api.model.Lecturer;
 import com.netikras.studies.studentbuddy.core.data.api.model.PersonnelMember;
 import com.netikras.studies.studentbuddy.core.data.api.model.School;
 import com.netikras.studies.studentbuddy.core.data.api.model.SchoolDepartment;
@@ -19,6 +20,7 @@ import com.netikras.studies.studentbuddy.core.service.SchoolService;
 import com.netikras.studies.studentbuddy.core.service.StudentService;
 import com.netikras.studies.studentbuddy.core.validator.SchoolValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ import java.util.List;
 
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 public class SchoolServiceImpl implements SchoolService {
@@ -604,5 +607,46 @@ public class SchoolServiceImpl implements SchoolService {
     @Transactional
     public List<Discipline> getAllDisciplinesByLecturerId(String id) {
         return disciplineDao.findAllByLecturers_IdContains(id);
+    }
+
+    @Override
+    @Transactional
+    public Course assignCourseLecturer(String courseId, String lecturerId) {
+        Course course = courseDao.findOne(courseId);
+        Lecturer lecturer = lecturerService.getLecturer(lecturerId);
+
+        if (course == null || lecturer == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Unable to assign course lecturer")
+                    .setMessage2("Missing " + (course == null ? "lecturer" : "course"))
+                    .setProbableCause("" + (course == null ? "Lecturer: " + lecturerId : "Course: " + courseId))
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+
+        course.addLecturer(lecturer);
+
+        return courseDao.save(course);
+    }
+
+    @Override
+    @Transactional
+    public Course unassignCourseLecturer(String courseId, String lecturerId) {
+        Course course = courseDao.findOne(courseId);
+        Lecturer lecturer = lecturerService.getLecturer(lecturerId);
+
+        if (course == null || lecturer == null) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Unable to unassign course lecturer")
+                    .setMessage2("Missing " + (course == null ? "lecturer" : "course"))
+                    .setProbableCause("" + (course == null ? "Lecturer: " + lecturerId : "Course: " + courseId))
+                    .setStatusCode(NOT_FOUND)
+                    ;
+        }
+
+        course.removeLecturer(lecturer);
+        lecturer.removeCourse(course);
+
+        return courseDao.save(course);
     }
 }

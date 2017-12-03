@@ -279,10 +279,31 @@ getAllDisciplinesBySchoolId() {
     return $?
 }
 
+getAllDisciplinesByLecturerId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/discipline/lecturer/id/${id}"
+    return $?
+}
+
 getAllCoursesBySchoolId() {
     local id=${1:?ID missing}
 
     sb_curl GET "/school/id/${id}/course"
+    return $?
+}
+
+getAllCoursesByLecturerId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/course/lecturer/id/${id}"
+    return $?
+}
+
+getAllCoursesByGroupId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/school/course/group/id/${id}"
     return $?
 }
 
@@ -316,6 +337,21 @@ unassignCourseLectureById() {
     return $?
 }
 
+assignCourseLecturerById() {
+    local courseId=${1:?Course ID missing}
+    local lecturerId=${2:?Lecturer ID missing}
+
+    sb_curl PUT "/school/course/id/${courseId}/lecturer/id/${lecturerId}"
+    return $?
+}
+
+unassignCourseLecturerById() {
+    local courseId=${1:?Course ID missing}
+    local lecturerId=${2:?Lecturer ID missing}
+
+    sb_curl DELETE "/school/course/id/${courseId}/lecturer/id/${lecturerId}"
+    return $?
+}
 
 getAllCoursesByDisciplineId() {
     local id=${1:?ID missing}

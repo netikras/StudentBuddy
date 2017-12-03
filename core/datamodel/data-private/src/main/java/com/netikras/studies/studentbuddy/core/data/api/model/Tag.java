@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
 
+import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -19,7 +20,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "tags")
-public class Tag {
+public class Tag implements Identifiable {
 
     @Id
     @Column(name = "id", nullable = false, unique = true, updatable = false)

@@ -1,5 +1,6 @@
 package com.netikras.studies.studentbuddy.api.sys.producer.impl.secured;
 
+import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.PasswordRequirementDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RoleDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
@@ -15,11 +16,17 @@ import com.netikras.studies.studentbuddy.core.validator.EntityProvider;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-import static com.netikras.studies.studentbuddy.core.data.meta.Action.*;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.CREATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.DELETE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET_ALL;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.ROLE_PERMISSIONS;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_PWREQ;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.SYSTEM_SETTING;
@@ -29,6 +36,8 @@ public class AdminProducerImpl {
 
     @Resource
     private ModelMapper modelMapper;
+    @Resource
+    private DtoMapper dtoMapper;
 
     @Resource
     private SystemService systemService;
@@ -39,28 +48,30 @@ public class AdminProducerImpl {
     private EntityProvider entityProvider;
 
 
-
     @Authorizable(resource = SYSTEM_SETTING, action = GET)
+    @Transactional
     public SystemSettingDto getSystemSetting(String id) {
         SystemSetting setting = systemService.getSetting(id);
-        SystemSettingDto dto = modelMapper.transform(setting, new SystemSettingDto());
+        SystemSettingDto dto = (SystemSettingDto) dtoMapper.toDto(setting);
         return dto;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = CREATE)
+    @Transactional
     public SystemSettingDto createSystemSetting(SystemSettingDto item) {
         SystemSetting setting = modelMapper.apply(new SystemSetting(), item, new MappingSettings().setForceUpdate(true));
         setting = systemService.createSetting(setting);
-        item = modelMapper.transform(setting, new SystemSettingDto());
-        return item;
+        SystemSettingDto dto = (SystemSettingDto) dtoMapper.toDto(setting);
+        return dto;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = MODIFY)
+    @Transactional
     public SystemSettingDto updateSystemSetting(SystemSettingDto item) {
         SystemSetting setting = modelMapper.apply(entityProvider.fetch(item), item);
         setting = systemService.updateSystemSetting(setting);
-        item = modelMapper.transform(setting, new SystemSettingDto());
-        return item;
+        SystemSettingDto dto = (SystemSettingDto) dtoMapper.toDto(setting);
+        return dto;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = DELETE)
@@ -69,27 +80,29 @@ public class AdminProducerImpl {
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = GET)
+    @Transactional
     public PasswordRequirementDto getPasswordRequirement(String id) {
         PasswordRequirement requirement = systemService.getPasswordRequirement(id);
-        PasswordRequirementDto dto = modelMapper.transform(requirement, new PasswordRequirementDto());
-
+        PasswordRequirementDto dto = (PasswordRequirementDto) dtoMapper.toDto(requirement);
         return dto;
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = CREATE)
+    @Transactional
     public PasswordRequirementDto createPasswordRequirement(PasswordRequirementDto item) {
         PasswordRequirement requirement = modelMapper.apply(new PasswordRequirement(), item, new MappingSettings().setForceUpdate(true));
         requirement = systemService.createPasswordRequirement(requirement);
-        item = modelMapper.transform(requirement, new PasswordRequirementDto());
-        return item;
+        PasswordRequirementDto dto = (PasswordRequirementDto) dtoMapper.toDto(requirement);
+        return dto;
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = MODIFY)
+    @Transactional
     public PasswordRequirementDto updatePasswordRequirement(PasswordRequirementDto item) {
         PasswordRequirement requirement = modelMapper.apply(entityProvider.fetch(item), item);
         requirement = systemService.updatePasswordRequirement(requirement);
-        item = modelMapper.transform(requirement, new PasswordRequirementDto());
-        return item;
+        PasswordRequirementDto dto = (PasswordRequirementDto) dtoMapper.toDto(requirement);
+        return dto;
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = DELETE)
@@ -98,43 +111,45 @@ public class AdminProducerImpl {
     }
 
 
-
-
     @Authorizable(resource = SYSTEM_SETTING, action = GET_ALL)
+    @Transactional
     public List<SystemSettingDto> getAllStoredSystemSettings() {
         List<SystemSetting> settings = systemService.fetchSystemSettings();
         modelMapper.transformAll(settings, SystemSettingDto.class);
-        List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) modelMapper.transformAll(settings, SystemSettingDto.class);
+        List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) dtoMapper.toDtos(settings);
         return settingDtos;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = GET_ALL)
+    @Transactional
     public List<SystemSettingDto> getAllLiveSystemSettings() {
         List<SystemSetting> settings = systemService.getSystemSettings();
         modelMapper.transformAll(settings, SystemSetting.class);
-        List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) modelMapper.transformAll(settings, SystemSettingDto.class);
+        List<SystemSettingDto> settingDtos = (List<SystemSettingDto>) dtoMapper.toDtos(settings);
         return settingDtos;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = GET)
+    @Transactional
     public SystemSettingDto getLiveSystemSetting(String name) {
         SystemSetting setting = systemService.getSettingByName(name);
-        SystemSettingDto settingDto = modelMapper.transform(setting, new SystemSettingDto());
+        SystemSettingDto settingDto = (SystemSettingDto) dtoMapper.toDto(setting);
         return settingDto;
     }
 
     @Authorizable(resource = SYSTEM_SETTING, action = GET)
+    @Transactional
     public SystemSettingDto getStoredSystemSetting(String name) {
         SystemSetting setting = systemService.getStoredSetting(name);
-        SystemSettingDto settingDto = modelMapper.transform(setting, new SystemSettingDto());
+        SystemSettingDto settingDto = (SystemSettingDto) dtoMapper.toDto(setting);
         return settingDto;
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = GET_ALL)
+    @Transactional
     public List<PasswordRequirementDto> getAllLivePasswordRequirements() {
         List<PasswordRequirement> requirements = systemService.fetchPasswordRequirements();
-        List<PasswordRequirementDto> requirementDtos =
-                (List<PasswordRequirementDto>) modelMapper.transformAll(requirements, PasswordRequirementDto.class);
+        List<PasswordRequirementDto> requirementDtos = (List<PasswordRequirementDto>) dtoMapper.toDtos(requirements);
         return requirementDtos;
     }
 
@@ -165,18 +180,20 @@ public class AdminProducerImpl {
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = GET_ALL)
+    @Transactional
     public List<RoleDto> getAllRoles() {
         List<Role> roles = permissionsService.getAllRoles();
-        List<RoleDto> roleDtos = (List<RoleDto>) modelMapper.transformAll(roles, RoleDto.class);
+        List<RoleDto> roleDtos = (List<RoleDto>) dtoMapper.toDtos(roles);
         return roleDtos;
     }
 
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = CREATE)
+    @Transactional
     public RolePermissionDto createRolePermission(String roleName, String resourceName, String actionName, String resourceId, Boolean strict) {
         Role role = permissionsService.addRolePermission(roleName, resourceName, actionName, resourceId, strict);
         ResourceActionLink link = role.getPermission(resourceName, actionName, resourceId);
-        RolePermissionDto permissionDto = modelMapper.transform(link, new RolePermissionDto());
+        RolePermissionDto permissionDto = (RolePermissionDto) dtoMapper.toDto(link);
         return permissionDto;
     }
 
@@ -186,30 +203,34 @@ public class AdminProducerImpl {
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = CREATE)
+    @Transactional
     public RoleDto createRole(String name) {
         Role role = permissionsService.createRole(name);
-        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        RoleDto dto = (RoleDto) dtoMapper.toDto(role);
         return dto;
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = GET)
+    @Transactional
     public RoleDto getRoleById(String id) {
         Role role = permissionsService.getRoleById(id);
-        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        RoleDto dto = (RoleDto) dtoMapper.toDto(role);
         return dto;
     }
 
     @Authorizable(resource = ROLE_PERMISSIONS, action = GET)
+    @Transactional
     public RoleDto getRoleByName(String name) {
         Role role = permissionsService.getRoleByName(name);
-        RoleDto dto = modelMapper.transform(role, new RoleDto());
+        RoleDto dto = (RoleDto) dtoMapper.toDto(role);
         return dto;
     }
 
     @Authorizable(resource = SYSTEM_PWREQ, action = GET_ALL)
+    @Transactional
     public List<PasswordRequirementDto> getAllStoredPasswordRequirements() {
         List<PasswordRequirement> requirements = systemService.getPasswordRequirements();
-        List<PasswordRequirementDto> dtos = (List<PasswordRequirementDto>) modelMapper.transformAll(requirements, PasswordRequirementDto.class);
+        List<PasswordRequirementDto> dtos = (List<PasswordRequirementDto>) dtoMapper.toDtos(requirements);
         return dtos;
     }
 

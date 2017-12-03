@@ -2,7 +2,6 @@ package com.netikras.studies.studentbuddy.api.user.producer.impl.secured;
 
 import com.netikras.studies.studentbuddy.api.filters.HttpThreadContext;
 import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
-import com.netikras.studies.studentbuddy.api.sys.producer.AdminProducer;
 import com.netikras.studies.studentbuddy.commons.exception.StudBudUncheckedException;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.RolePermissionDto;
 import com.netikras.studies.studentbuddy.core.data.api.dto.meta.UserDto;
@@ -19,7 +18,6 @@ import com.netikras.tools.common.remote.AuthenticationDetail;
 import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -42,21 +40,18 @@ public class UserProducerImpl {
     private SystemService systemService;
 
     @Resource
-    private AdminProducer adminProducer;
-
-    @Resource
     private DtoMapper dtoMapper;
     @Resource
     private EntityProvider entityProvider;
 
-    @Transactional
     @Authorizable(resource = USER, action = Action.MODIFY)
+    @Transactional
     public UserDto updateUser(UserDto item) {
         User user = modelMapper.apply(entityProvider.fetch(item), item);
         user.setId(item.getId());
         user = userService.updateUser(user);
 
-        item = (UserDto) dtoMapper.toDto(user, 3);
+        item = (UserDto) dtoMapper.toDto(user);
 
         return item;
     }
@@ -68,28 +63,31 @@ public class UserProducerImpl {
 
 
     @Authorizable(resource = USER, action = Action.CREATE)
+    @Transactional
     public UserDto createUser(UserDto item) {
         User user = modelMapper.apply(new User(), item, new MappingSettings().setForceUpdate(true));
         user = userService.createUser(user);
-        item = (UserDto) dtoMapper.toDto(user, 3);
+        item = (UserDto) dtoMapper.toDto(user);
         return item;
     }
 
-    
+
     @Authorizable(resource = USER, action = Action.GET)
+    @Transactional
     public UserDto getUser(String id) {
         UserDto dto;
         User user = userService.findUser(id);
-        dto = (UserDto) dtoMapper.toDto(user, 3);
+        dto = (UserDto) dtoMapper.toDto(user);
         return dto;
     }
 
+    @Transactional
     public UserDto getCurrentUser() {
-        return (UserDto) dtoMapper.toDto(HttpThreadContext.current().getUser(), 3);
+        return (UserDto) dtoMapper.toDto(HttpThreadContext.current().getUser());
     }
 
 
-    
+    @Transactional
     public UserDto loginUser(String username, String password, AuthenticationDetail auth) {
         if (auth == null || auth.getUsername() == null || auth.getUsername().isEmpty()) {
             auth = new AuthenticationDetail();
@@ -98,7 +96,7 @@ public class UserProducerImpl {
         }
 
         User user = userService.login(auth);
-        UserDto dto = (UserDto) dtoMapper.toDto(user, 3);
+        UserDto dto = (UserDto) dtoMapper.toDto(user);
 
         if (user == null) {
             throw new StudBudUncheckedException()
@@ -113,7 +111,7 @@ public class UserProducerImpl {
         return dto;
     }
 
-    
+
     public void logoutUser() {
         try {
             HttpThreadContext.current().removeUser();
@@ -125,7 +123,6 @@ public class UserProducerImpl {
     }
 
 
-    
     @Authorizable(resource = ROLE_PERMISSIONS, action = Action.GET)
     @Transactional
     public List<RolePermissionDto> getRolePermittedActions(String userId) {
@@ -148,66 +145,69 @@ public class UserProducerImpl {
 
         List<ResourceActionLink> rolePermissions = userService.getPermissions(userId);
 
-        List<RolePermissionDto> permissions =
-                (List<RolePermissionDto>) modelMapper.transformAll(rolePermissions, RolePermissionDto.class, new MappingSettings().setDepthMax(3));
+        List<RolePermissionDto> permissions = (List<RolePermissionDto>) dtoMapper.toDtos(rolePermissions);
 
 
         return permissions;
     }
 
-    
+
     @Authorizable(resource = USER, action = Action.MODIFY)
     public void changeUserPassword(String userId, String password) {
         userService.changePassword(userId, password);
     }
 
-    
+
     @Authorizable(resource = USER, action = Action.GET)
+    @Transactional
     public UserDto getUserByName(String name) {
         UserDto dto;
         User user = userService.findUserByName(name);
-        dto = (UserDto) dtoMapper.toDto(user, 3);
+        dto = (UserDto) dtoMapper.toDto(user);
         return dto;
     }
 
-    
+
     @Authorizable(resource = USER, action = Action.GET)
+    @Transactional
     public UserDto getUserByPerson(String userId) {
         UserDto dto;
         User user = userService.findUserByPerson(userId);
-        dto = (UserDto) dtoMapper.toDto(user, 3);
+        dto = (UserDto) dtoMapper.toDto(user);
         return dto;
     }
 
 
     // search
 
-    
+
     @Authorizable(resource = USER, action = Action.SEARCH)
+    @Transactional
     public List<UserDto> searchUsersByUsername(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByUsername(query);
-        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) dtoMapper.toDtos(users);
         return dtos;
     }
 
-    
+
     @Authorizable(resource = USER, action = Action.SEARCH)
+    @Transactional
     public List<UserDto> searchUsersByFirstName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByFirstName(query);
-        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) dtoMapper.toDtos(users);
         return dtos;
     }
 
 
-    
     @Authorizable(resource = USER, action = Action.SEARCH)
+    @Transactional
     public List<UserDto> searchUsersByLastName(String query) {
         List<UserDto> dtos;
         List<User> users = userService.searchAllUsersByLastName(query);
-        dtos = (List<UserDto>) modelMapper.transformAll(users, UserDto.class, new MappingSettings().setDepthMax(2));
+        dtos = (List<UserDto>) dtoMapper.toDtos(users);
         return dtos;
     }
-    
+
 }

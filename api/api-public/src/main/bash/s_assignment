@@ -80,6 +80,25 @@ getAllAssignmentsByDisciplineIdDueBetween() {
     return $?
 }
 
+getAllAssignmentsForCourseIdStartingBetween() {
+    local id=${1:?ID missing}
+    local after=${2:?Missing AFTER value}
+    local before=${3:?Missing BEFORE value}
+
+    after=$(adjustTimestamp "${after}")
+    before=$(adjustTimestamp "${before}")
+
+    sb_curl GET "/assignment/all/course/id/${id}/due/between/${after}/${before}"
+    return $?
+}
+
+getAllAssignmentsForCourseId() {
+    local id=${1:?ID missing}
+
+    sb_curl GET "/assignment/all/course/id/${id}"
+    return $?
+}
+
 getAllAssignmentsByGroupIdDueBetween() {
     local id=${1:?ID missing}
     local after=${2:?Missing AFTER value}
