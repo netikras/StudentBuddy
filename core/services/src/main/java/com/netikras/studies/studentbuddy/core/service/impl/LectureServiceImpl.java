@@ -140,6 +140,7 @@ public class LectureServiceImpl implements LectureService {
         return lectures;
     }
 
+    @Override
     @Transactional
     public List<Lecture> findLecturesForStudent(String studentId, Date startsAfter, Date startsBefore) {
         List<Lecture> lectures = lectureDao.findAllByStudentsGroup_Members_IdAndStartsOnBetween(studentId, startsAfter, startsBefore);

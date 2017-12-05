@@ -106,6 +106,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
         String resourceId = null;
 
         Class<?> resourceType = repoProvider.getTypeForResource(resource.name());
+        Class<?> dtoType = repoProvider.getDtoTypeForModel(resourceType);
         if (resourceType == null) {
             return resourceId;
         }
@@ -113,7 +114,9 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
             Class idType = getIdType(resourceType);
 
             for (Object arg : joinPoint.getArgs()) {
-                if (arg != null && resourceType.isAssignableFrom(arg.getClass())) {
+                if (arg != null
+                        && (resourceType.isAssignableFrom(arg.getClass())
+                            || ( dtoType != null && dtoType.isAssignableFrom(arg.getClass())))) {
 
                     try {
                         Field idField = getField(arg.getClass(), "id");
@@ -148,7 +151,7 @@ public class AuthorizableActionsAdvice implements ApplicationContextAware {
         String alias = fieldName + "@" + clazz.toString();
         Field field = fieldsCache.get(alias);
         if (field == null) {
-            field = clazz.getField(fieldName);
+            field = clazz.getDeclaredField(fieldName);
             field.setAccessible(true);
             fieldsCache.put(alias, field);
         }

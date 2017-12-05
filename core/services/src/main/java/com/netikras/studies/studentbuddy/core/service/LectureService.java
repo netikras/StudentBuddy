@@ -124,4 +124,6 @@ public interface LectureService {
     List<Assignment> getAllAssignmentsForCourseStartingBetween(String id, Date after, Date before);
 
     List<Assignment> getAllAssignmentsForCourse(String id);
+
+    List<Lecture> findLecturesForStudent(String studentId, Date after, Date before);
 }

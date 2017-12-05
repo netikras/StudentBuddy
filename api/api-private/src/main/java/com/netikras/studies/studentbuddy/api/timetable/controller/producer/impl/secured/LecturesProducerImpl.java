@@ -90,6 +90,11 @@ public class LecturesProducerImpl {
     }
 
     @Authorizable(resource = LECTURE, action = GET)
+    public List<LectureDto> getAllLecturesByGuestIdStartingIn(String studentId, String timeUnits, long value) {
+        return getAllLecturesByGuestIdStartingBetween(studentId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByLecturerIdStartingIn(String lecturerId, String timeUnits, long value) {
         return getAllLecturesByLecturerIdStartingBetween(lecturerId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
     }
@@ -130,7 +135,15 @@ public class LecturesProducerImpl {
     @Authorizable(resource = LECTURE, action = GET)
     @Transactional
     public List<LectureDto> getAllLecturesByStudentIdStartingBetween(String studentId, long after, long before) {
-        List<Lecture> lectures = lectureService.findLecturesForGuest(studentId, new Date(after), new Date(before));
+        List<Lecture> lectures = lectureService.findLecturesForStudent(studentId, new Date(after), new Date(before));
+        List<LectureDto> lectureDtos = (List<LectureDto>) dtoMapper.toDtos(lectures);
+        return lectureDtos;
+    }
+
+    @Authorizable(resource = LECTURE, action = GET)
+    @Transactional
+    public List<LectureDto> getAllLecturesByGuestIdStartingBetween(String id, long after, long before) {
+        List<Lecture> lectures = lectureService.findLecturesForGuest(id, new Date(after), new Date(before));
         List<LectureDto> lectureDtos = (List<LectureDto>) dtoMapper.toDtos(lectures);
         return lectureDtos;
     }

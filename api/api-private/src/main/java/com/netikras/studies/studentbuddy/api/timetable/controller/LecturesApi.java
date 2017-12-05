@@ -3,7 +3,6 @@ package com.netikras.studies.studentbuddy.api.timetable.controller;
 
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.tools.common.remote.http.HttpRequest.HttpMethod;
-import com.netikras.tools.common.remote.http.rest.auto.ExtendedMethod;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.GenerateCrud;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.MethodParam;
 import com.netikras.tools.common.remote.http.rest.auto.annotations.RestApiLocation;
@@ -76,6 +75,14 @@ public abstract class LecturesApi {
             @MethodParam(type = Type.URL, name = "value") long value
     );
 
+    @RestEndpoint(url = "/guest/id/{guestId}/starts/in/{timeUnits}/{value}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByGuestIdStartingIn")
+    public abstract List<LectureDto> getLecturesByGuestStartingIn(
+            @MethodParam(type = Type.URL, name = "guestId") String id,
+            @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
+            @MethodParam(type = Type.URL, name = "value") long value
+    );
+
 
     @RestEndpoint(url = "/lecturer/id/{lecturerId}/starts/in/{timeUnits}/{value}",
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByLecturerIdStartingIn")
@@ -141,6 +148,14 @@ public abstract class LecturesApi {
             method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByStudentIdStartingBetween")
     public abstract List<LectureDto> getLecturesByStudentStartingBetween(
             @MethodParam(type = Type.URL, name = "studentId") String studentId,
+            @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
+            @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
+    );
+
+    @RestEndpoint(url = "/guest/id/{guestId}/starts/between/{after}/{before}",
+            method = HttpMethod.GET, dtoType = LectureDto.class, action = "getAllByGuestIdStartingBetween")
+    public abstract List<LectureDto> getLecturesByGuestStartingBetween(
+            @MethodParam(type = Type.URL, name = "guestId") String id,
             @MethodParam(type = Type.URL, name = "after") long afterTimestamp,
             @MethodParam(type = Type.URL, name = "before") long beforeTimestamp
     );
