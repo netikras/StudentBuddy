@@ -1,6 +1,7 @@
 package com.netikras.studies.studentbuddy.api.timetable.controller.producer.impl.secured;
 
 import com.netikras.studies.studentbuddy.api.handlers.DtoMapper;
+import com.netikras.studies.studentbuddy.api.misc.TimeUnit;
 import com.netikras.studies.studentbuddy.core.data.api.dto.school.LectureDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Lecture;
 import com.netikras.studies.studentbuddy.core.data.meta.annotations.Authorizable;
@@ -21,6 +22,7 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Action.GET;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODIFY;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.PURGE;
 import static com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE;
+import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @Component
 public class LecturesProducerImpl {
@@ -81,47 +83,47 @@ public class LecturesProducerImpl {
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByGroupIdStartingIn(String groupId, String timeUnits, long value) {
-        return getAllLecturesByGroupIdStartingBetween(groupId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByGroupIdStartingBetween(groupId, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByStudentIdStartingIn(String studentId, String timeUnits, long value) {
-        return getAllLecturesByStudentIdStartingBetween(studentId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByStudentIdStartingBetween(studentId, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByGuestIdStartingIn(String studentId, String timeUnits, long value) {
-        return getAllLecturesByGuestIdStartingBetween(studentId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByGuestIdStartingBetween(studentId, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByLecturerIdStartingIn(String lecturerId, String timeUnits, long value) {
-        return getAllLecturesByLecturerIdStartingBetween(lecturerId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByLecturerIdStartingBetween(lecturerId, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByRoomIdStartingIn(String roomId, String timeUnits, long value) {
-        return getAllLecturesByRoomIdStartingBetween(roomId, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByRoomIdStartingBetween(roomId, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByCourseIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByCourseIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByCourseIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByBuildingIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByBuildingIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByBuildingIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesBySectionIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesBySectionIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesBySectionIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
     public List<LectureDto> getAllLecturesByFloorIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByFloorIdStartingBetween(id, System.currentTimeMillis(), timeUnitsToMs(timeUnits, value));
+        return getAllLecturesByFloorIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
@@ -198,34 +200,50 @@ public class LecturesProducerImpl {
 
 
     public long timeUnitsToMs(String units, long value) {
+        if (!isNullOrEmpty(units)) {
+            try {
+                TimeUnit unit = TimeUnit.fromText(units);
+                return unit.toMillis(value);
+            } catch (Exception e) {
 
-        if (units == null) {
-            return 0;
+            }
         }
 
-        long result = 0;
+        return 0;
 
-        switch (units) {
-            case "M":
-                result = value * 1000 * 60 * 60 * 24 * 30;
-                break;
-            case "d":
-                result = value * 1000 * 60 * 60 * 24;
-                break;
-            case "H":
-                result = value * 1000 * 60 * 60;
-                break;
-            case "m":
-                result = value * 1000 * 60;
-                break;
-            case "s":
-                result = value * 1000;
-                break;
-            default:
-                throw new NumberFormatException("Incorrect time unit: " + units);
-        }
+//
+//
+//        if (units == null) {
+//            return 0;
+//        }
+//
+//        long result = 0;
+//
+//        switch (units) {
+//            case "M":
+//                result = value * 1000 * 60 * 60 * 24 * 30;
+//                break;
+//            case "d":
+//                result = value * 1000 * 60 * 60 * 24;
+//                break;
+//            case "H":
+//                result = value * 1000 * 60 * 60;
+//                break;
+//            case "m":
+//                result = value * 1000 * 60;
+//                break;
+//            case "s":
+//                result = value * 1000;
+//                break;
+//            default:
+//                throw new NumberFormatException("Incorrect time unit: " + units);
+//        }
+//
+//        return result;
+    }
 
-        return result;
+    private long now() {
+        return System.currentTimeMillis();
     }
 
 }

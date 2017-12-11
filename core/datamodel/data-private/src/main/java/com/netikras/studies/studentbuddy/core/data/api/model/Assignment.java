@@ -37,6 +37,7 @@ public class Assignment implements Commentable, Identifiable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
+    @ModelTransform(dtoUpdatable = false)
     private Lecture lecture;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

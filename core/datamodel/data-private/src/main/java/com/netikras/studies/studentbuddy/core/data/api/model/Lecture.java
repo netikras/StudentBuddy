@@ -50,12 +50,12 @@ public class Lecture implements Commentable, Identifiable {
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "course")
     private Course course;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecture")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "lecture")
     @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "assignments")
     private List<Assignment> pendingAssignments;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "lecture", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "lecture", orphanRemoval = true)
     @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "tests")
     private List<DisciplineTest> pendingTests;
@@ -74,12 +74,12 @@ public class Lecture implements Commentable, Identifiable {
     @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "room_id")
     @ModelTransform
     private LectureRoom room;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "lecturer_id")
     @ModelTransform
     private Lecturer lecturer;
@@ -88,7 +88,8 @@ public class Lecture implements Commentable, Identifiable {
     @ModelTransform(dtoUpdatable = false)
     private StudentsGroup studentsGroup;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "lecture", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "visitors")
     private List<LectureGuest> lectureGuests;
 

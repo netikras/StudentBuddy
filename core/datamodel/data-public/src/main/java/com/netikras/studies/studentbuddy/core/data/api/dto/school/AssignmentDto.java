@@ -12,6 +12,7 @@ public class AssignmentDto extends AbstractDto {
     private Date createdOn;
     private Date updatedOn;
     private Date due;
+    private LectureDto lectureDto;
 
     public String getId() {
         return id;
@@ -61,6 +62,14 @@ public class AssignmentDto extends AbstractDto {
         this.due = due;
     }
 
+    public LectureDto getLectureDto() {
+        return lectureDto;
+    }
+
+    public void setLectureDto(LectureDto lectureDto) {
+        this.lectureDto = lectureDto;
+    }
+
     @Override
     public String toString() {
         return "AssignmentDto{" +
@@ -70,6 +79,7 @@ public class AssignmentDto extends AbstractDto {
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", due=" + due +
+                ", lectureDto=" + lectureDto +
                 '}';
     }
 }

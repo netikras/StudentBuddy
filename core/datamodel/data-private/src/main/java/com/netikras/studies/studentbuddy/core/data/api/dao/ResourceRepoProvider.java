@@ -29,6 +29,7 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.school.StudentsGroupD
 import com.netikras.studies.studentbuddy.core.data.api.model.Address;
 import com.netikras.studies.studentbuddy.core.data.api.model.Assignment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Building;
+import com.netikras.studies.studentbuddy.core.data.api.model.BuildingFloor;
 import com.netikras.studies.studentbuddy.core.data.api.model.BuildingSection;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Course;
@@ -125,7 +126,7 @@ public class ResourceRepoProvider {
         addMapping(ADDRESS, Address.class, AddressDao.class, AddressDto.class);
         addMapping(BUILDING, Building.class, BuildingDao.class, BuildingDto.class);
         addMapping(BUILDING_SECTION, BuildingSection.class, BuildingSectionDao.class, BuildingSectionDto.class);
-        addMapping(FLOOR, FloorDao.class, FloorDao.class, BuildingFloorDto.class);
+        addMapping(FLOOR, BuildingFloor.class, FloorDao.class, BuildingFloorDto.class);
         addMapping(FLOOR_MAP, FloorLayout.class, FloorLayoutDao.class, FloorLayoutDto.class);
         addMapping(ROOM, LectureRoom.class, LectureRoomDao.class, LectureRoomDto.class);
 

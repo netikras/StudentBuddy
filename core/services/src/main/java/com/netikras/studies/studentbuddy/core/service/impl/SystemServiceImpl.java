@@ -394,12 +394,15 @@ public class SystemServiceImpl implements SystemService {
         if (!isNullOrEmpty(resourceId)) {
             if (com.netikras.studies.studentbuddy.core.data.meta.Resource.LECTURE.name().equals(resourceName)) {
                 JpaRepo<Lecture> repo = repoProvider.getRepoForResource(resourceName);
-                Course course = repo.findOne(resourceId).getCourse();
+                Lecture lecture = repo.findOne(resourceId);
+                Course course = null;
+                if (lecture != null) {
+                    course = lecture.getCourse();
+                }
                 if (course != null
                         && !isNullOrEmpty(course.getId())) {
                     resourceId = course.getId();
                 }
-
             }
         }
 

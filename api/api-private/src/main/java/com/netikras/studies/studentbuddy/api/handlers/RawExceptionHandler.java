@@ -25,7 +25,7 @@ public class RawExceptionHandler extends AbstractStudBudExceptionHandler {
             return super.processException(response, request, exception);
         }
 
-
+        exception.printStackTrace();
         errorBody = new ErrorBody();
         errorBody.setMessage1("Generic error");
         errorBody.setMessage2("Unexpected error");
@@ -39,6 +39,8 @@ public class RawExceptionHandler extends AbstractStudBudExceptionHandler {
         request.removeAttribute(HandlerMapping.PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
         response.setContentType("application/json");
         response.setStatus(errorBody.getStatus());
+
+        System.out.println("Returning errorBody: " + errorBody);
 
         return errorBody;
     }

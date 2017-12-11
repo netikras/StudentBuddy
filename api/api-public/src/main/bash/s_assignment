@@ -21,19 +21,26 @@ createAssignmentForLecture() {
     local id=${1:?ID missing}
     local description=${2:?Description missing}
 
-    sb_curl POST "/assignment/lecture/id/${id}" -d "${description}"
+    sb_curl POST "/assignment/lecture/id/${id}?description=$(urlencode "${description}")"
     return $?
 }
 
 createAssignment() {
     local discipline=${1:?Discipline missing}
     local descr=${2:?Desciption missing}
-    local due=${3:?Due timestamp missing}
+    local due=$(optional "${3}")
+    local lecture=$(optional "${4}")
+
+    [ -z "${lecture}${due}" ] && {
+        echo "Either lecture or due-date must be provided" >&2
+        return
+    }
 
     discipline=$(mkjsonobj "${discipline}")
     due=$(adjustTimestamp "${due}")
+    lecture=$(mkjsonobj "${lecture}")
 
-    local assignment=$(mkjsonobj "discipline:${discipline}" "description:${descr}" "due:${due}")
+    local assignment=$(mkjsonobj "discipline:${discipline}" "description:${descr}" "due:${due}" "lecture:${lecture}")
 
     sb_curl POST "/assignment/" -d "${assignment}"
     return $?

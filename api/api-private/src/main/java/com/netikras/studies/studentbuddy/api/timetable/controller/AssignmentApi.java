@@ -91,7 +91,7 @@ public abstract class AssignmentApi {
     @RestEndpoint(url = "/lecture/id/{lectureId}", method = HttpMethod.POST, dtoType = AssignmentDto.class)
     public abstract AssignmentDto createNew(
             @MethodParam(type = Type.URL, name = "lectureId") String dueLectureId,
-            @MethodParam(type = Type.BODY) String description
+            @MethodParam(type = Type.REQUEST, name = "description", required = true) String description
     );
 
 

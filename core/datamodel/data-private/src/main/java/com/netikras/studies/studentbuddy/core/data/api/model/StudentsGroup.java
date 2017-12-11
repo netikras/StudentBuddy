@@ -4,6 +4,8 @@ package com.netikras.studies.studentbuddy.core.data.api.model;
 import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -55,6 +57,7 @@ public class StudentsGroup implements Identifiable {
     private String email;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "group", cascade = {CascadeType.REFRESH, CascadeType.DETACH, CascadeType.MERGE})
+    @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoFieldName = "members", dtoUpdatable = false)
     private List<Student> members;
 
@@ -64,6 +67,7 @@ public class StudentsGroup implements Identifiable {
     private School school;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "group")
+    @Fetch(FetchMode.SUBSELECT)
     @ModelTransform(dtoFieldName = "courses", dtoUpdatable = false)
     private List<Course> courses;
 
