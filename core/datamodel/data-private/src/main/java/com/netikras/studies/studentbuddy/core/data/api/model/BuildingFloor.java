@@ -40,12 +40,12 @@ public class BuildingFloor implements Identifiable {
     @ModelTransform
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "building_sec_id")
     @ModelTransform(dtoUpdatable = false, dtoFieldName = "buildingSection")
     private BuildingSection section;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "building_id")
     @ModelTransform(dtoUpdatable = false)
     private Building building;

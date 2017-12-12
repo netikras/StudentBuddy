@@ -62,7 +62,7 @@ public class LectureRoom implements Identifiable {
     @ModelTransform(dtoUpdatable = false)
     private List<Comment> comments;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "floor_id")
     @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;

@@ -1,6 +1,5 @@
 package com.netikras.studies.studentbuddy.core.data.api.model;
 
-import com.netikras.studies.studentbuddy.core.data.api.model.transformers.BlobToBytesTransformer;
 import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 import com.netikras.tools.common.model.mapper.ModelTransform;
 import org.hibernate.annotations.CreationTimestamp;
@@ -8,7 +7,6 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.sql.Blob;
 import java.util.Date;
 
 @Entity
@@ -55,7 +52,7 @@ public class FloorLayout implements Identifiable {
     private boolean active = true;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
+    @Basic(fetch = FetchType.EAGER)
     //@ModelTransform(dtoUpdatable = false, transformer = BlobToBytesTransformer.class)
 //    private Blob floorMap;
     @ModelTransform(dtoUpdatable = false)
