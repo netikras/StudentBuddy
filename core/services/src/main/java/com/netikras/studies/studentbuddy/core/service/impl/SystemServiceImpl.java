@@ -21,6 +21,7 @@ import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.studies.studentbuddy.core.validator.SystemValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.remote.http.HttpStatus;
+import com.netikras.tools.common.security.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -80,6 +81,11 @@ public class SystemServiceImpl implements SystemService {
             guestUser = userDao.findByName("guest");
         }
         return guestUser;
+    }
+
+    @Override
+    public User getCurrentUser() {
+        return (User) ThreadContext.current().getValue("user");
     }
 
     @Override
@@ -365,6 +371,34 @@ public class SystemServiceImpl implements SystemService {
             }
         } else {
             permissions = new ArrayList<>(livePermissions);
+        }
+
+        return permissions;
+    }
+
+    @Override
+    public List<ResourceActionLink> getPermissionsForAction(String action, String resourceName) {
+        List<ResourceActionLink> permissions = new ArrayList<>();
+
+        if (isNullOrEmpty(action)) return permissions;
+        if (isNullOrEmpty(permissionsForResource)) return permissions;
+
+        if (!isNullOrEmpty(resourceName)) {
+            return getPermissionsForResource(resourceName, action);
+        }
+
+
+        for (Map.Entry<String, List<ResourceActionLink>> entry : permissionsForResource.entrySet()) {
+            List<ResourceActionLink> links = entry.getValue();
+            if (isNullOrEmpty(links)) {
+                continue;
+            }
+
+            for (ResourceActionLink link : links) {
+                if (resourceName.equals(link.getAction().name())) {
+                    permissions.add(link);
+                }
+            }
         }
 
         return permissions;

@@ -72,5 +72,11 @@ public abstract class CommentsApi {
             @MethodParam(type = Type.URL, name = "id") String id
     );
 
+    @RestEndpoint(url = "/entities/updated/after/{after}/ids/{idsCsv}", method = HttpMethod.GET, dtoType = CommentDto.class)
+    public abstract List<CommentDto> getEntitiesUpdatedAfter(
+            @MethodParam(type = Type.URL, name = "idsCsv") String idsCsv,
+            @MethodParam(type = Type.URL, name = "after") long after
+    );
+
 
 }

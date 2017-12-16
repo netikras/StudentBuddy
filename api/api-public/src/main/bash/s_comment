@@ -78,6 +78,18 @@ getAllCommentsForEntity() {
     return $?
 }
 
+getAllCommentsForEntityIdsUpdatedAfter() {
+    local ids=${1:?IDs missing}
+    local after=${2:?AFTER timestamp missing}
+
+    ids=$(mkjsonarr ${ids})
+    after=$(adjustTimestamp "${after}")
+
+    sb_curl GET "/comment/entities/ids/updated/after/${after}" -d "${ids}"
+    return $?
+
+}
+
 deleteAllCommentsForEntity() {
     local type=${1:?Type missing}
     local id=${2}

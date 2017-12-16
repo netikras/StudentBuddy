@@ -9,6 +9,8 @@ import com.netikras.studies.studentbuddy.core.data.api.dto.meta.CommentDto;
 import com.netikras.studies.studentbuddy.core.data.api.model.Comment;
 import com.netikras.studies.studentbuddy.core.data.api.model.Person;
 import com.netikras.studies.studentbuddy.core.data.meta.Action;
+import com.netikras.studies.studentbuddy.core.data.sys.SysProp;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
 import com.netikras.studies.studentbuddy.core.data.sys.model.User;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
 import com.netikras.studies.studentbuddy.core.service.SystemService;
@@ -17,10 +19,14 @@ import com.netikras.tools.common.exception.ErrorsCollection;
 import com.netikras.tools.common.exception.ValidationError;
 import com.netikras.tools.common.model.mapper.MappingSettings;
 import com.netikras.tools.common.model.mapper.ModelMapper;
+import com.netikras.tools.common.remote.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_CREATE;
@@ -28,7 +34,10 @@ import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_DE
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_GET;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_MODIFY;
 import static com.netikras.studies.studentbuddy.core.data.meta.Action.MODERATE;
+import static com.netikras.studies.studentbuddy.core.data.sys.SysProp.SQL_IN_LIST_LENGTH_MAX;
+import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.remote.http.HttpStatus.UNAUTHORIZED;
+import static com.netikras.tools.common.security.IntegrityUtils.areEqual;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
 @RestController
@@ -213,6 +222,27 @@ public class CommentsProducer extends CommentsApiProducer {
         }
     }
 
+    @Override
+    @Transactional
+    protected List<CommentDto> onGetCommentDtoEntitiesUpdatedAfter(String idsCsv, long after) {
+
+        if (isNullOrEmpty(idsCsv)) {
+            return Arrays.asList();
+        }
+        List<String> ids = Arrays.asList(idsCsv.split(","));
+
+        if (ids.size() > systemService.getSettingValue(SQL_IN_LIST_LENGTH_MAX)) {
+            throw new StudBudUncheckedException()
+                    .setMessage1("Cannot fetch all requested entities")
+                    .setMessage2("Too many IDs given")
+                    .setStatusCode(BAD_REQUEST);
+        }
+
+        List<Comment> comments = commentsService.getAllAllowedByEntityIdsUpdatedAfter(ids, new Date(after));
+
+        return (List<CommentDto>) dtoMapper.toDtos(comments);
+
+    }
 
     public boolean isUserAllowedTo(String entity, Action action, ErrorsCollection errors) {
         boolean allowed = false;
@@ -260,9 +290,11 @@ public class CommentsProducer extends CommentsApiProducer {
             if (currentUser != null && currentUser.getPerson() != null) {
                 Person currentPerson = currentUser.getPerson();
                 Person authorPerson = comment.getAuthor();
-                if (!currentPerson.equals(authorPerson)) {
-                    if (!systemService.isUserAllowedToPerformAction(currentUser, entity, null, MODERATE.name()))
-                        errors.add(new ValidationError().setMessage1("User is not allowed to manipulate records as another person"));
+                if (currentPerson != null && authorPerson != null) {
+                    if (!areEqual(currentPerson.getId(), authorPerson.getId())) {
+                        if (!systemService.isUserAllowedToPerformAction(currentUser, entity, null, MODERATE.name()))
+                            errors.add(new ValidationError().setMessage1("User is not allowed to manipulate records as another person"));
+                    }
                 }
             }
         }

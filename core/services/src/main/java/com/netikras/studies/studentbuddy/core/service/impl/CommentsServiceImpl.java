@@ -9,16 +9,24 @@ import com.netikras.studies.studentbuddy.core.data.api.model.CommentTag;
 import com.netikras.studies.studentbuddy.core.data.api.model.Tag;
 import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
 import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
+import com.netikras.studies.studentbuddy.core.data.sys.model.ResourceActionLink;
+import com.netikras.studies.studentbuddy.core.data.sys.model.User;
+import com.netikras.studies.studentbuddy.core.data.sys.model.UserRole;
 import com.netikras.studies.studentbuddy.core.service.CommentsService;
+import com.netikras.studies.studentbuddy.core.service.SystemService;
 import com.netikras.studies.studentbuddy.core.validator.CommentValidator;
 import com.netikras.tools.common.exception.ErrorsCollection;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import static com.netikras.studies.studentbuddy.core.data.meta.Action.COMMENT_GET;
 import static com.netikras.tools.common.remote.http.HttpStatus.BAD_REQUEST;
 import static com.netikras.tools.common.security.IntegrityUtils.isNullOrEmpty;
 
@@ -32,6 +40,8 @@ public class CommentsServiceImpl implements CommentsService {
     private TagDao tagDao;
     @Resource
     private ResourceRepoProvider repoProvider;
+    @Resource
+    private SystemService systemService;
 
 
     @Resource
@@ -90,7 +100,7 @@ public class CommentsServiceImpl implements CommentsService {
         return items;
     }
 
-    private  <T extends Commentable & Identifiable> T assignComments(T item, String entityType) {
+    private <T extends Commentable & Identifiable> T assignComments(T item, String entityType) {
         List<Comment> comments = commentDao.findByEntityTypeAndEntityId(entityType, item.getId());
         item.setComments(comments);
         return item;
@@ -138,6 +148,46 @@ public class CommentsServiceImpl implements CommentsService {
         }
 
         commentDao.delete(comment);
+    }
+
+    @Override
+    @Transactional
+    public List<Comment> getAllAllowedByEntityIdsUpdatedAfter(List<String> ids, Date date) {
+
+        User user = systemService.getCurrentUser();
+
+        if (user == null
+                || "system".equals(user.getName())
+                || isNullOrEmpty(user.getRoles())) {
+            return commentDao.findAllByEntityIdInAndCreatedOnAfterOrUpdatedOnAfter(ids, date);
+        }
+
+
+        List<ResourceActionLink> actionLinks = new ArrayList<>();
+
+        for (UserRole userRole : user.getRoles()) {
+            actionLinks.addAll(systemService.getPermissionsForRole(userRole.getRole().getName()));
+        }
+
+        if (isNullOrEmpty(actionLinks)) {
+            return Arrays.asList();
+        }
+
+        List<String> allowedIds = new ArrayList<>();
+        List<String> allowedResources = new ArrayList<>();
+        for (ResourceActionLink actionLink : actionLinks) {
+            if (actionLink.isStrict()) {
+                if (!isNullOrEmpty(actionLink.getEntityId())) {
+                    allowedIds.add(actionLink.getEntityId());
+                }
+            } else {
+                if (actionLink.getResource() != null) {
+                    allowedResources.add(actionLink.getResource().name());
+                }
+            }
+        }
+
+        return commentDao.findAllByEntityIdInAndCreatedOnAfterOrUpdatedOnAfter(ids, allowedIds, allowedResources, date);
     }
 
     @Transactional

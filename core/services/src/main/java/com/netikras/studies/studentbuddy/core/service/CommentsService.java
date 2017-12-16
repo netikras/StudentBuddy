@@ -6,6 +6,7 @@ import com.netikras.studies.studentbuddy.core.data.meta.Commentable;
 import com.netikras.studies.studentbuddy.core.data.meta.Identifiable;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public interface CommentsService {
@@ -49,4 +50,6 @@ public interface CommentsService {
     List<Comment> searchAllByText(String query);
 
     void purgeComment(String id);
+
+    List<Comment> getAllAllowedByEntityIdsUpdatedAfter(List<String> ids, Date date);
 }

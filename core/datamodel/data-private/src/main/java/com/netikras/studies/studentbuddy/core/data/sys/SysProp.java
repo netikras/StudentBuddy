@@ -29,6 +29,8 @@ public interface SysProp {
     IntProperty DTO_RETURN_DEPTH = new IntProperty("dto.return.depth", 2);
 
 
+    IntProperty SQL_IN_LIST_LENGTH_MAX = new IntProperty("sql.in.length.max", 500);
+
 
 
 

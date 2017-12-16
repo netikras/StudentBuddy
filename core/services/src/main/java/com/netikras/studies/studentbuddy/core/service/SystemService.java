@@ -13,6 +13,8 @@ import java.util.List;
 public interface SystemService {
     User getGuestUser();
 
+    User getCurrentUser();
+
     List<PasswordRequirement> getPasswordRequirements();
 
     List<PasswordRequirement> fetchPasswordRequirements();
@@ -69,6 +71,8 @@ public interface SystemService {
     List<ResourceActionLink> getPermissionsForRole(String roleName);
 
     List<ResourceActionLink> getPermissionsForResource(String resourceName, String action);
+
+    public List<ResourceActionLink> getPermissionsForAction(String action, String resourceName);
 
     // TODO move this to facade?
     boolean isUserAllowedToPerformAction(User user, String resourceName, String resourceId, String actionName);

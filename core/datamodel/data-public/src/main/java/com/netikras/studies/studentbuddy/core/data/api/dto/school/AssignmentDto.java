@@ -12,7 +12,7 @@ public class AssignmentDto extends AbstractDto {
     private Date createdOn;
     private Date updatedOn;
     private Date due;
-    private LectureDto lectureDto;
+    private LectureDto lecture;
 
     public String getId() {
         return id;
@@ -62,12 +62,12 @@ public class AssignmentDto extends AbstractDto {
         this.due = due;
     }
 
-    public LectureDto getLectureDto() {
-        return lectureDto;
+    public LectureDto getLecture() {
+        return lecture;
     }
 
-    public void setLectureDto(LectureDto lectureDto) {
-        this.lectureDto = lectureDto;
+    public void setLecture(LectureDto lectureDto) {
+        this.lecture = lectureDto;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class AssignmentDto extends AbstractDto {
                 ", createdOn=" + createdOn +
                 ", updatedOn=" + updatedOn +
                 ", due=" + due +
-                ", lectureDto=" + lectureDto +
+                ", lecture=" + lecture +
                 '}';
     }
 }
