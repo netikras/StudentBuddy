@@ -118,6 +118,11 @@ public class AdminProducer extends AdminApiProducer {
     }
 
     @Override
+    protected RoleDto onGetRoleDtoByName(String roleName) {
+        return impl.getRoleByName(roleName);
+    }
+
+    @Override
     protected List<RoleDto> onGetRoleDtoAll() {
         return impl.getAllRoles();
     }

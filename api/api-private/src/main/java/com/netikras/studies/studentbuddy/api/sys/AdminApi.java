@@ -97,4 +97,9 @@ public abstract class AdminApi {
             @MethodParam(type = Type.URL, name = "roleName") String roleName
     );
 
+    @RestEndpoint(url = "/role/name/{roleName}", method = HttpMethod.GET, dtoType = RoleDto.class, action = "getByName")
+    public abstract RoleDto getRoleByName(
+            @MethodParam(type = Type.URL, name = "roleName") String roleName
+    );
+
 }

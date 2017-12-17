@@ -139,6 +139,13 @@ getRoleById() {
     return $?
 }
 
+getRoleByName() {
+    local name=${1:?Name missing}
+
+    sb_curl GET "/admin/role/name/${name}"
+    return $?
+}
+
 deleteRole() {
     local id=${1:?ID missing}
 
