@@ -82,48 +82,48 @@ public class LecturesProducerImpl {
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByGroupIdStartingIn(String groupId, String timeUnits, long value) {
-        return getAllLecturesByGroupIdStartingBetween(groupId, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByGroupIdStartingIn(String groupId, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByGroupIdStartingBetween(groupId, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByStudentIdStartingIn(String studentId, String timeUnits, long value) {
-        return getAllLecturesByStudentIdStartingBetween(studentId, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByStudentIdStartingIn(String studentId, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByStudentIdStartingBetween(studentId, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByGuestIdStartingIn(String studentId, String timeUnits, long value) {
-        return getAllLecturesByGuestIdStartingBetween(studentId, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByGuestIdStartingIn(String studentId, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByGuestIdStartingBetween(studentId, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByLecturerIdStartingIn(String lecturerId, String timeUnits, long value) {
-        return getAllLecturesByLecturerIdStartingBetween(lecturerId, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByLecturerIdStartingIn(String lecturerId, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByLecturerIdStartingBetween(lecturerId, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByRoomIdStartingIn(String roomId, String timeUnits, long value) {
-        return getAllLecturesByRoomIdStartingBetween(roomId, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByRoomIdStartingIn(String roomId, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByRoomIdStartingBetween(roomId, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByCourseIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByCourseIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByCourseIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByCourseIdStartingBetween(id, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByBuildingIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByBuildingIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByBuildingIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByBuildingIdStartingBetween(id, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesBySectionIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesBySectionIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesBySectionIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesBySectionIdStartingBetween(id, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
-    public List<LectureDto> getAllLecturesByFloorIdStartingIn(String id, String timeUnits, long value) {
-        return getAllLecturesByFloorIdStartingBetween(id, now(), now() + timeUnitsToMs(timeUnits, value));
+    public List<LectureDto> getAllLecturesByFloorIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return getAllLecturesByFloorIdStartingBetween(id, now() + timeUnitsToMs(timeUnits, offsetValue), now() + timeUnitsToMs(timeUnits, value));
     }
 
     @Authorizable(resource = LECTURE, action = GET)
@@ -244,6 +244,10 @@ public class LecturesProducerImpl {
 
     private long now() {
         return System.currentTimeMillis();
+    }
+
+    private long now(long offset) {
+        return System.currentTimeMillis() + offset;
     }
 
 }

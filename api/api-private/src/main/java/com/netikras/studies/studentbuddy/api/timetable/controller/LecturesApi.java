@@ -31,7 +31,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByCourseStartingIn(
             @MethodParam(type = Type.URL, name = "id") String id,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
     @RestEndpoint(url = "/building/id/{id}/starts/in/{timeUnits}/{value}",
@@ -39,7 +40,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByBuildingStartingIn(
             @MethodParam(type = Type.URL, name = "id") String id,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
     @RestEndpoint(url = "/building/section/id/{id}/starts/in/{timeUnits}/{value}",
@@ -47,7 +49,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesBySectionStartingIn(
             @MethodParam(type = Type.URL, name = "id") String id,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
     @RestEndpoint(url = "/floor/id/{id}/starts/in/{timeUnits}/{value}",
@@ -55,7 +58,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByFloorStartingIn(
             @MethodParam(type = Type.URL, name = "id") String id,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
     @RestEndpoint(url = "/group/id/{groupId}/starts/in/{timeUnits}/{value}",
@@ -63,7 +67,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByGroupStartingIn(
             @MethodParam(type = Type.URL, name = "groupId") String groupId,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
 
@@ -72,7 +77,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByStudentStartingIn(
             @MethodParam(type = Type.URL, name = "studentId") String studentId,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
     @RestEndpoint(url = "/guest/id/{guestId}/starts/in/{timeUnits}/{value}",
@@ -80,7 +86,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByGuestStartingIn(
             @MethodParam(type = Type.URL, name = "guestId") String id,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
 
@@ -89,7 +96,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByLecturerStartingIn(
             @MethodParam(type = Type.URL, name = "lecturerId") String lecturerId,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
 
@@ -98,7 +106,8 @@ public abstract class LecturesApi {
     public abstract List<LectureDto> getLecturesByRoomStartingIn(
             @MethodParam(type = Type.URL, name = "roomId") String roomId,
             @MethodParam(type = Type.URL, name = "timeUnits") String timeUnits,
-            @MethodParam(type = Type.URL, name = "value") long value
+            @MethodParam(type = Type.URL, name = "value") long value,
+            @MethodParam(type = Type.REQUEST, name = "offset", required = false) long offsetValue
     );
 
 

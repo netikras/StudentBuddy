@@ -20,5 +20,5 @@ ext.junitVersion = '4.12'
 
 ext.sjndiVersion = '0.11.4.1'
 
-ext.commonsVersion = '1.1.2.4-SNAPSHOT+'
+ext.commonsVersion = '1.1.2.9-SNAPSHOT'
 

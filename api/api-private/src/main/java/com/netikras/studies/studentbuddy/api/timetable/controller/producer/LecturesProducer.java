@@ -52,23 +52,23 @@ public class LecturesProducer extends LecturesApiProducer {
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByGroupIdStartingIn(String groupId, String timeUnits, long value) {
-        return impl.getAllLecturesByGroupIdStartingIn(groupId, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByGroupIdStartingIn(String groupId, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByGroupIdStartingIn(groupId, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByStudentIdStartingIn(String studentId, String timeUnits, long value) {
-        return impl.getAllLecturesByStudentIdStartingIn(studentId, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByStudentIdStartingIn(String studentId, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByStudentIdStartingIn(studentId, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByLecturerIdStartingIn(String lecturerId, String timeUnits, long value) {
-        return impl.getAllLecturesByLecturerIdStartingIn(lecturerId, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByLecturerIdStartingIn(String lecturerId, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByLecturerIdStartingIn(lecturerId, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByRoomIdStartingIn(String roomId, String timeUnits, long value) {
-        return impl.getAllLecturesByRoomIdStartingIn(roomId, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByRoomIdStartingIn(String roomId, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByRoomIdStartingIn(roomId, timeUnits, value, offsetValue);
     }
 
     @Override
@@ -93,23 +93,23 @@ public class LecturesProducer extends LecturesApiProducer {
 
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByCourseIdStartingIn(String id, String timeUnits, long value) {
-        return impl.getAllLecturesByCourseIdStartingIn(id, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByCourseIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByCourseIdStartingIn(id, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByBuildingIdStartingIn(String id, String timeUnits, long value) {
-        return impl.getAllLecturesByBuildingIdStartingIn(id, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByBuildingIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByBuildingIdStartingIn(id, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllBySectionIdStartingIn(String id, String timeUnits, long value) {
-        return impl.getAllLecturesBySectionIdStartingIn(id, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllBySectionIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesBySectionIdStartingIn(id, timeUnits, value, offsetValue);
     }
 
     @Override
-    protected List<LectureDto> onGetLectureDtoAllByFloorIdStartingIn(String id, String timeUnits, long value) {
-        return impl.getAllLecturesByFloorIdStartingIn(id, timeUnits, value);
+    protected List<LectureDto> onGetLectureDtoAllByFloorIdStartingIn(String id, String timeUnits, long value, long offsetValue) {
+        return impl.getAllLecturesByFloorIdStartingIn(id, timeUnits, value, offsetValue);
     }
 
     @Override
