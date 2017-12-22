@@ -7,7 +7,7 @@ import java.util.List;
 public class BuildingFloorDto extends AbstractDto {
 
     private String id;
-    private String number;
+    private int number;
     private String title;
     private BuildingSectionDto buildingSection;
     private BuildingDto building;
@@ -23,11 +23,11 @@ public class BuildingFloorDto extends AbstractDto {
         this.id = id;
     }
 
-    public String getNumber() {
+    public int getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(int number) {
         this.number = number;
     }
 

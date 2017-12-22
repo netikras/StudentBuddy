@@ -42,7 +42,7 @@ public class FloorLayout implements Identifiable {
     @ModelTransform(dtoUpdatable = false)
     private Date updatedOn;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "floor_id")
     @ModelTransform(dtoUpdatable = false)
     private BuildingFloor floor;
